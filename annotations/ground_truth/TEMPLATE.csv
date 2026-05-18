@@ -1,0 +1,4 @@
+paper_id,authorship_type,source,error_id,error_type,severity_label,severity_score,section,page,description,automated_flag,flag_source,needs_review,annotator,annotation_date
+AIG_UNC_2025_example,ai_generated_uncurated,ai_researcher,AIG_UNC_2025_example_001,CTM,major,3,Section 4.2,8,Table 3 reports accuracy of 91.4% but the output log in run.py line 47 shows 84.7%,True,SciCoQa,False,mloew,2026-01-01
+AIG_UNC_2025_example,ai_generated_uncurated,ai_researcher,AIG_UNC_2025_example_002,LOG,fatal,4,Section 5,10,Conclusion claims method outperforms baseline on all metrics but Table 4 shows lower F1 on 2 of 5 datasets,False,,False,mloew,2026-01-01
+AIG_UNC_2025_example,ai_generated_uncurated,ai_researcher,AIG_UNC_2025_example_003,CIT,minor,1,Section 2,3,Citation [14] listed in bibliography but never referenced in body text,True,LanguageTool,False,mloew,2026-01-01
