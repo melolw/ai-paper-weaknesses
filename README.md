@@ -64,7 +64,7 @@ thesis-pipeline/
 All PDFs should follow this naming scheme to ensure consistent cross-referencing:
 
 ```
-{AUTHORSHIP_CODE}_{SOURCE_CODE}_{YEAR}_{FIRST_AUTHOR_LASTNAME}.pdf
+{AUTHORSHIP_CODE}_{SOURCE_CODE}_{YEAR}_{FIRST_AUTHOR_LASTNAME}_{SHORT_TITLE}.pdf
 ```
 
 | Authorship Code | Meaning                          |
