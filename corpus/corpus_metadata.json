@@ -1,0 +1,54 @@
+{
+  "papers": [
+    {
+      "paper_id": "AIG_CUR_2026_FARS_chunked_budget_allocation",
+      "authorship_type": "ai_generated_curated",
+      "source": "fars",
+      "title": "Chunked Budget Allocation Prevents Nonmonotonic Regressions in World-Model Verification",
+      "venue": null,
+      "year": 2026,
+      "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_chunked_budget_allocation.pdf",
+      "github_url": "https://gitlab.com/fars-a/worldmodel-consensus-verification"
+    },
+    {
+      "paper_id": "AIG_CUR_2026_FARS_citation_consistent_voting",
+      "authorship_type": "ai_generated_curated",
+      "source": "fars",
+      "title": "Citation-Consistent Voting for Permutation-Robust Retrieval-Augmented Generation",
+      "venue": null,
+      "year": 2026,
+      "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_citation_consistent_voting.pdf",
+      "github_url": "https://gitlab.com/fars-a/latent-mode-voting-rag"
+    },
+    {
+      "paper_id": "AIG_CUR_2026_FARS_draft_and_continue",
+      "authorship_type": "ai_generated_curated",
+      "source": "fars",
+      "title": "Draft-and-Continue Self-Consistency: An Empirical Study of Two-Stage Branch Budgeting for LLM Reasoning",
+      "venue": "ICLR",
+      "year": 2026,
+      "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_draft_and_continue.pdf",
+      "github_url": "https://gitlab.com/fars-a/aletheia-adaptive-branch-allocation"
+    },
+    {
+      "paper_id": "AIG_CUR_2026_FARS_isolated_solve_then_judge",
+      "authorship_type": "ai_generated_curated",
+      "source": "fars",
+      "title": "Isolated Solve-Then-Judge: A Simple Defense Against Candidate-Response Prompt Injection for Multimodal LLM Judges",
+      "venue": null,
+      "year": 2026,
+      "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_isolated_solve_then_judge.pdf",
+      "github_url": "https://gitlab.com/fars-a/isolated-solve-then-judge-injection"
+    },
+    {
+      "paper_id": "AIG_CUR_2026_FARS_token_balanced",
+      "authorship_type": "ai_generated_curated",
+      "source": "fars",
+      "title": "Token-Balanced Continual Pretraining Eliminates Brain Rot Degradation",
+      "venue": null,
+      "year": 2026,
+      "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_token_balanced.pdf",
+      "github_url": "https://gitlab.com/fars-a/token-balanced-cpt-brain-rot"
+    }
+  ]
+}
