@@ -8,7 +8,8 @@
       "venue": null,
       "year": 2026,
       "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_chunked_budget_allocation.pdf",
-      "github_url": "https://gitlab.com/fars-a/worldmodel-consensus-verification"
+      "github_url": "https://gitlab.com/fars-a/worldmodel-consensus-verification",
+      "review_url": null
     },
     {
       "paper_id": "AIG_CUR_2026_FARS_citation_consistent_voting",
@@ -18,7 +19,8 @@
       "venue": null,
       "year": 2026,
       "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_citation_consistent_voting.pdf",
-      "github_url": "https://gitlab.com/fars-a/latent-mode-voting-rag"
+      "github_url": "https://gitlab.com/fars-a/latent-mode-voting-rag",
+      "review_url": null
     },
     {
       "paper_id": "AIG_CUR_2026_FARS_draft_and_continue",
@@ -28,7 +30,8 @@
       "venue": "ICLR",
       "year": 2026,
       "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_draft_and_continue.pdf",
-      "github_url": "https://gitlab.com/fars-a/aletheia-adaptive-branch-allocation"
+      "github_url": "https://gitlab.com/fars-a/aletheia-adaptive-branch-allocation",
+      "review_url": null
     },
     {
       "paper_id": "AIG_CUR_2026_FARS_isolated_solve_then_judge",
@@ -38,7 +41,8 @@
       "venue": null,
       "year": 2026,
       "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_isolated_solve_then_judge.pdf",
-      "github_url": "https://gitlab.com/fars-a/isolated-solve-then-judge-injection"
+      "github_url": "https://gitlab.com/fars-a/isolated-solve-then-judge-injection",
+      "review_url": null
     },
     {
       "paper_id": "AIG_CUR_2026_FARS_token_balanced",
@@ -48,7 +52,54 @@
       "venue": null,
       "year": 2026,
       "pdf": "corpus/ai_generated/curated/AIG_CUR_2026_FARS_token_balanced.pdf",
-      "github_url": "https://gitlab.com/fars-a/token-balanced-cpt-brain-rot"
+      "github_url": "https://gitlab.com/fars-a/token-balanced-cpt-brain-rot",
+      "review_url": null
+    },
+    {
+      "paper_id": "HAH_2025_YOO_ingroup_bias",
+      "authorship_type": "human_ai_hybrid",
+      "source": "agents4science",
+      "title": "Dynamically Induced In-Group Bias: Experimental Evidence of Motivated Reasoning in Large Language Models",
+      "venue": "Agents4Science 2025",
+      "year": 2025,
+      "pdf": "corpus/human_ai_hybrid/HAH_2025_YOO_ingroup_bias.pdf",
+      "github_url": null
+    },
+    {
+      "paper_id": "HAH_2025_JUNG_parameter_vs_testtime_scaling",
+      "authorship_type": "human_ai_hybrid",
+      "source": "agents4science",
+      "title": "Parameter vs. Test-Time Scaling in LLMs: FLOPs-Aware, Cross-Domain, Domain-Dependent, Pareto-Optimal Compute Allocation",
+      "venue": "Agents4Science 2025",
+      "year": 2025,
+      "github_url": null
+    },
+    {
+      "paper_id": "HAH_2025_TAN_ai_self_recognition",
+      "authorship_type": "human_ai_hybrid",
+      "source": "agents4science",
+      "title": "AIs Fail to Recognize Themselves and Mostly Think They are GPT or Claude",
+      "venue": "Agents4Science 2025",
+      "year": 2025,
+      "github_url": null
+    },
+    {
+      "paper_id": "HAH_2025_BAI_persona_prompting",
+      "authorship_type": "human_ai_hybrid",
+      "source": "agents4science",
+      "title": "You are a brilliant mathematician Does Not Make LLMs Act Like One",
+      "venue": "Agents4Science 2025",
+      "year": 2025,
+      "github_url": null
+    },
+    {
+      "paper_id": "HAH_2025_HYUN_diverse_inference_arc",
+      "authorship_type": "human_ai_hybrid",
+      "source": "agents4science",
+      "title": "Diverse Inference for Solving ARC at a Human Level",
+      "venue": "Agents4Science 2025",
+      "year": 2025,
+      "github_url": null
     }
   ]
 }

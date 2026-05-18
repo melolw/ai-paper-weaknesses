@@ -1,0 +1,48 @@
+{
+  "paper_id": "HAH_2025_TAN_ai_self_recognition",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=7TzkOum3Nu#discussion",
+  "venue": "Agents4Science 2025",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "This paper presents an empirical study of self-recognition in LLMs, evaluating whether models can identify their own outputs. The study is well-organized, with a clear experimental setup and informative visualizations. Key findings include that most models rarely predict themselves, there is a strong bias toward GPT/Claude families, and accuracy for exact attribution is near random. The binary self-ID task shows high apparent accuracy only when models conservatively say 'no,' but F1 scores are uniformly low.",
+      "strengths": "Transparent methodology, consistent results across conditions, and clear figures.",
+      "weaknesses": "The metric framing for the binary task is problematic, as high accuracy can be achieved by always saying 'no' due to class imbalance. Parsing and format compliance are potential confounds, as the paper does not report the rate of unparsable or off-format responses. Some claims, such as the rarity of self-prediction, are not statistically significant. The paper overreaches in attributing findings to architectural limitations without sufficient ablations, and the observed bias toward GPT/Claude may reflect brand priors rather than true stylometric recognition. Error analysis is limited, and there are inconsistencies in the reporting of statistical tests and compute details.",
+      "questions": "N/A",
+      "rating": "3: Borderline reject: Technically solid paper where reasons to reject, e.g., limited evaluation, outweigh reasons to accept, e.g., good evaluation. Please use sparingly.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "This paper presents a systematic and large-scale empirical study of the self-recognition capabilities of ten contemporary Large Language Models (LLMs). The authors frame this capability as a fundamental prerequisite for AI safety, particularly for auditing and correcting algorithmic biases. The study employs a comprehensive cross-evaluation methodology where each model serves as both a text generator and an evaluator across two distinct tasks: exact model prediction and binary self-identification.",
+      "strengths": "Outstanding technical quality with rigorous, comprehensive experimental design that directly tests the central hypothesis. Claims are strongly supported by extensive quantitative results. Nuanced analysis identifying distinct failure modes such as 'self-denial' and 'overattribution.' Commendably transparent about methodology and forthright about limitations. Exceptional clarity and organization. Figures are highly effective. Profound significance with immediate and critical implications for AI safety and alignment. Highly original reframing of the text detection problem. Exemplary reproducibility with meticulous details about models, API access, prompts, and computational costs.",
+      "weaknesses": "Minor inconsistency between the justification for question 7 in the paper checklist (which states the paper 'does not include formal error bars or statistical significance tests') and the main body, which does report confidence intervals and p-values.",
+      "questions": "N/A",
+      "rating": "6: Strong Accept: Technically flawless paper, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "This paper presents the first systematic evaluation of self-recognition capabilities across 10 contemporary Large Language Models (LLMs), revealing that these models fundamentally fail to identify their own generated text. The work addresses an important question for AI safety and bias mitigation, as the ability to recognize one's own outputs is theoretically crucial for preventing discriminatory patterns in AI decision-making.",
+      "strengths": "Addresses a fundamental and under-explored question crucial for AI safety. Rigorous experimental design with appropriate controls and statistical analysis. Clear practical implications for AI deployment in consequential applications. Well-executed visualization of systematic biases. Honest discussion of limitations and alternative explanations.",
+      "weaknesses": "Limited to text identification tasks, which may not represent full self-awareness capabilities. All models accessed through API, potentially introducing confounding factors. Some statistical claims could be strengthened with formal significance testing. Limited exploration of why these failures occur beyond speculation about training data effects.",
+      "questions": "N/A",
+      "rating": "4: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_QtYe2",
+      "review_type": "human",
+      "summary": "In this paper, authors explore if models can recognize their own outputs. There are two main experimental settings, one in which the LLMs have to predict if they are the authors of a piece of text and one in which the LLMs have to predict from which LLMs an output comes from. This is well executed work from end to end: clear research question and clear experiments, with some concerns that would require some reshaping of the story and maybe some ablation.",
+      "strengths": "Good and interesting work. Clear research question and clear experiments. Well executed from end to end.",
+      "weaknesses": "Main arguments and conclusions are somewhat overstating. Authors do not randomize the model options in their question, so there might be some ordering bias. The connection to real-world relevance through bias detection scenarios remains weak. Some models might not possess knowledge about the existence of other models after their training cutoff, which could systematically bias results against newer models or create asymmetric recognition patterns. The paper should be rebalanced by downplaying claims about 'fundamental architectural limitations' and acknowledging this as exploratory work on model self-representation rather than definitive safety research.",
+      "questions": "How much does a model like Kimi know that Kimi exists? Is the ordering of model options randomized? What is the definition of 'gate tax'?",
+      "rating": "4: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+      "confidence": "4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work."
+    }
+  ]
+}

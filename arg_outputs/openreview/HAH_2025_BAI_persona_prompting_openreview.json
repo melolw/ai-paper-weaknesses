@@ -1,0 +1,48 @@
+{
+  "paper_id": "HAH_2025_BAI_persona_prompting",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=sVaRgmH8FE#discussion",
+  "venue": "Agents4Science 2025",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 3",
+      "strengths": "Comprehensive evaluation across multiple models and domains; Novel use of negated personas exposes fundamental instability; Cross-domain experiments effectively challenge expertise activation theory; Practical implications are clearly articulated; Strong experimental design with appropriate controls.",
+      "weaknesses": "Limited to three domains - broader evaluation would strengthen claims; Focus on accuracy metrics only - other aspects like response quality not assessed; Some statistical analysis could be strengthened (though large sample sizes help); The temperature=0 setting may not reflect all use cases. Minor Issues: Some figures could benefit from error bars or confidence intervals; The related work section could better position the work relative to recent persona research.",
+      "questions": "N/A",
+      "rating": "5: Accept: Technically solid paper, with good-to-excellent evaluation, resources, reproducibility, and no unaddressed ethical considerations.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 2",
+      "strengths": "This paper presents a rigorous and comprehensive empirical investigation into the effectiveness of persona prompting for instructing large language models (LLMs). The authors systematically compare persona prompts to domain priming across mathematics, psychology, and law, using four state-of-the-art LLMs and two reasoning modes. The central finding is that persona prompting is volatile and often degrades performance, while domain priming provides modest but stable improvements. The experiments, including negated personas and cross-domain applications, suggest persona effects stem from surface-level linguistic artifacts rather than genuine expertise activation. The paper is significant for its practical recommendations, methodological rigor, and clear evidence, advocating for domain priming over persona prompting.",
+      "weaknesses": "Minor weaknesses include the lack of formal statistical significance tests, limited domain scope, and a missed opportunity for deeper analysis of model-generated prompts.",
+      "questions": "N/A",
+      "rating": "6: Strong Accept: Technically flawless paper, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 1",
+      "strengths": "This paper presents a systematic, multi-domain evaluation of persona prompting versus domain priming across four LLMs and two reasoning modes. The study is broad and systematic, with multi-model, multi-domain, and CoT vs. no-CoT comparisons, and includes novel aspects such as negated personas and cross-domain persona transfer. The results are clearly visualized, and the paper provides actionable recommendations favoring domain priming over persona role-play for reliability. Reproducibility is supported by detailed prompt examples and appendices, and the work is well-situated within related literature.",
+      "weaknesses": "A key experimental confound is present: the priming prompts contain more detailed procedural guidance and are longer than the persona prompts, making it difficult to attribute observed differences solely to persona vs. priming. The lack of length- and content-matched controls weakens the central claim. Statistical treatment is limited, with no confidence intervals or significance tests, and the datasets are described only at a high level. Baseline coverage and ablations are incomplete, and the risk of overgeneralization is noted. Code and data are not yet released, limiting reproducibility. Some claims overstate generality. Ethical considerations are discussed, but the use of real experts' names in prompts could be addressed further.",
+      "questions": "N/A",
+      "rating": "4: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_Cw2t",
+      "review_type": "human",
+      "summary": "This paper analyzes the effect of persona prompting on task performance. Paper is well crafted and experiments seem to be well executed. This paper provide interesting insights for general AI usage and safety.",
+      "strengths": "The experiment are done on modern models and thus it is interesting to see that personas do not work on modern models. There are some additional interesting parts to this paper (cross-domain experiments, model generated persona, negative personas) which are interesting and valuable.",
+      "weaknesses": "My only main comment is regarding the novelty of this work. Authors cited work report very similar results and thus I am not sure what's the contribution. Specifically, Zheng et al. (2023) already established that personas don't improve performance and effects are unpredictable. A better framing of the related work would help in assessing what's the value of this work that while interesting, does seem a little bit incremental. My suggestion would be to lower the general claiming a bit. Specifically, the abstract and introduction should clarify these build on Zheng's empirical findings by explaining mechanisms (why personas fail through surface cues, not expertise) rather than discovering the problem. Focus on the other experiments that are indeed interesting theoretical contributions.",
+      "questions": ".",
+      "rating": "4: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+      "confidence": "3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "paper_id": "HAH_2025_JUNG_parameter_vs_testtime_scaling",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=wU35L1GZud#discussion",
+  "venue": "Agents4Science 2025",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "This paper presents a comprehensive study comparing parameter scaling versus test-time scaling (inference-time reasoning) in large language models, with a focus on cost-effectiveness across different domains.",
+      "strengths": "Novel experimental design using Gemini's thinking_budget to disentangle internal from external reasoning; rigorous cost-effectiveness analysis; clear domain-dependent findings; strong empirical validation; comprehensive methodology; well-written and organized.",
+      "weaknesses": "Limited domain coverage; lack of statistical significance testing; no broader impact discussion; dependence on proprietary APIs; single random seed usage.",
+      "questions": "N/A",
+      "rating": "4: Borderline accept: Technically solid paper where reasons to accept outweigh reasons to reject, e.g., limited evaluation. Please use sparingly.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "This paper presents a rigorous and insightful empirical study on the trade-off between investing compute in model parameters (parameter scaling) versus inference-time reasoning (test-time scaling, specifically Chain-of-Thought). The authors conduct a FLOPs-aware (cost-aware) analysis across two distinct domains—mathematical reasoning (GSM8K) and knowledge retrieval (PopQA)—using state-of-the-art models from OpenAI and Google. Core contributions include: (1) formulation and empirical validation of a 'redundancy principle'; (2) generation of domain-specific, cost-accuracy Pareto frontiers; and (3) derivation of actionable deployment policies.",
+      "strengths": "Significance and impact: the research question is of paramount importance to both the academic community and industry practitioners. Methodological rigor and originality: the use of Gemini's thinking_budget to control for internal reasoning is a novel technique. Clarity and presentation: the paper is exceptionally well-written and organized. Strong and clear results: the findings are strong and unambiguous, e.g., a 25x cost increase for only a 0.23 point accuracy gain. Honesty about limitations: thoughtful and comprehensive limitations section.",
+      "weaknesses": "Lack of statistical significance testing (no confidence intervals or error bars). Limited generalizability: confined to two domains and a specific set of models. Dependence on a proprietary and poorly documented feature (thinking_budget), limiting replicability.",
+      "questions": "N/A",
+      "rating": "6: Strong Accept: Technically flawless paper, with exceptionally strong evaluation, reproducibility, and resources, and no unaddressed ethical considerations.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "This paper investigates the trade-off between parameter scaling and test-time scaling (external Chain-of-Thought, CoT) for LLMs under cost constraints, using GSM8K (math) and PopQA (knowledge QA). The authors use Gemini's thinking_budget to disentangle internal from explicit CoT, presenting cost-aware Pareto frontiers and proposing a 'redundancy principle': for strong models, internal and external reasoning are largely substitutable, and stacking them is inefficient.",
+      "strengths": "Clear problem framing; practical compute-aware analysis; compelling domain contrast; actionable 'redundancy principle'; good experimental hygiene.",
+      "weaknesses": "Overstated 'FLOPs-aware' claim (no actual FLOPs reported); reliance on a proprietary and underspecified thinking_budget control; surprising accuracy numbers needing validation; limited scope (only two text datasets, no retrieval baselines for PopQA); lack of statistical uncertainty; insufficient prompt/provider sensitivity analysis; loosely defined redundancy principle; minimal ethical/broader impacts discussion; limited reproducibility due to closed APIs.",
+      "questions": "N/A",
+      "rating": "3: Borderline reject: Technically solid paper where reasons to reject, e.g., limited evaluation, outweigh reasons to accept, e.g., good evaluation. Please use sparingly.",
+      "confidence": "5: You are absolutely certain about your assessment. You are very familiar with the related work and checked the math/other details carefully."
+    },
+    {
+      "reviewer_id": "Reviewer_Qzf9",
+      "review_type": "human",
+      "summary": "This paper studies how to allocate compute between model-size scaling and test-time scaling (inference-time reasoning) to achieve cost-effective accuracy in large language models. The reviewer questions whether the core research question is well-posed, since parameter scaling is a one-time investment cost while inference-time reasoning is a recurring cost, making them difficult to compare directly. The reviewer also questions whether controlling the reasoning budget (tokens) is truly comparable to changing parameter scales.",
+      "strengths": "The tradeoff found between internal reasoning and external reasoning is interesting. The finding that reasoning tasks and knowledge tasks lead to different tradeoffs is also interesting. The paper is very nicely structured and clearly explained.",
+      "weaknesses": "The research question conflates a one-time investment (parameter scaling) with a recurring cost (test-time scaling), making the comparison questionable. Controlling reasoning budget is not the same as changing parameter scales. The redundancy principle is debatable, as prompting is often viewed as complementary (not a substitute) to internal reasoning. The sentence about 'API pricing differentials' is unclear.",
+      "questions": "Are the experiments with frontier models done by AI or by humans?",
+      "rating": "3: Borderline reject: Technically solid paper where reasons to reject, e.g., limited evaluation, outweigh reasons to accept, e.g., good evaluation. Please use sparingly.",
+      "confidence": "4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work."
+    }
+  ]
+}
