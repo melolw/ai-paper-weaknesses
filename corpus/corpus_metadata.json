@@ -100,6 +100,96 @@
       "venue": "Agents4Science 2025",
       "year": 2025,
       "github_url": null
+    },
+    {
+      "paper_id": "HUM_REJ_2024_GAO_llm_longcontext_failures",
+      "authorship_type": "human_rejected",
+      "source": "nlpeer",
+      "title": "Insights into LLM Long-Context Failures: When Transformers Know but Don't Tell",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_REJ_2024_PARVEZ_chain_of_evidences_rag",
+      "authorship_type": "human_rejected",
+      "source": "nlpeer",
+      "title": "Chain of Evidences and Evidence to Generate: Prompting for Context Grounded and Retrieval Augmented Reasoning",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_REJ_2024_JOSHI_hallucinations_to_facts",
+      "authorship_type": "human_rejected",
+      "source": "nlpeer",
+      "title": "From Hallucinations to Facts: Leveraging In Context Knowledge Grounding in Language Models",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_REJ_2024_LU_proactive_agent",
+      "authorship_type": "human_rejected",
+      "source": "nlpeer",
+      "title": "Proactive Agent: Learning to Proactively Predict Implicit Human Intents",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_REJ_2024_XU_aliice_citation_generation",
+      "authorship_type": "human_rejected",
+      "source": "nlpeer",
+      "title": "ALiiCE: Evaluating Positional Fine-grained Citation Generation",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_ACC_2024_ZHU_atm_rag",
+      "authorship_type": "human_accepted",
+      "source": "nlpeer",
+      "title": "ATM: Adversarial Tuning Multi-agent System Makes a Robust Retrieval-Augmented Generator",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_ACC_2024_SHEN_implicit_retrieval_robustness",
+      "authorship_type": "human_accepted",
+      "source": "nlpeer",
+      "title": "Assessing \u201cImplicit\u201d Retrieval Robustness of Large Language Models",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_ACC_2024_AN_llm_learn_from_mistakes",
+      "authorship_type": "human_accepted",
+      "source": "nlpeer",
+      "title": "Can LLMs Learn From Mistakes? An Empirical Study on Reasoning Tasks",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_ACC_2024_LYU_knowtuning",
+      "authorship_type": "human_accepted",
+      "source": "nlpeer",
+      "title": "KnowTuning: Knowledge-aware Fine-tuning for Large Language Models",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
+    },
+    {
+      "paper_id": "HUM_ACC_2024_WANG_qrmem_length_limitation",
+      "authorship_type": "human_accepted",
+      "source": "nlpeer",
+      "title": "QRMeM: Unleash the Length Limitation through Question then Reflection Memory Mechanism",
+      "venue": "emnlp24",
+      "year": 2024,
+      "github_url": null
     }
   ]
 }

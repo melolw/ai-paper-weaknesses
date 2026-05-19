@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LU_proactive_agent",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Proactive Agent: Learning to Proactively Predict Implicit Human Intents",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "- This paper focuses on improving how agents can predict and respond to human needs by understanding user behavior and intent. \n- The authors introduce a new dataset, ProactiveBench, which includes data from three settings: Coding, Writing, and Smart Home. \n- The goal is to train a proactive agent to predict and assist with user intents based on the sequence of events in these environments.\n- The proposed LLaMA-3-Proactive model outperforms existing methods in recognizing and responding to user intents.\n- This study emphasizes improving the precision and timeliness of intent predictions for better human-agent interactions.",
+      "strengths": "- Introducing a unique dataset with ~12k events from various scenarios (Coding, Writing, Smart Home) - could be valuable for the community to train intent prediction models.\n- Proposing an agent capable of predicting user intents by analyzing event sequences and updating its understanding based on user behavior.\n- Simulating realistic user responses to predicted intents, ensuring accurate and reliable model performance.\n- Good evaluation using key metrics (Coverage Ratio, False-alarm Ratio, Accuracy, Pass Rate) with LLaMA-3-Proactive, showing impressive performance.\n- Highlighting common challenges in predicting user intents and providing insights for improving model performance.",
+      "weaknesses": "- The dataset relies on simulated data and public blueprints, which might not always represent real-world scenarios.\n- While it covers many intents, the prediction accuracy is still low. Plus, the model frequently predicts intents that aren’t there, leading to irrelevant actions.\n- The method is complicated and might be hard to apply in different contexts. Plus, some aspects of the proposed approach are not well-explained, making it difficult to understand or replicate. \n- The findings might not apply broadly beyond specific contexts like smart homes and coding.",
+      "questions": "- The authors can provide more explanation and details of the methods so that readers can easily understand and replicate them.\n- More examples of how the proposed model works in different scenarios could help. \n- The authors may try to include or simulate real-world data to show how well the model performs in practical situations (outside of controlled environments).\n- A clearer explanation of how you measure the success of this model would help (e.g., why certain metrics were chosen).\n- The authors may expand the limitations section and suggest ways to overcome them in future work.\n- Minor issues: Please check the paper for spelling or grammatical errors to improve readability and quality.",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "bf4e9d7f9dd0222cedb5e6064436131017c331c1703f462ae8c29177f7dc8348848f8c52224d43237b2e0afeaed0acda1183f1364c37e19f0fe9979ee4bcf061"
+    }
+  ]
+}

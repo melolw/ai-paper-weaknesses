@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_PARVEZ_chain_of_evidences_rag",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Chain of Evidences and Evidence to Generate: Prompting for Context Grounded and Retrieval Augmented Reasoning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper addresses the limitations of existing prompting frameworks for context-aware and retrieval-augmented reasoning in large language models (LLMs). It highlights issues such as hallucination and the overemphasis on grounding, which can hinder the model's ability to leverage common sense and world knowledge. To overcome these challenges, the authors introduce two novel prompting methods: Chain of Evidences (COE) and Evidence to Generate (E2G), designed to enhance the model's reasoning capabilities by focusing on contextually grounded evidence. The results demonstrate substantial improvements in accuracy and robustness across various tasks, suggesting that these methods can effectively reduce unsupported claims and improve logical reasoning in LLMs.",
+      "strengths": "1. The introduction of Chain of Evidences (COE) and Evidence to Generate (E2G) strategies advances context-aware reasoning in LLMs by addressing limitations of existing prompting techniques.\n\n2. The paper demonstrates state-of-the-art performance on benchmarks like LogiQA and DROP, showcasing the practical effectiveness and robustness of the proposed methods.\n\n3. The paper is well-structured and includes a comprehensive review of related literature, effectively contextualizing the contributions within the broader research landscape.\n\n4. The authors mention the exact prompts used in experiments, thereby helping in reproducibility.",
+      "weaknesses": "While the proposed methods show strong performance on specific benchmarks, there is a concern about their generalizability across a wider range of tasks and domains. The paper could benefit from additional experiments to demonstrate robustness in diverse contexts.",
+      "questions": "See weekness",
+      "rating": 3.5,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "6738ed10275cbc1d356261f686b23a2842a1f9cee327155878d376539a1866d51ea59396f02c0bc6830bb1f34f42f1dff4680d04f33dfc5d0bbbe19b9ec2e980"
+    }
+  ]
+}

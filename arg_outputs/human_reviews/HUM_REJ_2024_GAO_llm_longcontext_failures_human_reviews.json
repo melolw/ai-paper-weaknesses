@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_GAO_llm_longcontext_failures",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Insights into LLM Long-Context Failures: When Transformers Know but Don't Tell",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper investigates a scenario where a large language model (LLM) may fail to generate the correct answer from a list of documents (values) containing a 'gold' document, due to the position of the gold document. The authors demonstrate that although the final output may not incorporate information from the gold document, the model's intermediate representations still correlate with it. This is illustrated by training linear classifiers to predict the index of the gold document using these intermediate representations as features.",
+      "strengths": "1. The exploration of whether intermediate representations retain information about the gold document is intriguing and could significantly enhance understanding of positional bias within the community.\n2. The paper is articulate and well-structured, making it a commendable read.",
+      "weaknesses": "The experimental design exhibits a notable flaw: comparing the accuracy of linear classifiers, which have access to the index of the gold document, with the accuracy of the generated output is inherently biased. The classifiers' foreknowledge of the gold document's index gives them an undue advantage, skewing the comparison.\n\nA more equitable approach would involve dividing the dataset into training and test splits and evaluating the discrepancy in performance across these splits to ensure a fair assessment of the model's capabilities.",
+      "questions": "Please see Weaknesses.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "ee7b80daf49bdacd6a2e301cae84508bce576586fb6efc4160e35534f470a3a88b351725c0d8977b91b9fd697891c46926cba0478ea3bafcf11bbf0300ed8eaa"
+    }
+  ]
+}

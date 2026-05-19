@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_XU_aliice_citation_generation",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "ALiiCE: Evaluating Positional Fine-grained Citation Generation",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This work proposes ALiiCE, the first evaluation method for positional fine-grained citation generation. The proposed approach incorporates an algorithm for parsing atomic claims based on dependency analysis, along with three metrics designed to assess the quality of positional fine-grained citations.",
+      "strengths": "* The identified problem and the proposed approach makes sense. Positional fine-grained, or sub-sentence-level unit certainly makes more sense than sentence-level evaluation.\n* Many experiments are conducted, and the figures are well-made.",
+      "weaknesses": "Unfortunately there are issues with the story presentation. \n* This work is heavily inspired by ALCE, even the proposed name is similar. However, the paper seems to be deliberately weakening this impression from writing. As a result, the lack of introduction of ALCE as prior work makes it less convincing to sell the idea that positional fine-grained unit works better than sentence-level. Simply comparing the numbers of ALiiCE and ALCE in Table 1-4 is not convincing, since you are comparing the evaluation approaches, not the model performance.\n* ~~The missing human evaluation makes the comparison of ALiiCE and ALCE not convincing. The case studies cannot replace human evaluation.~~\n* The paper contains too much details, especially the mathematical symbols in Section 2.2 are making the concepts harder to understand. For example, the symbol \"x\" suddenly appears without explanation. Based on the overall story of the paper, there should be a simpler way to make the story and content easier to understand.",
+      "questions": "~~For citation text generation in academic domain, you may want to cite CORWA (https://aclanthology.org/2022.naacl-main.397/), which also proposes to use flex spans rather than exact sentences. See this survey https://arxiv.org/pdf/2404.11588 as well.~~",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 2.5,
+      "raw_note_id": "987d502e908f61dc140de2eb5e522b48014ceeba5a5189f719af903b198d6d029f286fd3492339697458dcdb5108da1c73a877bda65abed2baab4d5f61b86dad"
+    }
+  ]
+}

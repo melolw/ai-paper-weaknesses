@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_SHEN_implicit_retrieval_robustness",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Assessing “Implicit” Retrieval Robustness of Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper evaluates the impact of retrieval robustness on the final performance of RAG systems. A retrieval-robust model needs two key capabilities: (1) the ability to incorporate helpful retrieved information and generate the correct answer, and (2) the ability to ignore distracting information and rely on its own internal knowledge as a fallback. Various methods exist to improve the robustness of RAG models, including explicit relevance judgment and implicit model-based judgment. This paper provides a detailed analysis of model robustness to retrieved information on a limited dataset.\nThe paper defines a robust RAG model as one that, when provided with helpful retrieved documents, relies on those documents to return the correct answer; when the documents are unhelpful, the model disregards them and uses its internal knowledge to respond. The authors conducted experiments on a series of RAG datasets and large language models (LLMs), examining model robustness in three scenarios: without fine-tuning, fine-tuning on golden context, and fine-tuning on mixed context. Each scenario includes discussions on the presence of context, Capability I, and Capability II. The experiments are extensive and yielded several findings, such as fine-tuning on golden context improving Capability I, and fine-tuning on mixed context enhancing Capability II without compromising Capability I.",
+      "strengths": "The robustness of RAG models is a highly interesting and valuable research topic. \n\nThe authors conducted comprehensive and detailed experiments, yielding several interesting results.",
+      "weaknesses": "Despite the extensive and thorough experiments, the paper lacks outstanding, insightful analysis and experimental results, making the overall findings relatively mundane.\n\nSome figures have insufficiently described legends, potentially causing confusion, such as Figure 3, Figure 4, and Figure 5.\n\nThe evaluation metric used is recall, which may be overly simplistic and inaccurate. The authors are encouraged to provide additional metrics related to human annotator agreement, such as Inter-Annotator Agreement (IAA), and elaborate on the specific calculations. Additionally, for an analysis-focused paper, exploring more accurate and complex metrics might be beneficial.",
+      "questions": "Although the experiments and analysis are comprehensive and free of significant flaws, more intriguing and insightful analysis and results would be desirable.",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "8da0559a2e6d6656d87d9639f61deeaf2346b837f1c6fcfb6a055603ff9af39449f1e9df655cd419e5ae5f8cb7d8a1b0bf7e7aed32ccab4ce8488d9501aa6a1d"
+    }
+  ]
+}

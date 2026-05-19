@@ -1,0 +1,45 @@
+{
+  "paper_id": "HUM_ACC_2024_LYU_knowtuning",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "KnowTuning: Knowledge-aware Fine-tuning for Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This work proposes KnowTuning, an approach to enhance the knowledge and factuality of LLMs. KnowTuning involves two steps: SFT over QA pairs constructed from atomic knowledge first, then preference alignment where the correct answers should be preferred over perturbed answers. Experiments on two datasets demonstrate that KnowTuning outperforms various baselines.",
+      "strengths": "+ factuality is an important research question\n+ combining SFT and preference alignment for factuality in one pipeline is interesting",
+      "weaknesses": "- I'm not sure if the two datasets are representative enough to evaluate knowledge/factuality. For general QA, the authors employed Dolly, which is a lesser-known dataset. It would be nice to evaluate on the more common ones such as TruthfulQA, Natural Questions, or others. Having one more widely known general QA dataset would strengthen the claims of performance. For medical QA, the employed dataset is also a bit old. This work could benefit from some literature review on medical QA and select a dataset that is more recent and challenging.\n\n- I'm not sure if some of the baselines are actually fair comparisons. For example, FactTune (Tian et al.) only conducts the DPO stage for factuality improvements, while this work has both SFT and DPO. It might make more sense to show that 1) the DPO stage in this work (based on ground truth perturbations) is better than FactTune (based on atomic facts counting); 2) SFT+DPO brings significant improvement over just DPO in this work.\n\n- I would suggest including traditional ODQA metrics like accuracy/f1-score matches with the ground truth, in addition to GPT-4 evaluation. i understand that traditional metrics do not guarantee perfect matching, but I'm not also not sure whether the LLM-as-a-judge paradigm, previously used to evaluate text generation where there is no ground truth, is reliable for factuality/knowledge settings.\n\n- Why would there be \"twice\" winning, losing, or ties? (lines 418-423) What is conducted twice? Maybe I missed it, but it would be nice to clarify that close to these lines as well.\n\n- Equations 4-5, 7-9, 11-12, and 14-15 are somewhat redundant and probably don't need so much space, they could simply be inline equations or even just described verbally.",
+      "questions": "please see above",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "d556af0db3c5424a9fcb10bc20dded6225c920fc80013a664d295e85f791c362aea7a0dc490700e981730bc38368bcdf5f94d9b6699f5bdf8539c6d3d8f54324"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper introduces KnowTuning, a method designed to enhance the knowledge awareness of LLMs during fine-tuning for complex, knowledge-intensive tasks such as question-answering. KnowTuning consists of two main stages: fine-grained knowledge augmentation and coarse-grained knowledge comparison. The method filters difficult atomic knowledge and rewrites QA pairs, subsequently training LLMs with both original and adjusted pairs. KnowTuning is evaluated on generic and medical QA datasets, showing improvements over existing methods like FactTune.",
+      "strengths": "- The dual-stage approach of KnowTuning—combining fine-grained knowledge augmentation with coarse-grained knowledge comparison—is novel and addresses a clear gap in the existing LLM fine-tuning practices. \n\n- The paper thoroughly evaluates the effectiveness of KnowTuning across two datasets and compares its performance with baseline models, providing both automatic and human-based evaluations. \n\n- KnowTuning demonstrates a tangible improvement in LLMs' ability to generate answers that are not only more factual but also complete and logically structured.",
+      "weaknesses": "- The method's reliance on filtering and rewriting QA pairs, along with constructing and training with comparison sets, may be very time-consuming and costly. \n\n- While the paper showcases improvements particularly in medical and generic QA tasks, it's less clear how this method performs across a broader range of knowledge-intensive tasks. A more comprehensive evaluation on knowledge-intensive tasks such as the KILT benchmark (https://arxiv.org/abs/2009.02252) is encouraged.",
+      "questions": "NA",
+      "rating": 3.5,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "bf2800cae14ea8071b85db14fd7e6e938b5e38287e4d245a3404792f0a41aa237a7a1c2623a06b28d13eb7ede5edd4bb2d072c2acdb803fcb8fe46ca7bec4d01"
+    },
+    {
+      "reviewer_id": "Reviewer_3",
+      "review_type": "human",
+      "summary": "This paper proposes KnowTuning to improve the fine-grained and coarse-grained knowledge awareness of LLMs with fine-grained knowledge augmentation and coarse-grained knowledge comparison. Experimental results demonstrate KnowTuning is more effective than other baselines in various datasets.",
+      "strengths": "1. The atomic knowledge can improve the knowledge-awareness of LLMs. Different from other works, this work highlight the importance of atomic knowledge and the ability of knowledge comparison.\n2. Experimental results demonstrate KnowTuning is more effective than other baselines in various datasets.",
+      "weaknesses": "1. More knowledge enhanced LLM method should be compared, including RAG enhanced LLMs. For the baselines, only base, SFT, RLAIF and FactTune are compared. The original knowledge comparison ability in LLMs should be estimated.",
+      "questions": "See the weaknesses.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "3943e1c7188e285b0aa26319bf759ef23e979e0348ea1b6d1aa2f13a3e0769e5abbded281f892645db28d637a8ff79b23ce2851f9945426878153849d4bd8761"
+    }
+  ]
+}

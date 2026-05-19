@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_AN_llm_learn_from_mistakes",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Can LLMs Learn From Mistakes? An Empirical Study on Reasoning Tasks",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This study conducts a comprehensive investigation on improving LLMs with its mistakes. It proposes learning from mistakes and correction-centric evolution strategies to leverage LLMs' mistakes to enhance themselves. In the experiment section, the authors conduct extensive evaluation and analysis to validate their proposed methods and provide additional hints and rationales about how LLMs learn from their mistakes.",
+      "strengths": "* This paper is well-written, with well-organized presentations and detailed illustrations.\n* The proposed correction-centric evolution method provides a novel utilization of LLMs' mistakes in self-evolution.\n* The hints and rationales provided in the experiment section can be helpful in understanding the learning mechanism of LLMs on their mistakes.",
+      "weaknesses": "* The improvement brought by the learning from mistakes strategy is not very significant. Considering the utilization of GPT-4 in the mistake dataset construction, one would expect more performance enhancement brought by the mistake-enhanced tuning.",
+      "questions": "This work is quite solid and can be more specific by including and discussing the differences with the following papers:\n\n[1] Gaining Wisdom from Setbacks: Aligning Large Language Models via Mistake Analysis\n\n[2] Can LLMs Learn from Previous Mistakes? Investigating LLMs' Errors to Boost for Reasoning",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "de3d818d511370c156b35dbd66590692baad0186cf217a1348f9104bffbab50173a726c3bb8d69d077014185168cf01e28c4f460e3ce716cca523d797da0eebd"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper follows the concept of CoT and ties to leverage the potential of LLMs in learning from mistakes. To achieve the goal, it applies GPT-4 to generate inaccurate rationales, which serve as a negative augmentation to the existing dataset. Subsequently, these combined samples are employed to fine-tune LLMs. In experiment, only CoT performs as the competitor. Since the limited investigation of current studies, there is a lack of novelty in terms of motivation, framework, and results.",
+      "strengths": "S1: The paper is easy to understand.\nS2: The proposed method exhibits a clear structure and experiments relatively approve its effect.",
+      "weaknesses": "W1: The motivation of the paper, i.e., \"learning from potential mistakes\", lacks novelty due to the uncomprehensive investigation of current studies. This concept has already been surveyed by Pan et al. [1]. \nW2: The \"data augmentation then fine-tuning\" paradigm has been widely adopted in various achieving methods to effectively leverage mistake features, and the proposed method seems too engineering. For example, An et al. [2] focuse on inaccurate reasoning paths, and employs GPT-4 to generate details, reasons, and final answer for them. These samples then perform as annotations for fine-tuning LLMs. Chen et al. [3] directly guide LLMs to generate harmful responses and informs LLMs to evaluate its output with specific critique. This mistake analysis data is then used for model fine-tuning.\nW3: The use of only CoT as competitors in Experiment might be caused by the aforementioned reasons. This compromises the confidence of the proposed method.\n\n[1] Liangming Pan, Michael Saxon, Wenda Xu, Deepak Nathani, Xinyi Wang, William Yang Wang: Automatically Correcting Large Language Models: Surveying the landscape of diverse self-correction strategies. CoRR abs/2308.03188 (2023).\n[2] Shengnan An, Zexiong Ma, Zeqi Lin, Nanning Zheng, Jian-Guang Lou, Weizhu Chen: Learning From Mistakes Makes LLM Better Reasoner. CoRR abs/2310.20689 (2023).\n[3] Kai Chen, Chunwei Wang, Kuo Yang, Jianhua Han, Lanqing Hong, Fei Mi, Hang Xu, Zhengying Liu, Wenyong Huang, Zhenguo Li, Dit-Yan Yeung, Lifeng Shang, Xin Jiang, and Qun Liu. 2023. Gaining Wisdom from Setbacks: Aligning Large Language Models via Mistake Analysis. CoRR abs/2310.10477 (2023)",
+      "questions": "D1: The paper needs further grammatical polish. For example, in Abstract, “chain-of-though” should be revised to “chain of thought”.",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 3,
+      "raw_note_id": "b50c8511471badc49064b8f9f647d7686c0a9faf668cbe52eb1ada150791e3863d18abe86a248cf71c78806c65faf0b474a1bd7e6c0d9f42e0f123b001fd2f6c"
+    }
+  ]
+}

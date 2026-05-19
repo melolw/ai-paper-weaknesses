@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_JOSHI_hallucinations_to_facts",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "From Hallucinations to Facts: Leveraging In Context Knowledge Grounding in Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "Note that this paper is a resubmission, and the following text is based on the previous version of my summary:\n\nThe paper studies the hallucination problem in language models, and it proposes a method to mitigate hallucinations by utilising knowledge graph triples. The idea is to use a relevant knowledge graph triple as an additional context for text generation in LLMs. This work suggests that the authors extracted a knowledge-based graph (which contains triples) from the Wikipedia source. The experiments were conducted on generating texts related to the environmental sustainability domain. The evaluated models were GPT2, GODEL, Llama2, and ChatGPT, and evaluations were performed using automatic metrics and human evaluation.\n\nThe changes in this revision include:\n1) a (slight) improvement in presentation\n2) FacTool is used in analysis",
+      "strengths": "Hallucination mitigation/detection is an interesting problem (same)",
+      "weaknesses": "- The only analysis is in the FacTool section (around line 560) where it shows that the proposed method (though not mentioned the variant but presumably ChatGPT) achieves a FacTool score of 0.87 while vanilla ChatGPT achieves 0.81. Given that there is only one result, there is sufficient result or empirical evidence to support that the proposed method (adding KG triples) can reduce hallucinations. The main table (Table 2) does not provide any metric regarding hallucination.\n- No details about how the human evaluation was conducted (e.g., annotator information, inter-annotator agreement, process, etc)\n- Little details about how triples are integrated into the generation process. For example, Eqn(3): generating a sentence from a triple — how is this implemented? Eqn(4): how is it actually done? Is it just a concatenation?",
+      "questions": "- The paper should improve on explaining the methodology (and also improving & innovating the method). \n- Wrong references, e.g., line 412: ChatGPT wasn’t proposed in Florifi and Chiriatti 2020",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 2.5,
+      "raw_note_id": "d53617d50aac14b1686d9179a12ef5b280c2fbad022cdf5d7c12980da24beb3eeaa53b6ea22a6167a69e9fac31cbbc821131196fe3796a8332a705d8a3463d76"
+    }
+  ]
+}
