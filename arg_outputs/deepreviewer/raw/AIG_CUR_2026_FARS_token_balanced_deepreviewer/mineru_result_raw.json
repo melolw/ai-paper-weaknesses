@@ -1,0 +1,17 @@
+{
+  "code": 0,
+  "msg": "ok",
+  "trace_id": "9c2b8d0432b4dc80d441a43a8abec824",
+  "data": {
+    "batch_id": "8c479e39-a300-4040-abfb-e45ffe200558",
+    "extract_result": [
+      {
+        "data_id": "6390b3e1-5300-4cde-9bf7-7287edfbae08",
+        "file_name": "source.pdf",
+        "state": "done",
+        "err_msg": "",
+        "full_zip_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-06-10/57c9e222-b11f-4565-a30c-6b116c5fc891.zip"
+      }
+    ]
+  }
+}

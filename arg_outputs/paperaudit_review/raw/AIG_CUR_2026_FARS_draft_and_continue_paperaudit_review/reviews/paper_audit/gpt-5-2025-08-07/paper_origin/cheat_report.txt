@@ -1,0 +1,81 @@
+Academic integrity and internal consistency risk report
+
+Summary
+The manuscript is generally coherent, but several high-impact inconsistencies and missing details materially affect interpretability, reproducibility, and the correctness of reported comparisons. Below are evidence-based issues with explicit anchors.
+
+1) Final aggregation ambiguity (scope of majority vote)
+- Conflict:
+  - Methods text states final voting uses only continued branches: “After continuation, we extract final answers from all continued branches and apply majority vote (Equation 1) to determine the prediction.” (Section: Method, Block #10)
+  - Figure caption states final voting uses all completed responses (which would include drafts): “Final answer is determined by majority vote across all completed responses.” (Section: Method, Block #9)
+- Why it matters: Whether Stage-1 drafts are included in the final vote changes the effective ensemble size (k vs. B+k), can double-count continued branches if drafts and continuations from the same branch are both included, and directly impacts accuracy and token accounting. The paper does not resolve this, leaving the core algorithm unspecified.
+
+2) Undefined “Fallback” behavior despite reporting “Fallback (%)”
+- Evidence:
+  - Table 2 reports “Fallback (%)” with values 3.6–4.0 (Section: Experiments, Block #16).
+  - No description of any fallback mechanism exists in Method (Blocks #6–#11) or elsewhere.
+- Why it matters: If some examples bypass Stage 2 or switch to a different decoding regime, average API calls and tokens are affected, and the comparison to baselines may be altered. Without a definition (what triggers fallback, what procedure is used, and how outputs are aggregated), key metrics in Table 2 cannot be interpreted or reproduced.
+
+3) Underspecified answer extraction procedures (interim and final)
+- Evidence:
+  - Stage 1 relies on extracting “interim answers” from partial drafts and assigning “NULL” when unparseable (Section: Method, Block #8).
+  - Final answers are “extracted” post-continuation (Section: Method, Block #10).
+  - No details are given on extraction rules, parsing heuristics, normalization (e.g., simplified fractions, units, formatting), handling of multiple answers, or error cases.
+- Why it matters: Vote histograms (Equation 2, Section: Method, Block #8) and the final majority vote (Equation 1, Section: Method, Block #7) critically depend on consistent and accurate answer extraction. Different parsers can materially change vote counts and thus accuracy.
+
+4) Undefined “Efficiency” metric reported in Table 1
+- Evidence:
+  - Table 1 includes an “Efficiency” column (Section: Experiments, Block #15).
+  - Nowhere in Methods or Experiments is “Efficiency” defined or formulated.
+- Why it matters: Claims about Pareto dominance and efficiency comparisons hinge on this measure. Without a definition (e.g., accuracy per 1k generated tokens), readers cannot verify or reuse the metric.
+
+5) Inconsistent sampling hyperparameter statement
+- Evidence:
+  - Methods state: “All sampling uses temperature 0.8 and top-p 0.95” (Section: Method, Block #11).
+  - Baselines specify Greedy CoT uses “temperature 0” (Section: Experiments, Block #13).
+- Why it matters: The blanket statement in Block #11 conflicts with the Greedy baseline’s definition and could mislead reproduction. Clarify whether Block #11 applies only to DCS (and some baselines) rather than “All sampling.”
+
+6) Non-deterministic results reported for a deterministic baseline
+- Evidence:
+  - Greedy CoT is defined with “temperature 0” (Section: Experiments, Block #13), which typically yields deterministic outputs.
+  - Table 1 reports “75.6 ± 0.28” accuracy (Section: Experiments, Block #15).
+  - Evaluation notes say “All experiments use three random seeds … report mean ± standard deviation.” (Section: Experiments, Block #17)
+- Why it matters: With deterministic decoding, seed variation should not change outputs. The non-zero standard deviation suggests either hidden sources of randomness (e.g., different prompts, non-deterministic decoding, or floating extraction/parsing differences) or reporting inconsistencies. This undermines confidence in variance estimates and cross-method comparisons.
+
+7) Ambiguity in API call counts for DCS
+- Evidence:
+  - Design fixes per-example calls at B + k = 10 (Section: Method, Block #11).
+  - Table 1 lists DCS Avg Calls as “~10” (Section: Experiments, Block #15).
+  - Table 2 introduces “Fallback (%)” (Section: Experiments, Block #16), but without defining fallback, it is unclear when calls deviate from 10.
+- Why it matters: Avg Calls affects cost comparisons and parallelization assumptions. Without a definition for fallback and its effect on calls, cost metrics are ambiguous.
+
+8) Token counting definition is unclear
+- Evidence:
+  - The paper reports “average generated tokens per problem” (Section: Experiments, Block #17), but does not state if this includes only output tokens or input+output tokens; nor whether system/prompt tokens are included.
+- Why it matters: Token metrics drive all efficiency claims and ΔUniform in Table 1 (Section: Experiments, Block #15). Different token accounting conventions can change conclusions about efficiency.
+
+9) Missing baseline decoding limits for fairness
+- Evidence:
+  - Greedy CoT defines “max tokens 2048” (Section: Experiments, Block #13).
+  - Uniform SC and CGES-LNS list sampling parameters (n=5, b_max=5, γ=0.95) but do not state max tokens per sample/response (Section: Experiments, Block #13).
+- Why it matters: If baselines use different max token caps than DCS drafts/continuations (T_draft=1024, T_cont=1024; Section: Method, Block #11), token usage and accuracy can be systematically biased, affecting the central efficiency comparison.
+
+10) Ambiguity about duplicate counting when continuing selected drafts
+- Evidence:
+  - Stage 2 continues “branches from [top answers]” (Section: Method, Block #8).
+  - Final vote is either over “continued branches” (Block #10) or “all completed responses” (Block #9).
+- Why it matters: If drafts and their continuations are both included in the final vote, the same reasoning path might effectively be counted twice, biasing the majority. If only continuations are included, then the ensemble is smaller (k=3), contradicting the intuition that all completed drafts contribute. The paper does not specify deduplication or replacement rules.
+
+Minor but notable formatting/content artifacts
+- A stray “ANALEMMA” line appears in the Introduction (Section: Introduction, Block #5). While not affecting results, it suggests automated-generation artifacts. No direct evidence found of impact on scientific claims.
+
+If addressed, these clarifications would substantially improve trustworthiness:
+- Precisely define final aggregation: whether to include Stage-1 drafts in the final vote; how to handle drafts that are subsequently continued; any deduplication policy.
+- Define and describe “Fallback”: trigger conditions, exact procedure, and its effect on tokens and calls.
+- Specify answer extraction methods for interim and final answers, including normalization and failure handling.
+- Provide a formal definition of “Efficiency” and token counting conventions.
+- Correct or qualify the “All sampling uses temperature 0.8…” statement to reflect baseline-specific settings.
+- Explain why Greedy CoT shows variance across seeds despite temperature 0, or report deterministic results if appropriate.
+- State max-token caps for all baselines to ensure fair and reproducible comparisons.
+
+Conclusion
+Multiple substantive internal inconsistencies and missing methodological details exist (see items 1–10 with anchors). These materially affect interpretation, reproducibility, and the validity of efficiency comparisons. No direct evidence found of data fabrication; however, the unresolved ambiguities around aggregation, fallback, and token accounting warrant revision before confident acceptance.

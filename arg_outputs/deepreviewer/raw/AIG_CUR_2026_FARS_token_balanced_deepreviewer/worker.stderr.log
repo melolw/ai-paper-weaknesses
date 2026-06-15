@@ -1,0 +1,4 @@
+The WOFF2 decoder requires the Brotli Python extension, available at: https://github.com/google/brotli
+Failed to convert WOFF font /Users/melissa/DeepReviewer-v2/assets/fonts/Satoshi-Medium-ByP-Zb-9.woff3: No module named brotli
+The WOFF2 decoder requires the Brotli Python extension, available at: https://github.com/google/brotli
+Failed to convert WOFF font /Users/melissa/DeepReviewer-v2/assets/fonts/Satoshi-Medium-ByP-Zb-9.woff2: No module named brotli

@@ -1,0 +1,134 @@
+Summary
+- The paper studies vulnerabilities of multimodal LLM (VLM) judges to prompt injection attacks embedded in candidate responses and proposes a two-pass, isolated solve-then-judge defense. In Pass 1, the judge generates a self-answer using only trusted inputs (image and query), and in Pass 2 it compares candidates against this uncontaminated reference (Section 3.3; Eqs. 3–4; Figure 1). Using Qwen2.5‑VL‑7B‑Instruct on VL‑RewardBench (N=1,247), the method lowers conditional attack success rate (ASR_cond) from 91.33% to 29.33% (Table 1; Section 4.2). A non-isolated control with the same two-pass structure shows 33.37% ASR_cond, attributing about 4pp improvement to information isolation (Table 1; Section 4.2). The defense reduces ASR_cond most for hallucination detection (95.9%→21.2%) and least for reasoning (85.9%→49.5%) (Table 2; Section 4.3). Authority-impersonation attacks remain challenging (63.6% ASR_cond) (Table 3; Figure 2; Section 4.4). The approach trades off clean accuracy (−10.8pp) (Table 1; Section 4.2).Strengths
+- Bolded titles
+  - Evidence-rich problem framing and clear threat model
+    - Section 1 motivates the security risk of single-pass judges exposed to untrusted candidate responses and cites high attack success on LLM judges (Introduction; Section 1). This clarifies the real-world relevance.
+    - Section 3.1 formalizes pairwise judging and adversarial setup (Eq. 1; Section 3.1), ensuring technical precision.
+    - Section 3.2 explains why single-pass exposure permits early contamination (Eq. 2; Section 3.2), providing a transparent causal mechanism for vulnerability.
+  - Simple, general defense with crisp formulation
+    - The defense is expressed compactly as an isolated self-solve (Eq. 3) followed by reference-anchored judging (Eq. 4; Section 3.3), aiding reproducibility and conceptual clarity.
+    - Figure 1 clearly depicts the information isolation in Pass 1 and the flow into Pass 2, which enhances understanding and potential adoption.
+    - The formulation is modality-agnostic at the interface level (I, Q, R1, R2), suggesting broader applicability beyond the evaluated setting (Section 3.1–3.3).
+  - Careful experimental design to isolate the role of isolation
+    - Three conditions (A/B/C) differentiate single-pass, isolated two-pass, and non-isolated two-pass with identical Pass 2 prompt (Section 3.4; Figure 1), directly testing whether isolation per se matters.
+    - The explicit comparison B vs. C (Table 1; Section 4.2) attributes an additional 4pp ASR_cond reduction to isolation beyond prompt engineering/extra compute, which is technically informative.
+    - Consistent decoding and deployment details (vLLM, 2 GPUs, greedy decoding) control for variability (Section 4.1), supporting experimental rigor.
+  - Strong aggregate robustness gains with transparent metrics
+    - Main result: ASR_cond drops from 91.33% (A) to 29.33% (B) on VL‑RewardBench (Table 1; Section 4.2), demonstrating large effect size.
+    - The method also reduces overall ASR from 91.90% (A) to 45.07% (B) (Table 1), consistent across metrics.
+    - Reporting CleanAcc, ASR, and ASR_cond (Section 4.1) provides multi-view evaluation, increasing interpretability for practitioners.
+  - Fine-grained per-category insights
+    - Hallucination detection benefits most (ASR_cond 95.9%→21.2%, −74.8pp; Table 2; Section 4.3), indicating task-structure sensitivity of the approach.
+    - Reasoning is least improved; non-isolated control (C) outperforms isolated (B) for Reasoning (40.0% vs. 49.5% ASR_cond; Table 2; Section 4.3), a nuanced and candid reporting of limitations.
+    - General category shows substantial reduction as well (75.6%→34.5% B; Table 2), suggesting robustness across diverse prompts.
+  - Variant-level attack analysis with consistent trends
+    - Across Primary, Authority, and Verdict variants, Condition B consistently improves over A (Table 3; Figure 2; Section 4.4), demonstrating robustness breadth.
+    - The effect size varies meaningfully (−62.3pp for Primary vs. −25.0pp for Authority; Table 3; Section 4.4), isolating vulnerabilities to authority cues, which is actionable for future defense design.
+    - The clear definition of variants (Section 4.1) and consistent presentation (Figure 2; Table 3) strengthen experimental clarity.
+  - Mechanistic probes through corruption and failure analyses
+    - Pass 1 contamination is 0% under isolation vs. 1.88% without isolation (Section 4.5), supporting the “uncontaminated reference” mechanism.
+    - When Pass 1 is corrupted in C, ASR rises from 47.8% to 73.9% (Section 4.5), reinforcing causal linkage between corruption and failure.
+    - Failure analysis links weak self-answers (<30 chars), position-2 bias (98.7% failures), and reasoning brevity to residual vulnerability (Section 4.6), offering diagnostic insights.
+  - Honest trade-off reporting
+    - Clean accuracy drops by 10.8pp (78.35%→67.52%) for B (Table 1; Section 4.2), with the paper acknowledging accuracy costs rather than overclaiming.
+    - Similar CleanAcc for B and C (~67.5–67.8%; Table 1) supports the claim that the drop is due to the two-pass/prompt design rather than isolation alone (Section 4.2), improving interpretability.
+    - Category-specific clean accuracy differences (Table 2) are made explicit (e.g., Reasoning CleanAcc falls from 85.2% to 61.8% in B), aiding readers in assessing applicability.
+  - Reproducibility supports
+    - Code link is provided (Abstract footnote), facilitating verification.
+    - Dataset (VL‑RewardBench), model (Qwen2.5‑VL‑7B‑Instruct), and decoding settings are specified (Section 4.1), which are key to replication.
+    - Attack variants are concretely described (Section 4.1), and their measured effects are reported (Table 3; Figure 2), enabling targeted reimplementation.Weaknesses
+- Bolded titles
+  - Narrow evaluation scope (single model and single benchmark)
+    - Only Qwen2.5‑VL‑7B‑Instruct is used as the judge (Section 4.1), limiting claims about generality across model scales or architectures.
+    - Only VL‑RewardBench is evaluated (Section 4.1), so robustness across other multimodal judging tasks remains untested.
+    - No cross-model or cross-dataset variance analysis is provided (No direct evidence found in the manuscript), reducing external validity.
+  - Restricted attack coverage relative to threat landscape
+    - The paper evaluates three relatively simple injection variants (Primary/Authority/Verdict; Section 4.1; Table 3), omitting optimization-based attack families (e.g., referenced in Section 2.2) that may be stronger.
+    - No evaluation of multimodal/in-image injections (e.g., on-image text or visual signals) is reported (No direct evidence found in the manuscript), leaving a gap for VLM-specific threats.
+    - Attack placement appears limited to suffix attachments as depicted in Figure 1 (“⚠️ = Injection suffix”; Figure 1 text in Section 3.4), without exploring prefix/mid-context positions or multi-turn contamination.
+  - Limited statistical rigor and uncertainty quantification
+    - Results appear to be from single runs with greedy decoding (Section 4.1), with no confidence intervals or bootstrapping (No direct evidence found in the manuscript), making it hard to assess reliability.
+    - The 4pp isolation benefit (B vs. C) is small (Table 1; Section 4.2) and lacks significance testing (No direct evidence found in the manuscript), so the attribution may be sensitive to noise.
+    - No ablations on prompt sensitivity (e.g., different delimiter styles or warning phrasings) are provided (No direct evidence found in the manuscript), limiting robustness claims to a single prompt instantiation.
+  - Incomplete prompt/protocol transparency
+    - While Pass 2 is said to use delimiters and warnings (Section 3.4), the exact prompts are not included in the manuscript (No direct evidence found in the manuscript), hindering reproducibility.
+    - It is not specified whether model state/kv-cache is fully reset between passes when using vLLM (Section 4.1), leaving potential cross-pass contamination ambiguous (No direct evidence found in the manuscript).
+    - Criteria for generating the self-answer (e.g., length control or format constraints) are not given beyond failure analysis heuristics (Section 4.6), constraining replicability of anchor quality.
+  - Missing compute/latency overhead analysis
+    - The two-pass architecture necessarily incurs additional inference cost (Section 3.3; Figure 1) but the paper does not quantify runtime or throughput overhead (No direct evidence found in the manuscript).
+    - Hardware is described (2 GPUs, BF16; Section 4.1) without per-sample latency or total cost (No direct evidence found in the manuscript), limiting deployment assessment.
+    - No comparison against alternative defenses with potentially lower overhead (e.g., single-pass prompt hardening) in terms of cost-effectiveness is provided (No direct evidence found in the manuscript).
+  - Clean-accuracy degradation and reasoning underperformance insufficiently addressed
+    - CleanAcc drops by 10.8pp for Condition B relative to A (Table 1; Section 4.2), with no mitigation experiments beyond noting the trade-off.
+    - For Reasoning, B underperforms C (49.5% vs. 40.0% ASR_cond; Table 2; Section 4.3), suggesting isolation may impede performance on tasks benefiting from candidate context, but no targeted remedies are tested (No direct evidence found in the manuscript).
+    - Failure analysis identifies short self-answers and position bias (98.7% failures when attacked response is in position 2) (Section 4.6), yet no controlled interventions (e.g., enforced longer anchors, position debiasing) are evaluated (No direct evidence found in the manuscript).
+  - Ambiguity in headline attack metrics and aggregation
+    - Table 1 and Section 4.2 present “main results” (ASR_cond 91.33%→29.33%) without stating whether they are computed for a specific attack variant or aggregated across variants (Table 1; Section 4.2).
+    - The headline numbers in Table 1/Abstract (91.33%→29.33%) closely mirror the Primary variant in Table 3 (91.3%→29.0%) but exceed a simple unweighted average across the three variants (Table 3; Figure 2), creating ambiguity about aggregation.
+    - The manuscript does not describe the aggregation method or weights if Table 1 reflects a variant mixture (No direct evidence found in the manuscript), hindering interpretability.
+  - Sample size and denominator inconsistencies
+    - The dataset size is N=1,247 (Section 4.1), yet Section 4.5 reports a denominator of 1,224 for Pass 1 corruption (1.88% = 23/1,224) without explaining the mismatch (Section 4.5).
+    - Section 4.6 analyzes “238 attack successes” for Condition B, but the manuscript does not clarify the exact denominator or filtering used to select these cases (Section 4.6; Table 1), limiting reproducibility.
+    - No per-analysis inclusion/exclusion criteria or Ns are provided alongside Tables/Figures (No direct evidence found in the manuscript), leaving readers unable to reconcile counts.
+  - Unclear attack indexing and position-bias interpretation
+    - The method/formulation repeatedly illustrates attacking R2 (e.g., “R2 ← R2 ⊕ A” in Section 3.1; Eq. 4; Figure 1), while Section 4.1 states the attack targets the human-dispreferred response, which may be R1 or R2.
+    - The failure analysis notes that 98.7% of failures occur when the attacked response is in position 2 (Section 4.6), but the manuscript does not clarify whether the attack index dynamically follows the dispreferred response per instance.
+    - Without explicit indexing details, the position-bias conclusion could be confounded by a design choice to attack R2 (Sections 3.1, 3.3–3.4; 4.1; 4.6), weakening causal interpretation.
+  - Incomplete metric definitions and cross-condition comparability
+    - ASR_cond is defined as “conditioned on the model originally selecting the correct response” (Section 4.1), but it is unclear whether the conditioning set is harmonized across A/B/C or computed per-condition, which affects comparability (No direct evidence found in the manuscript).
+    - Table 2 reports ASR_cond per category without listing the conditioned denominators per category/condition (Table 2), obscuring how much the subsets differ across A/B/C.
+    - The central 4pp isolation benefit (B vs. C; Table 1) could be sensitive to denominator shifts if conditioning sets differ, yet the manuscript provides no harmonization details (Section 4.2; No direct evidence found).
+  - Mechanistic claim about Pass 2 dominance lacks direct quantification
+    - Section 4.5 infers that “most attacks succeed via Pass 2 manipulation rather than Pass 1 corruption,” but does not provide an explicit breakdown attributing failures to Pass 1 vs. Pass 2 pathways (Section 4.5).
+    - The presented figures—0% vs. 1.88% Pass 1 contamination and conditional success rates (73.9% vs. 47.8%)—are suggestive but not a direct decomposition of failure modes (Section 4.5).
+    - No controlled analysis quantifies the proportion of attack successes explained by Pass 2-only manipulation versus Pass 1 corruption (No direct evidence found in the manuscript), limiting the strength of the mechanistic conclusion.Suggestions for Improvement
+- Bolded titles
+  - Broaden evaluation across models and datasets
+    - Evaluate additional VLM judges (e.g., different scales/backbones) to test generality of isolation benefits (grounding the claim beyond Section 4.1’s single model).
+    - Add at least one more benchmark with pairwise multimodal judgments to validate cross-task robustness (complementing VL‑RewardBench in Section 4.1).
+    - Report cross-model/dataset variance and rank-order consistency to strengthen external validity (addressing the single-setting limitation).
+  - Expand the attack suite and threat realism
+    - Include optimization-based/jailbreak-style judge attacks referenced in Related Work (Section 2.2) to test against stronger adversaries, and report results alongside Table 3.
+    - Add multimodal/in-image injections (e.g., overlaid text or adversarial visual cues) to stress VLM-specific channels (beyond Figure 1’s suffix text-only design).
+    - Vary attack positions and formats (prefix, mid-context, multi-segment, multi-turn) and report sensitivity analyses to complement Figure 1’s suffix assumption.
+  - Add statistical confidence and robustness checks
+    - Provide confidence intervals (e.g., bootstrap over items) for Table 1/2/3 metrics to quantify uncertainty under the single-run setup (Section 4.1).
+    - Conduct significance testing on B vs. C (Table 1) to substantiate the 4pp isolation contribution claim (Section 4.2).
+    - Perform prompt-sensitivity ablations (e.g., delimiter types, warning wording) and report variance to gauge robustness of the defense prompt template.
+  - Improve prompt/protocol transparency and isolation guarantees
+    - Include full Pass 1 and Pass 2 prompts (with delimiters and instructions) in the appendix or code link to ensure reproducibility (complementing Section 3.4).
+    - Document pass-level state handling (e.g., cache resets) in vLLM to rule out inadvertent cross-pass leakage and strengthen the isolation claim (beyond Section 4.1).
+    - Specify and enforce self-answer quality controls (e.g., minimum length, required evidence references) to standardize anchor strength beyond the heuristic noted in Section 4.6.
+  - Quantify computational overhead and cost-effectiveness
+    - Report per-sample latency and throughput for A/B/C under the stated hardware (Section 4.1) to characterize the operational cost of isolation (Section 3.3; Figure 1).
+    - Provide a cost–robustness trade-off curve (e.g., varying max_tokens or output-length constraints) to help practitioners choose settings.
+    - Compare against single-pass prompt-hardening baselines on a cost-normalized basis (e.g., robustness per unit time) to contextualize the overhead of two-pass inference.
+  - Mitigate clean-accuracy loss and bolster reasoning tasks
+    - Introduce self-answer shaping (e.g., enforce richer structure or minimum length) and evaluate its effect on CleanAcc and ASR_cond (addressing Section 4.6’s short anchors).
+    - Explore hybrid isolation for Reasoning (e.g., candidate-aware but delimited context summaries fed into Pass 1) and compare to B/C on the Reasoning subset (Table 2; Section 4.3).
+    - Implement and test position-debiasing strategies (e.g., response order randomization or explicit anti-recency instructions) and report their impact on the 98.7% position-2 failure concentration (Section 4.6).
+  - Clarify headline metric scope and aggregation
+    - Explicitly state whether Table 1 and Abstract numbers are per-variant (e.g., Primary) or aggregated; if aggregated, describe the aggregation method and any weights (Table 1; Section 4.2; Abstract).
+    - Report both macro- and micro-averaged ASR_cond across variants and provide per-variant Ns to contextualize Table 3 (Figure 2; Table 3).
+    - Align narrative claims (e.g., “main results”) with the clarified scope to avoid misinterpretation (Section 4.2).
+  - Reconcile denominators and report per-analysis Ns
+    - Explain the 1,224 denominator in Section 4.5 relative to N=1,247 (Section 4.1), including any exclusions or filtering (Section 4.5).
+    - For the “238 attack successes” (Section 4.6), specify the conditioning set and denominator, and link it to Table 1’s rates.
+    - Add per-table and per-figure footnotes listing inclusion criteria and exact Ns used in each analysis to ensure reproducibility (Tables 1–3; Sections 4.5–4.6).
+  - Specify attack indexing protocol and test position sensitivity
+    - State whether the injected “Response X” dynamically matches the human-dispreferred response’s index for each item, and how this is implemented (Sections 3.1, 3.4; 4.1).
+    - Report the distribution of attacked indices (R1 vs R2) across the dataset and conditions to contextualize the 98.7% position-2 failures (Section 4.6).
+    - Add a controlled experiment that flips which position is attacked (R1 vs R2) to disentangle design effects from learned position bias (Sections 4.3–4.6).
+  - Define ASR/ASR_cond precisely and harmonize denominators
+    - Clarify whether ASR_cond is computed on a common set of originally correct items across A/B/C or per-condition; report both if feasible (Section 4.1).
+    - Provide the per-category conditioned denominators used in Table 2 and indicate any differences across conditions (Table 2).
+    - Recompute B vs. C comparisons on a harmonized conditioning set (if not already) and report both harmonized and per-condition values to validate the 4pp isolation claim (Table 1; Section 4.2).
+  - Quantify failure-path contributions to support the mechanistic claim
+    - Provide an explicit breakdown of attack successes attributable to Pass 1 corruption vs. Pass 2 manipulation (e.g., counts and percentages) (Section 4.5).
+    - Conduct a controlled toggle ablation that forces Pass 1 to be clean/contaminated and measures resulting ASR_cond, isolating pathway effects (Section 4.5).
+    - Include instrumented criteria for labeling “corruption” and an error analysis of misclassifications to validate the attribution pipeline (Section 4.5).Score
+- Overall (10): 5 — Strong robustness gains (Table 1: ASR_cond 91.33%→29.33%; Figure 1 design) but ambiguities in headline metric scope, denominators, and indexing undermine interpretability (Table 1; Section 4.2; Sections 4.5–4.6; Table 3).
+- Novelty (10): 5 — Builds on self-reference ideas (Section 2.4) and contributes a security framing with an isolation ablation (Figure 1; Section 3.4; Table 1 B vs. C), but conceptually aligns with established channel-separation principles.
+- Technical Quality (10): 5 — Method is sound and results are substantial (Sections 3.3–3.4; Tables 1–3), yet missing statistical tests, denominator inconsistencies, and incomplete metric definitions weaken rigor (Sections 4.1–4.2; 4.5–4.6).
+- Clarity (10): 7 — Clear exposition with equations (Eqs. 1–4) and figures/tables (Figure 1; Tables 1–3), but absent prompts and unclear aggregation/conditioning details reduce transparency (Section 3.4; Sections 4.1–4.2).
+- Confidence (5): 3 — Based on a thorough reading of the provided analyses (Tables 1–3; Sections 3.1–3.4; 4.1–4.6), with reservations due to unanswered denominator and protocol questions.

@@ -1,0 +1,54 @@
+Academic integrity and internal consistency risk report
+
+Scope: This report flags high-impact, evidence-based inconsistencies and numerical/logical issues. Citations refer to manuscript blocks.
+
+Major issues
+
+1) Per-token weight disparity calculation is internally inconsistent
+- Formal definition states each token in sample xi receives weight wi = 1/(N·Li); the ratio between short and long sequences is Llong/Lshort (Blocks 6–7: Eq. 1–3).
+- The manuscript repeatedly claims an 8.17× per-token weight disparity (Blocks 7, 11, 15, 17) based on mean lengths 16.7 (junk) and 100.4 (control) (Block 13). However, Llong/Lshort = 100.4/16.7 ≈ 6.01, not 8.17.
+- Table 2 reports “Weight (Unpacked)” 0.0822 (junk) and 0.0101 (control), ratio 8.17× (Block 16). These values appear to be 1/L-like quantities and omit the 1/N factor that the formalism (Blocks 6–7) says should be present. Moreover, 0.0822 implies an effective length ≈ 12.16, not the stated mean 16.7 (Block 13).
+- Under packing, Method §3.2 says w = 1/(M·Lpack) (Block 8), but Table 2 lists 0.000488 (=1/2048), again omitting division by M (Block 16).
+Impact: The central mechanistic claim (8.17× disparity eliminated by packing) is numerically unsupported by the stated means and is inconsistent with the paper’s own formal definitions.
+Actionable fix: Provide the exact computation for 8.17× (e.g., E[1/L] vs 1/E[L], dataset mixture weighting, treatment of N and M). Recompute with a consistent definition and report both absolute weights (including N or M) and ratios.
+
+2) “Recovery” metric is defined differently across sections
+- Abstract: “119.7% ARC … and 95.2% RULER … relative to the no-CPT baseline” (Block 2).
+- Table 1 caption defines recovery as (B − C)/(A − C) × 100 (Block 16), which does not involve the no-CPT baseline.
+Impact: Headline recovery percentages are attributed to a different baseline in the abstract than in the methods/results, risking misinterpretation.
+Actionable fix: Align the abstract with the formal definition, or redefine and recompute recovery relative to the no-CPT baseline if that is intended.
+
+3) Step counts and speedup claims conflict
+- Figure 1 text: 8,632 steps/epoch (unpacked) vs 64 steps/epoch (packed), “Step reduction: 135×” (Block 11).
+- Table 3: 25,638 (unpacked) vs 64 steps (packed), i.e., ~400× reduction (Blocks 18, 20). Section 4.4 also states “400× reduction” (Block 18).
+- Abstract: “67× training speedup” (Block 2), while §4.4 clarifies “67× CPT wall-clock time” and “15× reduction in total training time” (Block 18). Table 3 “Speedup” shows 15.4× for total time (Block 20).
+- Tokens/sec differ by ~20.6× (2,867 vs 139; Block 18). Without specifying the exact token budget/epochs/batch sizes per condition, it is unclear how a 400× step reduction and 20.6× throughput combine to 67× CPT-only time and 15.4× total time.
+Impact: Key efficiency claims rely on inconsistent denominators (per-epoch vs total steps) and an unspecified training budget, reducing reproducibility and interpretability.
+Actionable fix: Specify token budgets, number of epochs, batch sizes, and whether measurements are per-epoch or total. Use one consistent unit (total steps or total tokens) and one scope (“CPT-only” vs “end-to-end”) across abstract, figures, and tables.
+
+4) RULER aggregate scores vs sub-task scores do not numerically align
+- Table 1: RULER (%) are A: 84.5 ± 0.3, B: 83.7 ± 0.6, C: 67.1 ± 3.8 (Block 16).
+- Table 3(b) lists 13 sub-tasks with absolute percentages (Block 20). A simple unweighted average of the provided sub-task values yields approximately:
+  - A ≈ 86.0, B ≈ 86.2, C ≈ 75.1 (calculations from Block 20’s numbers), which do not match Table 1’s 84.5, 83.7, 67.1.
+- The manuscript does not define the aggregation scheme for RULER (e.g., weighting across sub-tasks or items).
+Impact: Reported overall RULER results conflict with the sub-task table, undermining confidence in the summarized metrics.
+Actionable fix: Provide the exact aggregation formula/weights and reconcile or correct either the sub-task table or the aggregate results.
+
+5) Base model naming/citation mismatch
+- “Meta-Llama-3-8B-Instruct (Touvron et al., 2023)” (Block 13), while the references list Touvron et al., 2023 as “Llama 2” (Blocks 26–27). No reference for Llama 3 is provided.
+Impact: Ambiguity about the actual base model used impairs reproducibility and attribution.
+Actionable fix: Correct the model name or citation; add the appropriate reference for the model actually used.
+
+6) Absolute “per-token weight” units are inconsistent with the paper’s formalism
+- Methods state weights scale as 1/(N·L) (unpacked) and 1/(M·Lpack) (packed) (Blocks 6–8), but Table 2 uses 1/L and 1/Lpack values (Block 16), effectively dropping normalization by N and M. Figure 1 likewise reports per-token weights as 1/L and 1/2048 (Blocks 11, 15).
+Impact: The absolute numbers in Table 2 and Figure 1 are not the per-token gradient weights defined in Methods, making cross-condition comparisons potentially misleading.
+Actionable fix: Either include the normalizing factors (N and M) or explicitly state that weights are normalized up to a constant factor and only ratios are meaningful; then compute ratios consistently (see Issue 1).
+
+Additional concrete inconsistencies and omissions
+- Table 1 caption says “Best results in bold,” but no bold text is present (Block 16).
+- Section 4.2 has a truncated sentence: “Condition B actually outperforms Condition …” (Block 16).
+- Condition labeling slip: Table 1 caption refers to “control tweets” while Methods define A as “control documents” (Blocks 9 and 16).
+- Evaluation details for ARC-CoT and RULER are minimal (prompt formats, sampling temperature, decoding settings, and any normalization of scores are not specified). No direct evidence found in the manuscript to resolve how evaluation randomness across three seeds was handled for generative CoT outputs.
+
+Conclusion
+The manuscript contains several material internal inconsistencies in its core mechanistic quantification (8.17× disparity), definitions (recovery metric), and efficiency reporting (steps/speedups), as well as a mismatch between aggregate and per-subtask RULER results and base model citation. These issues materially affect the credibility, interpretability, and reproducibility of the main claims. Clarifying calculations, unifying definitions/units, and correcting the cited model are necessary to restore internal consistency.

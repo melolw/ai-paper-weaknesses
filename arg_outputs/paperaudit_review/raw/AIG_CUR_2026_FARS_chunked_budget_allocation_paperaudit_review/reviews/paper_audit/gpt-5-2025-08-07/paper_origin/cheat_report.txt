@@ -1,0 +1,71 @@
+Academic integrity and internal consistency assessment
+
+Overall finding: The manuscript contains several high‑impact internal inconsistencies and methodological mismatches that materially affect the correctness and interpretability of the results. Key issues and explicit anchors are below.
+
+1) Inconsistent paired-episode accounting between Sections 4.2 and 4.4
+- Evidence:
+  - Table 1 (Section 4.2) reports Condition A (Sequential) success rate 0.86% (≈5/600 episodes) and Condition B (Consensus) 14.83% (≈89/600 episodes).
+  - Section 4.4 (Table 2) states n = 81 episodes where B succeeded but A failed, and “Only 2 episodes showed the reverse pattern (A succeeded, B failed), yielding a net benefit of 79 additional successes.”
+- Contradiction (arithmetic):
+  - Let x = episodes where both A and B succeeded.
+    - From Table 1 totals: x + 81 = 89 ⇒ x = 8.
+    - From A’s total: x + 2 = 5 ⇒ x = 3.
+  - These two implications (x = 8 vs x = 3) cannot both be true. Therefore, at least one of: the n = 81 count, the “2 reverse” count, or the Table 1 totals is inconsistent. This undermines the failure-pattern analysis (Table 2) and any conclusions drawn from it.
+
+2) Method/label inconsistency in the temperature ablation (Section 4.5, Table 3)
+- Evidence:
+  - Section 3.3 defines Condition A (Sequential) as K = 1 (one world-model query per cycle), allowing up to M ≈ 10 cycles at B = 10.
+  - Section 4.5 (Table 3) explicitly says “Both conditions use M = 2, K = 5, τ = 0.5 configuration,” yet labels rows as A (Sequential) and B (Consensus).
+- Contradiction:
+  - If both rows use M = 2, K = 5, then the row labeled “A (Sequential)” does not follow the sequential definition (K = 1) from Section 3.3. This mislabeling makes the temperature ablation non-interpretable as an A vs B comparison and invalidates the claim that it “confirms that the advantage comes from the structural benefit of reduced sequential cycles” (Section 4.5), because the compared conditions are not as defined.
+
+3) Contradictory statements about monotonicity with respect to M
+- Evidence:
+  - Introduction, Contributions (Section 1): “setting M = 1 … consistently outperforms finer-grained allocations, with performance degrading monotonically as M increases.”
+  - Section 4.3 and Figure 2 (Blocks 17 and 20): intermediate values are explicitly non-monotonic (M = 2 → 8.5% is worse than M = 5 → 14.0%).
+- Contradiction:
+  - The contributions claim monotonic degradation with M, while the reported experiment (Fig. 2) shows a non-monotonic pattern. This is a direct internal contradiction in major claims.
+
+4) Calibration analysis appears methodologically misaligned with available ground truth (Section 4.6)
+- Evidence:
+  - Section 4.6 computes Brier score (0.28) and ECE (0.28) “across 311 verification cycles in Condition B,” with “p̂ = 0.0 for 98.4% of cycles.” It also states: “When p̂ = 0.0, the actual success rate is 27.5% (84/306 successes).”
+  - Under Condition B, τ = 0.1 (Section 3.3). With p̂ = 0.0, the checkout is blocked in that cycle; the purchase (and thus ground-truth success of that specific proposed checkout) is not observed in that cycle.
+  - The “84/306 successes” aligns numerically with episode-level outcomes (Table 1: 89 total B successes = 5 successes when p̂ > 0 plus 84 successes when p̂ = 0), not the ground truth of the specific blocked checkout.
+- Problem:
+  - Brier/ECE require aligned prediction–outcome pairs for the same event. Here, p̂ is a per-checkout-cycle prediction, but the “actual success” used appears to be episode-level eventual purchase success, not the counterfactual truth of the blocked checkout. No procedure is documented to obtain the true label of the specific blocked checkout (e.g., executing it in a parallel sandbox or using a verified oracle). Without that, the reported calibration metrics (and the causal claim that “poor calibration causes consensus to fail”) are not supported.
+  - Anchor: No direct evidence found in the manuscript describing how ground-truth labels for blocked checkouts were obtained to validly compute Brier/ECE at the per-checkout level.
+
+5) Ambiguity/missing details affecting the “trajectory drift” claim (Sections 1 and 4.4)
+- Evidence:
+  - Contributions (Section 1) and Section 4.4 claim trajectory drift is the dominant failure mode (60.5%, Table 2: 49/81).
+- Missing methodological detail:
+  - The paper does not define the operational criteria, annotation protocol, or inter-rater reliability for labeling “trajectory drift,” “wrong product checkout,” or “never reached checkout.”
+  - Given the centrality of this claim, the absence of a clear taxonomy and labeling procedure materially affects trust in the mechanism analysis.
+  - Anchor: No direct evidence found in the manuscript describing how episodes were categorized or who/what performed the categorization.
+
+6) Cross-experiment comparability and parameter clarity
+- Evidence:
+  - Section 3.3: Condition B uses τ = 0.1.
+  - Section 4.3/Figure 2: analysis and explanations rely on τ = 0.5 (“With K = 5 and τ = 0.5...”), and the M = 1 result reported there is 20.0% (not the 21.50% from Table 1).
+- Impact:
+  - While varying τ across experiments can be legitimate, the manuscript sometimes juxtaposes results across sections without consistently restating parameter changes. This risks readers interpreting cross-section differences as methodological effects rather than parameter changes. Clear isolation of settings is needed for valid comparisons.
+
+7) Paired-bootstrap validity not established (Section 4.2)
+- Evidence:
+  - Section 4.2 cites a “paired bootstrap confidence interval” for C–A.
+- Missing detail:
+  - The paper does not state that the exact same task instances (per seed) were used across conditions A, B, and C. If tasks differ across conditions, a paired bootstrap is not valid.
+  - Anchor: No direct evidence found in the manuscript confirming matched task sets across conditions for the paired analysis.
+
+Actionable recommendations
+- Reconcile the episode-level cross-tabulation (Section 4.4) with Table 1 totals. Provide a contingency table for A vs B outcomes to resolve the x, y, z counts and ensure arithmetic consistency.
+- Correct Table 3 (Section 4.5) to accurately reflect Condition A as defined (K = 1, up to M ≈ 10) or relabel the rows to avoid implying A (Sequential) when using M = 2, K = 5. Re-run the ablation if necessary to truly isolate temperature while holding the defined condition structures fixed.
+- Harmonize claims about monotonicity with the empirical findings. If performance is non-monotonic for intermediate M at τ = 0.5 (Fig. 2), revise the contribution statement accordingly or provide additional evidence supporting monotonic degradation under the stated practical guidance settings.
+- Rework the calibration analysis (Section 4.6). Either:
+  - Provide a validated method to obtain ground-truth labels for each verified checkout proposal (including those blocked), then recompute Brier/ECE at the correct event level; or
+  - Restrict claims to what is actually measured (e.g., episode-level correlations) without using Brier/ECE terminology that implies per-event outcome alignment.
+- Define and document the failure taxonomy and labeling protocol for “trajectory drift” and related categories, including criteria, annotator details, and reliability.
+- Clarify whether identical task sets (per seed) were used across conditions to justify the paired bootstrap; otherwise use an unpaired procedure or rerun with matched tasks.
+
+Conclusion
+Given the arithmetic inconsistency between Tables 1 and 2, the mislabeling/definition mismatch in Table 3, the contradictory monotonicity claim, and the misaligned calibration analysis, the paper in its current form contains substantial internal inconsistencies that materially affect the validity of its main conclusions. These issues should be resolved and the analyses clarified/recomputed before the results can be considered reliable.

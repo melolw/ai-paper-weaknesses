@@ -1,0 +1,78 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- Core Problem: In retrieval-augmented generation (RAG), large language models are sensitive to the order of retrieved documents, leading to inconsistent answers across permutations due to position bias.
+- Claimed Gap: “RAG output varies with document ordering due to position bias.” (Abstract). The paper further argues that existing “inference-time ensembles (e.g., Mixture-of-Agents) vote by answer frequency, ignoring citation structure.” (Related Work/Introduction).
+- Proposed Solution: A training-free, inference-time aggregation method—Citation-Consistent Voting (CCV)—that “prompts the generator to emit structured citations (answer, cited doc index, quote), verifies evidence, maps citations to permutation-invariant document IDs, and selects the answer with the highest citation-consistency score across K permutations.” (Abstract/Method). They “reframe the aggregation signal to citation agreement rather than answer frequency.” (Related Work).
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. VeriCite: Towards Reliable Citations in Retrieval-Augmented Generation via Rigorous Verification
+- Identified Overlap: Both elevate citations/evidence verification to guide RAG outputs; VeriCite uses multi-stage verification (including an NLI verifier) to improve attribution, while CCV uses citation structure as a voting signal across permutations.
+- Manuscript's Defense:
+  - Citation status: Not cited.
+  - Differentiation (quoted from the manuscript):
+    - “Citation-Consistent Voting (CCV), a training-free method that aggregates by document-ID agreement across permutations. Steps: prompt the model to cite, map citations to permutation-invariant IDs, select answers with maximal citation consistency after evidence checks.” (Abstract)
+    - “CCV reframes the aggregation signal to citation agreement rather than answer frequency.” (Related Work)
+- Reviewer's Assessment: The technical distinction is that CCV turns verified citations into a permutation-invariant consensus signal, whereas VeriCite focuses on improving citation reliability/faithfulness within a single context via verification and refinement. This is a meaningful but narrow pivot: CCV’s novelty is the specific order-robust aggregation rule based on docID consistency, not the general idea of citation verification. The lack of direct engagement with VeriCite weakens the positioning, but the permutation-invariance angle remains a legitimate, differentiating objective.
+
+### vs. SURE-RAG: Sufficiency and Uncertainty-Aware Evidence Verification for Selective RAG
+- Identified Overlap: Both prioritize evidence-first decision-making and aggregate local evidence judgments into answer-level decisions; SURE-RAG formalizes sufficiency and abstention with interpretable signals, while CCV uses citation-consistency as a reliability cue across permutations.
+- Manuscript's Defense:
+  - Citation status: Not cited.
+  - Differentiation (quoted):
+    - “Vote on document-ID agreement among evidence-valid responses rather than on answer frequency.” (Introduction/Method idea)
+    - “Map each cited index to its permutation-invariant underlying document ID; … select answer with highest citation-consistency score.” (Method)
+- Reviewer's Assessment: CCV’s contribution is a simpler, training-free, permutation-focused aggregation rule using verified citations; SURE-RAG addresses a broader sufficiency verification problem with richer signals and selective abstention. CCV is distinct in scope (permutation robustness) but overlaps in relying on structured, evidence-driven aggregation. Not acknowledging SURE-RAG undercuts the completeness of the related work, but the technical niche—permutation-invariant voting—remains specific.
+
+### vs. FAIR-RAG: Faithful Adaptive Iterative Refinement for RAG
+- Identified Overlap: Both elevate evidence structure and verification to control generation; FAIR-RAG iteratively fills evidence gaps for multi-hop tasks, while CCV targets single-hop permutation robustness via citation-based voting.
+- Manuscript's Defense:
+  - Citation status: Not cited.
+  - Differentiation (quoted):
+    - “CCV is training-free and leverages explicit citation structure via document-ID agreement.” (Related Work)
+    - “Given … Top-5 … sample K random permutations … generate … JSON-constrained outputs … [and] select answer with highest citation-consistency score.” (Method)
+- Reviewer's Assessment: Orthogonal emphases: FAIR-RAG is iterative, multi-hop, and gap-filling; CCV is non-iterative, single-hop, order-robust aggregation. The distinction is valid; however, the manuscript could better situate CCV among evidence-auditing controllers to clarify its narrower objective and trade-offs.
+
+### vs. Utilizing Metadata for Better RAG
+- Identified Overlap: Both operationalize document identity coherence as a reliability signal—metadata to stabilize retrieval vs. docID-consistent voting to stabilize selection at generation time.
+- Manuscript's Defense:
+  - Citation status: Not cited.
+  - Differentiation (quoted):
+    - “CCV … aggregates by document-ID agreement across permutations.” (Abstract)
+    - “Permutation Sampling … Per-Permutation Generation … Evidence Validity Checks … Citation-Consistent Voting.” (Method)
+- Reviewer's Assessment: These works act at different pipeline stages: retrieval (metadata) versus generation-time orchestration (CCV). The distinction is clear and complementary. CCV’s novelty is not undermined here; in fact, metadata-aware retrieval could amplify CCV’s signal.
+
+### vs. An Experimental Study of The Effects of Position Bias on Emotion Cause Extraction
+- Identified Overlap: Both interrogate position bias as a confound; the ECE study diagnoses the bias, while CCV proposes a mitigation for RAG via permutation-invariant aggregation.
+- Manuscript's Defense:
+  - Citation status: Not cited; instead, the manuscript cites “lost in the middle” (Liu et al., 2023) and permutation-induced errors (Zhang et al., 2026).
+  - Differentiation (quoted):
+    - “RAG improves factual grounding but is vulnerable to permutation sensitivity and ‘lost in the middle’ effects (Liu et al., 2023). Even with 5 documents, permuting order can cause different, sometimes wrong, answers (Zhang et al., 2026).” (Introduction)
+- Reviewer's Assessment: The problem motivation is consistent with broader evidence of position bias. While not citing this ECE paper, the authors credibly anchor their gap to position-bias literature and frame a mitigation strategy. This supports the motivation rather than challenging novelty.
+
+## 3. Novelty Verdict
+- Innovation Type: Incremental
+- Assessment:
+  The paper’s distinctive idea is a training-free, permutation-invariant aggregation rule that turns verified, structured citations into a voting signal over underlying document identities. This is a concrete, pipeline-level tweak with interpretability benefits and empirical support that “citation agreement significantly correlates with correctness (p = ‘1.14 × 10^−5’).” However:
+  - The manuscript does not engage with closely related citation-verification and evidence-aggregation works (e.g., VeriCite, SURE-RAG), which already elevate citations/evidence as first-class signals. This weakens the defense of novelty.
+  - The measured gains are modest (“+0.19 SubEM” and “+0.17 F1” at “K = 20”), on a single dataset/model, acknowledged by the authors.
+  - The contribution is best viewed as a targeted, inference-time orchestration variant rather than a new theoretical framework.
+
+  - Strength:
+    - Clear, specific gap (permutation sensitivity) and a simple, auditable mechanism: “map citations to permutation-invariant IDs” and “select answers with maximal citation consistency.”
+    - Training-free, model-agnostic wrapper; interpretable evidence checks; monotonic scaling with K.
+  - Weakness:
+    - Limited empirical lift and scope (one dataset/model), plus K-pass compute overhead.
+    - Insufficient engagement with prior citation-verification and sufficiency-aggregation literature that already treats provenance as a decision signal.
+
+## 4. Key Evidence Anchors
+- Abstract: “RAG output varies with document ordering due to position bias.”
+- Abstract: “Citation-Consistent Voting (CCV), a training-free method that aggregates by document-ID agreement across permutations. Steps: prompt the model to cite, map citations to permutation-invariant IDs, select answers with maximal citation consistency after evidence checks.”
+- Introduction/Related Work: “Inference-time ensembles (e.g., Mixture-of-Agents) vote by answer frequency, ignoring citation structure.”
+- Related Work: “CCV reframes the aggregation signal to citation agreement rather than answer frequency.”
+- Method: “Map each cited index to its permutation-invariant underlying document ID; … select answer with highest citation-consistency score.”
+- Experiments (Main results): “CCV (Ours), K=20: ‘46.37% SubEM,’ ‘46.83% F1.’ Improvement over MoA: ‘+0.19 SubEM,’ ‘+0.17 F1.’”
+- K-scaling: “Δ (CCV − MoA): ‘−0.01 / +0.10 / +0.11 / +0.19.’”
+- Diagnostic: “citation agreement significantly correlates with correctness (p = ‘1.14 × 10^−5’).”
+- Limitations: “modest absolute improvement; evaluation limited to one dataset and model; requires K forward passes.”
