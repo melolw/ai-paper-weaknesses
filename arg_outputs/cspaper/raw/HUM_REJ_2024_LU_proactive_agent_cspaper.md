@@ -1,0 +1,155 @@
+# Desk Rejection Assessment:
+## Paper Length
+Pass ✅.
+
+## Topic Compatibility
+Pass ✅. The paper studies proactive intent prediction for LLM-based agents, contributes a dataset/benchmark, and evaluates models. This fits Dialogue and Interactive Systems, Human-Centered NLP, and Resources and Evaluation.
+
+## Minimum Quality
+Pass ✅. The submission contains Abstract, Introduction, Related Works, Task Definition, Dataset Construction (with methodology), Experiments (metrics, settings, results, case studies), Conclusion, Ethics, Limitations, and an Appendix with training details. However, there are important technical and clarity issues noted later.
+
+## Prompt Injection and Hidden Manipulation Detection
+Pass ✅. I found no hidden instructions or attempts to manipulate automated reviewing within the paper content.
+
+# Expected Review Outcome:
+
+## Paper Summary
+The paper introduces ProactiveBench, a dataset and evaluation framework aimed at training and assessing “proactive agents” that anticipate implicit human intents from event traces in three domains: coding, writing, and smart home. The authors synthesize scenarios and event sequences via an “Environment Gym,” collect intent proposals using an “Intent Prediction Agent,” and simulate accept/reject decisions via a “User Agent.” They fine-tune LLaMA-3-8B on this data to create LLaMA-3-Proactive and report higher coverage and pass rate than several baselines on automatic metrics. To enable automatic evaluation, they also train a “user agent” evaluator on 1,400 human-annotated decisions, reporting 76% agreement with human annotations.
+
+## Summary Of Strengths
+- Problem framing: The paper tackles an important and understudied capability for LLM agents, namely proactively inferring whether and what help is needed from passive context rather than reacting to explicit requests.
+- Dataset and framework: The proposed pipeline covers three distinct domains with different characteristics (Table 1), and the formalization in Section 3 distinguishes between detecting the presence of an intent and predicting its content.
+- Attempted measurement of trade-offs: The four metrics in Section 5.1 (Coverage Ratio, False-alarm Ratio, Accuracy, Pass Rate) reflect the proactivity–intrusiveness balance and are reasonable at a high level for this task.
+- Clear architecture-level illustrations: Figure 2 makes the synthetic data pipeline comprehensible, showing the interactions among Environment Gym, Intent Prediction Agent, and User Agent. Figure 3 clarifies how memory and user characteristics inform intent detection.
+- Empirical signal: Table 2 shows LLaMA-3-Proactive improves Coverage Ratio (82.63%) and Pass Rate (70.34%) over tested models under the paper’s automatic evaluator; Table 4 provides per-domain breakdowns that are informative about domain difficulty.
+
+## Summary Of Weaknesses
+1) Circularity and evaluator validity
+- The central evaluation depends on a trained “User Agent” evaluator that only achieves 76% agreement with human judgments on a 100-example test split (Section 5.2, Table 3). This is not strong enough to serve as a stand-in for humans for the main results, particularly since small changes could flip decisions in borderline cases. Moreover, the same synthetic pipeline used to create training data for the proactive model also generates the events that the evaluator must judge, which risks distributional coupling and circularity.
+- Impact: This casts doubt on the reliability of the headline results in Table 2. Without robust human evaluation or substantially stronger evaluator validation, claims about superiority are fragile.
+
+2) Ground-truth definition and label quality
+- The “ground truth” of whether an intent exists and which proposals are acceptable is based on simulated User Agent decisions rather than human ground truth for the benchmarked test data (Section 4 and 5.1). The paper does not provide human adjudication of the test predictions of LLaMA-3-Proactive vs. baselines. The 1,400 annotated items were used to train/validate the evaluator, not to directly evaluate agents at test time.
+- Impact: The main performance comparisons hinge on a proxy that may not reflect real user preferences, threatening external validity.
+
+3) Inconsistencies and possible errors in dataset and results reporting
+- Table 1 states there are 619/34 train/test instances yet Section 5.1 says “test split ... contains 655 entries,” which conflicts with Table 1. Please reconcile.
+- Text vs table mismatch: The text below Table 2 claims “GPT-3.5-Turbo ... highest Accuracy at 39.73%,” but Table 2 shows 62.33% for GPT-3.5-Turbo. Which is correct?
+- Naming inconsistency: Table 4 uses “ProactiveLlama,” whereas the main text uses “LLaMA-3-Proactive.” Ensure these refer to the same model.
+- Impact: These inconsistencies reduce confidence in the empirical section and hinder reproducibility.
+
+4) Synthetic data quality and realism
+- The majority of events and user decisions are generated by LLM prompting, and only weakly anchored to real behavior (Sections 4.1.1 and 4.1.2). For coding/writing, Activity Watcher is used for “alignment,” but no concrete mapping, sampling, or validation statistics are provided. For smart home, device blueprints inform scenario design, but no human-in-the-loop validation of event realism is reported.
+- Impact: Without quantitative validation, there is a risk that the learned model overfits to LLM-induced artifacts and does not generalize to real users.
+
+5) Evaluation scope and statistical rigor
+- No confidence intervals, significance tests, or bootstrap intervals are reported for Table 2 or Table 4, and no analysis of per-scenario variance or inter-run variability is given.
+- The temperature is fixed at 0.1 for all models (Section 5.1), which may unfairly constrain some baselines that benefit from moderate sampling. The prompt template is “the same,” but not all models share length constraints or tool capacities; fairness considerations are under-discussed.
+- Impact: Hard to judge the robustness of reported gains and their sensitivity to settings.
+
+6) Metrics definitions leave key ambiguities
+- “Accuracy” is defined as “ratio of the number of candidate tasks... accepted to total number of candidate tasks proposed.” If a model proposes many candidates per turn, it penalizes breadth more than an “at least one correct” measure would. The paper should clarify the number of proposals per turn for each model and control for it. Also, “Pass Rate” overlaps with “Accuracy” conceptually but is turn-based. A clear worked example would help.
+- Impact: Unclear metric-model interactions can bias comparisons.
+
+7) Missing baselines and ablations
+- No ablation for training on subsets of domains to quantify cross-domain transfer. No comparison to simple supervised event-to-intent classifiers or sequence labeling baselines trained on the same synthetic data. It remains unclear whether fine-tuning an 8B instruction model with the proposed prompt constraints is the main driver versus domain exposure alone.
+- Impact: Limits insight into what truly contributes to gains.
+
+8) Figure-level concerns
+- Figure 2 is helpful in showing the pipeline, but it also underscores the core weakness: both the proposal generation and acceptance signals come from LLM-driven components within one loop. There is no control showing what happens if the User Agent is substituted with human judgments at evaluation time.
+- Figure 4 shows two qualitative failures of baselines, but provides no blinded human assessment across many examples. Single cherry-picked cases cannot substantiate overall claims.
+
+9) Smart home domain reliability
+- Table 4 shows near-zero coverage for many strong models in smart home, while Qwen2 72B and the proposed model achieve some coverage. The paper speculates about knowledge gaps, but does not test a simple retrieval-augmented baseline for device knowledge. Meanwhile, the proposed model’s Smart Home Pass Rate remains low (12.50%). A focused analysis on this domain would be valuable.
+
+10) Reproducibility gaps
+- The paper states code and data “will be released after blind review,” but currently many crucial details are missing: exact prompts used in data generation for each component, seeding, data splits per domain, and how Activity Watcher data informed event schemas. The prompt template in Appendix B includes many placeholder backticks and truncated JSON examples, not directly runnable.
+
+11) Relation to prior proactive intent inference work is thin
+- The related work focuses on agents and tool use broadly. Important recent work on proactive assistants, simulated proactive assistants, and goal inference from open-ended signals is not discussed; see Missing Related Work below.
+
+Specific references to figures/tables supporting these points:
+- Figure 2: Highlights reliance on LLM-generated “Proposal” and “User Agent” within one loop, reinforcing circularity concerns.
+- Figure 3: The memory components and “Detect Intents/No Intents” branch are conceptually sound, but the lack of empirical probing into what information the model actually uses limits interpretability.
+- Figure 4: Qualitative examples are illustrative, yet they are not backed by systematic human evaluation.
+- Table 1 vs Section 5.1: Instance count mismatch (“619/34” vs “test split ... 655 entries”).
+- Table 2: Primary results; however, text-table inconsistency on accuracy for GPT-3.5 undermines confidence.
+- Table 3: Evaluator agreement levels are low for most baselines and only moderate for the trained evaluator (0.76), making it risky to rely on it as the sole arbiter.
+- Table 4: Domain-specific patterns reveal that smart home remains weak for the proposed model and most baselines, which undercuts generalized claims.
+
+## Potentially Missing Related Work
+1) Ma et al., “Goal Inference from Open-Ended Dialog” (2024) — Models uncertainty in user goals from natural language, directly relevant to inferring implicit intents. Should be discussed in Section 2 and compared as an alternative inference approach in Section 5 (e.g., as a baseline trained on your event-intent pairs).
+2) SmartAgent: “Chain-of-User-Thought for Embodied Personalized Agent in Cyber World” (2024) — Introduces COUT for reasoning over user preferences to recommend actions proactively. Discuss in Related Work and contrast with your memory-based intent inference (Figure 3) and timing control.
+3) Two ways to make your robot proactive: Reasoning about human intentions or reasoning about possible futures (2022) — Offers a conceptual analysis of proactive strategies. Incorporate in Section 2 to ground the design choices of predicting intents from events versus forecasting future states; potentially cite around Section 3’s task definition.
+4) Kim et al., “ProPerSim: Developing Proactive and Personalized AI Assistants through User-Assistant Simulation” (2025) — Very close in spirit to your simulation-based data generation; compare simulation fidelity and evaluation methods in Section 4. Strengthen Section 5 by discussing evaluator bias and cross-validation with human studies.
+5) Wang et al., “RoboOmni: Proactive Robot Manipulation in Omni-modal Context” (2025) — While in robotics, it addresses proactive intention inference from multimodal context. Mention in Related Work to position your language-only event traces and discuss multimodality as future work.
+6) Hu et al., “Anticipate and Learn: Unleashing Idle-Time Compute in Proactive Agents” (2026) — Proposes proactive agents that anticipate and prepare during idle time, with a related benchmark. Cite in Related Work and discuss differences in evaluation (your event-trace intent prediction vs their preparedness tasks).
+7) Zhang et al., “ProAct: A Dual-System Framework for Proactive Embodied Social Agents” (2026) — Architectural perspective on proactive intention generation. Add to Related Work to compare with your single-system fine-tuning approach and memory usage.
+
+## Comments Suggestions And Typos
+Actionable suggestions:
+1) Replace or augment the automatic evaluator with a substantial human evaluation on the test set. For example, randomly sample at least 200–300 rounds across domains, blind-annotate whether an intent exists and whether at least one proposed task is acceptable, and report inter-annotator agreement and majority-vote scores. Use this to validate Table 2 rankings.
+2) Clarify and correct inconsistencies:
+   - Resolve the test set size discrepancy (Table 1 vs Section 5.1).
+   - Fix the accuracy number for GPT-3.5-Turbo in the text below Table 2 or in the table, and standardize the model name “LLaMA-3-Proactive” vs “ProactiveLlama.”
+3) Provide stronger evidence that the synthetic events are realistic:
+   - For coding/writing: include quantitative comparisons between synthetic and Activity Watcher distributions (e.g., URL categories visited, editor actions, command frequency).
+   - For smart home: report statistics derived from Home Assistant logs/blueprints that your events match (device co-activations, typical routines), and add a small human validation.
+4) Strengthen fairness and statistical rigor:
+   - Report standard errors or confidence intervals across multiple seeds per model; run sensitivity analyses over decoding parameters per model to show rankings are robust.
+   - Control the number of candidate proposals per turn across models or normalize the “Accuracy” metric accordingly. Provide a worked example clarifying the four metrics’ relationships.
+5) Reduce circularity:
+   - For evaluation, decouple the evaluator from the data-generation models (e.g., use a separate held-out LLM family or human-only judgments for key analyses) and report cross-model agreement analyses.
+6) Add ablations:
+   - Domain-specific training vs multi-domain training.
+   - Remove memory of user characteristics vs include; demonstrate influence on timing decisions (Figure 3).
+   - Simple supervised baselines (e.g., event-to-intent classifier) to test whether fine-tuning an instruction LLM is necessary.
+
+Typos and minor issues:
+- Section 5.1: “test split of the dataset, which contains 655 entries” conflicts with Table 1 (619/34 instances). Please reconcile.
+- In Section 5.1 narrative below Table 2, “GPT-3.5-Turbo ... highest Accuracy at 39.73%” contradicts Table 2 (62.33%). Correct one of them.
+- Table 4 model name “ProactiveLlama” likely equals “LLaMA-3-Proactive.” Standardize.
+- Appendix B prompt template includes many lines of stray backticks and appears truncated. Please provide a clean, exact JSON output schema and full prompts used.
+- Consistency: sometimes “pass rate” is capitalized and sometimes not.
+
+What could change my score:
+- A thorough human evaluation on the test set that confirms the ranking and margins in Table 2, plus fixes to the inconsistencies and clearer metrics definitions, would substantially raise Soundness and could move this to Findings (3.0) or even main track consideration if additional ablations and realism validation are provided.
+- Demonstrating robustness to decoding settings and multiple seeds, and adding non-LLM baselines would also improve my assessment.
+
+## Confidence
+3 Reasonably confident but not fully verified: Pretty sure, but there’s a chance I missed something, especially around data synthesis details not fully specified.
+
+## Soundness
+2.5 Between Poor and Acceptable: The idea is relevant, but the evaluation hinges on a 76%-agreement automatic judge trained on a small test set, with inconsistencies in dataset statistics and reported numbers.
+
+## Excitement
+2.5 Between potentially interesting and interesting: The proactive framing is timely, but execution and evaluation need strengthening.
+
+## Overall Assessment
+2.5 Borderline Findings: The paper may meet minimal standards but requires improvements before being accepted to Findings. The main contributions are promising, but evaluator circularity, reporting inconsistencies, and weak validation prevent confident acceptance at this time.
+
+## Best Paper Justification
+N/A.
+
+## Limitations And Societal Impact
+The paper includes a Limitations section noting domain coverage and false alarms. Additional considerations:
+- Proactive agents risk over-assistance, distraction, and autonomy overreach. The false-alarm ratio observed (e.g., 26.68% for LLaMA-3-Proactive in Table 2; higher in smart home per Table 4) could lead to user frustration or unsafe actions in home contexts.
+- Privacy: aligning with Activity Watcher traces suggests potential exposure to sensitive browsing or coding data; anonymization, consent procedures, and data handling policies should be detailed if real traces are used beyond examples for prompting.
+- Bias: user “characteristics” stored in memory (Figure 3) could encode sensitive attributes. Clarify how such attributes are handled or excluded.
+- Dual use: proactive interventions could be manipulated to nudge behavior; ethical guardrails are important.
+
+## Ethical concerns
+Moderate concerns around privacy and autonomy in proactive assistance; the Ethics Statement is brief and does not detail data governance for any real user traces or how sensitive attributes are handled in memory. No explicit risk assessment for erroneous smart home actions is provided. Recommend expanding ethics discussion with concrete mitigations.
+
+## Needs Ethics Review
+No.
+
+## Reproducibility
+3 Reproducible with difficulty: Many prompts and settings are partially specified; code/data are not yet available; some reporting inconsistencies exist.
+
+## Datasets
+3 Potentially useful: If released with clear provenance and splits, ProactiveBench could be useful for early-stage research on proactive assistance, though realism limitations should be documented.
+
+## Software
+2 Documentary.: If released, the software could help study/replicate the pipeline, but current description suggests limited general usability without more detail and cleaned prompts.
+

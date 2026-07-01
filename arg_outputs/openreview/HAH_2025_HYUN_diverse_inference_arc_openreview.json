@@ -16,7 +16,7 @@
     },
     {
       "reviewer_id": "Reviewer_AIRev1",
-      "review_type": "human",
+      "review_type": "ai",
       "summary": "Summary by AIRev 1",
       "strengths": "Clear, verifiable objective, strong empirical performance, informative ablations, sensible engineering contributions, and transparency about limitations and societal impacts.",
       "weaknesses": "Evaluation is limited to the public ARC set with high contamination risk and no mitigation, no results on a private/held-out set, and no analysis of model pre-exposure. Claims about scaling laws and RL are not substantiated with rigorous analysis or implementation details. Aggregation design conflates diversity with compute, lacks controlled comparisons, and uses opaque method labels. Reproducibility is insufficient due to missing prompts, code, compute details, and mapping of models/methods. The conceptual novelty is limited, as aggregation with a verifier is not a fundamentally new idea.",
@@ -26,7 +26,7 @@
     },
     {
       "reviewer_id": "Reviewer_AIRev2",
-      "review_type": "human",
+      "review_type": "ai",
       "summary": "Summary by AIRev 2",
       "strengths": "The paper is of very high technical quality. The core idea leverages the complementary strengths of 16 different models and methods. The aggregation mechanism is simple yet perfectly suited for ARC. The paper is exceptionally well-written and organized. The significance of this work is profound — achieving a new state-of-the-art on ARC is a major accomplishment, and the system solves abstract reasoning problems that are difficult even for a large collective of humans. The individual components' synthesis into a single, cohesive, massively diverse system is highly original.",
       "weaknesses": "Full reproducibility will be challenging due to reliance on numerous closed-source, proprietary model APIs and significant computational expense. Section 2.4 (\"Agentic AI Implementation\") describes the orchestration layer in very high-level terms without sufficient detail.",
@@ -36,7 +36,7 @@
     },
     {
       "reviewer_id": "Reviewer_AIRev3",
-      "review_type": "human",
+      "review_type": "ai",
       "summary": "Summary by AIRev 3",
       "strengths": "The core premise — aggregating multiple models and methods to improve ARC performance — is technically sound. The experimental setup is reasonable, testing 16 different models/methods on 400 ARC evaluation puzzles. The verification approach using code execution on training examples is appropriate. Results are impressive (93.75% on ARC evaluation set), and the finding that diverse methods can solve tasks that both state-of-the-art models and humans fail on is interesting. The paper is generally well-written and organized, with effective figures. The related work section is comprehensive.",
       "weaknesses": "The mathematical formulation in Section 2.1 feels disconnected from the experimental work. The aggregation method is overly simplistic (logical OR of any correct solution). The comparison to human performance is somewhat misleading (comparing to aggregate rather than individual). Some technical details are unclear (selection and tuning of methods, specifics of reasoning models, agentic framework implementation). The approach is primarily an engineering contribution, computationally expensive, and its generalizability beyond ARC is unclear. The core idea is not novel. Reproducibility is limited by reliance on closed models. Claims of human-level performance are overstated.",
