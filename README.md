@@ -23,6 +23,8 @@ Every critique point in a review is classified into the 16 coarse aspect categor
 
 `corpus/corpus_metadata.json` lists every paper with its metadata.
 
+**Paper selection.** Where a source offered more than 50 papers (FARS and the ARR 2024 subset of NLPeerv2), the papers were selected with the assistance of Claude Sonnet 5. Only FARS papers with a paperreview.ai review and NLPeerv2 papers with at least one review were considered. For FARS, accessible NLP and ML topics were preferred; for NLPeerv2, topics close to those of the selected `AIG` papers. All 48 accepted Agents4Science papers are included. The selection prompts are given in Appendix A.1 of the thesis.
+
 ## Repository structure
 
 ```
@@ -38,7 +40,7 @@ arg_outputs/              reviews, one folder per review source
     raw/                      reviews as collected
     parsed/preprocessed.json  critique points extracted per paper and reviewer
     parsed/classified.json    critique points with their aspect categories
-data/                     manual annotation and paper selection
+data/                     manual annotation
   manual_review_log.csv     manual weakness annotation (Section 3.3.1)
   aspect_comparison.csv     manual vs. automatic categories
 scripts/
