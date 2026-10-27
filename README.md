@@ -43,7 +43,6 @@ data/                     manual annotation and paper selection
   aspect_comparison.csv     manual vs. automatic categories
   fars_selected_45.json     selected FARS papers
 scripts/
-  data_collection/        selecting papers and collecting reviews
   preprocessing/          extracting critique points from each review format
   classification/         aspect classification and its validation
   analysis/               statistics for RQ1-RQ3 and the linguistic markers
@@ -57,19 +56,11 @@ results/
 
 Run all scripts from the repository root.
 
-**1. Data collection** (`scripts/data_collection/`) – only needed to rebuild the corpus from the original datasets.
-
-| Script | Purpose |
-|---|---|
-| `select_fars_papers.py`, `extract_fars_and_rename.py` | select FARS papers, extract PDFs and their human and paperreview.ai reviews |
-| `scan_nlpeer_with_reviews.py`, `extract_and_convert_nlpeer.py`, `extract_and_convert_nlpeer_accepted.py` | find NLPeerv2 papers with reviews, extract rejected / accepted papers and reviews |
-| `download_openreview_hah.py` | download Agents4Science reviews from OpenReview |
-
 The CSPaper, DeepReviewer-v2 and PaperAudit reviews were produced with the respective tools (Section 3.2.2 of the thesis) and are stored in `arg_outputs/*/raw/`.
 
-**2. Preprocessing** (`scripts/preprocessing/process_*.py`) – one parser per review source; writes `arg_outputs/<source>/parsed/preprocessed.json`.
+**1. Preprocessing** (`scripts/preprocessing/process_*.py`) – one parser per review source; writes `arg_outputs/<source>/parsed/preprocessed.json`.
 
-**3. Classification** (`scripts/classification/`)
+**2. Classification** (`scripts/classification/`)
 
 | Script | Purpose | Thesis |
 |---|---|---|
@@ -79,7 +70,7 @@ The CSPaper, DeepReviewer-v2 and PaperAudit reviews were produced with the respe
 
 `run_rap.py` needs an OpenAI API key (`OPENAI_API_KEY`) and a local clone of the Lu et al. repository (`LU_ET_AL_REPO`).
 
-**4. Analysis** (`scripts/analysis/`) – writes to `results/tables/`.
+**3. Analysis** (`scripts/analysis/`) – writes to `results/tables/`.
 
 | Script | Output | Thesis |
 |---|---|---|
@@ -94,7 +85,7 @@ The CSPaper, DeepReviewer-v2 and PaperAudit reviews were produced with the respe
 | `arg_human_category_overlap.py` | `arg_human_category_overlap_*.csv` | 6.1–6.3 |
 | `arg_overlap_baselines.py` | `arg_human_overlap_baselines.csv`, `arg_human_overlap_vs_chance.csv` | 6.1, App. D.1 |
 
-**5. Figures** (`scripts/figures/`) – writes to `results/figures/`.
+**4. Figures** (`scripts/figures/`) – writes to `results/figures/`.
 
 | Script | Figures |
 |---|---|
