@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_SHI_ehragent_code_empowers_large",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "EHRAgent: Code Empowers Large Language Models for Few-shot Complex Tabular Reasoning on Electronic Health Records",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces EHRAgent, an advanced Large Language Model (LLM) designed to autonomously generate and execute code, enabling efficient interaction with Electronic Health Records (EHRs) using natural language. This system is proposed to overcome the inefficiencies faced by clinicians who rely on data engineers for retrieving complex patient data, a time-consuming and cumbersome process. EHRAgent uses accumulative domain knowledge and an interactive coding system that learns from execution feedback to optimize its code generation, achieving significant improvements in task performance on complex clinical data handling.",
+      "strengths": "1. EHRAgent autonomously generates and executes code, allowing clinicians to directly interact with EHRs using natural language queries, which streamlines workflows and reduces dependency on data engineers.\n2. The model demonstrates effective few-shot learning, requiring only minimal examples to perform tasks, which significantly reduces the need for large annotated datasets.\n3. Incorporates an interactive coding mechanism that iteratively refines its process through feedback, enhancing its ability to handle complex queries and learn from its mistakes.",
+      "weaknesses": "1. The method for integrating domain knowledge isn't fully detailed, leaving unclear how the system would perform with incomplete or erroneous medical knowledge.\n2. The paper does not adequately address how the EHRAgent scales under conditions where EHR systems are fragmented and non-standardized across different healthcare providers.",
+      "questions": "N/A",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "3dcb5c2626174b725515973be9655b99e8d9fc82cdb1f6f1c75b8676d069182a6648546723f68e0217bfbc77581b0c6b8c8643a8ccaa877e40439a0bca5ff6fe"
+    }
+  ]
+}

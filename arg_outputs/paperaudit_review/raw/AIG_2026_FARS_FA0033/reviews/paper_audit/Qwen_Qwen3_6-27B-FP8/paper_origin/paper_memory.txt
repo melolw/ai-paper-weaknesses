@@ -1,0 +1,83 @@
+# Global Summary
+
+This paper investigates whether automating the repair of import and name resolution errors improves the performance of LLM-based coding agents on feature-level tasks. The authors propose "interface-aware smoke tests" combined with a "deterministic import autofix" mechanism. The system runs a lightweight smoke test after each code edit; if a target error occurs and exactly one unambiguous import candidate exists, the system automatically inserts the import.
+
+The study reports a negative result. Evaluated on FeatureBench Lite (30 tasks) using the OpenHands CodeAct agent, the full autofix mechanism achieved a 10.0% resolved rate, identical to the baseline (10.0%). However, a "diagnose-only" variant (providing diagnostic reports without code changes) achieved a 16.67% resolved rate, a 66.7% relative improvement over the baseline. Analysis reveals that the target error class accounts for only 4–5% of the agent's workflow, explaining the null effect of the autofix. The authors conclude that diagnostic feedback aids agent reasoning, while automated fixes may interfere with the problem-solving process.
+
+# Abstract
+
+- **Problem:** LLM coding agents frequently encounter import and name resolution errors during feature development.
+- **Method:** Interface-aware smoke tests with deterministic import autofix. The system inserts missing imports when exactly one unambiguous candidate exists.
+- **Evaluation:** Three conditions on FeatureBench Lite (30 tasks): baseline, diagnose-only, and full autofix.
+- **Key Findings:**
+    - Autofix mechanism achieves 10.0% resolved rate (same as baseline).
+    - Diagnose-only variant achieves 16.67% resolved rate (66.7% relative improvement).
+    - Target error class accounts for only 4–5% of agent workflow.
+- **Conclusion:** Diagnostic feedback helps agents understand errors; automated fixes may interfere with problem-solving.
+
+# Introduction
+
+- **Context:** LLM coding agents (e.g., SWE-agent, OpenHands) operate in iterative loops reading code, editing files, and executing tests. They frequently encounter `NameError`, `ImportError`, and `AttributeError`.
+- **Hypothesis:** Automating deterministic fixes for symbol-resolution errors reduces agent effort on mechanical corrections.
+- **Proposed Method:** Interface-aware smoke tests with deterministic import autofix.
+    - Runs fast smoke test derived from task interface specification.
+    - Searches for candidate definitions when target error class fails.
+    - Inserts import if exactly one unambiguous candidate exists.
+- **Experimental Conditions:**
+    - Baseline (no intervention).
+    - Diagnose-only (diagnostic reports without code changes).
+    - Full autofix (diagnostics plus automated fixes).
+- **Results:** Autofix provides no benefit (10.0% resolved rate). Diagnose-only improves performance by 66.7% (16.67% resolved rate).
+- **Analysis:** Target error class is rare (~4–5% of workflow), explaining the null effect of autofix.
+
+# Method
+
+- **Problem Formulation:** Agents encounter `NameError`, `ImportError`, `ModuleNotFoundError`, and `AttributeError`. These often indicate missing imports resolvable by searching the repository.
+- **Interface-Aware Smoke Tests:**
+    - Leverages FeatureBench interface description (import path, callable signature).
+    - Performs three checks: importing target module, accessing target callable, optionally executing dummy call.
+    - Extracts missing symbol name and file location from traceback on failure.
+- **Deterministic Import Autofix:**
+    - Searches repository for candidate definitions using pattern matching.
+    - **Safety Conditions for Application:**
+        - Single candidate: Exactly one definition site exists.
+        - Non-test file: Target file is not a test file.
+        - Safe insertion: No circular dependencies introduced.
+    - Inserts import statement (e.g., `from <module> import S`) if conditions met.
+- **Experimental Conditions:**
+    - **Condition A (Baseline):** Standard OpenHands CodeAct agent, no intervention.
+    - **Condition B (Diagnose-Only):** Smoke test runs; structured diagnostic report injected into observation stream. No code modifications.
+    - **Condition C (Diagnose + Autofix):** Same as B, but applies automated import insertion when safety conditions are met.
+- **Pilot Study Design:**
+    - Conducted on 10 tasks.
+    - Stop rule: If unambiguously-fixable crashes account for < 10% of agent steps or tokens, overhead is too small for meaningful improvement.
+
+# Experiments
+
+- **Setup:**
+    - **Dataset:** FeatureBench Lite (30 tasks from 12 repositories, e.g., pandas, seaborn).
+    - **Agent:** OpenHands CodeAct with Qwen3-Coder-480B-A35B-Instruct.
+    - **Configuration:** Temperature 0, budget of 200 agent steps per task.
+    - **Metrics:** Resolved rate (F2P tests pass), average agent steps, token usage.
+- **Main Results (Table 1):**
+    - **Baseline (A):** 10.0% resolved (3/30 tasks), 96.9 avg steps.
+    - **Diagnose-Only (B):** 16.67% resolved (5/30 tasks), 111.4 avg steps.
+    - **Autofix (C):** 10.0% resolved (3/30 tasks), 94.1 avg steps.
+    - **Optimized Variants (C v2, C v3):** 6.67% resolved (2/30 tasks).
+- **Crash Analysis (Table 2):**
+    - Target error class (ModuleNotFoundError, ImportError, AttributeError, NameError) accounts for 4–5% of agent steps and 6–7% of tokens.
+    - In Condition C, target errors constitute 84% of crashes (143/171), but recovery consumes minimal resources.
+- **Autofix Statistics (Table 3):**
+    - 11 diagnostic events triggered the mechanism.
+    - 8 skipped by safety guards: 7 because error occurred in test file, 1 deemed unsafe.
+    - 1 fix applied and verified, but did not lead to task resolution.
+- **Analysis:**
+    - Autofix fails because errors are rare and often occur in test files requiring feature implementation, not source files needing imports.
+    - Diagnose-only helps by providing structured context without disrupting the agent's mental model.
+
+# References
+
+- **LLM-based Coding Agents:** SWE-agent (Yang et al., 2024), OpenHands (Wang et al., 2025), AutoCodeRover (Zhang et al., 2024), MASAI (Arora et al., 2024), CodeR (Chen et al., 2024).
+- **Automated Program Repair:** Anand et al. (2024), CodeCureAgent (Joos et al., 2025).
+- **Error Recovery:** ReAct (Yao et al., 2022), Reflexion (Shinn et al., 2023).
+- **Benchmarks:** InterCode (Yang et al., 2023), FeatureBench (Zhou et al., 2026).

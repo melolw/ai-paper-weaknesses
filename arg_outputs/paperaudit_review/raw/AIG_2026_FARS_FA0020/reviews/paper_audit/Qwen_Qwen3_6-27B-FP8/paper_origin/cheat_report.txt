@@ -1,0 +1,32 @@
+The following report identifies a clear internal inconsistency regarding numerical claims in the manuscript.
+
+### **Integrity Risk Report**
+
+**1. Numerical Inconsistency in Speedup Calculations**
+
+There is a significant mathematical discrepancy between the stated training times and the claimed speedup factors for the proposed methods. The manuscript consistently claims a baseline training time of **16 GPU-hours** for full DefensiveTokens, but the calculated speedups for the proposed methods (285× and 133×) do not align with the reported execution times (~5 minutes and ~55 minutes).
+
+*   **Evidence:**
+    *   **Baseline Time:** The Abstract, Section 1, Section 3.3, and Section 4.2 all state that full DefensiveTokens training requires "**~16 GPU-hours**" or "**16 GPU-hours**".
+    *   **Method Times:**
+        *   Section 3.3 and Section 4.2 state the Procrustes transfer completes in "**approximately 5 minutes**".
+        *   Section 3.4 and Table 1 state the Tiny-Adapt process requires "**approximately 55 minutes**".
+    *   **Claimed Speedups:**
+        *   Abstract and Section 4.2 claim a "**285× speedup**" for the Procrustes method.
+        *   Abstract, Section 3.4, and Table 1 claim a "**133× speedup**" for the Tiny-Adapt method.
+
+*   **Analysis:**
+    *   Converting the baseline to minutes: $16 \text{ hours} \times 60 \text{ minutes/hour} = 960 \text{ minutes}$.
+    *   **Procrustes Speedup Check:** $960 \text{ minutes} / 5 \text{ minutes} = 192\times$. The manuscript claims **285×**. (To achieve 285×, the time would need to be ~3.4 minutes, or the baseline ~24 hours).
+    *   **Tiny-Adapt Speedup Check:** $960 \text{ minutes} / 55 \text{ minutes} \approx 17.5\times$. The manuscript claims **133×**. (To achieve 133×, the time would need to be ~7.2 minutes, or the baseline ~122 hours).
+
+*   **Impact:** This inconsistency materially affects the paper's core contribution regarding efficiency. The claimed speedups are roughly 1.5× to 7.5× higher than what the stated times support, suggesting either a calculation error, a mismatch in hardware assumptions not disclosed, or incorrect reporting of the baseline/method times.
+
+**2. No Other Major Issues Found**
+
+*   **Internal Consistency of Results:** The ASR values, Gap-Closed ratios, and ablation study results in Tables 1 and 2 are mathematically consistent with the formulas and data provided in the text.
+*   **Methodology Description:** The description of Orthogonal Procrustes alignment and the transfer formula ($T_t = T_s W^*$) is consistent across the Method section, Figure 1, and the Results.
+*   **Norm Preservation:** The claim of norm preservation is consistent with the mathematical properties of orthogonal matrices and the reported numerical precision ($< 10^{-5}$ difference).
+
+**Conclusion:**
+The manuscript contains a **clear internal inconsistency** regarding the efficiency claims (speedup factors vs. reported times). This requires correction to ensure the validity of the performance claims. No other evidence of logical contradictions or data mismatches was found.

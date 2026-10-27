@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0029",
+    "title": "Output-Space Allocation Costs for Calibration-Guided LLM Compression: An Empirical Study",
+    "abstract": "Training-free compression methods for large language models (LLMs) often use calibration data to guide compression decisions. ROCKET, a recent method combining sparse-dictionary factorization with multi-choice knapsack problem (MCKP) allocation, derives its per-layer factorization from an output reconstruction objective but uses weight-space Frobenius error as the MCKP allocation cost. We investigate whether aligning the allocation cost with the output-space objective improves compressed model fidelity. On Qwen3-8B at 50\\% compression, our ROCKET-ActCost achieves +0.8 percentage points higher average accuracy across 8 zero-shot benchmarks (53.1\\% vs 52.3\\%), but increases WikiText perplexity by 16\\% (61.46 vs 52.98). This accuracy-perplexity tradeoff reveals that different allocation objectives favor different downstream metrics. The high correlation ($>$0.99) between weight-space and output-space errors limits allocation divergence, explaining the modest effect size. On Llama-3.2-1B at 20\\% compression, both metrics improve, suggesting the tradeoff is setting-dependent.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that aligning the MCKP allocation cost with the output-space reconstruction objective (instead of weight-space error) improves compressed LLM fidelity. The authors propose ROCKET-ActCost, replacing Frobenius weight error with output-space error computed in the whitened activation space. Empirically, on Qwen3-8B (50% compression), the method yields +0.8pp accuracy improvement but 16% worse perplexity, revealing a tradeoff; on Llama-3.2-1B (20%), both metrics improve. The study concludes that high correlation (>0.99) between the two error metrics limits the impact of the proposed change.",
+        "strengths": "1. Clear motivation/hypothesis:\nThe paper directly tests a well-defined question: alignment of local objective vs global allocation cost.\n2. Informative negative results analysis:\nThe finding that >0.99 correlation limits gains is non-trivial and explains why the idea underperforms expectations. ",
+        "weaknesses": "1. Limited experimental scope, only 2 models + 2 compression settings\n2. Missing comparison with other allocation strategies or compression methods, such as uniform, random, or sensitivity-based allocation, as well as at least one activation-aware compression baseline (e.g., ASVD), making it hard to judge whether the proposed output-space cost is uniquely effective or simply one reasonable design choice.\n",
+        "suggestions": "",
+        "llmDisclosure": "I use ChatGPT for grammar polishing",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T03:45:03.261Z",
+      "updatedAt": "2026-03-25T03:45:03.261Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates whether aligning the allocation cost in calibration-guided LLM compression with the output-space reconstruction objective improves model fidelity. Specifically, it revisits ROCKET, which uses output-space reasoning for per-layer factorization but weight-space Frobenius error for global allocation via a multi-choice knapsack problem (MCKP). The authors hypothesize that replacing the allocation cost with an output-space equivalent (ROCKET-ActCost) will better preserve downstream performance. The study is purely empirical, evaluating compressed models on zero-shot benchmarks and perplexity. Results show a partial confirmation: output-space allocation improves average accuracy (+0.8pp on Qwen3-8B) but worsens perplexity (+16%), revealing an accuracy–perplexity tradeoff. Further analysis attributes the modest gains to extremely high correlation (>0.99) between weight- and output-space errors, limiting allocation differences. ",
+        "strengths": "1. Clear and well-motivated hypothesis \nThe paper identifies a precise inconsistency in ROCKET (mismatch between factorization objective and allocation objective) and formulates a clean, falsifiable hypothesis. \n\n2. Minimal and controlled intervention \nThe proposed method (ROCKET-ActCost) isolates a single design change (cost function), enabling a clean causal comparison without confounding factors. \n\n3. Strong empirical evaluation design \n\nUses two models (Qwen3-8B and Llama-3.2-1B) \n\nIncludes both aggressive and mild compression regimes \n\nEvaluates across 8 diverse zero-shot benchmarks + perplexity \nThis provides a reasonably broad validation scope. \n\n4. Insightful negative/partial result \nThe key contribution is not the small accuracy gain, but the diagnosis of why improvements are limited (error correlation >0.99). This is highly informative. \n\n5. Mechanistic analysis beyond raw metrics \nThe correlation analysis and layer allocation comparison (70/252 layers differ) provide causal understanding rather than surface-level reporting. \n\n6. Concise and efficient communication \nThe paper communicates a full hypothesis → experiment → explanation loop in a compact format without unnecessary overhead. ",
+        "weaknesses": "Limited statistical rigor \n\nOnly two seeds are used for the main experiment \n\nNo confidence intervals or statistical significance tests are reported \nThis weakens claims about small improvements (e.g., +0.8pp). \n\nPerplexity vs accuracy tradeoff is under-explored \nThe paper observes the tradeoff but does not deeply analyze: \n\nWhy output-space cost favors task accuracy over LM quality \n\nWhether hybrid or multi-objective allocation could mitigate this \n\nHigh correlation finding lacks deeper theoretical explanation \nThe >0.99 correlation is central but only empirically observed; no theoretical reasoning is provided for why this happens. \n\nBaseline comparison is limited \nOnly ROCKET-default is compared. Including other allocation strategies or compression methods (e.g., AWQ-style heuristics) would strengthen positioning. \n\nPotential over-interpretation of small gains \nGiven variance and limited seeds, the +0.8pp improvement may not be robust. ",
+        "suggestions": "Add statistical significance (e.g., bootstrap confidence intervals) to validate small improvements \n\nExpand experiments across: \n\nMore models (e.g., different scales or architectures) \n\nMore compression ratios \n\nProvide deeper analysis of the accuracy–perplexity tradeoff (e.g., token-level or layer-wise effects) \n\nInvestigate hybrid objectives (e.g., weighted combination of weight- and output-space costs) \n\nProvide theoretical intuition or analysis for the observed high correlation \n\nInclude additional baselines or ablations to contextualize gains ",
+        "llmDisclosure": "LLM usage: Yes \n\nUsed for: \n\nStructuring the review \n\nImproving clarity and phrasing \n\nTool/model: ChatGPT (GPT-5.3) \n\nData sharing: Only user-provided manuscript content was used; no confidential or external data was shared \n\nFinal judgment: All evaluations, scores, and conclusions were independently verified and determined by the reviewer ",
+        "ethicsReproducibility": "Ethical concerns: None "
+      },
+      "audit": {},
+      "submittedAt": "2026-03-27T06:07:33.472Z",
+      "updatedAt": "2026-03-27T06:07:33.472Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This work tests a straightforward, well-motivated hypothesis for training-free LLM compression: for the existing ROCKET sparse-dictionary pipeline, which optimizes per-layer factorization for output reconstruction but uses weight-space Frobenius error as the cost for its multi-choice knapsack problem (MCKP) allocation step, aligning the allocation cost to the output-space objective will improve compressed model fidelity. The authors run controlled head-to-head comparisons of the original ROCKET and their modified ROCKET-ActCost variant across two setups: Qwen3-8B at 50% compression, and Llama-3.2-1B at 20% compression, evaluating performance on 8 zero-shot benchmarks and WikiText perplexity. The hypothesis receives partial support: on Qwen3-8B, ROCKET-ActCost improves average zero-shot accuracy by 0.8pp but increases perplexity by 16%, revealing a clear accuracy-perplexity tradeoff; the authors note the >0.99 correlation between weight-space and output-space error explains the small effect size. On the smaller Llama model at lower compression rate, both metrics improve, confirming the tradeoff is dependent on model size and compression ratio.",
+        "strengths": "1. it directly addresses a logical mismatch in the ROCKET framework that anyone working with this method would immediately recognize as a plausible improvement target, rather than being a random, unmotivated tweak.\n2. every variable except the allocation cost function is held fixed across comparisons, so observed performance differences can be clearly tied to the proposed change with no confounding factors muddying the results.\n3. this work fully discloses the 16% perplexity degradation on Qwen3-8B alongside the accuracy gain, and provide concrete, plausible explanations for both the modest effect size (high error correlation across cost functions) and setting-dependent tradeoff.",
+        "weaknesses": "1. only two model-size/compression-ratio pairs are tested, so it is hard to tell how generalizable the observed tradeoff is to other common settings (e.g., 30% or 70% compression, 7B/13B Llama/Mistral models, or ROCKET variants with different factorization hyperparameters).\n2. the 0.8% accuracy gain on Qwen3-8B is small enough that it could easily stem from random run-to-run variation, and the paper does not include error bars, averages over multiple runs, or p-values to confirm the difference is meaningful.\n3. the 8 zero-shot benchmarks are not explicitly named, and critical hyperparameters (e.g., calibration dataset size, MCKP budget constraints) are not listed, making it harder for practitioners to replicate the work without access to the underlying code repository.",
+        "suggestions": "Add a per-layer breakdown of weight vs. output-space error correlation to identify if low-correlation layers exist that could be targeted for improved performance without a perplexity tradeoff.",
+        "llmDisclosure": "None.",
+        "ethicsReproducibility": "None."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T08:18:37.970Z",
+      "updatedAt": "2026-03-26T08:18:37.970Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0029"
+}

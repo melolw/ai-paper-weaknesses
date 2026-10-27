@@ -1,0 +1,3769 @@
+{
+  "HAH_2025_ABIR_multitarget_parallel_drug_discovery": {
+    "Reviewer_UGSo": {
+      "0": {
+        "text": "Strengths: The problem is well-stated.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "1": {
+        "text": "The authors develop a large multi-agent system for both the discovery pipeline and manuscript generation.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "2": {
+        "text": "The authors present valid test cases for Alzheimer’s Disease and explore potential reasons for poorer performances of their multi-agent systems in some contexts.",
+        "aspects": [
+          "Data/Task",
+          "Methodology",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "The code is publicly available at an anonymized link with relevant documentation.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "Weaknesses: There is no benchmarking to other end-to-end models for each of the tasks or to human practitioners to get a sense of the level of performance / difficulty of evaluation tasks.",
+        "aspects": [
+          "Comparison",
+          "Evaluation"
+        ]
+      },
+      "5": {
+        "text": "There is a lack of quantifying how novel the proposed chemical structures are to known chemical structures with binding to each of the targets.",
+        "aspects": [
+          "Novelty",
+          "Evaluation"
+        ]
+      },
+      "6": {
+        "text": "Can the authors provide more granular details on their multi-agent system (i.e. how each agent is defined) and compare this architecture to existing scientific agent systems? This would be important for benchmarking and evaluation of novelty.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Comparison",
+          "Evaluation",
+          "Novelty"
+        ]
+      },
+      "7": {
+        "text": "How novel are the proposed structures from the system? Are they simple derivatives of known structures (i.e. adding/subtracting a functional group) or entirely novel?",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "8": {
+        "text": "Can the authors perform experiments (computational or experimental) to evaluate the binding properties of their top candidates?",
+        "aspects": [
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "9": {
+        "text": "It seems that an agent for protein language modeling (i.e. protein target to small molecule binding) would be useful. Can the authors discuss why this was not implemented and/or implement a system with this additional capability?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "10": {
+        "text": "The manuscript appears to be in an image format. Can the authors submit a vector/text formatted PDF?",
+        "aspects": [
+          "Presentation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_BAI_persona_prompting": {
+    "Reviewer_Cw2t": {
+      "0": {
+        "text": "This paper analyzes the effect of persona prompting on task performance.",
+        "aspects": [
+          "Analysis",
+          "Data/Task"
+        ]
+      },
+      "1": {
+        "text": "Paper is well crafted and experiments seem to be well executed.",
+        "aspects": [
+          "Experiment",
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "This paper provide interesting insights for general AI usage and safety.",
+        "aspects": [
+          "Contribution",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "3": {
+        "text": "My only main comment is regarding the novelty of this work.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "4": {
+        "text": "Authors cited work report very similar results and thus I am not sure what's the contribution.",
+        "aspects": [
+          "Comparison",
+          "Contribution",
+          "Related Work",
+          "Result"
+        ]
+      },
+      "5": {
+        "text": "Specifically, Zheng et al. (2023) already established that personas don't improve performance and effects are unpredictable.",
+        "aspects": [
+          "Related Work",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "A better framing of the related work would help in assessing what's the value of this work that while interesting, does seem a little bit incremental.",
+        "aspects": [
+          "Related Work",
+          "Novelty"
+        ]
+      },
+      "7": {
+        "text": "However, in defense of the paper, I could say that the experiment are done on modern models and thus it is interesting to see that personas do not work on modern models.",
+        "aspects": [
+          "Experiment",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "There are some additional interesting parts to this paper (cross-domain experiments, model generated persona, negative personas) which are interesting and valuable.",
+        "aspects": [
+          "Experiment",
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "9": {
+        "text": "My suggestion would be to lower the general claiming a bit.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "10": {
+        "text": "Specifically, the abstract and introduction should clarify these build on Zheng's empirical findings by explaining mechanisms (why personas fail through surface cues, not expertise) rather than discovering the problem.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Related Work"
+        ]
+      },
+      "11": {
+        "text": "Focus on the other experiments that are indeed interesting theoretical contributions.",
+        "aspects": [
+          "Experiment",
+          "Theory",
+          "Contribution"
+        ]
+      }
+    }
+  },
+  "HAH_2025_BASU_feasibilityguided_fair_adaptive_reinforcement": {
+    "Reviewer_6vjh": {
+      "0": {
+        "text": "The paper is technically rigorous, providing a complete empirical study built on a solid foundation of prior theoretical results in safe and fair offline RL.",
+        "aspects": [
+          "Experiment",
+          "Theory",
+          "Related Work"
+        ]
+      },
+      "1": {
+        "text": "Experimental evaluation is extensive, involving weekly trajectories from over 155,000 Medicaid beneficiaries across multiple states, strong cross-validation, and robust ablation studies isolating the contributions of each component (diffusion-based augmentation, fairness regularization, and adaptive policy switching).",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Ablation"
+        ]
+      },
+      "2": {
+        "text": "The authors provide a thorough and honest discussion of the method’s strengths and limitations, such as generalizability, compute footprint, reliance on retrospective datasets, and narrow fairness metrics. Weaknesses:",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Protocol inconsistency: Section 3.4 describes leave-one-state-out CV, whereas Section 3.5 says models were trained on Washington and evaluated on Virginia/Ohio. The manuscript must reconcile this; current phrasing makes the main results ambiguous.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation",
+          "Result"
+        ]
+      },
+      "4": {
+        "text": "The main limitation is the exclusive reliance on retrospective data with off-policy evaluation, creating possible biases and making it unclear if the same improvements would be observed in prospective or clinical trial settings.",
+        "aspects": [
+          "Data/Task",
+          "Evaluation"
+        ]
+      },
+      "5": {
+        "text": "Fairness definition in an RL setting: Equalized-odds is computed via TPR/FPR, but labels and thresholds are not fully specified for sequential decision making. How are positives/negatives defined over horizons? Are group metrics computed per-decision, per-episode, or outcome-based? How are multiple actions and censored episodes handled? A rigorous definition is needed.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Theory"
+        ]
+      },
+      "6": {
+        "text": "Writing issue: The discussion section nearly repeats the computation/runtime paragraph verbatim; content should be condensed and redundant statements removed.",
+        "aspects": [
+          "Presentation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "How can the framework’s observed improvements in fairness and clinical outcomes be validated prospectively, including clinical deployment with clinicians-in-the-loop?",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "8": {
+        "text": "What steps would the authors take to ensure generalization beyond the three states and to new Medicaid cohorts with different demographic or care patterns?",
+        "aspects": [
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_BERMEJO_qitt_multiscale_substructure_cosmological": {
+    "Reviewer_5ZTr": {
+      "0": {
+        "text": "The paper is clearly structured and well-written.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "1": {
+        "text": "The methodology is technically sound and well-executed. The use of GNNs for topological embeddings and QITT for compression is appropriate and innovative.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "Experiments are well-described with clear data-splitting, feature engineering, and statistical significance tests. Weakness: 1.The main methodological innovation (QITT) is adapted rather than invented.",
+        "aspects": [
+          "Experiment",
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "3": {
+        "text": "The individual components (GNNs, tensor decomposition) are well-established in other fields. The paper could better situate itself in the existing literature on graph representation learning and tensor methods for cosmology.",
+        "aspects": [
+          "Related Work"
+        ]
+      },
+      "4": {
+        "text": "The improvement over baselines, though statistically significant, may not be substantively large to claim a breakthrough in parameter inference.",
+        "aspects": [
+          "Comparison",
+          "Result",
+          "Significance"
+        ]
+      },
+      "5": {
+        "text": "Better to have some figure and table to show the overview of the pipeline and the results.",
+        "aspects": [
+          "Presentation",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "Would replacing QITT with PCA yield comparable results? Showing such ablations could clarify the necessity of QITT.",
+        "aspects": [
+          "Ablation",
+          "Comparison",
+          "Methodology",
+          "Result"
+        ]
+      },
+      "7": {
+        "text": "Include runtime and resource comparison versus baseline models would be very helpful.",
+        "aspects": [
+          "Comparison"
+        ]
+      }
+    }
+  },
+  "HAH_2025_BRONIKOWSKI_scalable_oversight_multiagent_systems": {
+    "Reviewer_SykH": {
+      "0": {
+        "text": "The overall idea and research questions both make sense to me, and in fact somewhat creative on the already quite crowded research topic on AI alignment.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Also, I really liked the writing style -- while I am not able to follow some argument, but the writing style is really succinct and clean, only stating arguments and findings without over-selling.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "I actually wished all papers could be written in this way.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "The major drawback of the paper (or maybe of AI?) is that once we dive into details, many issues start to appear.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "For example, the problem formulation and theorem proofs appear superficial.",
+        "aspects": [
+          "Theory"
+        ]
+      },
+      "5": {
+        "text": "I tried to understand proofs of Lemma 1 and Theorem 1.",
+        "aspects": [
+          "Theory"
+        ]
+      },
+      "6": {
+        "text": "They appear like some sort of standard argument in PAC learning on trees, but I was not able to verify, neither was convinced by, many steps of the proof.",
+        "aspects": [
+          "Theory"
+        ]
+      },
+      "7": {
+        "text": "Also, the notation Q and P are not defined in the paper, though I know this is the standard notations used in PAC learning textbooks.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "8": {
+        "text": "Another issue I found is that \"delegation\" often has specific meaning in Economics literature, whereas here it was used to mean \"assigning tasks\".",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "9": {
+        "text": "There are many other fancy terms like \"transitive trust\", \"isotone\", etc. which all sound very creative though lack thorough explanation about what they mean and why they are needed.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_BRONIKOWSKI_stylistic_contrastive_learning_humanlike": {
+    "Reviewer_TjYM": {
+      "0": {
+        "text": "The proposed stylistic contrastive learning framework is derived from a rich literature study and is reasonably designed.",
+        "aspects": [
+          "Methodology",
+          "Related Work"
+        ]
+      },
+      "1": {
+        "text": "The experiments on some real-world corpora show the promises of the proposed methods. Weaknesses:",
+        "aspects": [
+          "Experiment",
+          "Methodology",
+          "Result"
+        ]
+      },
+      "2": {
+        "text": "This is a very interesting study with a complete logic, but the presentation and experimental results are rather incomplete. The literature study that reveals the several principles about human writing styles is not presented in detail, and the experiments do not show a complete analysis over the three datasets-- it looks like either the experiments on all datasets have not been completed, or only the positive results were cherry-picked for presentation.",
+        "aspects": [
+          "Presentation",
+          "Experiment",
+          "Result",
+          "Analysis",
+          "Related Work",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Formatting is poor, such as for Table 1. It is also hard to match the metrics/baselines shown in the tables with those introduced in the texts (they all have different names).",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "The involvement of AI agent in this research seems to be rather limited based on the AI Involvement Checklist.",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "5": {
+        "text": "See weaknesses.",
+        "aspects": [
+          "-"
+        ]
+      }
+    }
+  },
+  "HAH_2025_CHANG_magellan_guided_mcts_latent": {
+    "Reviewer_idcP": {
+      "0": {
+        "text": "The methodology is technically sound with clear mathematical formulations (orthogonal projection for guidance vectors, explicit value function combining three objectives). The modular architecture and ablation studies systematically validate each component's contribution.",
+        "aspects": [
+          "Methodology",
+          "Ablation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "The combination of MCTS with explicit geometric guidance (orthogonal projection) and a principled multi-objective value function addresses a real gap in Tree of Thoughts-style methods, which rely on inconsistent self-evaluation. The semantic compass concept appears novel.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "The paper is well-organized with clear algorithmic descriptions Weaknesses:",
+        "aspects": [
+          "Presentation",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "The coherence metric (average log-probability) doesn't actually measure research plausibility or scientific validity; it only measures linguistic fluency. A mathematically coherent but scientifically implausible idea would score well. This undermines claims about generating \"plausible\" research.",
+        "aspects": [
+          "Evaluation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "The paper tests only on the Qwen model family, severely limiting generalizability claims. Different architectural families may respond differently to MCTS-based guidance.",
+        "aspects": [
+          "Data/Task",
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "5": {
+        "text": "The computational cost is 5x higher than Tree of Thoughts (5548s vs 3563s) for modest quality improvements. The paper doesn't explore whether intermediate cost/quality tradeoffs exist or whether the efficiency could be improved while maintaining gains.",
+        "aspects": [
+          "Comparison",
+          "Evaluation",
+          "Methodology"
+        ]
+      },
+      "6": {
+        "text": "Evaluation via LLM-as-a-Judge is a significant limitation that's acknowledged but not adequately addressed. There's no human expert validation, which is important for assessing whether generated ideas are actually scientifically valuable versus just sounding impressive.",
+        "aspects": [
+          "Evaluation",
+          "Significance",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "7": {
+        "text": "The GitHub URL field is empty in your reproducibility statement",
+        "aspects": [
+          "Presentation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_CHOI_thermodynamic_guardrails_bond_graphbased": {
+    "Reviewer_vTL3": {
+      "0": {
+        "text": "Strengths: The manuscript has clear rationale to motivate their proposed method and is written clearly.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Presentation"
+        ]
+      },
+      "1": {
+        "text": "The proposed method is simple and easy to implement.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "2": {
+        "text": "The synthetic setting and associated results indicate some improvement over stQSSA.",
+        "aspects": [
+          "Data/Task",
+          "Result"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: The manuscript only excludes results for one synthetic setting where improvement over stQSSA is relatively modest.",
+        "aspects": [
+          "Result"
+        ]
+      },
+      "4": {
+        "text": "There is no systematic analysis of how representative this synthetic setting is of real-world simulations, nor how common stQSSA errors are in practice.",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "5": {
+        "text": "The rationale for the choice of negative power flow, compared to other measures, for the switching criterion is unclear.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Comparison"
+        ]
+      },
+      "6": {
+        "text": "There is no benchmarking against existing/competing methods to stQSSA.",
+        "aspects": [
+          "Comparison",
+          "Related Work"
+        ]
+      },
+      "7": {
+        "text": "What is the rationale for the negative power flow to determine switching from stQSSA to full SSA? How does it compare to using other measures for thermodynamic violations (or using a composite score of multiple violations)? Results supporting the choice of negative power flow or use of other methods would strengthen the quality of the manuscript.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Comparison",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "The proposed method is quite simple and does not seem to circumvent the actually technical issues of stQSSA (rather just defaulting to full SSA) and has modest improvements on the synthetic benchmarks. Can the authors evaluate the performance in terms of error on additional synthetic cases or real-world problems?",
+        "aspects": [
+          "Methodology",
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "9": {
+        "text": "The benefit of stQSSA is the computational efficiency. With the proposed method, there may be reductions in error, but an overall increased computational load from switching to full SSA. Can the authors analyze the tradeoffs between accuracy of predictions and computational efficiency?",
+        "aspects": [
+          "Analysis",
+          "Methodology"
+        ]
+      },
+      "10": {
+        "text": "Since the detection of errors lags behind the onset of errors, can the authors revise their approach to account for this (i.e. keeping memory and restoring to earlier point for higher fidelity correction)?",
+        "aspects": [
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_DESHPANDE_hardwareconditioned_generative_channel_modeling": {
+    "Reviewer_3bLu": {
+      "0": {
+        "text": "This work touches a interesting and critical application area of AI for science, and the authors did a good job of introducing this topic to the readers.",
+        "aspects": [
+          "Data/Task",
+          "Presentation"
+        ]
+      },
+      "1": {
+        "text": "The diffusion-based model architecture is interesting.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "Results look promising when compared against a baseline approach Weakness:",
+        "aspects": [
+          "Result",
+          "Comparison"
+        ]
+      },
+      "3": {
+        "text": "It's not super clear to me how much value is added to train a ML model on synthetic data (my assumption is that the data generation is from DeepMIMO, which is also an ML model).",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "More baseline approaches will make this paper stronger, such as the ones incorporating the condition vectors but may not be diffusion-based generative model.",
+        "aspects": [
+          "Comparison",
+          "Related Work"
+        ]
+      }
+    }
+  },
+  "HAH_2025_FONG_impact_reduced_towing_fees": {
+    "Reviewer_6jLv": {
+      "0": {
+        "text": "In this work, authors explore the effect of reducing towing fees on vehicle redemption rates in SF (on a dataset with a pretty large sample size).",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "1": {
+        "text": "The authors use a causal framework to show that policies to support the low-income population lead to an increase in car redemption (which is expensive).",
+        "aspects": [
+          "Methodology",
+          "Result"
+        ]
+      },
+      "2": {
+        "text": "I like this paper because it shows an interesting application of the AI-human paradigm which I think could be reproduced in the future by many papers.",
+        "aspects": [
+          "Significance",
+          "Contribution"
+        ]
+      },
+      "3": {
+        "text": "The AI collaboration is well documented and meaningful.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "The work is well executed and while not without possible methodological concerns it's good and interesting work.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "The Low-Income Proxy variable, while necessary, might be a strong assumption.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "6": {
+        "text": "Additional validation or references supporting this proxy choice would strengthen the analysis* (the authors mention this in the limitations, but it is still a pretty relevant issue that i want to point out in the review).",
+        "aspects": [
+          "Analysis",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "7": {
+        "text": "In general, there are a few methodological concerns that the authors acknowledge but still weaken the validity of the claims (the experiment during covid is biased by different elements of welfare support); None of this is easy to measure and the authors are not trying to oversell their results.\n\n*note: it's true that the authors actually find a meaningful difference in behavior on older vehicles and newer vehicles so there is some internal validation for their choice of the proxy and I currently can't think of another variable that explains this.",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation",
+          "Experiment"
+        ]
+      }
+    }
+  },
+  "HAH_2025_GREISEN_reasoning_models_outperform_standard": {
+    "Reviewer_xNqL": {
+      "0": {
+        "text": "It is useful to study the properties of language models for this task and the difference between reasoning models versus standard language models. The hypothesis of the paper is simple and straightforward to test, and it is one of the first papers that I know of to test this idea.",
+        "aspects": [
+          "Data/Task",
+          "Novelty",
+          "Theory"
+        ]
+      },
+      "1": {
+        "text": "It’s very positive that the authors were able to take the further step of synthesizing the proteins and testing them in the lab. This greatly strengthens the work and adds credibility to the method proposed.",
+        "aspects": [
+          "Experiment",
+          "Methodology",
+          "Significance"
+        ]
+      },
+      "2": {
+        "text": "The paper acknowledges the weaknesses of this study very well. In particular, the comment about optimization is appreciated as this was one my primary thoughts when reading the paper.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "The paper is clearly written, with many of the steps in the methods and results being well-described. Weaknesses:",
+        "aspects": [
+          "Presentation",
+          "Methodology",
+          "Result"
+        ]
+      },
+      "4": {
+        "text": "The paper claims on page 1 that “Protein design provides an ideal test case because it requires applying established design principles rather than memorizing patterns.” This claim is very weak, as it’s possible that the LLMs have memorized protein sequences from their training data, including from sequences available on UniProt or other online web sources. Have the authors tested that the models have not memorized the proteins generated?",
+        "aspects": [
+          "Data/Task",
+          "Evaluation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "5": {
+        "text": "The work is admittedly lacking in scale in terms of examined number of proteins as well as techniques and models tested. This work serves as an effective proof of concept, but more experimentation and tested variables would be much appreciated.",
+        "aspects": [
+          "Experiment",
+          "Methodology"
+        ]
+      },
+      "6": {
+        "text": "It would also be appreciated to provide the exact prompts to the models for reproducibility and transparency.",
+        "aspects": [
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "It would be interesting to examine the rationales of the language models by examining their chain-of-thought reasoning. Were these proteins constructed with biologically-relevant reasoning steps or were there errors? This admittedly might be difficult for closed-source LMs, but could be examined on a model like DeepSeek-R1.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "8": {
+        "text": "How difficult is it biologically to design these four-helix systems? The protein sequences seem quite repetitive, and I wonder how a simple HMM baseline would perform on this task. There is little discussion throughout the paper of how difficult the task of 4-helix design is beyond the statement of this being an easily-verifiable task.",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "9": {
+        "text": "What is the biological reasoning for the discrepancy in results for 4-helix bundle and confident 4-helix bundle? For example, o3 and o4-mini generate a much lower percentage of samples with any 4-helix bundle than GPT-4o, but GPT-4o generates no 4-helix bundles. Could this be due to low diversity of sampling by GPT-4o? Are the failed sequences from the reasoning models completely wrong? This could shed light into how the LLMs reason about protein chemistry. On top of this, some analysis across proteins for each model would be appreciated, such as diversity of the sequences within-model samples.",
+        "aspects": [
+          "Analysis",
+          "Data/Task",
+          "Evaluation",
+          "Intuition/Justification/Motivation/Validation",
+          "Result"
+        ]
+      }
+    }
+  },
+  "HAH_2025_GUO_endocrine_unity_diversity_crosstissue": {
+    "Reviewer_GFKd": {
+      "0": {
+        "text": "Strengths: The manuscript provides a large resource in the form of an integrated single-cell atlas.",
+        "aspects": [
+          "Contribution",
+          "Data/Task"
+        ]
+      },
+      "1": {
+        "text": "Multiple integration approaches are explored and benchmarked to construct the atlas.",
+        "aspects": [
+          "Methodology",
+          "Experiment"
+        ]
+      },
+      "2": {
+        "text": "Multiple analyses are performed to extract insights from the atlas.",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: The manuscript lacks clear rationale for the focus on endocrine cells and consideration of batch effects beyond integration.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "The exposition of results can also be improved for clarity to focus on the most important insights and to situate them more firmly in their biological context.",
+        "aspects": [
+          "Presentation",
+          "Result",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "Many of the insights from analyses of the atlas are surface level (i.e. describing the highest ranked gene module or connections in a network). Can the authors provide context for which of these insights are truly novel and either experimental validation and/or in-depth discussion of follow-ups to the top discoveries?",
+        "aspects": [
+          "Analysis",
+          "Novelty",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "6": {
+        "text": "In Figure 2M, many of the metrics are either 0.00 or 1.00, which seems to indicate some sort of failure case in assessing the integration. Can the authors provide more context on why these values are so common here?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation"
+        ]
+      },
+      "7": {
+        "text": "Since endocrine cells are rare, they may have highly variables levels of annotation accuracy between different datasets. Can the authors investigate the robustness of their findings to variability in endocrine cell annotation (perhaps by comparing to de novo annotations on the integrated atlas)?",
+        "aspects": [
+          "Data/Task",
+          "Comparison",
+          "Evaluation"
+        ]
+      },
+      "8": {
+        "text": "The atlas only contains data from human single-cell RNA-seq. Can the authors highlight the degree of conservation of their modules and findings in other species (e.g. mouse) by including additional datasets in their atlas?",
+        "aspects": [
+          "Data/Task",
+          "Methodology"
+        ]
+      },
+      "9": {
+        "text": "Can the authors increase the font / legibility of the figures? Many of the font sizes are too small to read.",
+        "aspects": [
+          "Presentation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_HOLLAND_mechsci_scaling_clinical_science": {
+    "Reviewer_kzx3": {
+      "0": {
+        "text": "The key methodological innovation is using Matryoshka Top-K SAEs, which learn nested, hierarchical feature sets rather than flat dictionaries. This provides features at multiple granularity levels and improves the Pareto frontier for reconstruction",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "The technical approach is sound. SAEs successfully decompose dense 1024-dimensional CT embeddings into sparse, interpretable concepts while maintaining predictive performance on downstream tasks. The automated interpretation module with validation on held-out samples provides quality control.",
+        "aspects": [
+          "Methodology",
+          "Result",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "2": {
+        "text": "The paper clearly explains the four-stage pipeline with appropriate technical detail. Weaknesses:",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "The established risk factors comparison (Table 2) lacks explanation. How were these specific risk factors selected? Were they chosen by domain experts, from literature, or post-hoc? This is critical for validating the claim that the discovered feature \"outperforms\" established factors when the comparison may not include the most relevant clinical predictors.",
+        "aspects": [
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "4": {
+        "text": "There is clinical validation of the auto-generated interpretation. Was \"abnormal soft tissue density and stranding in abdominal fat\" verified by radiologists as medically sensible? Do pathologists already look for this feature when evaluating skin cancer risk? Without expert validation, we cannot assess whether the pipeline discovered something new or standard.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "Figure 5 and Table 2 present redundant information (the same odds ratios appear in both).",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "Legends in Figures 3 and 6 are unclear about what \"false\" and the bracketed numbers represent. The notation needs explicit explanation.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "The two acknowledged limitations - single-center data and correlation versus causation - are critical and undermine the scientific discovery claims. The biomarker might proxy for confounders (e.g., specific treatment patterns at Stanford). Testing only correlations means we cannot distinguish true biological relationships from statistical associations.",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      },
+      "8": {
+        "text": "The pipeline tests individual features in isolation but doesn't explore feature combinations. Clinical prediction often benefits from multiple biomarkers.",
+        "aspects": [
+          "Experiment",
+          "Methodology"
+        ]
+      },
+      "9": {
+        "text": "There is no mechanism to check whether the \"discovered\" hypotheses are already known in medical literature. The pipeline could be rediscovering established findings, wasting resources on validation studies for non-novel results.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "10": {
+        "text": "The appendix is missing",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "11": {
+        "text": "See weaknessess",
+        "aspects": [
+          "-"
+        ]
+      }
+    }
+  },
+  "HAH_2025_HO_decontextualization_everywhere_systematic_audit": {
+    "Reviewer_gZ4h": {
+      "0": {
+        "text": "One of my main comment is that I am not 100% convinced the results are surprising: it's true that in the non oracle setting the retrieval performance drops but that is expected.",
+        "aspects": [
+          "Result",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "Also I would argue the most common use case for this type of retrieval is to have access to the paper itself.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "2": {
+        "text": "It is my impression that the paper frames oracle evaluation as methodologically flawed, but per-document QA is a common and valid use case (paper reading assistants, peer review tools).",
+        "aspects": [
+          "Evaluation",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "The contribution would be stronger if it acknowledged these are different applications with different evaluation requirements.",
+        "aspects": [
+          "Contribution",
+          "Evaluation"
+        ]
+      },
+      "4": {
+        "text": "I am also confused about the \"answerability\" result as I don't understand how that was computed.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "5": {
+        "text": "For example \"We propagate retrieved contexts to answerability classification (binary F1) to measure how retrieval variations influence downstream decision-making.\" - it's not clear to me what this means and how it was done.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "6": {
+        "text": "I guess the answerability comes from PeerQA but I don't understand how it is propagated.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "I think the paper should be better organized in presenting the results and ablations would be useful (e.g., exploring \"Answerability is context-independent\" and \"False positives may be informative\" in more details.",
+        "aspects": [
+          "Presentation",
+          "Result",
+          "Ablation"
+        ]
+      },
+      "8": {
+        "text": "Right now these are speculations that are very interesting but would require more grounding).",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "9": {
+        "text": "The answerability paradox would indeed require more in-depth analyses.",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "10": {
+        "text": "Due to the above I think the paper requires some quality and clarity improvements.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "11": {
+        "text": "Page 3) \"granularities.tive\" typo?",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "12": {
+        "text": "Why are your results and PeerQA's original results so different? is the setting different?",
+        "aspects": [
+          "Comparison",
+          "Result",
+          "Methodology"
+        ]
+      },
+      "13": {
+        "text": "Isn't the difference in performance \"too big\"?",
+        "aspects": [
+          "Comparison",
+          "Result"
+        ]
+      }
+    }
+  },
+  "HAH_2025_HO_unitmath_unitaware_numerical_reasoning": {
+    "Reviewer_AAyc": {
+      "0": {
+        "text": "Strength: motivation and problem significance\n\nWeaknesses: the methods are not clearly presented, it's described narratively rather than algorithmically.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Significance",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "1": {
+        "text": "How are numerical mentions aligned between claims and tables?",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "What ontology or mapping is used for units (UCUM, QUDT?)?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "How are “dimensional consistency checks” implemented programmatically?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "What determines the confidence scores (0.6, 0.75, etc.) — heuristic thresholds or data-driven calibration?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "While the authors frame the system as principled, many thresholds (e.g., “within 2% relative error,” “fuzzy match threshold = 0.7”) are arbitrary. Can the authors explain how these numbers are chosen?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_HUANG_aiassisted_exploratory_causal_modeling": {
+    "Reviewer_e4ii": {
+      "0": {
+        "text": "Timely small-N framing with clear practical questions; separates prediction from assumption-dependent interpretation.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "Transparent tables (correlations, LOOCV R², controlled coefficients) and explicit limitations.",
+        "aspects": [
+          "Presentation",
+          "Result"
+        ]
+      },
+      "2": {
+        "text": "Attempts to fix ideas in a DAG and to avoid overfitting via LOOCV. weakness: there are several major concerns regarding the statistical validity of the method; see details below",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Outcomes are counts with likely over-dispersion and many zeros (Top-50 by state). Using linear regression can yield heteroskedastic, non-integer predictions and unstable inference. Can the authors add more discussions on this?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "Forward selection guided by LOOCV R² plus in-sample p-values may lead to “double dipping”",
+        "aspects": [
+          "Methodology",
+          "Theory"
+        ]
+      },
+      "5": {
+        "text": "Counterfactual magnitudes look overstated/ill-defined. Specifically,  claims such as “adding a PGA event increases Top-50 by 84–117%” appear to convert linear-model coefficients on counts into relative percent gains without a clear baseline or link function.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation"
+        ]
+      },
+      "6": {
+        "text": "The DAG assumes PGA-event presence is exogenous to junior-talent production. Reverse causality and omitted variables (historical golf culture, sponsorship ecosystems, college pipelines) are plausible.",
+        "aspects": [
+          "Theory"
+        ]
+      },
+      "7": {
+        "text": "Many outcomes (boys/girls × Top-50/100/200) and predictors are tested; p-values are reported without multiplicity control. This is a multiple testing setting; need to use FWER/FDR adjustments here.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Result"
+        ]
+      }
+    }
+  },
+  "HAH_2025_HYUN_diverse_inference_arc": {
+    "Reviewer_Da8z": {
+      "0": {
+        "text": "Strengths: The paper is technically strong, with systematic experiments across 16 methods on ARC tasks. The methodology (aggregating diverse inference methods with a verifier) is appropriate and clearly supports the claims. Empirical gains are carefully documented, with ablations and runtime reporting. The work is a complete piece, not a preliminary study.",
+        "aspects": [
+          "Experiment",
+          "Methodology",
+          "Result",
+          "Ablation"
+        ]
+      },
+      "1": {
+        "text": "Weaknesses: Evaluation is restricted to ARC, which is highly synthetic. Compute cost of aggregating many methods can be very high (hundreds of seconds per puzzle). Dependence on closed APIs for some methods reduces reproducibility. Clarity",
+        "aspects": [
+          "Data/Task",
+          "Evaluation",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "Strengths: The paper is well organized and clearly written. The “third scaling law” framing is intuitive and makes the contribution easy to follow. The use of a verifier is well explained. Figures and tables are readable.",
+        "aspects": [
+          "Presentation",
+          "Intuition/Justification/Motivation/Validation",
+          "Contribution",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: The role of each method’s complementarity could be explained in more depth (why certain methods succeed where others fail). The discussion of verifier robustness could be expanded. Significance",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      },
+      "4": {
+        "text": "Strengths: Results surpassing average human ARC performance are significant, making this a high-profile benchmark result. The framing of test-time diversity as a scaling axis is a useful conceptual contribution that may influence follow-up research.",
+        "aspects": [
+          "Result",
+          "Significance",
+          "Contribution"
+        ]
+      },
+      "5": {
+        "text": "Weaknesses: Significance is tempered by the narrow domain — it is unclear how well this approach generalizes beyond ARC. Compute costs may limit real-world applicability. Originality",
+        "aspects": [
+          "Significance",
+          "Novelty"
+        ]
+      },
+      "6": {
+        "text": "Strengths: Proposes a novel perspective on scaling: inference-time diversity as a third axis, in addition to compute and data. The aggregation framework is carefully designed and validated.",
+        "aspects": [
+          "Novelty",
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "Weaknesses: While the integration of many methods is useful, individually the methods are known, so originality rests mostly on the framing and the benchmark result.",
+        "aspects": [
+          "Methodology",
+          "Novelty",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "Generality beyond ARC: Could the authors test, or at least discuss, how diverse inference might extend to other verifiable reasoning tasks (e.g., program induction, math proofs)? This would raise significance and originality.",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance",
+          "Novelty"
+        ]
+      },
+      "9": {
+        "text": "Compute–accuracy trade-offs: Could you provide more detail on how accuracy scales with added compute, and whether there are diminishing returns? Clearer analysis would strengthen quality.",
+        "aspects": [
+          "Analysis",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "10": {
+        "text": "Open vs closed models: Which results rely on closed APIs, and what is the performance when only open models are used? Improving transparency would help reproducibility.",
+        "aspects": [
+          "Result",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "11": {
+        "text": "Verifier robustness: Are there cases where multiple plausible solutions exist and the verifier might fail? Acknowledging these limitations would improve clarity.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation"
+        ]
+      },
+      "12": {
+        "text": "Method complementarity: Could the authors analyze why specific methods succeed on tasks others fail? This would add interpretability and deepen the originality of the contribution.",
+        "aspects": [
+          "Analysis",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Contribution"
+        ]
+      }
+    }
+  },
+  "HAH_2025_JAYASEKARA_simulating_strategic_reasoning_digital": {
+    "Reviewer_m6pR": {
+      "0": {
+        "text": "Addresses a timely and practically relevant question about AI's capacity to simulate individual human reasoning styles for advisory applications",
+        "aspects": [
+          "Significance",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "This paper tests multiple LLMs (16 models), providing a comprehensive benchmark across different types of models",
+        "aspects": [
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "2": {
+        "text": "Authors distinguish between simple and complex reasoning tasks, revealing an important performance gap that has implications for real-world deployment",
+        "aspects": [
+          "Data/Task",
+          "Result",
+          "Significance"
+        ]
+      },
+      "3": {
+        "text": "Reproducible prompts & questions provided Weaknesses:",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "The digital twin is based on only one person with limited data (two interview rounds plus public materials), severely limiting generalizability and making it unclear whether findings reflect fundamental LLM limitations versus insufficient training data.",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "The paper states, \"AI systems then adapted these prompts to model constraints, determining whether to apply fine-tuning or retrieval-augmented generation (RAG) approaches,\" but never explains which approach was actually used for which models or how this decision was made.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "6": {
+        "text": "The paper mentions \"semantic similarity measures\" in the methodology, but the actual scoring appears to be binary correct/incorrect matching. The relationship between semantic similarity metrics and the reported accuracy scores is never explained.",
+        "aspects": [
+          "Methodology",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "The paper is missing ablations on prompt variations, temperature settings, few-shot examples, or other hyperparameters that could affect performance",
+        "aspects": [
+          "Ablation"
+        ]
+      },
+      "8": {
+        "text": "Given the complementary strengths shown across models (Figure 1's quadrants), the authors could have considered exploring ensemble methods",
+        "aspects": [
+          "Methodology",
+          "Result"
+        ]
+      }
+    }
+  },
+  "HAH_2025_JIANG_badscientist_research_agent_write": {
+    "Reviewer_Ts2L": {
+      "0": {
+        "text": "This paper is very detailed and thorough in its description of the introduced methods and evaluation strategies. I am left with very few questions about how experiments were conducted or how certain methodologies were implemented.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation",
+          "Experiment",
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "The results are impactful, highlighting an important challenge for development of AI reviewers and for AI-driven and audited science. The authors provide an apt interpretation of results in their results section, highlighting the nuances of these results and how they vary across LLMs.",
+        "aspects": [
+          "Result",
+          "Significance",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "2": {
+        "text": "The evaluation methods seem sound throughout the results. The authors devise a number of metrics that capture the multiple facets of the reviewing process and allow them to highlight the difference in acceptance rates across models. This highlights interesting differences between LLMs used for review of papers that should be further highlighted in LLM reviewer literature.",
+        "aspects": [
+          "Evaluation",
+          "Result",
+          "Methodology",
+          "Related Work"
+        ]
+      },
+      "3": {
+        "text": "The conclusion of the work is thoughtful and wraps up the main takeaways. Overall this is a great paper that highlights an important issue. Weaknesses:",
+        "aspects": [
+          "Significance",
+          "Contribution"
+        ]
+      },
+      "4": {
+        "text": "The methods description is very formal, which is appreciated for thoroughness, but it could be abbreviated to streamline the narrative. The formal definitions of each of the components of the system could be moved to supplementary and replaced with more intuitive descriptions of the methods.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "5": {
+        "text": "The authors test only one main reviewing strategy in the main results of the paper. Many LLM reviewers have been published, so it would be interesting to test on these other methods to understand performance across different reviewer strategies.",
+        "aspects": [
+          "Comparison",
+          "Evaluation",
+          "Related Work"
+        ]
+      },
+      "6": {
+        "text": "More mention of the AI scientist methodology could be helpful in the text. The authors briefly mention that their system is adopted from that of the AI Scientist, but more details are needed in this regard, even though this is not the focus of the paper.",
+        "aspects": [
+          "Methodology",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "Was there any human validation done for the judge used in the ICR metric calculation? It seems like this task would be fairly straightforward for LLMs, but human validation would be appreciated.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Data/Task"
+        ]
+      },
+      "8": {
+        "text": "For the ICR metric, the authors mention that certain positive rates differ between each model (o3 is “flag-happy”). Did you experiment with the number of times that an LLM detected some integrity issue on normal papers, i.e., those that did not have integrity edits made to them? This would help with understanding if some models are reluctant to suggest integrity concerns due to sycophancy.",
+        "aspects": [
+          "Experiment",
+          "Evaluation",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_JUNG_parameter_vs_testtime_scaling": {
+    "Reviewer_Qzf9": {
+      "0": {
+        "text": "See comments above.",
+        "aspects": [
+          "-"
+        ]
+      },
+      "1": {
+        "text": "Are the experiments with frontier models done by AI or by humans?",
+        "aspects": [
+          "Experiment"
+        ]
+      }
+    }
+  },
+  "HAH_2025_KHAN_psyspace_simulating_emergent_psychological": {
+    "Reviewer_LnkM": {
+      "0": {
+        "text": "Overall I find this study to be creative and interesting.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Multi-agent simulation of a space crew is a nice application.",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "2": {
+        "text": "It is a well-structured longitudinal modeling environment and grounded in literature, which enables comparison to previous studies.",
+        "aspects": [
+          "Comparison",
+          "Related Work",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "The introduction and related works sections are clearly written.",
+        "aspects": [
+          "Presentation",
+          "Related Work"
+        ]
+      },
+      "4": {
+        "text": "Section 3 introduces a well-motivated agent architecture and state updates.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "I like the choice of the missions which are based on real data.",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "6": {
+        "text": "The experiments systematically evaluated different choices of base models for simulating crew members and performed standard statistics evaluating the impact of introducing a support agent.",
+        "aspects": [
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "7": {
+        "text": "The fact that a support agent reduces stress is not surprising.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "8": {
+        "text": "The analyses, especially comparisons to previously reported findings, could go more in depth.",
+        "aspects": [
+          "Analysis",
+          "Comparison",
+          "Related Work"
+        ]
+      },
+      "9": {
+        "text": "More discussions of how stress is measured, and validations of these measurements, would be useful to improve the work.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_KIANG_mentormind_riskaware_constraintgrounded_advice": {
+    "Reviewer_gftS": {
+      "0": {
+        "text": "Well-motivated problem: CoT is not constraint-aware or risk-sensitive; decision-analytic scaffolds are a natural remedy.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "Novel method: quantitative scoring in code, explanation/selection in the LLM; IDs act as an explicit scaffold.",
+        "aspects": [
+          "Methodology",
+          "Novelty",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "2": {
+        "text": "The text sets alpha = 0.9 for CVaR (worst 10%) but the code appendix defaults to ALPHA = 0.1 and elsewhere 0.14; these are not the same tail events. Methods mention N=100 samples per action; appendix/evaluator uses N=400.",
+        "aspects": [
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "The baselines omit tool-augmented CoT (e.g., CoT + programmatic constraint checker, or CoT that calls the same Monte-Carlo oracle). That comparison is crucial to prove that ID structure, not just tool access, drives the gains.",
+        "aspects": [
+          "Comparison",
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "Section 3.2 describes “hard constraints via feasibility filters,” but much of the enforcement seems prompt-level (“skip any branch that violates …”). If feasibility is only conveyed by prompt text, jailbreaks/forgetting can occur. Please clarify: are infeasible actions programmatically pruned before the LLM sees options, or merely discouraged in text?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_KONG_mind_guarding_mind_framework": {
+    "Reviewer_bQDD": {
+      "0": {
+        "text": "Compelling Motivation: The paper addresses an important and under-explored problem, i.e., how to design human–AI collaborations that compensate for mutual cognitive–affective limitations rather than simply assist. It is also well positioned within the growing field of neurodiversity research, an area of significant social and scientific importance.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Significance"
+        ]
+      },
+      "1": {
+        "text": "Transparency: The inclusion of detailed logs, protocols, and appendices demonstrates commendable methodological transparency. For an N = 1 study, this level of openness is highly valuable and sets a strong precedent for reproducibility in qualitative AI–HCI work.",
+        "aspects": [
+          "Methodology",
+          "Significance"
+        ]
+      },
+      "2": {
+        "text": "Novel Concepts: The introduction of the Intellectual Uncanny Valley (IUV), Building Falsifiable Trust (BFT), and the Socratic Negentropic Loop presents several conceptual contributions.",
+        "aspects": [
+          "Contribution",
+          "Novelty"
+        ]
+      },
+      "3": {
+        "text": "Validation Study Proposal: The proposed validation study in the appendix is well designed and well reasoned, with clear hypotheses, metrics, and procedures. The plan is well aligned with standards for digital-intervention evaluation. A minor suggestion would be to include age-matching controls, and to account for novelty and engagement effects when the study and analysis is conducted.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation",
+          "Novelty",
+          "Analysis"
+        ]
+      },
+      "4": {
+        "text": "Exploratory Quantitative Evidence: The time-series reliability analysis and protocol-growth metrics represent valuable first steps toward quantifying system improvement. Although these rely on proxy measures, they provide useful indicators of framework success. Incorporating statistical testing in future work would further strengthen these findings. Weaknesses",
+        "aspects": [
+          "Analysis",
+          "Evaluation",
+          "Result",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "5": {
+        "text": "Structure, Tone, and Framing: While the paper is written in an engaging and reflective tone, its structure can be difficult to follow. Many of the concrete examples, definitions, and key principles (e.g., Genesis and Manifest stages of CHAC) are placed in the supplementary materials rather than in the main text. This makes it challenging for readers to fully grasp the framework’s logic and practical implications without consulting external files.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "Calibration of Claims: Certain conclusions would benefit from grounding in prior literature. For instance, the statement that the IUV is a social construct rather than a textual property could be contextualized through relevant work such as algorithmic-aversion studies (https://psycnet.apa.org/record/2014-48748-001). Framing such conclusions as hypotheses rather than definitive findings would make them more credible given the limited sample size.",
+        "aspects": [
+          "Related Work",
+          "Intuition/Justification/Motivation/Validation",
+          "Significance"
+        ]
+      },
+      "7": {
+        "text": "Use of Anecdote: Several sections rely on vivid narrative episodes (e.g., the “Constitutional Crisis”) without aggregate quantitative context, such as the frequency of similar events or their outcomes thoughout the data corpus. The strong narrative style enhances readability but sometimes removes analytic clarity. The comparative case study presented in the appendix is methodologically stronger compared to the anecdote presented in the introduction, but requires additional detail, such as coder training, inter-rater agreement, and potential bias from community familiarity, to meet qualitative standards.",
+        "aspects": [
+          "Analysis",
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "8": {
+        "text": "Scope Ambiguity: It remains unclear whether CHAC is primarily intended for neurodivergent knowledge workers or for broader HCI applications. The introduction claims that the work addresses a gap at the intersection of neurodiversity, AI alignment, and HCI, but the conclusion extends its scope to a general paradigm for “conversational science.” Clarifying the framework’s intended domain of applicability and its limits would improve coherence and focus.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "9": {
+        "text": "Positioning Relative to Prior Work: Several principles, such as importance of failure, externalization for auditability, and mixed-initiative system design, have precedents in HCI research. The novelty of CHAC lies in integrating these elements for LLM-based collaboration, but the distinction is not always explicit. Clearer comparisons to previous methodologies (e.g., persona-based prompting) would make the paper’s originality more compelling. The Two-Stage Boot Sequence, for example, could be contrasted more directly with conventional LLM persona construction (even if the difference is clear when going through the supplementary documents).",
+        "aspects": [
+          "Comparison",
+          "Novelty",
+          "Related Work"
+        ]
+      },
+      "10": {
+        "text": "Anthropomorphism: Descriptions of the AI as a “guardian,” “vetoing,” or “protecting” the human partner risk anthropomorphizing its function. While engaging, these formulations may obscure the underlying technical mechanisms and limit scientific clarity.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "11": {
+        "text": "Operational Examples and Summary Metrics: The framework would benefit from additional operational details. For instance, the 2×2 compensation matrix is conceptually strong and well grounded in psychological theory, but readers would benefit from clear examples of (a) the triggers for each role, (b) corresponding AI responses, (c) observed outcomes, and (d) potential risks. Similarly, the mechanism for translating “failure” into a new protocol could be described more concretely—how are such updates recorded, verified, and integrated?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Theory"
+        ]
+      },
+      "12": {
+        "text": "Empirical Validation and Generalizability: The study’s strength and impact would increase substantially with the addition of empirical results from the planned validation experiment. The current N = 1 auto-ethnography provides depth and insight but limited external validity. In addition, the connection to neurodiversity could be articulated more clearly, either by confirming that the participant fits the described cognitive–affective profile or by reframing the work as a general human–AI co-adaptation framework.",
+        "aspects": [
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      },
+      "13": {
+        "text": "Have you tested ablations (e.g., subsets or different compensatory roles) or failures of roles in triggering? Could you provide a systematic table of rolers triggers, responses, outcomes, and risks?",
+        "aspects": [
+          "Ablation",
+          "Experiment",
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "14": {
+        "text": "In the “constitutional crisis” example, how often did external verification succeed across the dataset? Was this a one-off success or a reproducible pattern?",
+        "aspects": [
+          "Data/Task",
+          "Result"
+        ]
+      },
+      "15": {
+        "text": "Can you clarify the methodological details of the comparative case study present in the Appendix? How were coders trained, what was inter-rater reliability, and how did you mitigate bias from knowing community backgrounds?",
+        "aspects": [
+          "Methodology",
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "16": {
+        "text": "In the planned factorial validation, how will you control for confounding effects such as novelty/engagement? Will you age-match groups?",
+        "aspects": [
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_KOPETZKY_borges_library_procedural_universes": {
+    "Reviewer_tVeJ": {
+      "0": {
+        "text": "The paper formulates LLM behaviors in the Borge's universal library framework. The formulations seem to be reasonable.",
+        "aspects": [
+          "Methodology",
+          "Theory"
+        ]
+      },
+      "1": {
+        "text": "The theoretical proofs and calculations seem to be reasonably executed.",
+        "aspects": [
+          "Theory"
+        ]
+      },
+      "2": {
+        "text": "The study represents an innovative way of conducting theoretical studies interactively with LLM agents.",
+        "aspects": [
+          "Methodology",
+          "Novelty",
+          "Theory"
+        ]
+      },
+      "3": {
+        "text": "Some implications and future studies based on the theories are discussed. Weaknesses:",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Theory"
+        ]
+      },
+      "4": {
+        "text": "The empirical validations seem to be limited to small-scale generated settings. It is unclear how the theories can be applied to more real-world scenarios.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Theory"
+        ]
+      },
+      "5": {
+        "text": "It is not clear how much / what types of human validations have been done to guarantee the correctness of the theories and proofs.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Theory"
+        ]
+      },
+      "6": {
+        "text": "See weaknesses.",
+        "aspects": [
+          "-"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LEWIS_architectural_immune_system_framework": {
+    "Reviewer_fqD1": {
+      "0": {
+        "text": "The structure is well-organized",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "1": {
+        "text": "The paper demonstrates a technically sound and well-motivated framework, addressing a real and underexplored risk",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "2": {
+        "text": "The case study is convincingly presented, with clear quantitative evidence Weaknesses:",
+        "aspects": [
+          "Presentation",
+          "Result"
+        ]
+      },
+      "3": {
+        "text": "The Technical Implementation Details section is relatively brief; it would be helpful to include more detailed descriptions or provide a few concrete examples for clarity.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "It would also be valuable to include more concrete information, such as representative agent prompts, system inputs and outputs, or example interactions, to help readers better understand how the framework operates in practice.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "5": {
+        "text": "Could this framework be applied to AI systems in other sciences (e.g., drug discovery, materials, climate modeling)? A cross-domain demonstration would highlight broader utility.",
+        "aspects": [
+          "Data/Task",
+          "Significance"
+        ]
+      },
+      "6": {
+        "text": "The pictures in figure 1 need to be rearranged, and some pictures overlap.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "The paper’s credibility could be further strengthened by including additional validation tasks that are easier to verify empirically or through existing datasets, helping demonstrate the framework’s reliability without requiring full experimental testing.",
+        "aspects": [
+          "Data/Task",
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LIN_llmdriven_discovery_highentropy_catalysts": {
+    "Reviewer_nVpm": {
+      "0": {
+        "text": "Quality:\n\nThe methods are technically sound.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "DFT calculations look rigorous (e.g. with convergence criteria) - same for statistical validation (e.g. bootstrap CI).",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "2": {
+        "text": "Statistical validation is thorough with correct multiple comparison corrections and bootstrap confidence intervals.",
+        "aspects": [
+          "Evaluation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "3": {
+        "text": "The five-tier screening protocol is comprehensive.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "I very much appreciated seeing ablation studies to understand RAG's contribution to the found improvements.",
+        "aspects": [
+          "Ablation",
+          "Contribution"
+        ]
+      },
+      "5": {
+        "text": "Under “Code and Data Availability” the paper claims the codebase and datasets are available at: https://zenodo.org/records/17129646 - I don’t see any data or code.",
+        "aspects": [
+          "Data/Task",
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "Clarity:\n\nGenerally well-organized with clear methodology and extensive appendices, but there is an abundance of hyperbolic language (\"revolutionary,\" \"paradigm shift\", \"accelerating climate solutions\") for a computational-only study, which makes it difficult to assess real advances of the work.",
+        "aspects": [
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "Significance:\n\nThe results are interesting but hard to assess significance without experimental validation.",
+        "aspects": [
+          "Significance",
+          "Result",
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "8": {
+        "text": "The efficiency gain is only useful if predictions are accurate.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "9": {
+        "text": "No quantitative comparison to other ML methods.",
+        "aspects": [
+          "Comparison"
+        ]
+      },
+      "10": {
+        "text": "Originality:\n\nRAG for catalyst discovery without finetuning is relatively novel.",
+        "aspects": [
+          "Novelty"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LIU_ivtfuse_efficient_visionlanguage_guided": {
+    "Reviewer_AFuL": {
+      "0": {
+        "text": "The two proposed attention modules are thorougly described and shown to improve performance through ablation experiments.",
+        "aspects": [
+          "Ablation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology",
+          "Result"
+        ]
+      },
+      "1": {
+        "text": "The proposed model is evaluated on three standard IR-VIS fusion datasets and outperforms the baselines across multiple quantitative metrics in most of the cases",
+        "aspects": [
+          "Evaluation",
+          "Data/Task",
+          "Result"
+        ]
+      },
+      "2": {
+        "text": "The code is publicly available, which supports reproducibility and transparency Weaknesses:",
+        "aspects": [
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "The structure and writing quality of the paper could be significantly improved. The introduction is well-written. On the other hand, the related work section is overly compressed and the full version is relegated to an appendix. Similarly, the conclusion is placed in the appendix, which is hinders readability. The method section is detailed but it's a dense wall of text that is quite hard to follow.",
+        "aspects": [
+          "Presentation",
+          "Related Work",
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "As acknowledged by the authors, the impact of the language modality is not fully explored. The authors perform an ablation where they swap the text input with random captions. A missing experiment is the evaluation of the architecture without any text input at all (i.e., removing the BLIP fusion entirely) to isolate the contribution of the language branch.",
+        "aspects": [
+          "Ablation",
+          "Experiment",
+          "Contribution"
+        ]
+      },
+      "5": {
+        "text": "The discussion of results lacks qualitative depth. The paper includes a visual comparison between different methods, but no interpretability analysis (e.g., attention maps) is provided to help understand where the proposed model improves over baselines like FILM. From the visual examples presented in Figure 2, the qualitative difference between IVTFuse and FILM is not obvious.",
+        "aspects": [
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "I'd suggest the authors to provide a cleaner organization of the paper: restore the related work and conclusion to the main body and improve the readability of the methods section.",
+        "aspects": [
+          "Presentation",
+          "Related Work",
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "A missing experiment is a no-text ablation to isolate the effect of the BLIP encoder and provide a clearer picture of how much the language modality contributes to performance.",
+        "aspects": [
+          "Ablation",
+          "Experiment"
+        ]
+      },
+      "8": {
+        "text": "I believe the paper would benefit from a more in-depth qualitative analysis of the results, including attention visualizations to better illustrate the impact of the proposed modules and text guidance.",
+        "aspects": [
+          "Analysis",
+          "Result",
+          "Methodology"
+        ]
+      },
+      "9": {
+        "text": "minor: the acronym VIS is not explained",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LIU_uncertaintyaware_roleswitching_debate_improving": {
+    "Reviewer_n9XJ": {
+      "0": {
+        "text": "- Interesting approach with a novel protocol.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Broader evaluation: Test the protocol on additional domains—e.g., factual knowledge (other QA datasets), mathematical reasoning (MATH, GSM8K), and code generation (HumanEval, MBPP)—to assess how well role‑switching and uncertainty disclosure generalize.",
+        "aspects": [
+          "Evaluation",
+          "Data/Task"
+        ]
+      },
+      "2": {
+        "text": "Model diversity: Experiment with a wider range of debaters and judges (different sizes, architectures, or domain‑specialized models) to explore how model heterogeneity affects debate dynamics and final accuracy.",
+        "aspects": [
+          "Experiment",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LI_coalignment_rethinking_alignment_bidirectional": {
+    "Reviewer_9pYS": {
+      "0": {
+        "text": "Novel Framework: Reframes alignment as a two-way adaptive process, shifting the paradigm beyond RLHF.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Methodological Completeness: The framework includes clearly defined modules (protocol generator, mapping, instructor) and explicit evaluation metrics. # Weaknesses",
+        "aspects": [
+          "Methodology",
+          "Evaluation"
+        ]
+      },
+      "2": {
+        "text": "Evaluation Scope: Experiments are limited to small-scale synthetic environments. While these convincingly demonstrate proof-of-concept, results on real-world tasks or larger-scale models would strengthen the case.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Result"
+        ]
+      },
+      "3": {
+        "text": "Scalability: The multi-component framework may face challenges when applied to foundation models or real human-AI interaction scenarios.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "Societal Implications: Although limitations are acknowledged, more discussion on risks of AI influencing human cognition would be valuable.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "Could you provide a sensitivity analysis showing how results change with different parameterizations of the protocol/mapping modules?",
+        "aspects": [
+          "Analysis",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "How would co-alignment interact with existing preference-learning methods (RLHF, RLAIF)?",
+        "aspects": [
+          "Methodology",
+          "Related Work"
+        ]
+      },
+      "7": {
+        "text": "Could it be integrated rather than seen as a replacement?",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "8": {
+        "text": "What concrete failure modes should practitioners be aware of if deploying BiCA-inspired systems?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_LONGHITANO_transit_timing_variations_exoplanet": {
+    "Reviewer_xB6o": {
+      "0": {
+        "text": "The statistical preference for a quadratic ephemeris (Δ_BIC ~ 313) is strong, and robustness tests (jackknife by sector, error inflation, SAP vs. PDCSAP) are described.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "1": {
+        "text": "The timing pipeline propagates shape-model uncertainties into transit timing errors, which is an improvement over many prior analyses.",
+        "aspects": [
+          "Methodology",
+          "Comparison",
+          "Analysis"
+        ]
+      },
+      "2": {
+        "text": "Data and code are shared in a reproducible notebook, supporting transparency.",
+        "aspects": [
+          "Data/Task",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "The paper clearly states limitations and alternative interpretations. ## Weaknesses:",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "4": {
+        "text": "The analysis is limited by selective use of only 12 older timing points despite larger published catalogs (e.g., Southworth 2019, Baluev 2020). This could bias results and is not justified.",
+        "aspects": [
+          "Analysis",
+          "Result",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "5": {
+        "text": "Fit residuals (χ²/dof ~ 2.2) suggest uncertainties are underestimated by ~50%, so the reported precision on the decay rate is overly optimistic.",
+        "aspects": [
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "The methodology assumes a fixed transit shape over 15 years, neglecting stellar variability (spots, evolving limb darkening) that could affect timing.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "Alternative explanations, particularly acceleration detectable in radial velocity, are acknowledged but not tested using existing published RV data.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Data/Task"
+        ]
+      },
+      "8": {
+        "text": "Relative to prior work (e.g., Bouma 2019; Turner 2022; Baştürk 2025), the main result essentially confirms earlier findings, with limited new astrophysical insight. # Clarity ## Strengths:",
+        "aspects": [
+          "Comparison",
+          "Result",
+          "Related Work"
+        ]
+      },
+      "9": {
+        "text": "The manuscript is clearly structured (introduction, methods, results, conclusions) and written in accessible language.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "10": {
+        "text": "Figures communicate the main results effectively (stacked transit, O–C diagram).",
+        "aspects": [
+          "Presentation",
+          "Result"
+        ]
+      },
+      "11": {
+        "text": "The reproducibility and AI-contribution statements are transparent. ## Weaknesses:",
+        "aspects": [
+          "Contribution",
+          "Presentation"
+        ]
+      },
+      "12": {
+        "text": "Justification of data cuts, treatment of outliers, and selection of literature timings are insufficiently explained.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Data/Task",
+          "Related Work"
+        ]
+      },
+      "13": {
+        "text": "The discussion does not adequately situate results within the context of other recent measurements of WASP-4b’s orbital decay. A summary table or comparison would significantly improve clarity. # Significance ## Strengths:",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Comparison",
+          "Presentation",
+          "Significance"
+        ]
+      },
+      "14": {
+        "text": "Orbital decay measurements of hot Jupiters are astrophysically important for constraining tidal dissipation.",
+        "aspects": [
+          "Significance"
+        ]
+      },
+      "15": {
+        "text": "The open pipeline could be reused for other exoplanet systems, potentially benefiting reproducibility in this subfield. ## Weaknesses:",
+        "aspects": [
+          "Methodology",
+          "Significance"
+        ]
+      },
+      "16": {
+        "text": "The astrophysical result is incremental, essentially confirming what several groups have already reported.",
+        "aspects": [
+          "Result",
+          "Novelty"
+        ]
+      },
+      "17": {
+        "text": "Without addressing radial velocities or alternative mechanisms, the paper does not substantially advance our physical understanding of the WASP-4 system.",
+        "aspects": [
+          "Contribution",
+          "Theory"
+        ]
+      },
+      "18": {
+        "text": "The impact is limited by the incomplete dataset usage and incomplete statistical analysis. # Originality ## Strengths:",
+        "aspects": [
+          "Data/Task",
+          "Analysis",
+          "Novelty"
+        ]
+      },
+      "19": {
+        "text": "The contribution is primarily methodological: a reproducible pipeline that incorporates morphology uncertainty into timing errors.",
+        "aspects": [
+          "Contribution",
+          "Methodology"
+        ]
+      },
+      "20": {
+        "text": "The use of AI as a lead author and disclosure of its role is itself novel, in line with the conference’s goals. ## Weaknesses:",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "21": {
+        "text": "The scientific novelty is low, as the orbital decay of WASP-4b has been demonstrated in multiple prior works with larger datasets and more comprehensive analyses.",
+        "aspects": [
+          "Novelty",
+          "Related Work",
+          "Data/Task",
+          "Analysis"
+        ]
+      },
+      "22": {
+        "text": "Incremental contributions (error propagation, modest robustness checks) do not by themselves represent a substantial advance.",
+        "aspects": [
+          "Contribution"
+        ]
+      },
+      "23": {
+        "text": "Dataset completeness: Please justify the choice of the 12 non-TESS timings used. Why not include the full set of available measurements (e.g., Southworth et al. 2019, Baluev et al. 2020)? A complete dataset could significantly change the results.",
+        "aspects": [
+          "Data/Task",
+          "Intuition/Justification/Motivation/Validation",
+          "Result"
+        ]
+      },
+      "24": {
+        "text": "Comparison with prior work: Add a table or figure directly comparing your measured Ṗ with values from Bouma 2019, Turner 2022, Baştürk 2025, etc., and discuss agreement/disagreement.",
+        "aspects": [
+          "Comparison",
+          "Related Work",
+          "Presentation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "25": {
+        "text": "Alternative explanations: Since radial velocity constraints already exist (Turner 2022), please incorporate or discuss them quantitatively in relation to your results.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Related Work",
+          "Result"
+        ]
+      },
+      "26": {
+        "text": "Transit-shape assumptions: How sensitive are your results to variations in transit morphology (e.g., evolving limb darkening, starspot crossings)? A hierarchical fit allowing for variable shapes may provide more robust constraints.",
+        "aspects": [
+          "Result",
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_PEI_behavioral_fingerprinting_large_language": {
+    "Reviewer_22Cp": {
+      "0": {
+        "text": "The research question sounds intriguing, especially investigations of abstract reasoning, counterfactual physics, and metacognition seem to be useful to evaluate the limit of state-of-the-art LLMs.",
+        "aspects": [
+          "Data/Task",
+          "Evaluation",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "Many state-of-the-art models are used for systematic evaluation. Weakness",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "2": {
+        "text": "Each model is probed with the same fixed set of prompts, which is good, but the entire evaluation is based on 21 prompts. While they seem to be carefully designed, it may not enough to fully capture the breadth of LLM behaviors. This raises concerns about representativeness and statistical robustness (e.g., sensitivity to the specific prompt design).",
+        "aspects": [
+          "Evaluation",
+          "Data/Task",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "3": {
+        "text": "This may be the main reason why all results are similar across many models (in figure 2)",
+        "aspects": [
+          "Result",
+          "Comparison"
+        ]
+      },
+      "4": {
+        "text": "The quality of figures can be improved. Font sizes are often too small.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "5": {
+        "text": "I should acknowledge that I may not have enough expertise to judge every technical detail of the paper.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_SHEN_multiagent_social_simulation_experimental": {
+    "Reviewer_1z32": {
+      "0": {
+        "text": "Clear Motivation: Addresses limitations of natural experiments (lack of control) and ABM (hand-coded rules, lack of language use).",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "Interesting Concept: Using LLMs as intersubjective “agents” is novel and grounded in philosophical and linguistic arguments.",
+        "aspects": [
+          "Novelty",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "2": {
+        "text": "Transparency Attempt: The use of intention texts for mechanism auditing is an innovative touch, adding interpretability to multi-agent simulations. # Weaknesses:",
+        "aspects": [
+          "Novelty",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Incomplete Paper: The submission is short, leaves several sections underdeveloped, and does not reach the expected completeness of my own.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "Overly Philosophical: Heavy reliance on Husserl/Schutz/Wittgenstein adds conceptual framing but distracts from empirical contribution. Many readers in applied AI/agent systems will find it hard to extract actionable methods.",
+        "aspects": [
+          "Contribution",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "Technical Novelty: The method is essentially a structured application of multi-agent prompting + DID analysis. The originality lies more in framing than in substantive algorithmic contribution.",
+        "aspects": [
+          "Novelty",
+          "Methodology"
+        ]
+      },
+      "6": {
+        "text": "What sensitivity analyses were performed to test robustness across decoding strategies, model sizes, or prompt formulations?",
+        "aspects": [
+          "Analysis",
+          "Evaluation"
+        ]
+      },
+      "7": {
+        "text": "How can MASS results be calibrated to real-world data distributions, beyond DID alignment in a single case? In my concept it's important to find a path to connect to the real-world scenarios.",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "8": {
+        "text": "Can you clarify the balance between philosophical framing and empirical contribution? What are the actionable takeaways for practitioners?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Contribution"
+        ]
+      }
+    }
+  },
+  "HAH_2025_SRIVASTAVA_echo_multiagent_ai_system": {
+    "Reviewer_s81z": {
+      "0": {
+        "text": "Strengths\nPatient narratives are an underused but valuable source for pharmacovigilance.",
+        "aspects": [
+          "Significance"
+        ]
+      },
+      "1": {
+        "text": "Echo demonstrates how LLM-based multi-agent collaboration can systematically amplify these voices for early ADR detection.",
+        "aspects": [
+          "Methodology",
+          "Data/Task"
+        ]
+      },
+      "2": {
+        "text": "Clear modular design with four complementary roles provides transparency and interpretability compared to monolithic NLP pipelines.",
+        "aspects": [
+          "Methodology",
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Extracted hundreds of associations from a small dataset.",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "4": {
+        "text": "Identified high-confidence, potentially novel ADRs absent from FDA databases (Table 2, p.4).",
+        "aspects": [
+          "Data/Task",
+          "Novelty"
+        ]
+      },
+      "5": {
+        "text": "Generated mechanistic hypotheses that cite biomedical literature (Table 4, p.5).",
+        "aspects": [
+          "Presentation",
+          "Related Work"
+        ]
+      },
+      "6": {
+        "text": "Retrospective validations (e.g., pneumonitis with nivolumab/pembrolizumab, neuromuscular complications, regorafenib hepatotoxicity) show alignment between patient reports and later regulatory findings (pp.6–7).",
+        "aspects": [
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "7": {
+        "text": "Interactive dashboard allows clinicians and researchers to search, filter, and review associations, confounders, and supporting quotes (Figure 2, p.7).",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "8": {
+        "text": "The authors acknowledge privacy, representativeness, and bias concerns, and caution that social media–derived signals should be hypothesis-generating rather than definitive (pp.8–9).",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "9": {
+        "text": "Weaknesses & Concerns\nOnly 187 Reddit posts were analyzed; This is too small and community-specific to claim broad generalizability across oncology or pharmacovigilance.",
+        "aspects": [
+          "Data/Task",
+          "Significance"
+        ]
+      },
+      "10": {
+        "text": "Heavy reliance on Reddit excludes other patient communities and introduces demographic and cultural bias.",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "11": {
+        "text": "Echo flags associations absent from FAERS as “novel,” but underreporting, terminology mismatches, or unrelated confounders may explain absence.",
+        "aspects": [
+          "Novelty",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "12": {
+        "text": "The paper notes this but does not provide systematic cross-validation with EHR or larger datasets.",
+        "aspects": [
+          "Data/Task",
+          "Evaluation"
+        ]
+      },
+      "13": {
+        "text": "The Analyzer’s metrics (temporal weight, patient confidence, community engagement) are heuristic and may not be robust proxies for true causal strength\nIt remains unclear how stable these metrics are across different forums or phrasing styles.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation"
+        ]
+      },
+      "14": {
+        "text": "While Echo surfaces confounders (Table 3, p.4), no causal inference framework is applied.",
+        "aspects": [
+          "Methodology",
+          "Result"
+        ]
+      },
+      "15": {
+        "text": "Systematic biases (e.g., patients with severe symptoms posting more) could distort results.",
+        "aspects": [
+          "Result"
+        ]
+      },
+      "16": {
+        "text": "Case studies are retrospective and cherry-picked.",
+        "aspects": [
+          "Experiment"
+        ]
+      },
+      "17": {
+        "text": "Predictive power in real-world, prospective settings remains untested.",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "18": {
+        "text": "Running multiple large LLMs for all four agents raises scalability and reproducibility concerns.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "19": {
+        "text": "The paper lacks compute/resource reporting beyond model descriptions.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "20": {
+        "text": "Apply Echo to larger, more diverse patient communities and EHR-linked datasets to improve generalizability.",
+        "aspects": [
+          "Data/Task",
+          "Methodology"
+        ]
+      },
+      "21": {
+        "text": "Incorporate external pharmacovigilance datasets or clinical chart review to distinguish novelty from underreporting.",
+        "aspects": [
+          "Data/Task",
+          "Novelty"
+        ]
+      },
+      "22": {
+        "text": "Integrate causal inference techniques to better disentangle drug effects from comorbidities and confounders.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "23": {
+        "text": "Demonstrate predictive utility by applying Echo to ongoing patient discussions and tracking regulatory recognition over time.",
+        "aspects": [
+          "Methodology",
+          "Evaluation"
+        ]
+      },
+      "24": {
+        "text": "Explore lightweight evaluators or distillation to reduce computational cost for large-scale monitoring.",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "25": {
+        "text": "Provide clearer guidelines for responsible use, particularly around patient privacy, re-identification risks, and integration with regulatory workflows.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_SZWARCFITER_small_detours_deliver_big": {
+    "Reviewer_ZjxQ": {
+      "0": {
+        "text": "Clear Practical Motivation: Addresses an important operational question for transit agencies—how to extend access without undermining corridor reliability.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "Methodological Rigor: The discrete-event simulation is transparent, with clear specification of factors, KPIs, replication strategy, and statistical reporting.",
+        "aspects": [
+          "Methodology",
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "Policy-Relevant Contribution: The comparison of two simple, implementable online policies provides actionable insights for agencies, especially regarding calibration of safeguards. # Weaknesses",
+        "aspects": [
+          "Contribution",
+          "Comparison"
+        ]
+      },
+      "3": {
+        "text": "Limited Scope: The study is restricted to stylized off-peak conditions with two overlapping lines and simplified demand/dwell models. While this makes results interpretable, generalizability to peak conditions or larger networks is not shown.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "4": {
+        "text": "Policy Exploration is Narrow: Only two policy types (feasibility-based and risk-gated) are considered. A richer exploration (e.g., adaptive thresholds, hybrid controls) would have increased the contribution.",
+        "aspects": [
+          "Contribution",
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "Overly Stylized Modeling: Assumptions (Poisson arrivals, simple dwell model, fixed corridor geometry) may understate real-world variability. Effect sizes might differ substantially in practice.",
+        "aspects": [
+          "Theory",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "6": {
+        "text": "Slack-Aware Underdeveloped: The paper shows Slack-Aware performs poorly under default parameters, but offers limited deeper analysis on how to calibrate or improve it. This weakens the claim of providing operational guidance.",
+        "aspects": [
+          "Analysis",
+          "Result",
+          "Contribution"
+        ]
+      },
+      "7": {
+        "text": "Length and Completeness: The paper is somewhat short relative to conference standards and could benefit from additional discussion, sensitivity analyses, or case study illustrations.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Analysis"
+        ]
+      },
+      "8": {
+        "text": "How would results change under peak demand conditions where headway instability is more pronounced?",
+        "aspects": [
+          "Result"
+        ]
+      },
+      "9": {
+        "text": "Could the authors provide sensitivity analysis on the Slack-Aware threshold to illustrate the trade-off curve more fully?",
+        "aspects": [
+          "Analysis",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_TAN_ai_self_recognition": {
+    "Reviewer_QtYe": {
+      "0": {
+        "text": "In this paper, authors explore if models can recognize their own outputs.",
+        "aspects": [
+          "Data/Task",
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "There are two main experimental settings, one in which the LLMs have to predict if they are the authors of a piece of text and one in which the LLMs have to predict from which LLMs an output comes from.",
+        "aspects": [
+          "Experiment"
+        ]
+      },
+      "2": {
+        "text": "This is well executed work from end to end: clear research question and clear experiments.",
+        "aspects": [
+          "Experiment",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "I have some concerns that would require some reshaping of the story and maybe some ablation (randomizing order of answers, testing if models know that other models exist, ...).",
+        "aspects": [
+          "Ablation"
+        ]
+      },
+      "4": {
+        "text": "As I have already said, the work is important and valid, but the main arguments and conclusion lean on being a bit on the overstating.",
+        "aspects": [
+          "Significance",
+          "Contribution",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "5": {
+        "text": "What I think the paper shows is how different models have embedded knowledge of other models' existence and opens the question of \"how much does a model like Kimi know that Kimi exists?\" Since some models might not possess knowledge about the existence of other models (after their training cutoff), this could systematically bias results against newer models or create asymmetric recognition patterns that confound the self-awareness interpretation.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result",
+          "Theory"
+        ]
+      },
+      "6": {
+        "text": "While the authors briefly acknowledge this for GPT-5, I don't believe this is systematically addressed.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "The experiment is a bit extracted from context: while the authors attempt to justify real-world relevance through bias detection scenarios, the connection remains weak (in which deployed context do we expect LLMs needing to identify their own outputs? authors' argument around this topic should be made stronger or balanced out).",
+        "aspects": [
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "8": {
+        "text": "I think the paper is more interesting as an analysis of model behavior than as a pure safety paper.",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "9": {
+        "text": "However, when combining this work with the results in [17] I think it brings together an interesting picture of the training landscape that is worth discussing further.",
+        "aspects": [
+          "Related Work",
+          "Result",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "10": {
+        "text": "To my best understanding, authors do not randomize the model options in their question, so there might be some ordering bias in the answers.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "11": {
+        "text": "In summary: Good and interesting work, requires some additional edits to balance the presentation.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "12": {
+        "text": "Specifically, the presentation should be rebalanced by: 1) downplaying claims about 'fundamental architectural limitations,' and  2) acknowledging this as exploratory work on model self-representation rather than definitive safety research (i.e., i'd suggest tuning down \"The implications extend beyond technical capabilities to fundamental questions about AI safety,\").",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "13": {
+        "text": "Please add a short definition of \"gate tax\", I had to retrieve the original paper to understand the meaning of the expression.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_TAO_sustainable_investment_decisionmaking_office": {
+    "Reviewer_J4j9": {
+      "0": {
+        "text": "Strengths: The paper frames sustainable investment as a multi-objective reinforcement learning (MORL) problem, which is a technically sound and appropriate choice for balancing profit and carbon emissions. The methodology is conceptually clear, and results show how MORL can generate Pareto-efficient trade-offs. The integration of LLMs for scenario interpretation is interesting and adds interdisciplinary value.",
+        "aspects": [
+          "Methodology",
+          "Result",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Weaknesses: The study is limited to a toy-scale, highly stylized simulation with abstract ESG metrics, making results more illustrative than actionable. Baselines are missing — the paper does not compare MORL against classical approaches (portfolio optimization, rule-based strategies, single-objective RL). Without such comparisons, it is unclear what MORL contributes in practice. The use of LLMs is underdeveloped and not rigorously analyzed. Clarity",
+        "aspects": [
+          "Data/Task",
+          "Comparison",
+          "Result",
+          "Analysis",
+          "Related Work",
+          "Methodology"
+        ]
+      },
+      "2": {
+        "text": "Strengths: The paper is clearly written and organized, making the MORL setup easy to follow. Visualizations of Pareto trade-offs are intuitive and help convey results.",
+        "aspects": [
+          "Presentation",
+          "Intuition/Justification/Motivation/Validation",
+          "Result"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: The role of the LLM component is only briefly described; more concrete examples of how it contributes to decision-making would improve clarity. The connection between results and real-world financial practice is vague, leaving the practical implications unclear. Significance",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      },
+      "4": {
+        "text": "Strengths: The problem of sustainable investment is socially and environmentally important, and the idea of framing it as a multi-objective RL task is relevant. Conceptually, the paper fits the Agents4Science theme by showcasing how AI agents might contribute to sustainability research.",
+        "aspects": [
+          "Data/Task",
+          "Intuition/Justification/Motivation/Validation",
+          "Significance"
+        ]
+      },
+      "5": {
+        "text": "Weaknesses: Due to the stylized setup, missing baselines, and lack of real data, the significance is limited. The paper does not demonstrate actionable insights for practitioners or policymakers, so its contribution is largely conceptual rather than scientific or practical. Originality",
+        "aspects": [
+          "Comparison",
+          "Data/Task",
+          "Significance",
+          "Contribution",
+          "Novelty"
+        ]
+      },
+      "6": {
+        "text": "Strengths: Applying MORL to sustainable investment decisions is a relatively fresh angle, and the combination with LLMs for interpretation is a novel twist.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "7": {
+        "text": "Weaknesses: The originality is modest since multi-objective optimization has been studied in finance and energy domains, and the LLM role here is only lightly sketched. The work does not provide fundamentally new algorithms or methods.",
+        "aspects": [
+          "Novelty",
+          "Methodology"
+        ]
+      },
+      "8": {
+        "text": "Realism of the environment: The current setup uses highly abstract ESG metrics and simplified assumptions. Could you incorporate real financial or sustainability datasets (e.g., building energy use, carbon emission records, or actual investment returns) to ground the experiments?",
+        "aspects": [
+          "Data/Task",
+          "Experiment"
+        ]
+      },
+      "9": {
+        "text": "Baseline comparisons: At present, the study only compares different MORL reward weightings. Could you add baselines such as single-objective RL, rule-based decision models, or classical portfolio optimization methods?",
+        "aspects": [
+          "Comparison",
+          "Related Work"
+        ]
+      },
+      "10": {
+        "text": "Policy relevance:\tThe conclusions point to broad trade-offs, but the work could be more impactful if linked to actual policy or investment instruments (e.g., green bonds, carbon taxes, building retrofits). Could you map your findings to real-world mechanisms?",
+        "aspects": [
+          "Significance",
+          "Contribution"
+        ]
+      }
+    }
+  },
+  "HAH_2025_TERRAGNI_simulating_twosided_job_marketplaces": {
+    "Reviewer_t7gQ": {
+      "0": {
+        "text": "the submission is teehnically sound and the results are well supported.",
+        "aspects": [
+          "Result"
+        ]
+      },
+      "1": {
+        "text": "The results are still somewhat limited but this is an interesting research area.",
+        "aspects": [
+          "Result",
+          "Significance"
+        ]
+      }
+    }
+  },
+  "HAH_2025_TREHAN_consistency_confound_stronger_alignment": {
+    "Reviewer_q5Yj": {
+      "0": {
+        "text": "Strengths: The paper is technically sound, with careful empirical evaluation across multiple benchmarks (JailbreakBench, HarmBench) and two model families (Llama, Qwen). Results are reported with appropriate statistical rigor (AUROC, Wilson/DeLong confidence intervals). The work identifies a clear and reproducible failure mode (Consistency Confound) that undermines semantic entropy as a detector. Error analysis is systematic, and the claims are well supported.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Result",
+          "Analysis",
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "Weaknesses: Scope is limited to two model families; results on API-based models (e.g., GPT-4, Claude) would make the findings more general. Comparisons are mostly against simple baselines, with no testing of stronger black-box defenses. The work diagnoses the problem but does not propose constructive alternatives. Clarity",
+        "aspects": [
+          "Comparison",
+          "Result",
+          "Contribution",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "2": {
+        "text": "Strengths: The paper is clearly written, well structured, and easy to follow. The motivation for adapting semantic entropy is well explained, and the identification of the “consistency confound” is presented in a straightforward manner. Figures and tables are clear.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Presentation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: While the core failure mode is described well, the discussion of possible mitigations or future directions is brief. Expanding this section would help readers understand practical implications and next steps. Significance",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      },
+      "4": {
+        "text": "Strengths: Jailbreak detection is a high-priority problem for AI safety, and this paper provides timely evidence that a promising approach (semantic entropy) fails in critical settings. The identification of a systematic failure mode is a valuable contribution for practitioners and researchers.",
+        "aspects": [
+          "Contribution",
+          "Significance"
+        ]
+      },
+      "5": {
+        "text": "Weaknesses: The contribution is primarily a negative result. While still important, significance would be higher if the paper also explored alternative methods or mitigation strategies. Originality",
+        "aspects": [
+          "Contribution",
+          "Significance",
+          "Novelty"
+        ]
+      },
+      "6": {
+        "text": "Strengths: The identification and naming of the “consistency confound” is original and provides a new conceptual lens for understanding why uncertainty-based detection can fail under strong alignment. This is an insightful addition to the literature.",
+        "aspects": [
+          "Novelty",
+          "Contribution",
+          "Significance"
+        ]
+      },
+      "7": {
+        "text": "Weaknesses: The underlying method (semantic entropy) is borrowed from hallucination detection, so the main originality lies in showing its limitations rather than in developing a new detection technique.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "8": {
+        "text": "Model scope and generality: The study focuses on Llama and Qwen. Could you extend or at least comment on whether the consistency confound also appears in API-based models (e.g., GPT-4, Claude, Gemini)?",
+        "aspects": [
+          "Data/Task",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "9": {
+        "text": "Baseline comparisons: You compare SE mainly against simple baselines. Could you evaluate or discuss how SE compares to stronger black-box detection methods, such as adversarial perturbation, paraphrasing-based defenses, or multi-agent approaches?",
+        "aspects": [
+          "Comparison",
+          "Related Work",
+          "Evaluation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "10": {
+        "text": "Alternative uncertainty estimation approaches:\tThe paper convincingly shows SE fails under alignment, but does not test other uncertainty quantification strategies (e.g., calibrated confidence, logit variance, ensemble variance). Could you explore or at least outline whether these might avoid the consistency confound?",
+        "aspects": [
+          "Evaluation",
+          "Methodology",
+          "Related Work"
+        ]
+      }
+    }
+  },
+  "HAH_2025_VALENTINI_aifirst_proof_concept_simulating": {
+    "Reviewer_jKQf": {
+      "0": {
+        "text": "The application of the Teach-Back method to AI-mediated programming education represents a meaningful contribution, particularly given that this approach remains underexplored in computer science education. The explicit focus on dialogic interaction rather than answer provision addresses a critical gap in current AI-education tools.",
+        "aspects": [
+          "Contribution",
+          "Novelty",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "The work integrates established theories of Teach-Back, dialogic pedagogy, and metacognition. The protocol is well structured and explicitly documented, making it a useful methodological contribution Weakness:",
+        "aspects": [
+          "Methodology",
+          "Contribution",
+          "Theory"
+        ]
+      },
+      "2": {
+        "text": "The most critical limitation is that all three \"students\" are AI-generated personas, not actual learners. This creates a severe validity threat: the AI tutor is essentially dialoguing with another instance or simulation of itself. There is no evidence that these simulated misconceptions, reasoning patterns, or learning trajectories reflect authentic novice programmer behavior. The authors acknowledge this as a \"strong assumption\" but the implications are more severe than acknowledged.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "The baseline uses GPT-3.5, whereas the main protocol uses GPT-4o. This conflates dialogic structure with model capability, even though the authors try to control for context carryover",
+        "aspects": [
+          "Comparison",
+          "Methodology"
+        ]
+      },
+      "4": {
+        "text": "Because the same model both generates the dialogues and helps refine the protocol, there’s a risk of overfitting the design to model idiosyncrasies rather than human learning behavior",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "5": {
+        "text": "The study relies entirely on descriptive analysis. While this is appropriate for a proof-of-concept, some basic metrics (e.g., number of clarifications, protocol adherence, misconception resolution rates) could strengthen claims",
+        "aspects": [
+          "Analysis",
+          "Evaluation"
+        ]
+      },
+      "6": {
+        "text": "How do you plan to evaluate whether the Slow Thinking and Transfer phases actually improve human learning outcomes, not just simulated reasoning?",
+        "aspects": [
+          "Evaluation",
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "Did you observe any failure modes in which the protocol degraded interaction quality (e.g., overly rigid questioning, conversational stalls)?",
+        "aspects": [
+          "Evaluation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_WANG_survival_useful_evolutionary_boids": {
+    "Reviewer_KiD5": {
+      "0": {
+        "text": "I think the paper studies an interesting question and I like setting Boids interactions between the agents.",
+        "aspects": [
+          "Data/Task",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "It's a creative idea.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "The introduction and related works are well written and thorough.",
+        "aspects": [
+          "Related Work",
+          "Presentation"
+        ]
+      },
+      "3": {
+        "text": "Section 3 also provides a reasonable mathematical formulation of the interactions.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Theory"
+        ]
+      },
+      "4": {
+        "text": "I also like using creative writing, data science and research assistant as tasks.",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "5": {
+        "text": "Section 4 on the experiments is missing some important information.",
+        "aspects": [
+          "Experiment",
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "There is sparse information on what exactly are benchmark tasks (e.g. what are the creative writing queries, is it an existing benchmark, etc.) and how they are evaluated.",
+        "aspects": [
+          "Data/Task",
+          "Evaluation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "This makes it harder to interpret how robust the improvements are.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "I appreciate that the baseline choice is reasonable.",
+        "aspects": [
+          "Comparison",
+          "Methodology"
+        ]
+      },
+      "9": {
+        "text": "A more detailed findings section and interpretation of the results and key insights would also be helpful.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "10": {
+        "text": "For example, ablate each component of agent interaction and see how that affects outcomes.",
+        "aspects": [
+          "Ablation",
+          "Experiment"
+        ]
+      },
+      "11": {
+        "text": "Overall, I would say that the idea and setup is interesting and creative (comparable to a Neurips paper), but the experimental execution is more preliminary and can be more indepth.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Experiment"
+        ]
+      }
+    }
+  },
+  "HAH_2025_WEHR_educational_attainment_cognitive_profile": {
+    "Reviewer_tzfq": {
+      "0": {
+        "text": "The paper presents a convincing and methodologically appropriate approach, relying on several statistical tests and robustness checks applied to existing data.",
+        "aspects": [
+          "Methodology",
+          "Data/Task"
+        ]
+      },
+      "1": {
+        "text": "The authors are commendably transparent about the limitations of their work and openly acknowledge the reasons why their findings may not be fully representative.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "2": {
+        "text": "At the same time, the simplicity of the method, essentially a set of analyses on existing data, leaves some doubt about whether the conclusions are strong enough to substantiate the claims.",
+        "aspects": [
+          "Analysis",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "Since the results do not align with the initial assumptions, readers may be left questioning the validity and interpretability of the contribution.",
+        "aspects": [
+          "Result",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Contribution"
+        ]
+      },
+      "4": {
+        "text": "The main weakness of the paper lies in its clarity.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "5": {
+        "text": "The language is highly technical and domain-specific from the outset, which restricts accessibility and does not adequately inform a broader academic audience.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "Sentences are sometimes unnecessarily complex, which obscures the central arguments and makes it harder to follow the reasoning.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "A clearer explanation of key constructs and a more concise writing style would improve readability and strengthen the impact of the results.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "The topic is timely and relevant, and the results could be significant for the community as they contribute to ongoing debates on the relationship between educational attainment, cognitive variability, and aging.",
+        "aspects": [
+          "Significance",
+          "Contribution"
+        ]
+      },
+      "9": {
+        "text": "However, the lack of alignment between the assumptions and the findings raises questions about the robustness and generalizability of the results.",
+        "aspects": [
+          "Result",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "10": {
+        "text": "The contribution would be more convincing if the authors offered stronger justification for why their findings diverge from expected patterns and a clearer discussion of their theoretical and practical implications.",
+        "aspects": [
+          "Contribution",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Theory"
+        ]
+      },
+      "11": {
+        "text": "In terms of originality, the paper makes a limited contribution.",
+        "aspects": [
+          "Novelty",
+          "Contribution"
+        ]
+      },
+      "12": {
+        "text": "Although the dataset is different, the research question and general approach strongly overlap with previous work, particularly Rehnberg et al. (2024), which is not cited in the submission.",
+        "aspects": [
+          "Data/Task",
+          "Related Work"
+        ]
+      },
+      "13": {
+        "text": "Given that this study also investigates the association between education and cognitive performance, the contribution of the present paper risks appearing incremental rather than novel.",
+        "aspects": [
+          "Contribution",
+          "Novelty"
+        ]
+      },
+      "14": {
+        "text": "The divergence in findings between the two studies could be valuable, but this requires a careful explanation of why the results differ and how these differences advance understanding.",
+        "aspects": [
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "15": {
+        "text": "Without such positioning, the originality of the work remains limited.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "16": {
+        "text": "How can the discrepancy between assumptions and results be better explained?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "17": {
+        "text": "How does this work differ from and relate to prior studies such as Rehnberg et al. (2024)?",
+        "aspects": [
+          "Comparison",
+          "Related Work"
+        ]
+      },
+      "18": {
+        "text": "To what extent are the findings representative and generalizable beyond the current sample?",
+        "aspects": [
+          "Result",
+          "Significance"
+        ]
+      }
+    }
+  },
+  "HAH_2025_WU_towards_automatic_evaluation_selection": {
+    "Reviewer_CXQP": {
+      "0": {
+        "text": "Strengths-- \nMulti-agent judging combined with LLM majority voting is an innovative way to stabilize LLM-as-judge approaches.",
+        "aspects": [
+          "Methodology",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Concepts were proposed by human.",
+        "aspects": [
+          "Contribution"
+        ]
+      },
+      "2": {
+        "text": "Experiments on 100 fully annotated clinical notes show that TEAM-PHI reliably ranks models (with Llama-70B consistently identified as top performer), and its automated rankings align closely with human experts and gold-label evaluations.",
+        "aspects": [
+          "Experiment",
+          "Result",
+          "Evaluation"
+        ]
+      },
+      "3": {
+        "text": "Good quality figures and graphs generated by LLMs.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "Includes single-agent evaluations, aggregated multi-agent voting, comparison to gold-standard annotations (Table 8, p.7), and human expert assessment (Table 9, p.7).",
+        "aspects": [
+          "Evaluation",
+          "Comparison"
+        ]
+      },
+      "5": {
+        "text": "The paper provides prompts, model links, evaluation metrics, and compute resources in appendices\n\nWeakness\n\nThe human assessment component is insufficiently described; it is unclear whether the evaluation sample is synthetic or drawn from real-world annotations, and how experts were instructed and calibrated.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Evaluation"
+        ]
+      },
+      "6": {
+        "text": "The framework relies on evaluator agreement as a proxy for recall when gold labels are masked.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "If multiple evaluators share systematic blind spots (for example, consistently under-detecting particular PHI types), this proxy can produce artificially inflated recall estimates.",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "8": {
+        "text": "The experimental setup is computationally expensive: running multiple large LLMs as both de-identifiers and evaluators reportedly required ≈200 GPU-hours on dual H100s.",
+        "aspects": [
+          "Experiment"
+        ]
+      },
+      "9": {
+        "text": "This cost profile limits practicality for large-scale or real-time deployment unless much lighter evaluators or more efficient strategies are adopted.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "10": {
+        "text": "Performance is uneven across entity types: PERSON detection is robust, but DATE/TIME recognition shows high variability across evaluators (see Tables 1–6).",
+        "aspects": [
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "11": {
+        "text": "The framework has not been demonstrated on a broader set of PHI categories or on more complex annotation scenarios (e.g., longitudinal identifiers, nested or overlapping spans), limiting claims of generality.",
+        "aspects": [
+          "Data/Task",
+          "Methodology"
+        ]
+      },
+      "12": {
+        "text": "Validate TEAM-PHI on larger, multi-institution, multi-specialty corpora (e.g., across i2b2, MIMIC-III/IV, or synthetic corpora).",
+        "aspects": [
+          "Data/Task",
+          "Evaluation"
+        ]
+      },
+      "13": {
+        "text": "Test scenarios where evaluators systematically fail on specific PHI categories (e.g., obfuscated dates) to measure resilience.",
+        "aspects": [
+          "Evaluation",
+          "Experiment",
+          "Data/Task"
+        ]
+      },
+      "14": {
+        "text": "Explore smaller distilled evaluators or active-learning strategies to reduce GPU cost.",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "15": {
+        "text": "Explicitly evaluate whether evaluator agreement disproportionately fails for certain demographics (names, locations, etc.).",
+        "aspects": [
+          "Evaluation",
+          "Data/Task"
+        ]
+      },
+      "16": {
+        "text": "Incorporating limited human-expert oversight could improve reliability and mitigate evaluator blind spots.",
+        "aspects": [
+          "Evaluation",
+          "Methodology"
+        ]
+      }
+    }
+  },
+  "HAH_2025_XIA_green_design_energyguided_reranking": {
+    "Reviewer_FfpB": {
+      "0": {
+        "text": "Strength\nThe paper addresses an under-explored area — making LLM-based program generation energy-aware at the moment of creation.",
+        "aspects": [
+          "Contribution",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "The pipeline is well described (Figure 1, p.3), including candidate generation, correctness filtering, CodeCarbon-based energy measurement, and reranking.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "Statistically significant improvements are demonstrated across 10 diverse benchmark tasks (sorting, numeric computation, graph traversal, I/O).",
+        "aspects": [
+          "Evaluation",
+          "Result",
+          "Data/Task"
+        ]
+      },
+      "3": {
+        "text": "Weakness\n\nOnly Python code was tested, with NumPy and standard library.",
+        "aspects": [
+          "Experiment"
+        ]
+      },
+      "4": {
+        "text": "It remains unclear how the approach scales to other languages or more complex frameworks.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "Benchmarks are limited to 10 relatively small algorithmic/data-processing tasks; more diverse real-world workloads (e.g., deep learning pipelines, large-scale ETL, or distributed systems) would strengthen claims of generalizability.",
+        "aspects": [
+          "Data/Task",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "6": {
+        "text": "CodeCarbon provides model-based estimates, not direct hardware-level measurements.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "7": {
+        "text": "The paper acknowledges this, but does not validate results against ground-truth hardware counters.",
+        "aspects": [
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "8": {
+        "text": "This raises questions about measurement fidelity, particularly for small runtime differences.",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "9": {
+        "text": "Reranking requires executing multiple candidate programs per task.",
+        "aspects": [
+          "Methodology"
+        ]
+      },
+      "10": {
+        "text": "While feasible for small benchmarks, the overhead in real-world large-scale systems (e.g., thousands of lines of code or large databases of candidates) is not assessed.",
+        "aspects": [
+          "Evaluation"
+        ]
+      },
+      "11": {
+        "text": "Low figure quality and old references.",
+        "aspects": [
+          "Presentation",
+          "Related Work"
+        ]
+      },
+      "12": {
+        "text": "Validate CodeCarbon measurements against hardware-based counters for at least a subset of tasks.",
+        "aspects": [
+          "Evaluation",
+          "Data/Task"
+        ]
+      },
+      "13": {
+        "text": "Expand benchmarks to include larger, more realistic workloads and multiple programming languages (at least more than 1).",
+        "aspects": [
+          "Data/Task"
+        ]
+      },
+      "14": {
+        "text": "Analyze computational cost of reranking itself (energy and runtime overhead of measuring multiple candidates).",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "15": {
+        "text": "Explore robustness under noisy conditions (e.g., background processes, variable hardware loads).",
+        "aspects": [
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "16": {
+        "text": "Provide uncertainty estimates (confidence intervals) for reported percentage savings, not only p-values.",
+        "aspects": [
+          "Evaluation",
+          "Result"
+        ]
+      },
+      "17": {
+        "text": "Clarify the novelty by contrasting more directly with related work on compiler-level optimizations and prior attempts at green software design.",
+        "aspects": [
+          "Novelty",
+          "Related Work"
+        ]
+      },
+      "18": {
+        "text": "Consider integrating scale-aware or adaptive reranking strategies since optimal candidates shift with input size.",
+        "aspects": [
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_XU_selfspec_modelauthored_specifications_reliable": {
+    "Reviewer_CAJ2": {
+      "0": {
+        "text": "Strengths: The idea of model-authored specifications is technically sound and well-motivated. Experiments on HumanEval are carefully executed with multiple LLMs (GPT-4o, Claude 3.7, Claude 3.5). The authors provide both quantitative results (pass@1 gains for stronger models) and qualitative error analysis (e.g., guard insertion failures). The method is practical, lightweight, and reproducible with shared prompts.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Experiment",
+          "Result",
+          "Methodology",
+          "Analysis"
+        ]
+      },
+      "1": {
+        "text": "Weaknesses: Evaluation scope is narrow (only HumanEval, Python). Improvements are modest (+5 and +2 points), and one model regresses. The paper does not quantify inference overhead of the Q&A confirmation loop, nor does it compare empirically with alternative intermediate representations (e.g., CoT, self-consistency). Overall, this feels like a work-in-progress contribution — strong idea, but incomplete validation. Clarity",
+        "aspects": [
+          "Evaluation",
+          "Result",
+          "Comparison",
+          "Contribution",
+          "Intuition/Justification/Motivation/Validation",
+          "Presentation"
+        ]
+      },
+      "2": {
+        "text": "Strengths: The paper is clearly written and logically structured. The pipeline is easy to follow, and the motivation for avoiding docstring drift is well explained. Reproducibility is supported by released prompts and logs.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Presentation",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "Weaknesses: The positioning relative to formal IRs (Intermediate Representations) like Dafny/SMT constraints could be explained more explicitly for readers unfamiliar with program synthesis. The description of why Claude 3.5 regressed could be expanded with concrete examples. Overall, clarity is good but could benefit from more detailed baselines and framing. Significance",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Presentation",
+          "Related Work",
+          "Significance"
+        ]
+      },
+      "4": {
+        "text": "Strengths: Opens an original line of inquiry — letting models define their own specs rather than relying on human-authored natural language or rigid IRs. This could influence future work on LLM-authored intermediates across domains (not just code).",
+        "aspects": [
+          "Novelty",
+          "Significance"
+        ]
+      },
+      "5": {
+        "text": "Weaknesses: Current results are modest, and the scope is too limited to demonstrate broad community impact. Without experiments on larger benchmarks or non-code tasks, it is unclear whether the idea generalizes. Originality",
+        "aspects": [
+          "Result",
+          "Significance",
+          "Experiment",
+          "Novelty"
+        ]
+      },
+      "6": {
+        "text": "Strengths: The idea of LLM-authored specs is new and well-articulated as a middle ground between free-form natural language and formal IRs. The paper highlights this positioning clearly in related work.",
+        "aspects": [
+          "Novelty",
+          "Presentation",
+          "Related Work"
+        ]
+      },
+      "7": {
+        "text": "Weaknesses: The originality claim would be stronger if comparisons were run against other lightweight intermediates (CoT, docstring standardization, schema prompts). Without these, it is harder to judge how unique the benefits are.",
+        "aspects": [
+          "Comparison",
+          "Novelty"
+        ]
+      },
+      "8": {
+        "text": "Benchmark scope: Could you extend evaluation beyond HumanEval to larger coding benchmarks (MBPP, APPS, SWE-Bench) or to other domains like SQL or math? This would strengthen both significance and quality.",
+        "aspects": [
+          "Evaluation",
+          "Significance",
+          "Data/Task"
+        ]
+      },
+      "9": {
+        "text": "Overhead trade-offs: What is the runtime and cost overhead of the spec-generation + Q&A confirmation loop compared to direct prompting? Quantifying this would make the method more practical for adoption.",
+        "aspects": [
+          "Comparison",
+          "Methodology"
+        ]
+      },
+      "10": {
+        "text": "Baseline comparisons: Could you add small-scale comparisons with chain-of-thought prompting or self-consistency to better situate Self-Spec against other lightweight intermediates?",
+        "aspects": [
+          "Comparison",
+          "Related Work"
+        ]
+      },
+      "11": {
+        "text": "Regression analysis: For Claude 3.5, the model added defensive guards that degraded performance. Could you clarify with examples and suggest mitigation strategies (e.g., guard filtering, spec-level constraints)?",
+        "aspects": [
+          "Analysis",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "12": {
+        "text": "Future integration: How might Self-Spec be extended toward more formal IRs or combined with lightweight validators? A forward-looking discussion would raise the significance.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Significance"
+        ]
+      }
+    }
+  },
+  "HAH_2025_YANG_beyond_adam_aiauthored_discovery": {
+    "Reviewer_onBz": {
+      "0": {
+        "text": "The idea to parameterize the search space of optimization algorithms via the simple DSL that can express SGD, momentum and Adam was interesting and impressive that an AI generated this. Specifically, it was impressive the AI identified the commonalities among SGD, momentum and Adam's functional form in order to create a general DSL that can express all three.",
+        "aspects": [
+          "Novelty",
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "1": {
+        "text": "The experiments are simple and standard (uses conventional optimization benchmarks) and includes a simple experiment for generalization (linear regression).",
+        "aspects": [
+          "Experiment",
+          "Data/Task"
+        ]
+      },
+      "2": {
+        "text": "The analysis of token frequency dynamics across evolutionary search algorithms is interesting to see selection pressures on each of the parameters. Weakness:",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "3": {
+        "text": "The paper claims to include artifacts that it does not: specifically, ablation analysis, and reproducible code artifacts. The ablation analysis is referenced several times but does not seem to be actually present in the paper. Moreover the link to the anonymous GitHub code artifacts is empty.",
+        "aspects": [
+          "Ablation",
+          "Analysis",
+          "Presentation"
+        ]
+      },
+      "4": {
+        "text": "Table 1 was difficult to read and didn’t do a good job of highlighting the best results or how Evo performed relative to others (should have bolded the best result)",
+        "aspects": [
+          "Presentation",
+          "Result",
+          "Comparison"
+        ]
+      },
+      "5": {
+        "text": "Some of the figure analysis is quite bad (for figure 2 and figure 3). Figure 2 compares evo search to Adam, implying that Adam has the second best performance behind evo search, but the second best is standard SGD unless the figure is mislabeled. Figure 3 mean train loss is quite noisy, but the main text claims that ‘mean train loss decreases steadily’, without explaining that the best train loss is actually flat, suggesting no improvement in the ‘best’ candidate found over iterations. In fact, it is confusing that the best train loss over iterations is flat, and brings into slight question the results, because the efficacy of the evolutionary search is questionable if the best candidate’s loss does not improve over the iterations. That might suggest that a random initialization of the parameters of the DSL performs very well, which seems like a dubious result.",
+        "aspects": [
+          "Analysis",
+          "Comparison",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "6": {
+        "text": "A simple MLP training with the baseline optimizers and the discovered optimizer would have been an interesting and more practically relevant result.",
+        "aspects": [
+          "Methodology",
+          "Result"
+        ]
+      },
+      "7": {
+        "text": "The pareto frontier figure (Figure 3 middle) is hard to interpret and doesn't seem significant.",
+        "aspects": [
+          "Presentation",
+          "Result",
+          "Significance"
+        ]
+      },
+      "8": {
+        "text": "It would have been good to select a problem where Adam excels, in order to see if the algorithm evolved some candidates that actually used the variance estimates (as all of the top update rules in Table 2 do not use the variance estimator)",
+        "aspects": [
+          "Data/Task",
+          "Methodology"
+        ]
+      },
+      "9": {
+        "text": "The study mentions ablations, but I do not see ablations included in the text.",
+        "aspects": [
+          "Ablation",
+          "Presentation"
+        ]
+      },
+      "10": {
+        "text": "The study claims to link artifacts via an anonymous GitHub link, but the GitHub directory is empty.",
+        "aspects": [
+          "Presentation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_YOO_ingroup_bias": {
+    "Reviewer_uBR4": {
+      "0": {
+        "text": "Novel framing: The setup directly draws from classic social psychology theory and brings those paradigms into AI agent research.",
+        "aspects": [
+          "Novelty",
+          "Theory",
+          "Methodology"
+        ]
+      },
+      "1": {
+        "text": "Timely and relevant: Addresses an underexplored dimension—context-driven bias formation in LLMs rather than static training bias.",
+        "aspects": [
+          "Significance",
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "Theoretical contribution: Could inform future use of AI agents as tools for modeling or testing social psychological theories. Weakness",
+        "aspects": [
+          "Contribution",
+          "Theory"
+        ]
+      },
+      "3": {
+        "text": "Overall the experimental results are not well contextualized and interpreted",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "4": {
+        "text": "Key ablation experiments on how the agents were prompted are missing",
+        "aspects": [
+          "Ablation",
+          "Experiment"
+        ]
+      },
+      "5": {
+        "text": "**Clarify the Definition and Design of the “Randomized Controlled Experiment”** The term *RCT* is used, but it’s unclear what constitutes randomization and control when all agents are identically instantiated from the same model distribution. Please specify the unit of randomization, what is held constant, and what the “treatment” precisely represents. → My evaluation could increase if the authors clarify this causal structure and demonstrate that the experimental setup meaningfully supports causal inference rather than mere group assignment.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Experiment",
+          "Evaluation"
+        ]
+      },
+      "6": {
+        "text": "**Justify the Choice of Model and Ensure Consistency Across Figures** The main text states that *GPT-4.1-mini* is used, yet Figure 1 labels *GPT-4o*. Why was this smaller variant chosen, and do the findings generalize to more representative or commonly used models (e.g., GPT-4o, Claude 3.5, Gemini 2.5)? → My evaluation could increase if additional model ablations or replications confirm that the observed bias phenomena are robust across architectures.",
+        "aspects": [
+          "Ablation",
+          "Intuition/Justification/Motivation/Validation",
+          "Presentation"
+        ]
+      },
+      "7": {
+        "text": "**Clarify Statistical Analysis and Metrics** The paper mentions paired *t*-tests, but this is typically used for repeated measures on the same entities. Given there are two separate groups of agents, independent-samples tests or hierarchical mixed models may be more appropriate. Please clarify and justify the statistical design. → My evaluation could increase if the authors provide correct statistical methodology, assumptions, and corresponding effect sizes or confidence intervals.",
+        "aspects": [
+          "Evaluation",
+          "Methodology",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "8": {
+        "text": "**Explain the Use of the 7-Point Likert Scale and its Calibration** Why such fine-grained scales when LLM outputs are often over-dispersed or miscalibrated? Show the score distribution and discuss how this relates to real human-measured polarization effects. → My evaluation could increase if a clearer rationale or calibration analysis (e.g., mapping to human benchmarks) is provided to strengthen the credibility of the quantitative results.",
+        "aspects": [
+          "Evaluation",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "9": {
+        "text": "**Reconsider the Group Identity Induction Prompt** The current framing (“Our sole objective is to defeat our arch-rival…”) seems extreme and may induce competitiveness or threat responses rather than minimal-group bias. Could the authors explore more subtle or gradient prompts to test the robustness of group identity effects? → My evaluation could increase if the authors demonstrate that the effects persist under less extreme framings, indicating true minimal-group induction rather than artifact.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Methodology",
+          "Evaluation"
+        ]
+      },
+      "10": {
+        "text": "**Describe the Experimental Platform and Power Justification** Please elaborate on how the *Liner’s Survey Simulator* differs from other LLM experimental setups and whether sample size (N = 280) was chosen through power analysis. → My evaluation could increase if the authors include more details on simulation environment design and statistical power adequacy.",
+        "aspects": [
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation",
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      }
+    }
+  },
+  "HAH_2025_ZHANG_visible_yet_unreadable_systematic": {
+    "Reviewer_cTxw": {
+      "0": {
+        "text": "one weakness of the work lies in its scope. In general, human are more generalizable in recognizing different visual patterns than VLM. This study is a just a subset of it to test VLM generalizaiton in a different manner",
+        "aspects": [
+          "Data/Task",
+          "Experiment"
+        ]
+      },
+      "1": {
+        "text": "a non-trival problem of this study is its experimental design. At least the following experiments are missing",
+        "aspects": [
+          "Experiment"
+        ]
+      },
+      "2": {
+        "text": "As the nature of the problem is a generalization problem , different corruption will be needed. Eg. Gaussian noise on half of the character. A range of different noise need to be conducted to understand what is the nature of the problme",
+        "aspects": [
+          "Data/Task",
+          "Experiment",
+          "Intuition/Justification/Motivation/Validation"
+        ]
+      },
+      "3": {
+        "text": "a wrriten langauge specific experiment need to be conducted to understand what understanding problem is unique to writting system vs. general image ( eg. \"A\" without the \"-\" vs. cat image without ear) -a langauge specific study is needed to understand how the VLM got Chinese and English wrong respectively -a systematic analysis is needed for the attention map of the transformers and the COT by the VLM",
+        "aspects": [
+          "Experiment",
+          "Analysis"
+        ]
+      },
+      "4": {
+        "text": "how the attention matrix differ when seeing a corrupt words vs original word",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Methodology"
+        ]
+      },
+      "5": {
+        "text": "how the COT  differ when seeing a corrupt words vs original word",
+        "aspects": [
+          "Methodology",
+          "Theory"
+        ]
+      },
+      "6": {
+        "text": "how about entropy in the answer?",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "7": {
+        "text": "How about printed font words vs. hand written words -How about image with/without random backgrounds",
+        "aspects": [
+          "Data/Task"
+        ]
+      }
+    }
+  },
+  "HAH_2025_ZUO_multillm_multiprompt_strategies_covid19": {
+    "Reviewer_aA9z": {
+      "0": {
+        "text": "The research question is reasonable, but not innovative enough.",
+        "aspects": [
+          "Intuition/Justification/Motivation/Validation",
+          "Novelty"
+        ]
+      },
+      "1": {
+        "text": "Overall, the idea of this paper is somewhat incremental.",
+        "aspects": [
+          "Novelty"
+        ]
+      },
+      "2": {
+        "text": "It can be viewed as a course-project level application of LLMs, though I do appreciate the comprehensive comparisons using various LLMs and prompting.",
+        "aspects": [
+          "Comparison",
+          "Methodology"
+        ]
+      },
+      "3": {
+        "text": "As a research paper, we would hope to see deeper analysis beyond just observational phenomena.",
+        "aspects": [
+          "Analysis"
+        ]
+      },
+      "4": {
+        "text": "For example, any hypothesis and deeper studies about why prompting does not change much, why results do not change over time, why some strong models like GPT 4o is much worse than QWen.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation",
+          "Result"
+        ]
+      },
+      "5": {
+        "text": "I liked the way that abstract was written.",
+        "aspects": [
+          "Presentation"
+        ]
+      },
+      "6": {
+        "text": "After reading it, the entire paper's key results/findings are mostly clear already.",
+        "aspects": [
+          "Result"
+        ]
+      },
+      "7": {
+        "text": "The explanation for accuracy in \"accuracy (credit only False)\" was not clear.",
+        "aspects": [
+          "Definition/Description/Detail/Discussion/Explanation/Interpretation"
+        ]
+      },
+      "8": {
+        "text": "The paper writing is pretty clear overall: succinct language and comprehensive descriptions.",
+        "aspects": [
+          "Presentation"
+        ]
+      }
+    }
+  }
+}

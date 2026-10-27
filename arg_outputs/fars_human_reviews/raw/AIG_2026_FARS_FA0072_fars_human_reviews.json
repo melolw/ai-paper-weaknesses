@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0072",
+    "title": "Execution-Trace Guided Remasking for Diffusion Code Generation",
+    "abstract": "Masked diffusion language models can iteratively refine code through remasking, offering a unique capability for targeted repair. However, existing remasking strategies select tokens based on model confidence or perturbation-based heuristics, lacking semantic guidance about where errors actually occur. We propose execution-trace guided remasking, which uses runtime diagnostics to localize failures and target repair. When generated code fails unit tests, we parse exception tracebacks or collect line-level execution traces to identify failure-relevant regions, then remask only those tokens for conditional diffusion repair. On MBPP+, our method achieves 31.22\\% pass@1, an 11.38 percentage point improvement over the no-repair baseline and 4.24 points over CORE, with statistical significance ($p < 0.001$). Analysis shows that trace-guided repair produces meaningful code modifications while global low-confidence repair rarely changes code, demonstrating that semantic localization is essential for effective repair.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces an inference-time algorithm for targeted code repair in DDLMs. Unlike prior heuristics that rely solely on internal confidence scores , this work leverages runtime execution diagnostics, specifically exception tracebacks and line-level execution traces, to localize semantic failures. These localized regions are mapped to token indices and selectively remasked for conditional diffusion repair. Evaluated on the LLaDA-8B-Base model, the execution-trace guided approach significantly improves pass@1 on MBPP+, outperforming both confidence-based remasking and context-robust baselines.",
+        "strengths": "1. The transition from model-internal confidence heuristics to external runtime execution feedback for token selection represents a strong, pragmatic inductive bias for diffusion code generation.\n2. The paper excels in diagnosing why global low-confidence remasking fails. The edit distance analysis convincingly demonstrates that without semantic guidance, diffusion models tend to lazily reconstruct the original failing code.\n3. The dual-pronged approach to localization provides robust coverage across diverse failure modes.",
+        "weaknesses": "1. The proposed method struggles severely on the HE+ benchmark (even it is considered a little bit outdated in 2026 under the big scenarios of code intelligence…), showing a merely marginal improvement from 1.83% to 2.64%. Seems the base LLaDA-8B model lacks the foundational reasoning capacity required for these more problems. Consequently, it remains unclear if this execution-guided repair mechanism can scale effectively to harder algorithmic challenges, or if it is primarily restricted to fixing superficial syntax and runtime errors where tracebacks point directly to the obvious flaw.\n2. The localization part, particularly for assertion errors, relies on a brittle and conceptually shallow heuristic: mechanically extracting the last 20 executed lines prior to the crash. In complex SE tasks, the root cause of an assertion failure (such as an incorrect variable initialization or a faulty state mutation) frequently resides far upstream from the execution locus.\n3. The empirical results is strictly confined to MBPP+ and HumanEval+, which are a little bit outdated and isolated, single-function algorithmic puzzles devoid of external dependencies. Modern SE / coding agents operate within multi-file repos involving intricate state management and complex API interactions (e.g., SWE-bench). In such envs, trace would generate overwhelming compiler feedback noise, rendering the localization pipeline not functioning.",
+        "suggestions": "",
+        "llmDisclosure": "I use Gemini-3-pro for writing a concise summary and grammar check. Final judgments and scores are independently written by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T17:43:20.252Z",
+      "updatedAt": "2026-04-12T17:43:20.252Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 0,
+        "confidence": 3,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes execution-trace guided remasking, an inference-time repair method for masked diffusion language models applied to code generation. The hypothesis is that runtime execution diagnostics (exception tracebacks, line-level traces) provide better localization signals for remasking than model-confidence heuristics. Given a failing code candidate, the method parses execution failures to identify the relevant source lines, remasks the corresponding tokens, and iterates conditional diffusion repair. On MBPP+, the method achieves 31.22% pass@1 versus CORE's 26.98%, with statistical significance. On HumanEval+, improvements are minimal (1.83% → 2.64%). The result is a positive outcome on MBPP+, though absolute performance is extremely low and the comparison with CORE is methodologically questionable due to information asymmetry.",
+        "strengths": "no",
+        "weaknesses": "I suspect there is a bug, or the dLLM being used is too weak — they are using runtime diagnostics as feedback for reasoning, yet Table 1 performance is still this low. \nI feel that base model should switch to LLaDA2 or SDAR; check their technical reports. \nFurthermore, using runtime diagnostics — which is cheat-level feedback — and comparing against other baselines is very hacky and unfair. Conversely, this actually highlights that CORE is a very strong piece of work.",
+        "suggestions": "should drop",
+        "llmDisclosure": "summary",
+        "ethicsReproducibility": "Yes, cheat"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-06T14:56:58.405Z",
+      "updatedAt": "2026-04-06T14:56:58.405Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes execution-trace guided remasking, an inference-time method that uses runtime diagnostics (exception tracebacks, line-level execution traces) to localize failures and target repair in masked diffusion language models for code generation. The method is evaluated on HumanEval+ and MBPP+ using LLaDA-8B-Base against four baselines: no repair, global low-confidence repair, CORE, and best-of-2. On MBPP+, the method achieves 31.22% pass@1, an 11.38pp improvement over no-repair and 4.24pp over CORE (p<0.001). On HumanEval+, improvements are marginal (1.83% → 2.64%) due to very low base performance. Analysis shows trace-guided repair produces meaningful code modifications (mean edit distance 10.01 tokens) while global low-confidence repair rarely changes code (89.4% zero-edit fraction).",
+        "strengths": "- Using execution feedback to guide where diffusion models should repair code is a natural idea. The hierarchical localization (exception → assertion → fallback) is well thought out.\n- The MBPP+ results are strong: +11.38pp over no-repair and +4.24pp over CORE, both statistically significant (McNemar p<0.001). This is a convincing improvement.\n- Good ablation design. The finding that random vs confidence-based token selection within the trace region performs identically is interesting — it shows that *where* to repair matters much more than *which tokens* to remask.\n- The edit locality analysis (Figure 3) is illuminating: global low-confidence repair produces zero edits 89.4% of the time, neatly explaining why it fails.",
+        "weaknesses": "- HumanEval+ performance is near-zero (2.64% vs 1.83% baseline), making the evaluation effectively single-benchmark. The base model simply can't generate functional code on HumanEval+, so the method can't be meaningfully assessed there.\n- Trace-guided repair costs ~294 NFE versus 128 for no-repair and 136 for CORE — roughly 2× the compute. The paper doesn't explore what CORE could achieve with the same budget (e.g., additional revision passes totaling ~294 NFE). This makes it hard to tell how much of the improvement comes from the trace guidance vs. simply spending more compute on repair.\n- Only one diffusion model (LLaDA-8B-Base) is tested. Newer models like Dream-7B or LLaDA-2 may have quite different repair dynamics. Also, CORE (Zhai et al., 2026) appeared on arXiv just 7 days before this paper, and the reimplemented numbers differ substantially from the original (HumanEval: 17.07% original vs 3.05% here), making the comparison hard to evaluate.\n- Syntax errors account for 66.1% of failures but the repair success rate on them is only 12.1%. Since syntax errors prevent execution and thus can't be localized by tracing, the method's real advantage is on the ~34% of failures that produce execution traces (runtime errors, assertion failures). This narrows the effective scope considerably.",
+        "suggestions": "- Include a compute-matched CORE baseline (e.g., CORE with additional revision passes totaling ~294 NFE) to isolate the benefit of execution-trace guidance from additional compute.\n- Evaluate on at least one additional diffusion model (e.g., Dream-7B or LLaDA-2) to demonstrate generalizability.\n- Provide more analysis on the 66.1% syntax error failures — can trace-guided repair be extended with syntax-level feedback (e.g., parser error messages) for these cases?\n- Consider reporting pass@k for k>1 to assess diversity of repair outcomes.",
+        "llmDisclosure": "Claude Code (Opus 4.6) was used to assist with summarizing the paper, checking log/code consistency, and polishing phrasing. The paper PDF and experiment logs were shared with the tool for analysis. Final judgments and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T11:12:51.046Z",
+      "updatedAt": "2026-04-11T12:19:51.935Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0072"
+}

@@ -1,0 +1,37 @@
+# Academic Integrity & Consistency Risk Report
+
+## Executive Summary
+The manuscript presents a coherent methodological framework (Misalign@k) and internally consistent logical arguments regarding tail-risk amplification and incoherence masking. However, **two substantive inconsistencies** were identified that require clarification: a mathematical impossibility in Table 3 relative to the stated prompt distribution, and a minor numerical mismatch between Table 1 and Figure 2. No evidence of fabricated data or malicious intent was found; these appear to be reporting or calculation oversights.
+
+---
+
+## 1. Prompt Count vs. Metric Granularity Mismatch (Table 3)
+**Severity:** High (Methodological/Reporting Inconsistency)  
+**Location:** Section 4.1 (Experimental Setup) vs. Table 3  
+**Evidence:**  
+- Section 4.1 explicitly states: *"We use 24 prompts... comprising **8 prompts each** in Plain, JSON, and Template formats."*  
+- Table 3 reports `Misalign@32 (%)` broken down by format. Several values are mathematically impossible if the denominator is exactly 8 prompts per format (where the minimum non-zero step size is $1/8 = 12.5\%$):
+  - `Baseline Plain`: 83.33% (implies $5/6$ prompts)
+  - `Baseline JSON`: 95.83% (implies $23/24$ prompts)
+  - `Interleaving Plain`: 16.67% (implies $1/6$ prompts)
+  - `Interleaving Template`: 33.33% (implies $1/3$ or $8/24$ prompts)
+- **Inconsistency:** Values like 16.67% and 83.33% cannot result from evaluating exactly 8 prompts per format unless the prompt set varies across random seeds (which is not stated) or the values are incorrectly averaged/rounded. If the prompt set is fixed at 8 per format, these percentages are mathematically invalid. If the format actually contains 6 or 24 prompts, it contradicts Section 4.1.
+
+## 2. Minor Numerical Discrepancy (Figure 2 vs. Table 1)
+**Severity:** Low (Visualization/Reporting Mismatch)  
+**Location:** Table 1 vs. Figure 2(a)  
+**Evidence:**  
+- Table 1 reports `Interleaving (5%)` under Standard metric at `k=1` as **0.69% ± 0.40**.  
+- Figure 2(a) plots the `k=1` point for Interleaving at approximately **2%**, with an error bar extending roughly from 1% to 3%.  
+- **Inconsistency:** The plotted mean (2%) falls outside the reported confidence interval in Table 1 (0.29%–1.09%). While minor, this suggests either a rounding discrepancy, a different seed average used for the plot, or a labeling error in the figure.
+
+## 3. Verification of Core Claims & Logical Consistency
+Despite the above reporting issues, the core scientific claims are well-supported and internally consistent:
+- **Tail-Risk Amplification Math:** The reported amplification factors are accurate. E.g., Interleaving Standard: $16.67 / 0.69 \approx 24.15\times$ (reported as 24.2×). KL Standard: $26.39 / 2.04 \approx 12.93\times$ (reported as 12.9×). [Section 4.2, Table 1]
+- **Ranking Flip Mechanism:** The explanation that high incoherence (18.84%) masks misalignment under the Standard metric (`align<30 AND coh>50`) but is exposed under the Relaxed metric (`align<30`) is logically sound and numerically consistent. The jump in MeanMisalign from 0.69% to 6.38% (9.2×) correctly reflects the inclusion of incoherent-but-misaligned outputs. [Section 4.3, Tables 1 & 2]
+- **Judge Calibration:** The Aligned Base model shows 0.00% misalignment across all metrics, validating the zero false-positive claim for the LLM judge. [Section 4.6, Tables 1 & 2]
+- **Figure 3 vs. Table 3:** Figure 3 reports *per-prompt mean misalignment rates*, while Table 3 reports *Misalign@32*. The manuscript correctly distinguishes these metrics, and the values align conceptually (e.g., low mean rates in Fig 3 correspond to amplified tail-risk rates in Table 3). [Section 4.5]
+
+## Conclusion
+The manuscript demonstrates strong internal logical consistency regarding its proposed evaluation protocol and defense analysis. The identified issues are **reporting/calculation inconsistencies** rather than evidence of data fabrication or methodological deception. 
+**Recommendation:** The authors should clarify the prompt distribution per format to resolve the Table 3 granularity mismatch and reconcile the `k=1` Interleaving value between Table 1 and Figure 2. Once corrected, the manuscript maintains high scientific validity.

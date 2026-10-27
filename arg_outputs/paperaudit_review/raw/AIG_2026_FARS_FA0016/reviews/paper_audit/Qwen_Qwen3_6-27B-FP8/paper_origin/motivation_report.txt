@@ -1,0 +1,36 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Large language models incur high inference costs when processing long contexts. While context compression mitigates this, existing Optimal Transport (OT) methods like ComprExIT operate query-agnostically, potentially allocating compression capacity to tokens irrelevant to the downstream query.
+- **Claimed Gap**: *"optimal transport (OT) methods like ComprExIT operate query-agnostically, potentially wasting capacity on irrelevant tokens."* (Global Summary/Abstract)
+- **Proposed Solution**: QCap-OT, an inference-time modification that reweights the OT sender marginal using query-anchor cosine similarity. The method applies a temperature-scaled bias to steer the Sinkhorn transport plan toward query-relevant content without requiring model retraining or additional parameters.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Informative GANs via Structured Regularization of Optimal Transport (Bréchet et al.)
+- **Identified Overlap**: Both works address the limitation of unregularized OT producing mappings that optimize geometric compatibility but neglect downstream task utility. Both intervene at the OT optimization layer by perturbing constraints (marginals/costs) to steer the transport plan toward task-specific informativeness without end-to-end retraining.
+- **Manuscript's Defense**: The manuscript does not cite this work. It differentiates implicitly by positioning QCap-OT as a lightweight, parameter-free inference-time heuristic specific to LLM context compression, contrasting with Bréchet et al.'s training-time GAN regularization. The authors claim the reweighting is computationally negligible and requires only a single forward pass.
+- **Reviewer's Assessment**: The defense is weak regarding methodological novelty. Reweighting sender marginals based on a relevance score is a standard, well-established heuristic in OT applications. The manuscript offers no theoretical justification for why this specific marginal perturbation should improve compression fidelity, and empirically, it yields no gain. The distinction is purely domain-specific application, not a substantive algorithmic advance.
+
+### vs. Fully Probabilistic Design for Optimal Transport (Boufelja Y. et al.)
+- **Identified Overlap**: Both treat OT marginals as dynamic design variables that can be updated with external probabilistic knowledge. Boufelja et al. theoretically frame OT as a probabilistic design problem where marginals act as constraints; the manuscript operationalizes this by injecting query-anchor similarity as a prior into the sender marginal before the Sinkhorn solve.
+- **Manuscript's Defense**: Not explicitly cited. The manuscript defends its approach by emphasizing practical deployment constraints: *"Implementation requires no additional training or parameters beyond the original ComprExIT model... Computational overhead is negligible."* (Method Section)
+- **Reviewer's Assessment**: The manuscript successfully positions itself as a practical, deployment-focused adaptation of theoretical marginal design principles. However, the novelty remains incremental. The use of a temperature parameter (`beta = 1.0`) to scale similarity scores is a standard softmax trick, not a novel probabilistic design mechanism. The paper survives this comparison as a valid engineering application but fails to advance the underlying OT theory.
+
+### vs. Revisiting SVD and Wavelet Difference Reduction for Lossy Image Compression: A Reproducibility Study (Makarova)
+- **Identified Overlap**: Both papers pivot from algorithmic novelty to empirical stress-testing, framing independent replication and gap documentation as a primary scientific contribution. Both highlight massive performance divergences between published claims and independent re-implementations, attributing them to unreported implementation details.
+- **Manuscript's Defense**: The manuscript explicitly embraces this parallel. It documents extensive debugging (fixing per-layer projections, normalization schemes), conducts hyperparameter sweeps, and states: *"The negative result is confounded by the inability to reproduce the baseline's performance despite extensive debugging... The paper explicitly documents this reproducibility challenge and releases code/checkpoints."* (Global Summary)
+- **Reviewer's Assessment**: The defense is strong and scientifically valuable. Unlike the methodological claims, the reproducibility audit stands on its own merits. The manuscript successfully defends this contribution by providing transparent diagnostics, statistical validation of the gap, and open artifacts. This elevates the paper from a failed methodological proposal to a rigorous scientific integrity report.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental (with a substantive Reproducibility/Scientific Integrity component)
+- **Assessment**:
+  The manuscript's primary methodological claim (QCap-OT) does not survive rigorous comparison. Query-conditioned marginal reweighting is a direct, untheorized application of established OT steering principles, and the empirical results show statistically indistinguishable performance from the baseline. The motivation to fix "query-agnostic" OT is valid, but the proposed solution is an engineering tweak that lacks theoretical grounding or empirical validation. However, the paper's secondary contribution—the rigorous documentation of a ~65-point F1 reproducibility gap in ComprExIT—significantly strengthens its overall value. The existence of the similar works weakens the methodological motivation but inadvertently highlights the paper's true strength: exposing fragile baselines in the OT-compression literature.
+  - **Strength**: Transparent reporting of negative results; rigorous, step-by-step debugging process; valuable reproducibility audit that benefits the broader community; lightweight, parameter-free inference design.
+  - **Weakness**: Core methodological novelty is incremental and heavily overlaps with existing OT marginal perturbation literature; empirical validation is fundamentally confounded by unreproducible baselines; lacks theoretical guarantees for why query-conditioning should improve transport plans; statistical indistinguishability from baseline undermines the claimed gap.
+
+## 4. Key Evidence Anchors
+- **Claimed Gap**: *"optimal transport (OT) methods like ComprExIT operate query-agnostically, potentially wasting capacity on irrelevant tokens."* (Abstract/Global Summary)
+- **Methodological Mechanism**: *"Reweighting formula applies a temperature parameter beta > 0 to bias the transport plan toward tokens that are both important and query-relevant."* (Preliminaries)
+- **Empirical Null Result**: *"Paired bootstrap with 10,000 resamples confirms no significant difference between QCap-OT and Re-impl (95% CIs for mean delta include zero)."* (Experiments)
+- **Reproducibility Contribution**: *"Highlights the ~65-point F1 gap (2.47% vs 68.08%) as a fundamental reproducibility challenge persisting despite debugging... Contributions: QCap-OT proposal, empirical evaluation showing no improvement, documentation of reproducibility challenges."* (Conclusion)

@@ -1,0 +1,56 @@
+# Global Summary
+
+This paper addresses the problem of error propagation in LLM-as-a-Judge systems that utilize self-reference (providing the judge's own generated answer as context). While self-reference improves accuracy when the judge's answer is correct, it degrades performance when the self-answer is incorrect. The authors propose Selective Self-Reference (SSR-Judge), a method that uses self-consistency (agreement among multiple sampled solutions) as a confidence gate. If the model exhibits high agreement across samples, it uses self-reference; otherwise, it falls back to no-reference judging. Evaluated on MMLU-Pro ($N=1,400$) using Qwen2.5-72B-Instruct, SSR-Judge achieves 58.93% preference accuracy, outperforming both No-Reference (52.07%) and Always Self-Reference (58.21%) baselines. The authors note limitations regarding increased computational cost due to sampling and the potential need for domain-specific threshold tuning.
+
+# Abstract
+
+- Problem: Self-reference in LLM judging improves accuracy but propagates errors when the judge's self-generated answer is incorrect.
+- Observation: Self-consistency serves as a proxy for correctness. Unanimous agreement (5/5 samples) yields 78.66% correctness, compared to 35.51% for 3/5 agreement.
+- Method: SSR-Judge uses an agreement gate to conditionally enable self-reference only when the model exhibits high confidence.
+- Results: On MMLU-Pro pairwise preference judgment, SSR-Judge achieves 58.93% accuracy. This outperforms No-Reference (52.07%) and Always Self-Reference (58.21%).
+
+# Method
+
+- Problem Formulation: The task is pairwise preference judgment. Self-reference helps when the self-answer is correct but causes "error propagation" when the self-answer is incorrect, anchoring the judge to a wrong reference.
+- Self-Solve Sampling: The judge generates $k$ independent samples using temperature sampling. The agreement level is calculated as the fraction of samples sharing the most common answer.
+- Agreement Gate: A binary gate function determines whether to use self-reference based on a threshold $\tau$. A higher threshold increases precision (likelihood of correct self-answer) but reduces coverage.
+- Conditional Judging:
+  - Self-reference path (Gate=1): The majority answer is provided as a reference to the judge.
+  - No-reference path (Gate=0): The judge evaluates candidates without a reference to avoid error propagation.
+- Position Bias: The method evaluates each item twice with swapped response order and takes a majority vote to mitigate position bias.
+
+# Experiments
+
+- Setup:
+  - Dataset: MMLU-Pro, 14 categories, 100 items each ($N=1,400$). Questions have 10 answer options.
+  - Model: Qwen2.5-72B-Instruct.
+  - Hyperparameters: $k=5$ samples, agreement threshold $\tau=4/5$ (at least 4 out of 5 samples must agree).
+  - Baselines: No-Reference (discards self-solves) and Always Self-Reference (always uses majority self-answer).
+- Main Results:
+  - SSR-Judge achieves 58.93% PreferenceAcc.
+  - No-Reference achieves 52.07%.
+  - Always Self-Reference achieves 58.21%.
+  - SSR-Judge Gate-On Rate is 63.79% with a Gate Precision of 72.45%.
+- Error Propagation Analysis:
+  - SSR-Judge matches Always Self-Reference on unanimous slices (preserving benefit).
+  - SSR-Judge matches No-Reference on non-unanimous slices (avoiding error propagation).
+  - On the "Non-unanimous + Wrong" slice, Always Self-Reference drops to 24.50% accuracy, while SSR-Judge maintains 37.75% (matching No-Reference).
+- Calibration Analysis:
+  - 3/5 agreement corresponds to 35.5% majority correctness.
+  - 4/5 agreement corresponds to 57.7% majority correctness.
+  - 5/5 (unanimous) agreement corresponds to 78.7% majority correctness.
+- Per-Category Analysis:
+  - SSR-Judge improves over No-Reference on 13 of 14 categories.
+  - Largest gains: Math (+22pp), Business (+16pp), Chemistry (+15pp).
+  - STEM categories (Physics 89%, Math 86%) show higher gate precision than humanities (Law 48%, Philosophy 58%).
+
+# References
+
+- Key works cited include:
+  - Zheng et al. (2023) on MT-Bench and Chatbot Arena.
+  - Lin et al. (2025) on self-reference-guided evaluation.
+  - Wang et al. (2022) on self-consistency.
+  - Kadavath et al. (2022) on LLM uncertainty estimation.
+  - Manakul et al. (2023) on SelfCheckGPT.
+  - Wang et al. (2024) on MMLU-Pro.
+  - Yang et al. (2024) on Qwen2.5.

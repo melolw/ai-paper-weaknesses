@@ -1,0 +1,63 @@
+# Integrity and Consistency Risk Report
+
+**Manuscript Title:** SELECTIVE DELEXICALIZATION TO DEFEND STRUCTURED-OUTPUT LLM APIS FROM CONTROL-PLANE JAILBREAKS
+
+**Summary of Findings:**
+This review identifies **three high-impact internal inconsistencies** that materially affect the scientific validity and trustworthiness of the manuscript. These include a logical contradiction in the evaluation of chunked attacks, numerical mismatches in utility metrics, and a methodological concern regarding the definition of Attack Success Rate (ASR) that may inflate safety claims.
+
+---
+
+### 1. Logical Contradiction: Chunked Attack Evaluation vs. Mechanism
+**Severity:** High
+**Location:** Section 4.6 (Limitations), Figure 3 (Block #8, #10, #11)
+
+**Issue:**
+The manuscript claims that the defense provides no protection against chunked attacks because the suspicion function fails to detect them. However, the reported results show different Attack Success Rates (ASR) for the defended and undefended conditions, which is logically impossible if the defense is inactive.
+
+*   **Claim:** Section 4.6 states: *"In this attack variant, **0% of chunks are flagged** regardless of chunk size... This demonstrates that the defense provides no additional protection against chunked attacks, as the suspicion function operates on individual literals rather than aggregated semantic content."*
+*   **Evidence:** If 0% of chunks are flagged, the defense mechanism (placeholder replacement) is never triggered. The schema passed to the model should be identical to the "No Defense" condition. Consequently, the model's output and the resulting ASR should be **identical** for both conditions.
+*   **Contradiction:** Figure 3(a) (Table in Block #8) reports significantly different ASR values for "No Defense" vs. "DeLex-JSON":
+    *   Chunk Size 5: No Defense (14%) vs. DeLex-JSON (8%)
+    *   Chunk Size 15: No Defense (10%) vs. DeLex-JSON (14%)
+*   **Implication:** The data contradicts the mechanism description. Either the suspicion function *did* flag some chunks (contradicting the "0% flagged" claim), or the experimental conditions were not identical (e.g., different random seeds or attack variants), or the data is inconsistent. The fact that DeLex-JSON shows a *higher* ASR (14% vs 10%) at chunk size 15 suggests the defense might actively degrade safety in some cases, which is not discussed.
+
+### 2. Numerical Mismatch: Utility Preservation Metrics
+**Severity:** Medium-High
+**Location:** Section 4.3, Table 2 (Block #6), Table 3 (Block #7)
+
+**Issue:**
+The reported degradation in utility metrics (Validity and Compliance) in the text and Table 2 does not match the absolute values provided in the ablation study (Table 3).
+
+*   **Claim:** Section 4.3 and Table 2 report the overall degradation for DeLex-JSON as:
+    *   Validity Δ: **-0.38pp**
+    *   Compliance Δ: **-0.70pp**
+*   **Evidence:** Table 3 (Ablation Study) provides the absolute scores for the baseline and the proposed method:
+    *   **Validity:** No Defense (95.9%) vs. DeLex-JSON (95.4%). The difference is **0.5pp**, not 0.38pp.
+    *   **Compliance:** No Defense (94.1%) vs. DeLex-JSON (93.1%). The difference is **1.0pp**, not 0.70pp.
+*   **Implication:** There is a clear numerical inconsistency between the main results table and the ablation table. This raises concerns about the accuracy of the reported metrics or suggests that the tables were generated from different experimental runs without proper reconciliation.
+
+### 3. Methodological Concern: ASR Definition and Literal Restoration
+**Severity:** High
+**Location:** Section 3.4 (Placeholder Replacement), Section 4.1 (Experimental Setup)
+
+**Issue:**
+The manuscript claims "0% Attack Success Rate" by excluding forced literals from the safety evaluation, which may artificially inflate the defense's effectiveness.
+
+*   **Claim:** Section 3.4 states: *"Importantly, we maintain a mapping table from placeholders to original literals, enabling optional post-processing to restore original values for downstream API consumers if needed. However, for safety evaluation, we assess only the model-generated free-text fields... **excluding forced literals from harm scoring**."*
+*   **Analysis:** The goal of a control-plane jailbreak is to force the model to output harmful content. If the defense replaces the harmful literal with a placeholder, but the system subsequently **restores** the original harmful literal for the downstream consumer, the harmful content is still present in the final output.
+*   **Implication:** By excluding forced literals from the HarmBench scoring, the paper measures whether the *model* generated the text, not whether the *system* output the text. If the attack succeeds in getting the harmful text into the final output (via restoration), the attack has succeeded. Claiming "0% ASR" under this methodology is misleading, as it ignores the primary vector of the attack (the forced literal itself). The defense neutralizes the *priming* effect but not necessarily the *output* of the harmful content if restoration is enabled.
+
+### 4. Minor Inconsistency: Attack Baseline Severity
+**Severity:** Low (Clarity)
+**Location:** Abstract, Introduction, Section 2.3
+
+**Issue:**
+There is a discrepancy in the reported severity of the EnumAttack.
+*   **Abstract/Intro:** States EnumAttack achieves **22%** ASR on Llama-3.1-8B.
+*   **Related Work (2.3):** Cites Zhang et al. (2026) reporting **96.2%** ASR across proprietary and open-weight LLMs.
+*   **Note:** While the 22% figure may be specific to the Llama-3.1-8B model used in this paper, the juxtaposition with the 96.2% figure without clear distinction creates ambiguity regarding the general threat level the defense is addressing.
+
+---
+
+**Recommendation:**
+The authors should clarify the logical inconsistency in the chunked attack results (why ASR differs if 0% chunks are flagged), reconcile the numerical discrepancies in utility metrics, and explicitly discuss the implications of restoring malicious literals on the definition of "Attack Success."

@@ -1,0 +1,43 @@
+1) Summary
+The paper addresses prompt injection vulnerabilities in vision-language model (VLM) judges, where adversarial content embedded in candidate responses manipulates evaluation outcomes. The authors propose an isolated solve-then-judge defense, a two-pass architecture that first generates a self-answer from trusted inputs (image and query) alone, then uses this uncontaminated reference to judge candidates. Evaluated on VL-RewardBench with Qwen2.5-VL-7B-Instruct, the method reduces conditional attack success rate by 62 percentage points (from 91.3% to 29.3%) while incurring a 10.8 percentage-point clean accuracy drop. Controlled experiments isolate the contribution of information isolation, and analysis reveals category-dependent effectiveness and persistent vulnerability to authority impersonation attacks.2) Strengths
+- **Rigorous and Controlled Experimental Design**
+  - The three-condition setup (A, B, C) explicitly isolates information isolation from prompt engineering and compute overhead (Section 3.4, Figure 1), ensuring causal attribution of the defense's efficacy rather than conflating it with architectural changes.
+  - The conditional attack success rate (ASR_cond) metric focuses specifically on flipped correct judgments rather than overall ASR (Section 4.1, Table 1), providing a more rigorous security evaluation aligned with real-world judge reliability.
+  - Per-category and per-variant breakdowns (Table 2, Table 3, Figure 2) reveal nuanced defense behavior across task types and injection strategies, demonstrating thorough empirical characterization beyond aggregate metrics.
+- **Simple and Interpretable Defense Mechanism**
+  - The two-pass architecture requires no model fine-tuning or complex architectural modifications (Section 3.3, Equations 3–4), lowering deployment barriers and enhancing reproducibility across existing judging pipelines.
+  - Corruption analysis quantifies Pass 1 contamination rates (0% in Condition B vs. 1.88% in Condition C) and directly links corruption to attack success jumps (Section 4.5), providing mechanistic insight into why isolation functions as a security boundary.
+  - Failure analysis identifies weak self-anchors (<30 characters) and position bias as primary failure modes (Section 4.6), offering actionable diagnostics that ground future improvements in observable model behavior.
+- **Transparent Threat Modeling and Limitation Reporting**
+  - Evaluation covers three distinct injection variants (Primary, Authority, Verdict) with explicit definitions and success rates (Section 4.1, Table 3), capturing diverse adversarial strategies beyond simple instruction override.
+  - Explicit acknowledgment of trade-offs (10.8pp accuracy cost) and limitations (authority attacks, reasoning degradation) (Abstract, Section 4.2–4.4) maintains scientific rigor and prevents overclaiming defense capabilities.
+  - Public code release and automated generation warning ensure reproducibility and transparency (Abstract footnote 1), aligning with open science standards and facilitating community validation.3) Weaknesses
+- **Limited Generalizability Across Models and Benchmarks**
+  - Evaluation relies solely on Qwen2.5-VL-7B-Instruct and VL-RewardBench (Section 4.1), leaving defense efficacy unverified across different model families, parameter scales, or training objectives.
+  - No comparison with other established VLM judges (e.g., LLaVA, InternVL, or proprietary multimodal models) (Section 4.1), limiting claims about broad applicability in diverse multimodal judging pipelines.
+  - VL-RewardBench focuses exclusively on pairwise preference; defense performance on scoring or ranking tasks remains untested (Section 2.1, Section 4.1), restricting understanding of the method's scope in real-world evaluation settings.
+- **Insufficient Attack Diversity and Adaptive Threat Modeling**
+  - Attacks are limited to three static prompt templates without optimization or iterative refinement (Section 4.1, Table 3), failing to stress-test the defense against adaptive or gradient-based attacks like JudgeDeceiver (cited in Section 2.2).
+  - No evaluation of multi-turn or cross-modal injection strategies (e.g., adversarial images combined with malicious text) (Section 3.1, Section 4.1), underestimating real-world multimodal threat surfaces where visual channels may bypass text isolation.
+  - Authority attacks achieve 63.6% ASR_cond, yet no mechanistic analysis explores why reference anchoring fails against perceived authority (Section 4.4, Table 3), leaving a critical vulnerability unexplained and unmitigated.
+- **Unmitigated Performance Trade-offs and Prompt Sensitivity**
+  - The 10.8pp clean accuracy degradation is substantial and lacks mitigation strategies (Section 4.2, Table 1), potentially hindering practical adoption where baseline judging accuracy is already marginal.
+  - Reasoning tasks show degraded defense performance (49.5% ASR_cond) and worse results than the non-isolated control (Table 2), suggesting isolation disrupts necessary contextual reasoning, but no architectural or prompting fixes are proposed.
+  - Pass 2 prompt engineering (delimiters, warnings) is bundled with isolation; no ablation isolates their individual contributions (Section 3.4, Section 4.2), obscuring whether prompt design or information isolation drives the 4pp B-vs-C performance gap.4) Suggestions for Improvement
+- **Expand Evaluation Scope and Cross-Model Validation**
+  - Evaluate the defense on at least two additional VLM families (e.g., LLaVA-1.5, InternVL2) and scales to assess robustness across architectures, directly addressing the single-model limitation in Section 4.1.
+  - Test on alternative benchmarks covering scoring and ranking tasks (e.g., MMLU-Pro, MathVista) to verify generalization beyond pairwise preference, as noted in Section 2.1 and Section 4.1.
+  - Report statistical significance tests (e.g., bootstrap confidence intervals) for CleanAcc and ASR_cond differences across models/datasets to strengthen the comparative claims in Table 1 and Table 2.
+- **Strengthen Threat Modeling and Adaptive Attack Evaluation**
+  - Incorporate optimization-based attacks (e.g., JudgeDeceiver or GCG-style prompts) to evaluate defense against adaptive adversaries, extending beyond the static templates in Section 4.1 and Table 3.
+  - Investigate cross-modal injection vectors by pairing adversarial text with perturbed images, assessing whether visual channels bypass isolation, as the current threat model in Section 3.1 focuses exclusively on text.
+  - Conduct mechanistic analysis (e.g., attention rollout or probe classifiers) on authority attack failures to identify why reference anchoring is overridden, addressing the unexplained vulnerability in Section 4.4 and Table 3.
+- **Mitigate Accuracy Trade-offs and Decouple Prompt Components**
+  - Propose and evaluate prompt-tuning or lightweight adapter methods to recover the 10.8pp clean accuracy loss without compromising isolation, directly addressing the trade-off reported in Section 4.2 and Table 1.
+  - Design reasoning-aware isolation variants (e.g., delayed candidate exposure or structured self-answer templates) to address the Reasoning category degradation highlighted in Table 2.
+  - Perform a systematic ablation of Pass 2 prompt elements (delimiters, warnings, reference formatting) to quantify their individual contributions to the B-vs-C performance gap, clarifying the claims in Section 3.4 and Section 4.2.5) Score
+- Overall (10): 7 — The paper presents a clean, well-controlled defense with strong empirical characterization, but limited model/dataset coverage and unmitigated accuracy trade-offs constrain broader impact (Sections 3.4, 4.2, Table 1).
+- Novelty (10): 6 — The isolated solve-then-judge paradigm is conceptually straightforward and builds on existing self-reference ideas, offering incremental architectural insight rather than a fundamentally new mechanism (Sections 2.4, 3.3).
+- Technical Quality (10): 7 — Experimental design is rigorous with clear controls and failure analysis, though the lack of adaptive attacks and cross-model validation limits technical depth (Sections 3.4, 4.1, 4.5).
+- Clarity (10): 8 — The manuscript is well-structured, with precise problem formulation, clear figure/table references, and transparent reporting of limitations (Sections 1, 3.1, 4.6).
+- Confidence (5): 4 — High confidence in the evaluation of the presented results and methodology, though limited by the single-model/single-dataset scope and static attack variants (Sections 4.1, 4.4).

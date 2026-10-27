@@ -1,0 +1,5 @@
+arg,n_papers,mean_recall,mean_precision,mean_f1
+cspaper,50,0.8996,0.7819,0.8301
+paperreview.ai,50,0.9505,0.769,0.8455
+paperaudit,50,0.7807,0.8119,0.7896
+deepreviewer,50,0.8154,0.7738,0.7847

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_WANG_multimodal_multiagent_debatebased_dialectical",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Multi-modal Multi-agent Debate-based Dialectical Knowledge Transfer Learning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces a novel framework, M2D-DKTL (Multi-modal Multi-agent Debate-based Dialectical Knowledge Transfer Learning), aimed at enhancing the reasoning capabilities of smaller multi-modal language models (MLLMs) by leveraging multi-agent debates. This method employs a multi-modal debate structure to extract and refine high-quality dialectical knowledge, which is then transferred to smaller models to improve their logical reasoning and complex decision-making abilities. The effectiveness of this approach is demonstrated through substantial improvements in performance metrics on complex reasoning tasks across several datasets, establishing the framework's potential to significantly boost the operational efficiency and reasoning depth of MLLMs.",
+      "strengths": "Although there is no novel idea, the produced results by the proposed framework show it can effectively improve model's complex reasoning capabilities.\nThe second and third main results reported in section 4.1.4, while not particularly surprising, provide solid evidence of the framework's effectiveness. These results underscore the reasonable outcomes expected when extending multi-agent debates into more complex, multi-modal contexts, affirming the framework's utility despite its straightforward enhancements.",
+      "weaknesses": "The framework extends existing multi-agent debate concepts to incorporate additional modalities, but it does not introduce groundbreaking methodologies. This limited novelty might be seen as a missed opportunity for a more transformative approach in the evolution of debate-based models.",
+      "questions": "The paper would be strengthened by a deeper analysis of cases where M2D-DKTL does not perform as expected or where it fails. Understanding these limitations can provide critical insights for future improvements and applications.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "488ed1989f579f7642a15f94f32fef040bc27e8272ed21fa403942471084469bfe8aa38a2826c1e7a7ebd67dd2a7a6810b5adabce0a37932e61c7733129c0f69"
+    }
+  ]
+}

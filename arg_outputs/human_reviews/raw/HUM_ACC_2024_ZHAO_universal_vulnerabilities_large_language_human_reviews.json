@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_ZHAO_universal_vulnerabilities_large_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Universal Vulnerabilities in Large Language Models: Backdoor Attacks for In-context Learning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The authors introduce a new attack algorithm ICLAttack which targets LLMs during in context learning. The two variations of the attack are simple and straightforward, but the experimental results show great success against many different types of LLMs. The authors test on 3 different classification tasks and find strong results on all combinations of LLMs and datasets, dropping accuracy up to 100% in several cases. Furthermore, the authors perform ablation studies in terms of other triggers and position of trigger. Finally, the authors explore how current defenses against backdoor attacks perform and find that none of the three investigated are adequate defenses, either failing in stopping the attack or failing in clean accuracy.",
+      "strengths": "- For this update, the authors increased the overall reproducibility by adding in necessary details to the appendix and other information for additional experiments missing from the previous iteration. \n\nPreviously noted, still applicable:\n- The proposed attack variations are described well and simple, making them easy to understand for future researchers.\n- The proposed attacks cause strong drops against all evaluated LLMs. \n- The authors perform multiple ablation studies for their attack, which reinforce previous research in multiple ways.\n- The ideas flow well and writing is well done.",
+      "weaknesses": "- Many additional experimental information is regulated to the appendix. This would be addressed with the additional page upon acceptance to make the main paper stronger.",
+      "questions": "None",
+      "rating": 4,
+      "confidence": 5,
+      "soundness": 4,
+      "raw_note_id": "ffea62dc5b890a8b9f7fa932762844e722e2200f48c31e62a40790bfb7988daf2d300a72b34638851cee31240dbc12fd3f8b8ab16c87c97181a940e7117cea0f"
+    }
+  ]
+}

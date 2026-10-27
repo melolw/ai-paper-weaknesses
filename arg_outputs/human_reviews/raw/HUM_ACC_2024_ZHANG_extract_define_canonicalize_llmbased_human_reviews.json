@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_ZHANG_extract_define_canonicalize_llmbased",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Extract, Define, Canonicalize: An LLM-based Framework for Knowledge Graph Construction",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper aims to tackle the problem of performing LLM-driven knowledge graph creation without an explicit knowledge graph schema being provided, or when the provided schema is too large to fit in the context window of the LLM. It proposes a three phase framework, EDC, that performs open information extraction on the given text, followed by schema definition and canonicalization. EDC also includes a trained component that retrieves components of the schema that might be relevant to the current text, analogous to retrieval-augmented generation. EDC is conducive to iteration, as a second round of EDC using information extracted from the first round is shown to improve performance.",
+      "strengths": "1. The paper proposes a method for tackling knowledge graph creation without an explicit schema, which is an important and relevant problem.\n2. The framework proposed is intuitive, with good empirical gains, especially in the target alignment setting.\n3. The proposed schema retriever is useful when there is a large schema, to identify components relevant to the current input.",
+      "weaknesses": "1. How were the prompts and few-shot examples for EDC arrived at? There is no discussion regarding this in the paper.\n2. It is not clear to me why the schema definitions are not obtained in the open information extraction phase. Having the LLMs output the definitions along with the extracted triples might help with consistency, and making it a separate LLM call substantially increases the cost and latency of running the pipeline. Also, in the schema definition phase, why are schema definitions extracted from multiple triples at the same time? How are the definitions corresponding to different triples extracted?\n3. If a knowledge graph is to be created from a freeform text corpus, the text would need to be chunked in some way before using EDC on it. There is no discussion on how to do this, limiting the practical utility of EDC.\n4. How is hallucination accounted for in the extracted triplets? Triplets extraneous to the provided text (such as in line 551) might not be beneficial for domain-specific data. How is the similarity thresholded for the canonicalization stage? Leaving it fully to the subjective judgement of the LLM does not seem ideal. \n5. Why does EDC not canonicalize entities? This is a problem with any real-world data, for example, a newspaper article might refer to a person by their first name after introducing them using their full name. Does EDC not scale to the number of entities?\n6. EDC is a very costly framework, involving a large number of LLM calls, limiting its scalability to large bodies of text. The experiments in the paper also use only 1000 data points, which is much smaller than most reference data for knowledge graphs. This also hurts the argument that EDC works well with large schema, since KGs with large schema tend to have large bodies of text as their source. \n7. The canonicalization step results in small improvements to redundancy, and also comes at the cost of some precision. The definition of redundancy used also seems somewhat arbitrary and hard to interpret. If cosine similarity is used as a measure of redundancy, then the provided values are very high, approaching 1.",
+      "questions": "1. It would be good to run experiments on datasets with less entity types, as it might result in a better estimate of entity extraction performance for EDC, which is largely overlooked.\n2. Line 438: \"preivous\" -> \"previous\"",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "3af84034527c7a05c9aa9b495a3c28ab524e515f6e092b22e0691de69c93709c7ed84b8afcce56a279a4a4be7ffc5596a4ef786b1fbb999bc65588396a593642"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper focuses on the knowledge graph construction task, which is a integration of entity and relation extraction. It proposes a three-phase framework named Extract-Define-Canonicalize (EDC), which is able to deal with the scenarios both with and without pre-defined schema. In extraction phase, EDC extracts entity-relation triplets freely without schema via LLM. In define phase, EDC try to generate the definitions of entity and relation types. In canonicalize phase, EDC align the triplets to the standard schema. The experimental results show the effectiveness of the proposed method.\n\n---\n\nI have read the authors' response. Most of my concerns are addressed.",
+      "strengths": "1. A flexible framework that can handle scenarios both with and without pre-defined schema.\n2. Interesting study on LLM's ability to summarize and generate schema for open IE.\n3. Extensive experiments on the proposed method verify its effectiveness.",
+      "weaknesses": "1. Knowledge graph construction is a systematic task, which requires many different subtasks. Triplet extraction is only a part of it. For example, although entity and relation types are aligned in this framework, the entity mentions in extracted triplets are not aligned. It still needs a long way to go to fulfill the whole KGC task.\n2. This paper evaluate three backbone models, where two are close-sourced models (GPT-3.5-turbo and GPT-4) and one is open-sourced model (Mistral-7b). It is unclear how Mistral-7b is trained on Schema Definition stage and Schema Cononicalization phase. What are the ground truth labels for these two phases?\n3. This paper raises the concern of exceeding prompt length under a complex schema. However, in canonicalize phase, the proposed method still needs to append all schema components into prompt to choose the correct one. It seems that this problem is not solved.",
+      "questions": "see weakness above.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "6f33fd25c35581ad656442c0bdc924e9cc7f3bd441f40cbf2716ef8c395f88459d297aa46c35e889c214999f70769c91fbc8c9697197ea64c7c1d6a118c00b59"
+    }
+  ]
+}

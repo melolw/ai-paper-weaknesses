@@ -1,0 +1,44 @@
+{
+  "paper_id": "HAH_2025_KIANG_mentormind_riskaware_constraintgrounded_advice",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=LqukdleDgU",
+  "venue": "Agents4Science",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 3",
+      "strengths_and_weaknesses": "This paper presents Mentor-Mind, a framework that integrates large language models (LLMs) with influence diagrams for risk-aware, constraint-grounded advice generation. The approach is technically sound and well-motivated, addressing real limitations of chain-of-thought prompting, particularly in enforcing hard constraints and risk awareness. The experimental methodology is appropriate, with clear metrics and reasonable utility estimation, though the evaluation is limited to synthetic scenarios, raising questions about real-world applicability. The paper is well-written and organized, with clear motivation and systematic explanation, though some technical details (such as the LLM's interface with the influence diagram) could be clearer. The work is significant for AI advice systems, showing meaningful improvements over baselines, but its impact is limited by synthetic domains and computational overhead. The integration of LLMs with influence diagrams is novel, and the risk-sensitive objectives add further originality. Reproducibility is exemplary, with extensive artifacts and clear instructions. Ethical considerations and limitations are appropriately discussed, and related work is comprehensively covered. Main concerns include the synthetic evaluation, computational overhead, scalability due to hand-crafted diagrams, and use of a dated LLM. Strengths include a principled approach, strong empirical results, excellent reproducibility, clear writing, and novel integration. Overall, the paper makes a solid contribution to AI safety and decision support, with strong experimental rigor and reproducibility, though limited by synthetic evaluation.",
+      "questions": "N/A",
+      "rating": "4",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 2",
+      "strengths_and_weaknesses": "This paper introduces Mentor-Mind, a novel framework that integrates Large Language Models (LLMs) with decision-theoretic planning using influence diagrams to create risk-aware and constraint-grounded advisory agents. The approach addresses the unreliability of LLMs in high-stakes decision-making by grounding their reasoning in formal decision models, ensuring adherence to hard constraints and risk-sensitive objectives like CVaR. The methodology is technically sound, with a clear separation between formal simulation and natural language interpretation, and includes sophisticated features such as feasibility filters and risk-sensitive objectives. Experimental evaluation is strong, showing Mentor-Mind significantly outperforms state-of-the-art prompting baselines in both alignment with an optimal oracle and in avoiding constraint violations. The paper is exceptionally clear, well-written, and reproducible, with all necessary artifacts provided. Limitations are candidly discussed, particularly the reliance on hand-crafted influence diagrams, which may affect scalability. Overall, this is an outstanding, technically flawless paper that makes a significant contribution and is recommended for acceptance without reservations.",
+      "questions": "N/A",
+      "rating": "6",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 1",
+      "strengths_and_weaknesses": "The paper proposes Mentor-Mind, an advice agent that integrates LLM-generated explanations and selection with a symbolic decision-analytic scaffold, including influence diagrams, feasibility filters, and a risk-aware objective (CVaR and mean–CVaR). The system uses a Monte Carlo simulator for scoring, and the LLM selects actions and provides explanations grounded in the decision graph. Across three synthetic domains, Mentor-Mind outperforms prompting-only baselines in oracle alignment and constraint violation rate, achieving 0 violations and higher alignment. The paper provides artifacts for reproducibility.\n\nStrengths include clear system design, robust enforcement of hard constraints, appropriate use of Monte Carlo estimation for risk, and strong empirical results. Weaknesses are the lack of tool-augmented baselines (e.g., ReAct-style tool calls), limited external validity due to synthetic-only experiments, and discrepancies between official and minimal evaluator results.\n\nThe paper is well written and organized, with clear descriptions of the system and evaluation. It is potentially significant for safety-critical advisory settings and demonstrates a robust pattern for grounding LLM reasoning in symbolic decision models. Originality is high due to the integration of influence diagrams and risk-sensitive objectives with LLMs. Reproducibility is strong, though metric discrepancies should be reconciled. Ethics and limitations are discussed candidly, and related work is cited appropriately.\n\nKey suggestions include adding tool-augmented baselines, including a real or semi-real case study, providing more detail on ID elicitation and robustness, reconciling metric discrepancies, discussing scalability, and adding further ablations.\n\nOverall, the paper is methodologically sound, practically relevant, and reproducible, but the main limitations are the synthetic-only evaluation and lack of strong baselines. With improvements, it would be a clear accept; as it stands, it is a strong borderline accept. The evidence supports the core claim that ID-grounded, risk-aware planning improves safety and alignment over prompting-only strategies.\n\nVerdict: Borderline accept, with requested improvements as above.",
+      "questions": "N/A",
+      "rating": "4",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_gftS",
+      "review_type": "human",
+      "summary": "The paper proposes Mentor-Mind, which couples LLM outputs with influence diagrams (IDs), hard-constraint filters, and risk-sensitive objectives (EU / CVaR / mean–CVaR) to generate advice in three synthetic domains (energy siting, code review, career planning). A Monte-Carlo evaluator scores each action; the LLM reads those scores, explains, and chooses an action. Reported results show substantially higher oracle alignment and zero hard-constraint violations vs CoT, self-consistency, and a “memo” baseline.",
+      "strengths_and_weaknesses": "Strengths: \n1. Well-motivated problem: CoT is not constraint-aware or risk-sensitive; decision-analytic scaffolds are a natural remedy.\n2. Novel method: quantitative scoring in code, explanation/selection in the LLM; IDs act as an explicit scaffold.",
+      "questions": "1. The text sets alpha = 0.9 for CVaR (worst 10%) but the code appendix defaults to ALPHA = 0.1 and elsewhere 0.14; these are not the same tail events. Methods mention N=100 samples per action; appendix/evaluator uses N=400.\n2. The baselines omit tool-augmented CoT (e.g., CoT + programmatic constraint checker, or CoT that calls the same Monte-Carlo oracle). That comparison is crucial to prove that ID structure, not just tool access, drives the gains.\n3. Section 3.2 describes “hard constraints via feasibility filters,” but much of the enforcement seems prompt-level (“skip any branch that violates …”). If feasibility is only conveyed by prompt text, jailbreaks/forgetting can occur. Please clarify: are infeasible actions programmatically pruned before the LLM sees options, or merely discouraged in text?",
+      "rating": "4",
+      "confidence": "3"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_YUAN_kv_cache_compression_but",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "KV Cache Compression, But What Must We Give in Return? A Comprehensive Benchmark of Long Context Capable Approaches",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper survey methods to reduce the memory requirements of long sequence models, and implements or employs a selection of them. This selection is evaluated on the LongBench benchmark and the synthetic “needle in a haystack” task. Method types considered are linear-time sequence models, token dropping, prompt compression and KV cache quantization. The authors find that quantization and token dropping result in the best retention of performance.",
+      "strengths": "- Improving efficiency in long document tasks is an important research problem.\n- While I am not an expert in this field, it seems that the authors have surveyed, organized and implemented a comprehensive set of methods to reduce memory usage in long sequence modeling. These were applied to several LLMs (where possible) and the results seem to agree.\n- The methods were evaluated on a large set of 16 long document tasks. As the compression ratios are given, the trade off between compression and performance becomes visible.\n- The experimental results can be useful to researchers and practitioners working with these and related methods.",
+      "weaknesses": "- The analysis mostly remains on the surface.\n    - For example, an interesting result from Figure 2 is that coding tasks seems to suffer less from compression methods than other tasks (noted in L456ff), but there is no attempt to explain this. Figure 2 itself is mentioned only once in the main text.\n    - While Table 2 shows results split into 7 task types, only two of them (Code and Needle) are mentioned in the main text. It would be interesting if there are other task- or instance specific phenomena that can be observed.\n    - Do the results agree between the different LLMs tested?\n\n(The authors have added analyses to their author response)",
+      "questions": "L071: “healthy selection”: What were the selection criteria?\n\nL130: What is “system-level optimization”? This is not defined.\n\nL351: “The abovemented are merely alignment hardship”\n\n- “abovementioned” → “abovementioned”\n- The whole sentence needs revision\n\nL357ff: I don’t really understand the sentence starting with “Further”. “overtrained” should be defined. \n\nL381: The sentence starting with “Though” is very long and could be split.\n\nFigure 3: What do the colors mean?\n\nA comparison of peak memory usage for fixed sequence length and batch size would be helpful to compare the memory efficiency of different methods, especially those where no compression ratio is provided.",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4.5,
+      "raw_note_id": "bc678abc2d857f436a8eacd06b8598407020f5eb7798186e8024cd3b994d6e275a977a879294429446028fb8afcc47f5fb2cf0c59f47f5e0b443a6b799749511"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_LIU_fisher_informationbased_efficient_curriculum",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Fisher Information-based Efficient Curriculum Federated Learning with Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "Federated Learning (FL) can fine-tune Large Language Models (LLMs) using decentralized data, but it faces challenges like high computation and communication costs, and non-Independent and Identically Distributed (non-IID) data. Although Low-Rank Adaptation (LoRA) reduces parameter updates, it still requires significant time to transfer these parameters. To address this, the Fisher Information-based Efficient Curriculum Federated Learning framework (FibecFed) is proposed, featuring adaptive federated curriculum learning and efficient sparse parameter updates.",
+      "strengths": "1) The paper has done a good job of explaining the existing work, and how theirs is different\n2) Comprehensive set of experiments",
+      "weaknesses": "1) It would have been better to move some of the math to the appendix and instead bring the Algorithm 2 into the main body.\n2) although accuracy and convergence time is discussed, there is no analysis of the communication overhead, i.e. whether their method increases, decreases, or doesn't change the communication overhead compared to the other methods they explored.",
+      "questions": "Some of the content in the appendix seems more useful to be in the body, and the extensive math derivations and discussions can be moved to the appendix. It is not easy to read the paper and quickly understand all the steps that are taken in the algorithm.  Also, discussing the limitations upfront would be helpful to the reader.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "18a74648029a3555a677966513b9355f1e778d69626d424310340ee52d8defc5bf7d63fea9aa8087bc1d4c1fc4633200ab1557d3065a475a5543b3df9aad5204"
+    }
+  ]
+}

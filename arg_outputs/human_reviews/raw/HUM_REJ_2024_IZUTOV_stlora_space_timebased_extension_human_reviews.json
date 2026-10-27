@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_IZUTOV_stlora_space_timebased_extension",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "ST-LoRA: Space- and Time-based extension of LoRA",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes two ways to improve LoRA: (1) Periodically merge LoRA back to the pretrained weight during finetuning; (2) Use Mixture-of-Expert to train multiple LoRA modules at the same time. Through experiments with T5-small and BART-Largs on XSUM, the proposed method, ST-LoRA, is slightly better than the strong baselines, like ReLoRA, DeltaLoRA and AdaMix.",
+      "strengths": "1. The paper is easy to follow and the motivation is clear.",
+      "weaknesses": "1. ***Lack of thorough experiments***. Only two out-dated LLMs, T5-small and BART-large, and one benchmark, XSUM, are used. Although a larger LLM on instruction tuning dataset is shown in Table 5, I doubt the results. Because a perplexity of >200 means the experiments are no usable.\n\n2. ***Lack of Novelty***. ST-LoRA is simply a combination of ReLoRA/DeltaLoRA and AdaMix.\n\n3. ***Better representation is needed***. Table 2 and 3 need some highlights for better comparison. In addition, the paper might be more suitable for short paper instead of a long paper, since one page is not used and 4 pages are used for related works and background.",
+      "questions": "NA",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 2,
+      "raw_note_id": "d74c321f05de6259555d508cc2c8d58a649a256f416f2ffbe26605b83df7f67fc399bb05d592a31438fc4b1999ffcdc9838126d4bcc93faffa015dd7d812619d"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_YUAN_empirical_study_robustness_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "An Empirical Study on Robustness of Language Models via Decoupling Representation and Classifier",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper fine-tunes multiple Pretrained Language Models (PLMs) in MNLI and analyzes their representations and behavior of classifiers in MNLI and HANS.\n\nAnalysis of PLM representations of MNLI and HANS data shows that representations from the two datasets are both linearly separable, but the classification score for HANS drops since representations of HANS data have large cosine similarity regardless of their labels.\n\nFurther analysis of debiasing methods shows that the main reason behind their benefits is their optimization of classifiers, not the model representations. This shows the importance of classifiers in training robust models.",
+      "strengths": "1. The decoupling of representation and classifiers provide an profound insight on the role of classifiers in preventing shortcut learning, which was overlooked in previous works. \n\n2. The findings of the paper are empirically supported by multiple experiments with various PLMs and learning rates.\n\n3. The descriptions for the debiasing methods and probing methods are mainly about how to interpret the probing and debiasing experiment results. Such writing style reduces unnecessary information and makes the paper easy to comprehend. The figures and tables also effectively illustrate the results.",
+      "weaknesses": "1. As mentioned in the Limitations, the authors analyze PLMs on a single task. As the paper aims to investigate model behaviors on OOD and provides purely empirical findings, the findings might not be consistent in other datasets. To confirm that the findings are generally applicable, they should be verified on more tasks.\n\n2. The comparison between [CLS] and [MEAN] embeddings can be interesting, but it is irrelevant to the other contents of this paper.\n\n3. The t-SNE and DIRECTPROBE clusters for each task are calculated independently. This setting does not correctly reflect the research question, as it ignores the relationship between HANS and MNLI clusters. For example, if the HANS-Entailment cluster mainly overlaps with the MNLI-Not-Entailment cluster, HANS can be still linearly separable but the model would not be robust. The authors should analyze HANS clusters based on MNLI clusters to verify the impact of representations on the generalization setting.",
+      "questions": "1. The different task difficulties of MNLI and HANS could have contributed to the performance drops on HANS. Reporting the performances of PLMs fine-tuned on HANS will address such concerns.\n\n2. Table 10 shows that the fine-tuned models achieve higher scores in “overlap”, compared to other non-entailment categories in HANS. Is this clear distinction relevant to the findings from the analysis?",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "22cdadc734180328ae9126d9dc03ee7813e03e2425ed681f664cbcecec3d89a051581c29ba9239ea359c527d9450c06608f368b57d55fbdaf31d45337a9e8144"
+    }
+  ]
+}

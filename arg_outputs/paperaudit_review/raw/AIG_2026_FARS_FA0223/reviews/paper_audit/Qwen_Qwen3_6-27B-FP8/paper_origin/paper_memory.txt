@@ -1,0 +1,78 @@
+# Global Summary
+
+The paper addresses catastrophic forgetting in sequential Low-Rank Adaptation (LoRA) continual learning for large language models. It proposes Delta SVD-EQ, a post-hoc spectral intervention that equalizes the singular values of task-specific LoRA deltas at each task boundary while preserving the Frobenius norm. Evaluated on the FOREVER benchmark using Qwen3-0.6B, SVD-EQ improves Backward Transfer (BWT) by +2.3 percentage points (15% relative reduction in forgetting) without degrading Overall Performance (OP). The method reduces within-order variance by 3–10×, stabilizing outcomes across random seeds. SVD-EQ is characterized as training-free, memory-free, and post-hoc applicable. Key limitations noted include order-dependent effectiveness and marginal statistical significance ($p = 0.059$).
+
+# Abstract
+
+- Problem: Catastrophic forgetting in LoRA continual learning; existing methods require training modifications, replay buffers, or architectural changes.
+- Method: Delta SVD-EQ, a post-hoc spectral intervention equalizing singular values of task-specific LoRA deltas at task boundaries while preserving Frobenius norm.
+- Results: On FOREVER benchmark with Qwen3-0.6B, SVD-EQ improves BWT by +2.3 percentage points (15% relative reduction in forgetting) without degrading overall performance.
+- Variance: Reduces within-order variance by 3–10×.
+- Ablation: Both norm shrinkage and spectral redistribution contribute to the effect.
+- Claim: SVD-EQ is the only continual learning method simultaneously training-free, memory-free, and post-hoc applicable.
+
+# Method
+
+- Problem Setup: Sequential continual learning with LoRA. Metrics defined: Overall Performance (OP) and Backward Transfer (BWT).
+- Spectral Concentration: LoRA updates develop imbalanced singular value spectra. Concentration metric defined as $\rho = \sigma_1^2 / \|\sigma\|_2^2$. Hypothesis: Spectral concentration amplifies cross-task interference.
+- Delta SVD-EQ Algorithm:
+  - Applied at task boundary $t$.
+  - Compute task-specific delta $\Delta W_t = B_t A_t - B_{t-1} A_{t-1}$.
+  - Perform SVD decomposition $\Delta W_t = U \Sigma V^\top$.
+  - Replace singular values with root-mean-square value $\bar{\sigma} = \|\sigma\|_2 / \sqrt{r}$.
+  - Preserves Frobenius norm: $\|\Delta W_t^{eq}\|_F = \|\Delta W_t\|_F$.
+  - Reconstruct equalized delta $\Delta W_t^{eq} = U \Sigma_{eq} V^\top$.
+- Properties: Training-free, memory-free, post-hoc applicable, norm-preserving.
+- Implementation: Uses QR decompositions of $B$ and $A^\top$ to reduce SVD to an $r \times r$ core matrix for efficiency.
+
+# Experiments
+
+- Setup:
+  - Benchmark: FOREVER (Standard CL).
+  - Tasks: 4 text classification tasks (DBPedia, Amazon Reviews, Yahoo Answers, AG News).
+  - Model: Qwen3-0.6B.
+  - LoRA Config: Rank $r = 8$, $\alpha = 32$, dropout 0.05. Applied to query and value projection layers.
+  - Training: 1000 training instances per task, 10 epochs per task sequentially.
+  - Runs: 3 task orders x 3 random seeds = 9 runs total.
+  - Dataset License: Not specified in this section.
+- Main Results:
+  - BWT improves from -15.2% to -12.9% (+2.3 percentage points).
+  - OP improves from 63.7% to 64.5%.
+  - Statistical significance: Paired t-test $p = 0.059$, Cohen's $d = 0.58$ (medium effect size).
+  - BWT improved in 6 out of 9 runs (67%).
+- Per-Order Analysis:
+  - Order 4: BWT +3.5pp (-15.4 to -11.9).
+  - Order 5: BWT +4.3pp (-14.0 to -9.7).
+  - Order 6: BWT -1.0pp (-16.2 to -17.2).
+  - Variance Reduction: Standard deviation drops from 2.5–4.1pp (baseline) to 0.4–1.0pp (SVD-EQ), representing a 3–10× reduction.
+- Ablation Studies:
+  - Mean-smoothing: +2.2pp BWT improvement, but reduces delta norm by 13.3%.
+  - Random-spectrum: +1.6pp BWT improvement, preserves norm.
+  - Conclusion: Both norm shrinkage and spectral redistribution contribute to effectiveness.
+- Spectral Concentration Analysis:
+  - Correlation between pre-equalization $\rho$ and BWT improvement: Pearson $r = -0.027, p = 0.893$.
+  - Finding: No significant correlation; pre-equalization spectral concentration does not predict benefit.
+- Runtime Cost: Described as "negligible" compared to training time; exact seconds not specified.
+
+# References
+
+- Chaudhry et al. (2018): Riemannian walk for incremental learning.
+- Du et al. (2024): Unlocking continual learning abilities in language models.
+- Feng et al. (2023): FOREVER: Forgetting curve-inspired memory replay.
+- Gu et al. (2023): Spectral imbalance causes forgetting in low-rank continual adaptation.
+- Hu et al. (2021): LoRA: Low-rank adaptation of large language models.
+- Huang et al. (2024): Mitigating catastrophic forgetting with self-synthesized rehearsal.
+- Ilharco et al. (2022): Editing models with task arithmetic.
+- Ke & Liu (2022): Continual learning of NLP tasks survey.
+- Kirkpatrick et al. (2016): Overcoming catastrophic forgetting in neural networks (EWC).
+- Marczak et al. (2025): Isotropic model merging.
+- Shi et al. (2024): Continual learning of LLMs survey.
+- Shuttleworth et al. (2024): LoRA vs full fine-tuning spectral characteristics.
+- Stoica et al. (2024): Model merging with SVD (KnOTS).
+- Vulić et al. (2024): LoRA-squeeze compression.
+- Wang et al. (2023): Orthogonal subspace learning (O-LoRA).
+- Wu et al. (2024): Continual learning for LLMs survey.
+- Yadav et al. (2023): TIES-merging.
+- Yu et al. (2023): DARE (random dropping).
+- Zhao et al. (2024): SAPT (shared attention).
+- Zheng et al. (2026): Weight regularization for low-rank CL.

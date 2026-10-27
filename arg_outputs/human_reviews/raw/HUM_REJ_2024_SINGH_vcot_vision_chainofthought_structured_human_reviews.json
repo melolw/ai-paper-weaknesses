@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_SINGH_vcot_vision_chainofthought_structured",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "V-CoT: Vision Chain-of-Thought for Structured Reasoning Tasks",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "Similar to chain-of-thought (CoT) approach which introduces explicit reasoning in large language models, multimodal chain-of-thought (m-CoT) has been proposed to boost up the performance of multimodal models. This work proposes a visual chain-of-thought (v-CoT) to boost up the performance on structured reasoning tasks, where part of the inputs are represented as images. v-CoT extracts task-specific propositions from the image, and reasons over the given task using the extracted propositions. The experimental results on 4 benchmarks demonstrate v-CoT outperforms prior approaches.",
+      "strengths": "1. The idea of v-CoT is simple and effective.\n2. v-CoT outperforms prior state-of-the-art on all 4 benchmarks, demonstrating its effectiveness.",
+      "weaknesses": "1. The paper writing needs a major revision. \n2. More details are needed for annotation mentioned on L496-L497.\n3. L495-L501 is hard to follow. Figure 5 seems not to match with its caption. The caption said “72%-85% cases for Chart QA and spider”, but the figure shows around 65%. Such unalignment can also be found on L500-501.\n4. A further can be done to look into if there are any patterns for the failures mentioned on L525-L528. If this happens, it means with the oracle image perception, the language model cannot solve the tasks.\n\n\nAbout writing\n1. L48-L51 and L73-L77 both introduce v-CoT, which is redundant.\n2. The spelling of v-CoT keeps varying, e.g., v-CoT (L77), v-COT (L285), v-CoT in verbatim (L316), VCoT (Figure 5 caption). This should be consistent.\n3. Missing figure or table references on L320 and L513.\n4. Resize Table 2 to make sure it is within one column.\n5. Section 4.2 and 4.3 overlap a lot.\n6. Table 4, “Model Props” has not been mentioned before. Is that “Image Props”?",
+      "questions": "Comments\n1. L252, missing citation for InstructBLIP\n2. Move Figure 3 to the earlier page, since it is first mentioned on Page 3.\n\nTypos\n1. L45, “generating” to “generated”\n2. L52, the sentence reads weird with the word “existing”. Should be “existing models”?\n3. L84 and L87, “Example” should count from 1.\n4. L161, “in this section”, missing comma\n5. L174, “Figure”\n6. L260, “with the T_{text} and A and the..”, missing comma in between “T_{text}” and “and”\n7. L296, “outputs”\n8. L337, “finetuning”\n9. L341, missing period between “capabilities” and “Sphinx”\n10. L355, “Blip-2” to “Blip2” to make it consistent with L346\n11. L351, “are pretrained on”",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "59e23f6236a44c337acda4d1c4ffd88c6d9160a70157f877f43144f099c1da9656812c114994d39508d10c66e36127a68963adf93000f38094d19410ccc6f659"
+    }
+  ]
+}

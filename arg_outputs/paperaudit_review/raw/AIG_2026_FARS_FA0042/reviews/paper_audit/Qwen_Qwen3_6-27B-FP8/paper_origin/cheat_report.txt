@@ -1,0 +1,44 @@
+# Academic Integrity & Consistency Risk Report
+
+## Executive Summary
+The manuscript presents a coherent teacher-student distillation framework for streaming-compatible text embeddings. Core numerical claims, calculations, and experimental results are **highly consistent** across the abstract, main text, tables, and figures. Gap-closure ratios, speedup averages, and benchmark means are mathematically verified and align with reported values. However, a few **clear internal inconsistencies** and **ambiguous phrasings** were identified that require correction before publication. No evidence of data fabrication, selective reporting, or logical contradictions in the methodology was found.
+
+---
+
+## 1. Critical Inconsistencies & Logical Issues
+
+### 🔴 Model Name Discrepancy (Text vs. Figure)
+- **Issue:** Section 4.1 explicitly states the base model is `Qwen2.5-0.5B-Instruct`. However, Figure 1 labels the architecture as `Qwen2-5.0.5B + LoRA`.
+- **Impact:** This is a direct factual mismatch between the experimental setup description and the primary methodological diagram. It likely stems from a typographical error in the figure but undermines precision.
+- **Anchor:** Section 4.1 (Experimental Setup) vs. Figure 1 (Method Diagram).
+
+### 🔴 "Numerically Identical" vs. Non-Zero Cosine Distance
+- **Issue:** Section 4.3 claims that incremental updates produce `"numerically identical embeddings to full recomputation"`, but immediately qualifies this with `"(maximum cosine distance 1.19 × 10⁻⁶)"`. A non-zero distance mathematically contradicts the term "numerically identical."
+- **Impact:** While the distance is negligible for practical purposes, the phrasing is logically inconsistent. It should be revised to `"numerically equivalent within floating-point precision"` or similar.
+- **Anchor:** Section 4.3 (Streaming Efficiency), paragraph 2.
+
+### 🟡 Ambiguous Performance Claim Phrasing
+- **Issue:** Section 4.4 states the distilled student outperforms baselines `"by 7.1 percentage points over the causal baseline."` This phrasing is grammatically ambiguous. It could be misread as comparing the student to the teacher, or implying a compound margin.
+- **Verification:** Student (0.284) vs. Causal (0.213) = 0.071 (7.1 pts). Student vs. Teacher (0.212) = 0.072 (7.2 pts). The numbers align with the Student vs. Causal comparison, but the sentence structure obscures this.
+- **Anchor:** Section 4.4 (Long-Context Evaluation), paragraph 1.
+
+---
+
+## 2. Numerical & Factual Verification (Passed)
+
+All core quantitative claims were cross-checked against tables and figures. **No mismatches found.**
+
+| Claim / Metric | Reported Value | Verified Calculation | Status |
+|----------------|----------------|----------------------|--------|
+| **MTEB Mean Scores** | Causal: 0.576, Echo: 0.603, Teacher: 0.645, Student: 0.623 | Averages of Table 1 columns match exactly. | ✅ Consistent |
+| **Gap-Closure (Overall)** | 68.1% | `(0.623 - 0.576) / (0.645 - 0.576) = 0.6811` | ✅ Consistent |
+| **Echo Improvement** | +2.0 percentage points | `0.623 - 0.603 = 0.020` | ✅ Consistent |
+| **Streaming Speedup (Mean)** | 4.1× | Average of Table (b) values: `45.4 / 11 ≈ 4.13` | ✅ Consistent |
+| **Task-Specific Gap-Closure** | AmazonCF: 1.03, RedditClust: 0.80, SprintDQ: 0.30, etc. | Calculations using `(Student - Causal)/(Teacher - Causal)` match Table/Figure 3 within rounding tolerance. | ✅ Consistent |
+| **LoCoV1 Results** | Student: 0.284, Teacher: 0.212, Causal: 0.213 | Matches Table 2 exactly. | ✅ Consistent |
+
+---
+
+## 3. Minor Observations
+
+- **Future Reference Dates:** Several citations are dated 2025 and 2026 (e.g., `Yuan et al., 2026`; `Tang & Yang, 2026`; `Lin et al., 2025`). Given the explicit disclaimer that the paper was

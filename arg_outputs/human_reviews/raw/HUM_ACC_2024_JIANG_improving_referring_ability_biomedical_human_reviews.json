@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_JIANG_improving_referring_ability_biomedical",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Improving Referring Ability for Biomedical Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents an enhanced method for adapting large language models (LLMs) to the biomedical domain through continual pre-training. While traditional auto-regressive LLMs are trained on general domain documents, our approach improves the pre-training process by leveraging citation networks to create more cohesive pre-training sequences. This method addresses the challenge of fine-grained topic distinction in biomedical texts. Empirical studies show that our proposed LinkLM data significantly improves the referring abilities of LLMs both within and between samples. These findings underscore the importance of task-specific pre-training sequence design in advancing biomedical language model performance.",
+      "strengths": "1. The studied problem is important --- enabling the LLMs to referring the additional examples in biomedical data, which can be quite useful for building domain-specific LLMs.\n\n2.  The paper introduces a novel method for enhancing the continual pre-training of biomedical language models by leveraging citation networks. This creative use of linking information addresses the challenge of fine-grained topic distinction in the biomedical domain.\n\n3. The method's effectiveness is demonstrated through comprehensive empirical studies, showing significant improvements in both intra-sample and inter-sample referring abilities.",
+      "weaknesses": "- The proposed method relies heavily on the availability of high-quality, dense citation networks. Constructing such networks for all biomedical texts can be challenging and may not always be feasible. This reliance could limit the method's applicability in cases where citation data is sparse or difficult to obtain.\n\n- The method is primarily evaluated on clinical QA tasks, which, while important, represent only a subset of potential applications. There are many other critical tasks in the biomedical domain, such as clinical natural language inference (NLI) (e.g., Mediqa-NLI, mediqa-RQE), clinical fact verification (e.g., PubHealth, HealthVer), and clinical relation extraction (e.g., GAD). It remains to be seen if the proposed method can be adapted and perform well on these diverse tasks.\n- Although the paper presents a novel approach, it could benefit from a more detailed discussion and comparison with relevant existing works. For instance, papers like \"Hyperlink-induced Pre-training for Passage Retrieval in Open-domain Question Answering\" and \"Specter: Document-level representation learning using citation-informed transformers\" are closely related to the focus of this paper. Highlighting the differences and improvements over these works would provide a clearer context for the contributions and innovations of the proposed method.\n\n- Implementing the proposed approach, which leverages the citation network, adds a layer of complexity to the pre-training process. This may involve sophisticated data preprocessing and handling, which could pose a barrier to adoption for some researchers or practitioners, particularly those without extensive resources or technical expertise.\n\nOverall, while the paper presents a promising and innovative approach, addressing these weaknesses through more extensive evaluation, comparison with existing work, and consideration of implementation challenges could strengthen its contributions and impact.",
+      "questions": "See above.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "589f7e435c311a9ef0b26f60e858d63b91d95bdf3708bc6ff1cc0a45da9a041a7602b0dbb838f44488d11e4211985d570b894f60cb519227927d743917c14ae2"
+    }
+  ]
+}

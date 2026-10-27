@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0233",
+    "title": "PhaseGuard-KL: Output-Dissimilarity-Triggered KL Regularization for Emergent Misalignment Defense",
+    "abstract": "Emergent misalignment is a concerning phenomenon where fine-tuning large language models on narrow tasks can cause broad behavioral changes, including increased willingness to assist with harmful requests. Existing defenses either prevent all learning (always-on KL regularization) or are ineffective (inference-time interventions). We propose PhaseGuard-KL, which monitors output distribution divergence on canary prompts during fine-tuning and triggers KL regularization only when divergence exceeds a threshold. Our experiments reveal that the trigger fires identically for both malicious (Security EM) and benign (OpSwap) fine-tuning at step 20 of training. While PhaseGuard-KL reduces Security EM misalignment from 48.6\\% to 20.8\\%, it also reduces benign task performance from 54.6\\% to 22.8\\%. No KL coefficient satisfies both criteria simultaneously, refuting the hypothesis that output-dissimilarity monitoring can selectively distinguish malicious from benign fine-tuning.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies whether output distribution dissimilarity can be used to selectively trigger KL regularization during fine-tuning to defend against emergent misalignment. The proposed method, PhaseGuard-KL, monitors Jensen–Shannon divergence on a set of canary prompts and activates KL regularization once a threshold is exceeded. Experiments on Security EM (malicious fine-tuning) and OpSwap (benign fine-tuning) show that the trigger fires at the same training stage for both settings, leading to a failure of selective defense. As a result, no KL coefficient can simultaneously preserve safety and task performance.  ",
+        "strengths": "The paper is clearly written and the experimental setup is straightforward. The results are consistent with the described setup and the failure case is empirically demonstrated.",
+        "weaknesses": "1. The main issue is that the central finding is not particularly surprising, and the paper does not go beyond confirming an expected failure case, e.g., without any theoretical analysis of the rationale behind the failure. Since any fine-tuning—benign or malicious—inevitably induces a distributional shift, it is expected that a magnitude-based signal such as JS divergence would fail to distinguish between them. However, the paper does not provide a deeper analysis of this failure or attempt to identify what kind of signal could work instead, leaving the contribution quite limited.\n\n2. The proposed method itself is relatively weak and lacks design. It relies on first-token, truncated JS divergence as the only signal, which is unlikely to capture the structure of safety-relevant behavior. The paper does not explore alternative designs or stronger variants, nor does it analyze whether the failure stems from the signal choice, the triggering mechanism, or the formulation of the problem. As a result, the work remains at the level of a single unsuccessful attempt rather than a deeper investigation.\n\n3. The paper claims to refute the general idea of output-dissimilarity-based selective defense, but only evaluates one specific instantiation. Without broader exploration or theoretical support, this claim is not sufficiently justified.",
+        "suggestions": "",
+        "llmDisclosure": "I used ChatGPT to summary the paper content, and I based on both summary and pdf to write the draft of weakness and strength by myself. Finally, I used ChatGPT to polish my draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T06:25:34.881Z",
+      "updatedAt": "2026-03-22T06:25:34.881Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 4,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper examines a straightforward hypothesis: during fine‑tuning, monitoring the shift in the model’s output distribution on safety‑related canary prompts and triggering KL regularization only when the shift exceeds a threshold could selectively prevent emergent misalignment caused by malicious fine‑tuning while preserving benign‑task learning ability. The authors propose PhaseGuard‑KL, which computes the Jensen‑Shannon divergence between the current and a reference model during training; once the divergence surpasses a preset threshold, KL regularization is activated. Evaluation is conducted on the malicious fine‑tuning benchmark Security EM and the benign benchmark OpSwap, with pre‑defined success criteria for safety and utility. The main result is negative: the triggering mechanism fires at roughly the same training stage for both malicious and benign fine‑tuning, failing to distinguish harmful adaptation from normal learning. Although it reduces emergent misalignment, it also significantly degrades benign‑task performance, thereby refuting the paper’s core hypothesis that “output‑difference monitoring can achieve selective defense.”",
+        "strengths": "- The method’s design is clear and directly motivated. PhaseGuard‑KL attempts to strike a balance between “always‑on KL regularization (which suppresses learning)” and “no defense (which allows emergent misalignment)” by gating the defense on observed behavioral shifts during training. This event‑triggered approach is conceptually sensible: intervene only when the model shows suspicious deviation, aiming for a selective trade‑off between safety and utility.\n- The pipeline is simple and well‑structured. The method consists of four clean components: canary prompts, output‑distribution‑shift monitoring, threshold‑based triggering, and post‑trigger KL regularization. Each part directly serves the core hypothesis without introducing excessive complexity, making the method easy to understand and analyze.\n- Using canary prompts and output‑distribution divergence as an online monitoring signal is a natural, practical choice. Compared to approaches that require access to training‑data semantics, manual rules, or external reviewers, this solution relies only on the behavioral difference between the reference and current model, offering better implementability and aligning with a lightweight, training‑time monitoring framework.\n- The instantiation is pragmatic. Employing Jensen‑Shannon divergence as the trigger metric, combined with top‑k truncation and fixed‑interval checking, balances interpretability and computational cost. The authors have turned a high‑level defense idea into a concrete, reproducible mechanism that can be directly inserted into a fine‑tuning pipeline.",
+        "weaknesses": "- The core discriminative signal is conceptually inadequate. The magnitude of output‑distribution shift on canary prompts is, by design, sensitive to anylearning that changes the model’s behavior, regardless of intent. Hence, it inherently confounds “normal learning” with “harmful adaptation.” The method attempts to detect shift amplitude, but the paper’s goal is to discriminate benign from malicious adaptation—a gap that lacks theoretical or mechanistic justification.\n- Methodological novelty is limited. Triggered KL essentially adds a switch on top of standard KL regularization; the innovation lies in the scheduling logic rather than a deeper understanding of emergent misalignment. Consequently, the contribution is closer to a testable heuristic than a new research primitive.\n- Trigger‑mechanism design is largely heuristic and under‑justified. Choices such as the canary‑prompt construction, JS divergence as the metric, monitoring only the first decoded position, top‑k truncation (k=256), threshold τ=0.15, and the “two‑consecutive‑exceedances” rule are empirically set. The paper does not thoroughly explain why these design decisions are suitable for identifying malicious fine‑tuning rather than merely convenient monitoring proxies.\n- The underlying assumption that “output‑layer signals are sufficient to expose misalignment” is too strong and not critically examined. Emergent misalignment may first manifest in internal representations, specific capability subspaces, or update directions, and may not be consistently captured by small shifts in the first‑token distribution on a fixed canary set. Relying solely on surface‑level output differences likely limits the method’s discriminative power from the outset.\n- The negative result, while clear for this specific instantiation, does not rule out broader behavior‑monitoring approaches. The paper’s conclusion could be misread as “output‑dissimilarity monitoring is infeasible,” but the experiments only cover a particular canary set, a specific divergence measure, a fixed trigger rule, and two benchmarks. A more precise takeaway should be that this particular implementationfails, not that selective‑triggering defenses as a whole are doomed.\n- Baseline comparisons are incomplete, especially for training‑time controls. The evaluation includes no‑defense, always‑on KL, and inference‑time baselines, but to convincingly argue that “selective triggering based on output shift does not work,” the authors should also compare with other trigger signals (e.g., hidden‑state drift, representation similarity, gradient‑based criteria, or loss‑based detectors) or alternative event‑triggered regularization strategies. Otherwise, the finding mainly shows that thistrigger fails, not that the selective‑triggering paradigm itself is invalid.\n- Failure analysis remains relatively superficial. The paper attributes the failure to “any fine‑tuning causes distribution shift,” which is plausible but not deeply diagnostic. A more valuable analysis would explore at which level(s) malicious and benign fine‑tuning are similar, where they might still differ, and why those differences are not captured by the current monitor. Without such analysis, the explanation stays at an empirical summary level.\n- Generality and robustness are not thoroughly tested. Experiments are limited to Security EM (malicious) and OpSwap (benign) tasks. While these represent relevant scenarios, they are insufficient to judge the method’s behavior across a wider distribution of tasks, especially when benign tasks induce different drift patterns. Broader validation is needed to confirm that the failure is stable and not an artifact of the chosen benchmarks.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T15:42:42.418Z",
+      "updatedAt": "2026-04-12T15:42:42.418Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0233"
+}

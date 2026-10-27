@@ -1,0 +1,36 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Investigates the empirically observed "repetition advantage" in long chain-of-thought (CoT) supervised fine-tuning (SFT), where multi-epoch training on a small dataset significantly outperforms single-epoch training on a larger dataset under a fixed gradient-update budget.
+- **Claimed Gap**: Prior work identifies the phenomenon but lacks a mechanistic explanation. As stated in the **Method** section: *"The central question is whether the advantage reflects genuine reasoning improvements or termination artifacts."* The authors claim existing evaluations conflate reasoning quality with output formatting/parsing success.
+- **Proposed Solution**: Introduces a diagnostic framework decomposing accuracy into `ParseRate` and `Acc|Parse`, coupled with formal mediation analysis to quantify the termination effect. Proposes `Termination-Aware SFT`, a training intervention that dynamically increases loss weight on termination and structural boundary tokens.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Data Repetition Beats Data Scaling in Long-CoT Supervised Fine-Tuning (Kopiczko et al.)
+- **Identified Overlap**: This work is the foundational study that first discovered and named the "repetition advantage," using identical experimental constraints (fixed 51,200-step budget, OLMo-3-7B, AIME/GPQA benchmarks).
+- **Manuscript's Defense**: The manuscript explicitly positions itself as a mechanistic follow-up. In the **Method** and **Experiments** sections, it shifts focus from *observing* the scaling law to *disentangling* its drivers. It introduces the `ParseRate × Acc|Parse` decomposition and mediation fraction (`M`) to prove that the advantage is mediated by termination behavior, not reasoning depth.
+- **Reviewer's Assessment**: The defense is valid and necessary. The manuscript successfully carves out novelty by transforming an empirical observation into a quantified diagnostic finding. However, it does not propose a fundamentally new training paradigm; it explains an existing one. The novelty here is analytical, not architectural.
+
+### vs. ToxiFrench: Benchmarking and Enhancing Language Models via CoT Fine-Tuning for French Toxicity Detection (Delaval et al.)
+- **Identified Overlap**: Both papers employ dynamic/progressive loss reweighting on terminal tokens to improve CoT output quality. Delaval et al. use a Dynamic Weighted Loss (DWL) to emphasize final decision tokens; this manuscript uses `Termination-Aware SFT` to upweight EOS and reasoning boundary tokens.
+- **Manuscript's Defense**: The manuscript differentiates its approach in the **Method** section by specifying a structured warmup schedule (`alpha` linearly increases to 10), a gradient cap (50), and targeting both structural delimiters and EOS. It frames the intervention as a direct test of the termination hypothesis rather than a general optimization heuristic.
+- **Reviewer's Assessment**: The defense is weak on methodological novelty. Loss reweighting on terminal/final tokens is a known technique in structured generation and CoT fine-tuning. The specific scheduling and capping are engineering tweaks rather than theoretical advances. The manuscript's claim of novelty here is incremental at best.
+
+### vs. On the Role of Reasoning Patterns in the Generalization Discrepancy of Long Chain-of-Thought Supervised Fine-Tuning (Li et al.)
+- **Identified Overlap**: Both papers diagnose structural artifacts in long-CoT SFT that mask true reasoning capability. Li et al. attribute generalization gaps to divergent branching patterns and propose trajectory filtering; this manuscript attributes the repetition advantage to termination failure and proposes loss reweighting.
+- **Manuscript's Defense**: In the **Experiments** section, the manuscript distinguishes its approach by focusing on *training regime dynamics* (repetition vs. scaling) rather than *data source characteristics*. It leverages formal mediation analysis (`M > 1.0`) to mathematically quantify the over-explanation of the accuracy gap by parseability, a metric Li et al. do not employ.
+- **Reviewer's Assessment**: The diagnostic rigor is stronger here. The mediation analysis provides a clear, quantitative boundary that separates this work from purely empirical filtering approaches. However, the practical intervention (loss reweighting) remains conceptually aligned with Li et al.'s structure-aware corrections, limiting the overall methodological leap.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental (Diagnostic-Driven)
+- **Assessment**: 
+  The manuscript successfully defends its analytical contribution but falls short on methodological novelty. It effectively survives the comparison by shifting the discourse from "repetition works" to "repetition works because of termination, not reasoning." The diagnostic framework and mediation analysis are substantive contributions that clarify a confusing empirical phenomenon. However, the proposed `Termination-Aware SFT` is an incremental engineering adaptation of existing dynamic loss reweighting strategies. The fact that it recovers only 14% of the repetition advantage and shows strong benchmark dependency (minimal gains on GPQA) significantly weakens its practical significance. The paper is best characterized as a rigorous mechanistic audit rather than a breakthrough in training methodology.
+  - **Strength**: Rigorous diagnostic decomposition (`ParseRate` × `Acc|Parse`) and formal mediation analysis that quantitatively isolates the termination effect. Clear, controlled experimental design with fixed computational budgets.
+  - **Weakness**: The proposed intervention (loss reweighting) is methodologically incremental and yields marginal gains (+2.0pp). Benchmark dependency (strong on AIME, negligible on GPQA) undermines claims of generalizability. The explanation of the repetition advantage, while insightful, does not translate into a scalable or transformative training paradigm.
+
+## 4. Key Evidence Anchors
+- **Method Section**: Diagnostic framework definition (`Acc@n ≈ ParseRate * Acc|Parse`) and mediation fraction formula (`M = 1 - (Delta_cond / Delta_uncond)`), establishing the analytical novelty.
+- **Experiments Section**: Conditional accuracy reversal (`Condition A Acc|Parse: 57.7%` vs `Condition B: 51.0%`), proving data scaling yields better reasoning when parsing succeeds.
+- **Experiments Section**: Mediation fractions exceeding 1.0 on AIME benchmarks (`M=1.33` for AIME'24, `M=1.56` for AIME'25), quantitatively validating the termination artifact hypothesis.
+- **Abstract/Experiments Section**: `Termination-Aware SFT` recovers only 14% of the repetition advantage and shows minimal benefit on GPQA (`Acc@n` increases from 17.2% to 17.3%), highlighting the limits of the proposed intervention and benchmark dependency.

@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_POTTER_llmbased_codeswitched_text_generation",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "LLM-based Code-Switched Text Generation for Grammatical Error Correction",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This work aims to build a Grammar Error Correction (GEC) system specifically for correcting English errors in code-switched (CSW) text. To this end, they aim to utilize CSW data to train specialized GEC systems. Owing to the scarcity of data, they utilize LLMs to generate synthetic data and manually inject synthetic errors of varying difficulties. Next, they train SOTA GEC systems on this new data and with several rounds of training with thresholding show superior performance to the existing SOTA method on monolingual and CSW text.",
+      "strengths": "S1: Good motivation for the problem with the lack of existing works in this direction. Overall, they also provide a solid solution to this problem.\n\nS2: Their system is trained in a wide range of 20 languages - making it linguistically generalizable.",
+      "weaknesses": "W1: I wonder if inference tweaks were done for the baseline GECToR model and if not, it’s not a fair comparison.\n\nW2: Was there a human study conducted to evaluate the quality of the synthetic data? A small study here would be more convincing.",
+      "questions": "C1: More information about the evaluation metrics would make it easier to understand the results.\n\nC2: Could you discuss more intuitively how the multi-stages of training help? And how it can be extended to other tasks?\n\nC3: It would be interesting to see some qualitative examples of how the final GEC looks like and operates on CSW text.",
+      "rating": 3.5,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "3f2c2a66a62c00458f5791eeabf976d2e8a1f2058658651e58a07365564192b2d061f7ada5a23774f93fea7234cc87cdb7ff34e0360ce109ba9731871ca02ef5"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This work investigates code switching in grammatical error correction for language learners. In this work, code switched words or phrases are not treated as errors, but provides correction for the original language. The code switched dataset is created by fixing the part of Lang-8 and proposes three methods for synthetic training data generation, translation of phrases, alignment of parallel data and prompting to LLMs. Experiments show that the LLM generated data is closer to the annotated data in various code switching metrics.",
+      "strengths": "- Grammatical error correction over code switched texts sounds a challenging task in that the errors should be identified and corrected by preserving code-switched parts.\n- The datasets will be helpful for further investigation. Experiments show that there remain challenges in this task.",
+      "weaknesses": "- Similar work has been already done, and better to discuss the differences to their work: https://aclanthology.org/2024.lrec-main.698/\n- More analysis on the annotated data will be of help for future studies. For example, it is not clear what grammatical roles, e.g., POSs, are used for the code-switched words, and how that will impact the accuracies of correction. Note that the role of the code-switched word and the actual role when embedded in English might be different, and I'm rather curious if those phenomena might impact the difficulties in correction.",
+      "questions": "See weaknesses.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "60c5a5ba25cfc5986155fc17c6862cf85f982f6882d9cc3fe6f00f5d19d58d01095d47b7dca54d702a49dbddbdfdbb0d6f8d6aceaf0c81036258a4aa65521684"
+    }
+  ]
+}

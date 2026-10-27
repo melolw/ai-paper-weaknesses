@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0038",
+    "title": "Citation-Consistent Voting for Permutation-Robust Retrieval-Augmented Generation",
+    "abstract": "Retrieval-augmented generation (RAG) systems are sensitive to the ordering of retrieved documents, with language models exhibiting position bias that causes inconsistent outputs across different document permutations. We propose Citation-Consistent Voting (CCV), a training-free method that improves RAG robustness by aggregating answers based on document-ID agreement rather than answer frequency. CCV prompts the generator to cite supporting documents, maps citations to permutation-invariant document identifiers, and selects answers with the highest citation consistency across multiple permutations. On NaturalQuestions with Qwen3-8B and Contriever retrieval, CCV achieves 46.37\\% SubEM, outperforming majority voting by +0.19 points at $K=20$ permutations. The improvement scales monotonically with the number of permutations, and diagnostic analysis confirms that citation agreement correlates significantly with answer correctness ($p = 1.14 \\times 10^{-5}$). CCV requires no additional training and is compatible with any RAG system that can produce structured citations.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces 'citation consistency' to improve the final performance of RAG. It achieves this by having the retriever return documents in varying orders, and uses whether the model cites the same document as a signal of consistency.\n\nempirical\n\npositive confirmation",
+        "strengths": "Clear and well-motivated hypothesis\nSound experimental design\n\n",
+        "weaknesses": "Overclaiming relative to the evidence\nResults are not informative (too little improvement)\nInsufficient or flawed validation. The experiments is only done in one model and one benchmark, as a inference only method, more experiments should be included.\nThe idea is also not novel enough.\n\nAlso the SubEM is lower than vanilla rag",
+        "suggestions": "Add more experiments to show the effectiveness of the method.\n\n",
+        "llmDisclosure": "only use gemini for translate the summary from chinese to english. all are verified.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-24T02:49:41.558Z",
+      "updatedAt": "2026-03-24T02:55:27.028Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "* The work hypothesizes that applying majority voting over document IDs associated with the answer can improve the robustness of RAG systems, compared to performing voting directly on the generated answers.\n* The methodology is evaluated through empirical experiments, including ablation studies on individual components such as the structured JSON format and the quote constraint mechanism.\n* The results show performance comparable to the baselines, indicating no significant or consistent improvements.",
+        "strengths": "* The hypothesis is clearly stated and well-motivated.\n* The approach is simple, straightforward, and easily reproducible.\n* The overall writing is clear and easy to follow.",
+        "weaknesses": "* The experimental setup is limited to a single benchmark, and the comparison with vanilla RAG is not fair due to the use of different values of K.\n* The proposed approach does not demonstrate significant improvements over the baseline, and the paper tends to overclaim its performance without properly reporting percentage (%) units.\n* The ablation study suggests that the quote constraint component is redundant and may even degrade overall performance.",
+        "suggestions": "* Three out of ten citations contain errors in the year, author names, or publication venue.\n* Four out of ten citations rely on outdated arXiv versions.",
+        "llmDisclosure": "1. phrasing/grammar polishing\n2. GPT-5.3\n3.  the human-written reviews\n4. yes",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T07:47:28.973Z",
+      "updatedAt": "2026-04-01T07:47:28.973Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes Citation-Consistent Voting (CCV), a training-free inference-time method for improving RAG robustness to document ordering. CCV prompts the generator to cite supporting documents, maps citations to permutation-invariant document IDs, and selects answers with the highest citation consistency across K permutations. On NaturalQuestions with Qwen3-8B and Contriever top-5 retrieval, CCV achieves 46.37% SubEM at K=20, outperforming majority voting by +0.19 points. Diagnostic analysis confirms citation agreement correlates with answer correctness (p=1.14×10⁻⁵).",
+        "strengths": "- The core hypothesis is clean and intuitive: correct answers should cite the same document regardless of presentation order, while incorrect ones scatter. Well-articulated.\n- The K-scaling analysis (Table 2) is useful — monotonically increasing improvement from K=5 to K=20 provides some evidence the method benefits from more permutations.\n- The diagnostic analysis validating the core hypothesis (citation agreement correlates with correctness, p=1.14×10⁻⁵) is convincing, and the unstable query analysis (19.4% of queries) nicely shows where the method should help most.",
+        "weaknesses": "- The headline improvement is +0.19 SubEM over majority voting — negligible in any practical sense. More damaging, vanilla RAG without citations scores 48.98%, substantially higher than CCV's 46.37%. The citation prompt alone costs ~3.9 points (48.98→45.10), and the full multi-permutation pipeline only recovers ~1.3 of that. The net effect of the entire method is negative compared to standard RAG. The paper attributes this to \"output format differences,\" but the bottom line is CCV makes things worse.\n- The citation prompt achieves only 51.36% evidence validity — nearly half of responses get filtered out before aggregation. This severely limits the effective voting pool and likely explains why the improvement over majority voting is so marginal. 20× forward passes for 0.19pp gain is a terrible cost-benefit ratio.\n- The vanilla RAG baseline uses K=1 while CCV uses K=20, so the comparison isn't compute-matched. A fairer setup would be majority voting over 20 standard (non-citation) generations. Also, Table 3 reports Citation Vote (no quote) at K=5 achieving 46.37% — the same number as the K=20 headline result. This either means the K=5 no-quote variant already matches K=20 with quotes (undermining the K-scaling argument), or it's a suspicious coincidence.\n- Single dataset (NaturalQuestions), single model (Qwen3-8B), single retriever (Contriever top-5). No evaluation on TriviaQA, HotpotQA, or any other model. Generalizability is completely unknown.",
+        "suggestions": "- Evaluate on additional QA datasets (TriviaQA, HotpotQA) and models (Llama-3, GPT-4o) to test generalizability.\n- Address the key issue that vanilla RAG without citations outperforms all multi-permutation methods — either design the citation prompt to not degrade base performance, or explain this tradeoff clearly.\n- Report statistical significance of the +0.19 improvement (bootstrap CI, McNemar test).\n- Compare against a compute-matched vanilla RAG baseline (e.g., majority voting over K=20 standard generations without citation prompts).",
+        "llmDisclosure": "Claude Code (Opus 4.6) was used to assist with summarizing the paper, checking log/code consistency, and polishing phrasing. The paper PDF and experiment logs were shared with the tool for analysis. Final judgments and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T11:12:50.883Z",
+      "updatedAt": "2026-04-11T12:19:51.832Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0038"
+}

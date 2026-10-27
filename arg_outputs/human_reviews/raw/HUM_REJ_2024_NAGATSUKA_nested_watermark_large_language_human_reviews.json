@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_NAGATSUKA_nested_watermark_large_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "A Nested Watermark for Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes a novel nested watermark, which embeds two watermarks in a nested structure to ensure high detection accuracy even with fewer tokens, outperforming previous single watermark approaches.",
+      "strengths": "+ This paper addresses a critical issue in the misuse of LLMs for generating misinformation, making it highly relevant to current AI research.\n+ Well-organized.",
+      "weaknesses": "- **Incomplete theoretical proof**. The two z-scores is calculated by two separate watermarks, and the p-value is obtained by providing the z-score, and the two p-values are integrated into one statistic using the Fisher's method. Although the Fisher method assumes that the p-values are independent, in the nested watermark, the independence of P1 and P2 needs to be verified by experimental data. The p-value comes from the z-score. However, the calculation of z2 directly depends on c1, and G2 is a subset of G1. The calculation of z1 and z2 depends on the distribution of the same set of tokens. z1 and z2 are not completely independent in statistics, and the direct application of the Fisher's method may be inaccurate. The paper lacks relevant assumptions, and the theoretical proof is also incomplete.\n\n- **Lack of novelty**. The paper proposes a nested watermark to improve detection accuracy by embedding two watermarks. However, the watermarking method is basically similar to the baseline method (A Watermark for Large Language Models), and whether the innovation is significant enough deserves discussion.\n\n- **Limitation of evaluation metrics**. In watermark detection, only ESR is used as the metric of watermark detection efficacy encompasses only type-II error (false negative rate), disregarding the type-I error (false positive rate); moreover, metrics such as TPR and F1 under fixed false positive rates can also be considered. In evaluating the quality of generated text, only using LLM-as-a-judge is insufficient, and text evaluation indicators such as perplexity, ROUGE, BLEU, KL divergence can be considered to comprehensively measure text quality.\n\n- **Robustness Testing**. This paper proposes that a watermark enhances the robustness and security is the improvement of the successful detection rate of the embedded watermark. However, the work on watermark robustness is more focused on robustness against adversarial attacks (e.g., text deletion attack, paraphrase attack, and re-translation attack) (On the Reliability of Watermarks for Large Language Models). How does the nested watermark method perform under these attack scenarios?\n\n- **The impact of generated text length on watermarking**. The text generated in the real world is usually long, and only 100 words may not be able to fully reflect the watermark's effectiveness. Using GPT-4 to measure text quality, compared with a single watermark, why is the nest watermark generating the shorter text of higher quality, while the longer text of lower quality? Is there any relevant theoretical basis? At the same time, I am curious about the experimental results when the text length is greater than 100?\n\n- **Selection of bias weights**. In essence, the nest watermark divides the words into three lists and adds different weights to the words in two of the lists. What is the basis for choosing bias weights?\n\n- **Watermark nesting levels**. Has the paper considered embedding multiple levels of watermarks? How would embedding more watermarks impact the ESR and text quality?",
+      "questions": "Please see the weaknesses above.",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 2,
+      "raw_note_id": "e8f17e425cb6c637a92e7335438c669f01270612233ff065994e1332bab701d2112336ca9e50a565413fd33a2a2d21b49f7c6b745db73afc6fa7cb96524753f1"
+    }
+  ]
+}

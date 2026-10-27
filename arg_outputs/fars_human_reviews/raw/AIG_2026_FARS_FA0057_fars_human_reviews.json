@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0057",
+    "title": "LiveMedBench-Ask1: Evaluating Ask-Before-Answer Behavior in Medical LLMs",
+    "abstract": "Medical LLMs often provide advice based on incomplete patient information, yet their ability to ask clarifying questions before answering remains understudied. We introduce LiveMedBench-Ask1, a controlled evaluation protocol where models may ask one clarifying question answered by a deterministic slot oracle. On 657 cases with one masked critical patient slot, we evaluate GPT-4.1 and Qwen3-14B under three conditions: masked baseline (A), Ask1 protocol (B), and unmasked upper bound (C). Both models ask targeted questions at rates well above chance (50.1\\% and 37.8\\% slot hit rates), yet this does not improve rubric scores---B-A confidence intervals span zero for both models. The fundamental limitation is minimal information headroom: the C-A gap is only 0.6--0.9 percentage points, leaving little room for improvement. Even when models correctly identify the masked slot, they fail to leverage the obtained information effectively. These findings suggest that single-slot masking creates insufficient information gaps for interactive protocols to demonstrate benefit.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper introduces a new benchmark for evaluating ask-before-answer behaviour in medical LLMs, testing whether models can identify missing patient context, ask an appropriate clarifying question, and then use the returned information to improve their final medical advice. Through controlled experiments with a single-slot oracle setting, the paper finds that although models often ask targeted questions, this does not lead to meaningful performance gains, mainly because the masked setting leaves very limited room for improvement.",
+        "strengths": "The idea is interesting, as it mimics a realistic clinical setting in which patients often do not provide complete background information at the beginning. This makes the benchmark more practically motivated than existing evaluations, which typically assume that the full patient context is already specified.",
+        "weaknesses": "The paper does not describe the dataset construction process with sufficient clarity, making it hard to assess how the benchmark was created and whether the resulting examples are reliable.\n\nIt is also unclear whether the dataset was produced by adapting existing examples with the assistance of LLMs. If so, the paper should more clearly document this procedure and explain the quality-control measures used to ensure the validity of the data.\n\nThe masking design remains somewhat artificial and does not fully capture real-world clinical scenarios.\n\nIn practice, patients usually provide incomplete information through natural utterances, rather than through explicitly marked placeholders. Thus, although the proposed setting is more realistic than prior benchmarks that assume complete context, it still does not fully mimic real interactions.\n\nThe experiments rely solely on LLM-based judging without human involvement, which limits confidence in the evaluation quality.\n\nThe paper would also benefit from a broader experimental study to more comprehensively assess LLM performance under this benchmark.",
+        "suggestions": "See the weakness.",
+        "llmDisclosure": "I used Grammarly to polish the writing, and all the review content belongs to me.",
+        "ethicsReproducibility": "May require ethical approvals as it uses medical data."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T12:47:36.100Z",
+      "updatedAt": "2026-03-22T12:47:36.100Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "Hypothesis: allowing a medical LLM to ask one clarifying question before answering will improve the quality of its medical advice.\nThe paper did an empirical study. They  construct a 657-case subset where exactly one critical patient information slot is masked. then they use llm as judge to  evaluate GPT-4.1 and Qwen3-14B under three conditions:\nA. masked baseline,\nB. Ask1 with a deterministic slot oracle\nC. unmasked upper bound\n The main outcome is a negative result. While both models ask targeted questions at rates well above chance (50.1% and 37.8% slot hit rates), the Ask1 protocol does not significantly improve final rubric scores over the masked baseline. The main reason is that the C-A gap is only 0.6–0.9 percentage points, fundamentally limiting the potential for any interactive protocol to demonstrate improvement. \n",
+        "strengths": "A clear hypothesis.\nThe writing is clear and easy to follow. \nWell-controlled experimental design. allowing exactly one clarifying question and using a deterministic oracle answer for this question. ",
+        "weaknesses": "Heavily relies on LLM judge. No discussion on the robustness of LLM judge in this case.\nLimited problem scope. No discussion on whether it's a wide and important problem in medical LLM.\nThe information gap between C and A is too weak to adequately test the hypothesis.\n",
+        "suggestions": "",
+        "llmDisclosure": "technical fact checks + grammar polishing. \nchatgpt. turned down  “improve model for everyone”\nonly shared some medical LLM terms. \nThe final judgment and scores are independently verified by the reviewer.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-03T09:37:16.726Z",
+      "updatedAt": "2026-04-03T09:37:16.726Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 1,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "1. Hypothesis: Medical LLMs could improve their response quality by asking one clarifying question on potentially missing pieces in the patieint data.\n2. Methodology: Curated LiveMedBench-Ask1 and tested on GPT-4.1 and Qwen3-14B (which is a strange choice of models) across 657 clinical cases with intentionally masked data.\n3. Outcome: Overall negative results showing that even though models sometimes identified missing info correctly, they failed to use the information in clarifying questions effectively.",
+        "strengths": "1. The hypothesis stated in this paper is scientifically valid and practically useful, as future medical AI could benefit from the ability to ask for additional information to ascertain the patients' condition better.\n2. The experimental design utilizes a deterministic slot oracle to cleanly isolate the impact of a single clarifying question, which is a practical and scalable method.\n3. The finding reveals a rather interesting shortcoming of current frontier models that even if models know what is missing, they cannot leverage the obtained info well enough.",
+        "weaknesses": "1. The evaluation is restricted to only two models that are not sufficiently representative (no SOTA models, lack of size/family comparison) of broader medical AI system (with different agentic framework, RAG etc.) frontier models may have improved significantly on this task so baseline on e.g. GPT-5/Gemini-3 is essential for this paper to draw a clear overview of the big picture.\n3. The reliance on a deterministic oracle that always provides perfect answers fails to simulate the noisy and ambiguous nature of real patient responses. the curation process of this dataset, while interesting, is over-simplifying the demand of real-world clinical demand and is a bit too small/uneven in distribution comparing to the original LiveMedBench\n4. The quality and reliability of the GPT-4.1 grader used to evaluate the models are not checked (against human annotation and report inter-annotator agreement etc.)\n5. The reference list is nowhere near comprehensive to back up the paper, also lacking experimental configs for Qwen model deployment, no parameter for experimentations are provided other than temp=0 for GPT-4,1 judge",
+        "suggestions": "This paper lacks depth for ICLR publication, at least extension on one of {tested models, test-time scaling methods, dataset} needs to be addressed and construct validity cross-checked instead of blind trust GPT-4.1 as judge",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T15:27:50.543Z",
+      "updatedAt": "2026-03-22T15:27:50.543Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0057"
+}

@@ -1,0 +1,42 @@
+1) Summary
+The paper addresses the challenge of tuning hyperparameters (attention temperature $T$ and scaling factor $S$) for Adaptive Parallel Encoding (APE) without access to labeled validation data. The authors propose a label-free calibration method that selects hyperparameters by minimizing the KL divergence between the next-token distributions of a sequential-teacher model and the APE model. To resolve the degeneracy of single-token KL (which trivially selects $T=1.0$), the method employs multi-token KL averaging over $K$ generated tokens. Experiments on LongBench 2WikiMultihopQA demonstrate that KL-tuned APE (F1=48.09) outperforms a label-tuned oracle (F1=46.23) by +1.86 points, though it remains slightly below the default configuration (F1=48.99). The analysis reveals that temperature dominates the KL landscape and is stable under bootstrap resampling, whereas scale selection is unstable.2) Strengths
+*   **Practical Motivation and Robustness to Small Samples**
+    *   The paper identifies a critical deployment bottleneck: label-based tuning on small calibration sets (e.g., 32 samples) leads to overfitting, causing the label-tuned oracle to underperform the default configuration by 2.76 F1 points (Section 1, Table 1).
+    *   The proposed KL method provides a robust alternative that does not require ground-truth labels, addressing the scarcity of labeled data in production environments (Section 1).
+    *   This robustness is evidenced by the KL-tuned method outperforming the label-tuned oracle by +1.86 points despite using the same small calibration set (Table 1).*   **Innovative Multi-Token KL Averaging**
+    *   The authors identify and solve a specific technical failure mode: single-token KL exhibits degeneracy, always selecting $T=1.0$ because it trivially recovers near-sequential behavior at the first token (Section 3.3).
+    *   The introduction of multi-token KL averaging (Equation 3) effectively breaks this degeneracy, allowing the selection of $T^*=0.95$ instead of $1.0$.
+    *   This modification yields a measurable performance gain, improving F1 from 47.84 (single-token) to 48.09 (multi-token, $K=8$) (Table 1).*   **Comprehensive Sensitivity and Stability Analysis**
+    *   The ablation study clearly establishes that temperature is the dominant hyperparameter, showing 2.6× higher KL sensitivity than scale (Section 4.3, Table 2).
+    *   The bootstrap stability analysis provides actionable deployment guidance: temperature selection is perfectly stable (CI width=0.0), while scale selection is highly unstable (CI width=0.38) (Section 4.4, Table 3, Figure 3).
+    *   This analysis helps practitioners understand which parameters are worth tuning and which should remain fixed.*   **Honest Evaluation of Proxy Limitations**
+    *   The authors transparently report the weak correlation between the KL proxy and downstream F1 performance ($\rho=0.295$, $p=0.15$) (Section 4.5, Figure 4).
+    *   They acknowledge that KL minimization does not directly maximize F1, explaining the performance gap between KL-tuned and default configurations (Section 4.5).
+    *   This scientific integrity prevents overclaiming and sets realistic expectations for the method's utility.3) Weaknesses
+*   **Limited Generalizability (Single Benchmark and Model)**
+    *   The evaluation is restricted to a single dataset (LongBench 2WikiMultihopQA) and a single model (Llama-3.1-8B-Instruct) (Section 4.1).
+    *   There is no evidence that the KL calibration strategy generalizes to other long-context tasks (e.g., summarization, code generation) or different model architectures (e.g., Mistral, Qwen).
+    *   The dominance of temperature over scale might be specific to the 2WikiMultihopQA task or the Llama-3.1 architecture, limiting the broad applicability of the findings.*   **High Computational Cost of "Label-Free" Calibration**
+    *   The method requires a full sequential-teacher forward pass for every calibration sample, which defeats the purpose of parallel encoding efficiency during the calibration phase (Section 3.4).
+    *   The authors report a calibration time of approximately 50 minutes on a single GPU for 32 samples and 49 configurations (Section 3.4).
+    *   While claimed to be faster than label-based grid search ("hours"), 50 minutes is a significant overhead for a calibration step, especially if the default configuration often performs comparably or better.*   **Limited Value Proposition Against Default Configuration**
+    *   The KL-tuned method (F1=48.09) underperforms the default APE configuration (F1=48.99) by 0.90 points (Table 1).
+    *   The method is only superior to the *label-tuned oracle*, which is a weak baseline due to overfitting. It does not demonstrate a scenario where the default configuration fails and KL calibration succeeds.
+    *   Without evidence that the default is suboptimal in other settings, the utility of KL calibration is questionable if the default is known and easily accessible.*   **Unresolved Instability of Scale Parameter**
+    *   The scale parameter $S$ shows high instability under bootstrap resampling (CI width=0.38), spanning the entire grid range (Section 4.4, Table 3).
+    *   The paper suggests using default values for scale due to this instability, but this effectively reduces the method to single-parameter tuning.
+    *   If scale cannot be reliably tuned, the joint optimization framework is partially broken, and the method offers no improvement over simply fixing $S$ and tuning $T$ via other means.4) Suggestions for Improvement
+*   **Expand Evaluation Scope**
+    *   Include additional long-context benchmarks (e.g., NarrativeQA, Qasper, LongBench summarization tasks) to demonstrate generalizability across task types.
+    *   Evaluate the method on at least one additional model architecture (e.g., Mistral-7B or Qwen-7B) to verify that the temperature dominance and KL-F1 correlation hold across different model families.*   **Analyze Cost-Benefit Trade-offs**
+    *   Provide a detailed breakdown of the computational cost of the sequential-teacher pass versus the APE passes.
+    *   Investigate if calibration can be performed on a subset of tokens or a smaller context window to reduce the 50-minute overhead, making the method more practical for frequent re-calibration.*   **Justify Utility Against Default**
+    *   Demonstrate scenarios where the default APE configuration performs poorly (e.g., different context lengths, different retrieval qualities) and KL calibration recovers performance.
+    *   Alternatively, propose a hybrid approach where KL calibration is used to detect if the default is suboptimal, rather than always replacing it.*   **Address Scale Instability**
+    *   Investigate why scale is unstable; consider if a different proxy metric or regularization term could stabilize $S$ selection.
+    *   If scale remains unstable, explicitly recommend a "T-only" tuning protocol in the conclusion, supported by the ablation results (Table 2), rather than presenting a joint tuning method that fails for one parameter.5) Score
+- Overall (10): 6 — The paper presents a clever label-free calibration method with rigorous analysis, but its utility is limited by the weak performance gain over the default configuration and lack of generalizability across models/tasks.
+- Novelty (10): 7 — Applying KL divergence to APE hyperparameter tuning and introducing multi-token averaging to solve degeneracy are novel contributions to the parallel encoding literature.
+- Technical Quality (10): 7 — The mathematical formulation is sound, and the ablation/stability analyses are thorough, though the single-benchmark evaluation limits the robustness of the claims.
+- Clarity (10): 8 — The paper is well-structured, with clear figures (e.g., Figure 2 KL surface) and transparent reporting of limitations (e.g., weak KL-F1 correlation).
+- Confidence (5): 4 — The reviewer is confident in the assessment of the provided experiments but less confident in the generalizability of the method due to the narrow evaluation scope.

@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0151",
+    "title": "MidPC LoRA: Intermediate SVD Slices for Continual Learning with Low-Rank Adaptation",
+    "abstract": "Continual learning with large language models faces the challenge of catastrophic forgetting, where adapting to new tasks degrades performance on previously learned ones. Low-Rank Adaptation (LoRA) enables efficient fine-tuning but still suffers from forgetting in sequential learning settings. Recent SVD-based initialization methods for LoRA, such as PiSSA (top singular components) and MiLoRA (bottom components), represent endpoint choices on the singular spectrum. We propose MidPC, which initializes LoRA adapters from intermediate singular components, hypothesizing that the middle spectral region offers a better stability-plasticity trade-off. On the FOREVER Standard CL benchmark with Qwen3-0.6B, MidPC achieves 84.8\\% overall performance and $-$1.7\\% backward transfer, significantly outperforming PiSSA (66.7\\%, $-$15.0\\%) and MiLoRA (81.6\\%, $-$5.0\\%). Spectral analysis reveals that MidPC maintains stable subspace alignment while achieving moderate spectral imbalance. Learning rate matching experiments confirm this is a genuine spectral effect, with 91.9\\% of the advantage over MiLoRA retained after controlling for conditioning differences.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper hypothesizes that endpoint SVD-based LoRA initializations: PiSSA using top singular components and MiLoRA using bottom singular components, may not provide the best stability–plasticity trade-off in CL, and therefore proposes MidPC, which initializes LoRA adapters from the middle region of the singular spectrum. The hypothesis is validated empirically through experiments on the FOREVER Standard continual learning benchmark. The results show that MidPC achieves better overall performance and backward transfer than both PiSSA and MiLoRA under the reported setting.",
+        "strengths": "1. The method is clearly presented and offers a simple way to unify and mediate between two existing SVD-based initialization strategies.\n2. The learning-rate matching experiment is useful as a control, since it helps readers better understand to what extent the gains come from spectral effects rather than merely differences in effective conditioning.",
+        "weaknesses": "1. Limited validation. The empirical study is relatively small in scale. The method is evaluated on only one benchmark and one base model, so it is unclear whether the observed advantage generalizes across different datasets, models, or continual learning settings.\n2. Limited conceptual novelty. MidPC appears to be a straightforward interpolation between two existing initialization choices. While the idea is reasonable, the motivation is still largely intuitive, and the paper does not provide sufficiently strong theoretical or mechanistic justification for why the middle slice should be preferred beyond the reported empirical results.\n3. Insufficient mechanistic support. The spectral analysis indicates that MidPC combines stable subspace alignment with moderate spectral imbalance, but this mainly identifies correlates of good performance rather than a convincing causal mechanism. In fact, MidPC often looks spectrally intermediate between the two endpoint methods while still outperforming both, which makes the result intriguing but also highlights the need for deeper analysis of why this intermediate slice is actually optimal.\n4. The LR matching analysis is not yet fully convincing. Matching learning rates through early-step update norms may not capture differences over the full training trajectory, and the comparison is only shown under a narrow experimental setting. In addition, after learning-rate matching, the advantage of MidPC over PiSSA changes substantially, which suggests that the control setting itself deserves deeper investigation.",
+        "suggestions": "",
+        "llmDisclosure": "The reviewer used GPT-5.4 for translating and grammar polishing, and only the review was provided.\nThe reviewer used Codex with GPT-5.4 to analyze the experimental logs. Both paper and logs are provided to Codex\nThe final judgment and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "The current code repository does not appear to preserve a complete one-to-one chain of raw experimental artifacts for the main-table MidPC results. The per-run result files corresponding to the main experiments seem to have been overwritten by later optimized runs：the optimized script `midpc-lora-continual-learning/code/exp/midpc_lora/scripts/run_midpc_optimized.sh:29` uses different configurations from the main experiment，and current recoreds such as `midpc-lora-continual-learning/code/exp/midpc_lora/results/midpc_did9_seed42.json:2` saved the results of the optimized scripts, rather than the configuration of the main experiment. \nAlthough the aggregated results file `midpc-lora-continual-learning/code/exp/midpc_lora/results/midpc_results.json:1` still appears to retain the summarized outputs needed to reconstruct the reported main-table statistics, the repository no longer seems to provide the exact underlying raw result files corresponding to each reported run. This weakens auditability and reproducibility transparency. "
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T10:39:19.685Z",
+      "updatedAt": "2026-03-22T10:39:19.685Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper proposes MidPC, a method that initializes LoRA adapters using intermediate singular value decomposition (SVD) components to address catastrophic forgetting in continual learning for large language models. The authors hypothesize that middle spectral regions offer a better stability-plasticity trade-off compared to endpoint choices (PiSSA: top components; MiLoRA: bottom components). Experiments on the FOREVER benchmark with Qwen3-0.6B show improved Overall Performance (84.8%) and Backward Transfer (−1.7%) relative to baselines.",
+        "strengths": "- A interesting and hot topic.\n\n- The spectrum-based considerations are reasonable.\n",
+        "weaknesses": "- The method selects the middle SVD slice without theoretical justification for why this position is optimal. The claim that \"intermediate components offer better stability-plasticity trade-off\" remains an unproven hypothesis supported only by empirical results on a single small model.\n\n- The fixed slice selection lacks task-aware or layer-aware adaptation, limiting practical applicability across diverse continual learning scenarios.\n\n- Experiments use only Qwen3-0.6B, a model too small to draw conclusions about LLM continual learning. Results may not generalize to 7B+ scale models where forgetting dynamics differ significantly.\n\n- Evaluation is confined to one benchmark (FOREVER), whose legitimacy is questionable due to citation issues. No validation on established CL benchmarks (e.g., CLINC, Super-NI, or standard task sequences) is provided.\n\n- The reported BWT improvement over PiSSA (−1.7% vs −15.0%) is unusually large for a simple initialization change. Without extensive ablation studies or analysis of hyperparameter sensitivity, the robustness of this gain is unclear.\n\n- Some baseline results are marked with † (from different experimental setups), reducing comparability.\n\n- Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv.\n\n\n\n",
+        "suggestions": "",
+        "llmDisclosure": "Used Claude 4.6 opus to polish the completed draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv."
+      },
+      "submittedAt": "2026-03-29T16:48:14.196Z",
+      "updatedAt": "2026-03-29T16:48:14.196Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies catastrophic forgetting in LoRA-based continual learning for large language models. The core idea is simple: instead of initializing LoRA from the top singular components of the pretrained weight matrix as in PiSSA, or from the bottom components as in MiLoRA, the authors propose MidPC, which initializes LoRA from an intermediate slice of the singular spectrum. The method is constructed to be function-preserving at initialization, so the effective model remains identical to the pretrained model before training.",
+        "strengths": "This paper proposes a simple and direct method for Lora initialization to solve the forgetting problem. The empirical results show a clear improvement over both MiLoRA and PiSSA, and they also provide a case study on Subspace alignment and spectral imbalance to better explain the improvement.",
+        "weaknesses": "(i) The scope of empirical results is limited; they evaluate only one model and one benchmark, both in a sequential text classification setting\n(ii) A key question is how sensitive MidPC is to the exact slice location. The paper sets the start index to the middle of the spectrum, but it is not clear whether performance is robust over a broad intermediate range or concentrated around a narrow window.\n(iii) It lacks a discussion of MiLora and PiSSA. For these two works, I think a natural ablation study is MidPC I wonder why they didn't find that.\n(iv) While the comparisons against PiSSA and MiLoRA are fair under matched settings, several other methods listed in Table 1 are taken from the FOREVER paper under a different setup.\n(v) The method itself is not novel, given MiLora and PiSSA, and I think the current analysis doesn't give enough analysis for explaining why MidPC is superior.",
+        "suggestions": "",
+        "llmDisclosure": "GPT5.4 Pro for summarization and sentence polish. ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T04:00:09.383Z",
+      "updatedAt": "2026-03-28T04:00:09.383Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0151"
+}

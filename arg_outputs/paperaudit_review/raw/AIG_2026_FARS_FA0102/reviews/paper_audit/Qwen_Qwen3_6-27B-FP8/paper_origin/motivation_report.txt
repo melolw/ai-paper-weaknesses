@@ -1,0 +1,42 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Scheduling experience replay in continual learning for Large Language Models (LLMs) to mitigate catastrophic forgetting while maintaining computational efficiency.
+- **Claimed Gap**: Prior scheduling methods (e.g., FOREVER) rely on parameter-space metrics like accumulated update norms, which fail to capture actual functional/behavioral drift, particularly during distribution shifts at task boundaries. As stated in the Abstract: *"Instead of using parameter-space metrics (like accumulated update norms used in FOREVER), the proposed method monitors function-space drift by computing KL divergence between current and reference predictions on fixed anchor sets."*
+- **Proposed Solution**: KL-Time Replay, which replaces parameter-space tracking with label-space KL divergence computed on fixed anchor sets. Replay is triggered when cumulative drift exceeds thresholds calibrated to an Ebbinghaus-inspired schedule, matching baseline compute within ±10%.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Energy-Based Models for Continual Learning (Li et al.)
+- **Identified Overlap**: Both works reject parameter-centric proxies in favor of distributional/functional metrics to manage interference. Both utilize divergence measures to regulate learning dynamics and prevent catastrophic forgetting.
+- **Manuscript's Defense**: The manuscript cites general function-space methods (FROMP, Anchored SFT) but does not explicitly engage with EBMs. It differentiates by positioning its contribution as a *replay scheduling trigger* rather than a *training objective modification*. It argues that parameter norms are insufficient for timing replay events, whereas functional drift directly indicates behavioral degradation.
+- **Reviewer's Assessment**: The distinction is valid but narrow. EBMs already established that distributional divergence is a more faithful signal of CL interference than weight updates. KL-Time essentially repurposes this established principle for a scheduling gate. The novelty is architectural rather than theoretical, representing an incremental adaptation of divergence-based monitoring to a new control loop.
+
+### vs. Linearization Explains Fine-Tuning in Large Language Models (Afzal et al.)
+- **Identified Overlap**: Both analyze the tight coupling between parameter-space updates and function-space behavior in the LoRA/PEFT regime. The manuscript's empirical finding of >0.97 within-task correlation directly mirrors the linearization/NTK theory that parameter distance and functional change are equivalent in constrained fine-tuning.
+- **Manuscript's Defense**: The manuscript does not cite this work. It presents the high correlation as a novel empirical observation and argues that despite this coupling, task-boundary divergence necessitates function-space monitoring. It treats the decoupling as a practical scheduling requirement rather than a theoretical consequence of linearized optimization.
+- **Reviewer's Assessment**: This is a critical weakness in the motivation. The >0.97 correlation is not a novel discovery but a direct mathematical consequence of LoRA operating in a linearized neighborhood, as formalized by Afzal et al. The manuscript's failure to ground this observation in existing PEFT theory weakens its claim of a paradigm shift. The observed divergence at task boundaries is expected when the linear approximation breaks down, a nuance the manuscript does not theoretically address.
+
+### vs. Continual State Representation Learning for RL using Generative Replay (Caselles-Dupré et al.)
+- **Identified Overlap**: Both employ statistically sound change/drift detection to dynamically trigger replay/consolidation. Both compare the current model state against a frozen reference to decide when past knowledge must be reinforced.
+- **Manuscript's Defense**: The manuscript cites foundational CL works (EWC, Experience Replay, GEM, iCaRL) but overlooks this specific change-detection replay framework. It frames its combination of KL drift + Ebbinghaus scheduling as a novel contribution tailored to LLM function-space.
+- **Reviewer's Assessment**: The core scheduling logic is not novel to continual learning. Caselles-Dupré et al. already demonstrated that automatic environment change detection can replace fixed/heuristic schedules in CL. KL-Time successfully transfers this mechanism to LLM function-space monitoring, which is a valid domain adaptation, but the underlying algorithmic premise (reference-based drift -> trigger replay) is incremental.
+
+### vs. Quantifying non deterministic drift in large language models (Nicholson)
+- **Identified Overlap**: Both focus on quantifying LLM behavioral drift using fixed inputs and output-space metrics, establishing that internal states are poor proxies for actual model behavior.
+- **Manuscript's Defense**: Not cited. The manuscript focuses on *training-time* drift for scheduling, whereas Nicholson focuses on *inference-time* nondeterminism. The authors implicitly assume function-space monitoring is a novel necessity for LLM adaptation.
+- **Reviewer's Assessment**: The methodological parallel is strong. Prior work already established output-space drift quantification as a standard diagnostic for LLM stability. While the application context differs, the manuscript's claim that shifting to function-space monitoring is a groundbreaking insight is weakened by existing literature that already treats behavioral drift as the ground truth for LLM state evaluation.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental
+- **Assessment**: 
+  The paper successfully demonstrates that function-space drift diverges from parameter-space metrics at task boundaries, validating the practical utility of KL-Time Replay as a scheduling signal. However, it does not survive rigorous comparison as a substantive theoretical contribution. The core mechanism (reference-based drift detection triggering replay) and the theoretical premise (parameter vs. function space decoupling in PEFT) are well-covered by prior work in RL, CL, and LLM fine-tuning theory. The manuscript's novelty lies primarily in the specific engineering combination (KL divergence + Ebbinghaus schedule + LoRA anchors) rather than a fundamental algorithmic breakthrough. The existence of the similar works significantly weakens the motivation's claim of a "paradigm shift," positioning the work instead as a well-motivated, incremental domain transfer.
+  - **Strength**: Clear empirical validation of function-space vs parameter-space decoupling at task boundaries; rigorous compute-matched comparison with FOREVER; practical ablation demonstrating anchor selection impacts.
+  - **Weakness**: Lacks theoretical grounding for the >0.97 correlation (ignores linearization/NTK literature); misses key prior work on drift-triggered replay and behavioral drift quantification; negligible performance gain over FOREVER (0.704 vs 0.708) makes the engineering trade-off difficult to justify without stronger efficiency or stability benefits.
+
+## 4. Key Evidence Anchors
+- **Abstract/Global Summary**: *"Instead of using parameter-space metrics... the proposed method monitors function-space drift by computing KL divergence between current and reference predictions on fixed anchor sets."*
+- **Method Section**: *"Drift $D_t$ is the mean KL divergence between current model predictions ($q_{\theta_t}$) and reference predictions ($q_{\theta_{ref}}$) on the anchor set."*
+- **Signal Analysis**: *"Within-task Pearson correlations between KL drift and parameter norms are >0.97... Full-trajectory correlations are moderate (Pearson 0.46, Spearman 0.58), indicating divergence at task boundaries."*
+- **Main Results**: *"OP: KL-Time achieves 0.704±0.015. FOREVER achieves 0.708±0.014."*
+- **References**: Cites FOREVER, LoRA, and foundational CL works, but omits linearization theory (Afzal et al.) and change-detection replay frameworks (Caselles-Dupré et al.), indicating a gap in theoretical contextualization.

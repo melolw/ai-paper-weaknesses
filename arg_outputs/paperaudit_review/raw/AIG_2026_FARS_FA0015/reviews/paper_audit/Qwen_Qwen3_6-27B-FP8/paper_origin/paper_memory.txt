@@ -1,0 +1,57 @@
+# Global Summary
+
+The paper investigates "brain rot," a phenomenon where continual pre-training (CPT) on low-quality social media content degrades Large Language Model (LLM) capabilities. The authors propose "Orthogonal Junk," a data selection method that filters training samples based on gradient orthogonality to capability-preserving anchors. Experiments on Llama-3.2-1B-Instruct yield mixed results: the method provides a modest improvement in long-context understanding (RULER: +2.89pp vs random selection) but degrades reasoning performance (ARC-Challenge: -5.12pp). A simple perplexity baseline outperforms the proposed method on RULER. The authors identify data repetition as a dominant confound, showing that reducing repetition rates significantly improves reasoning scores, suggesting that gradient orthogonality at the LM head may not fully capture capability preservation dynamics.
+
+# Abstract
+
+- **Problem:** Continual pre-training on low-quality social media causes "brain rot," a measurable degradation in LLM capabilities that persists after instruction tuning.
+- **Method:** "Orthogonal Junk" selects training samples whose gradients are orthogonal to capability-preserving anchors to minimize interference.
+- **Results:** Evaluated on Llama-3.2-1B-Instruct.
+    - RULER (long-context): +2.89pp improvement over random selection (54.66% vs 51.77%).
+    - ARC-Challenge (reasoning): -5.12pp degradation vs random selection (23.21% vs 28.33%).
+- **Baselines:** A perplexity-based baseline outperforms Orthogonal Junk on RULER (+8.05pp).
+- **Key Finding:** Data repetition is a critical confound. Reducing repetition from 9.57x to 2.31x improves ARC from 15.36% to 23.21%, while RULER remains flat.
+
+# Method
+
+- **Problem Formulation:** The goal is to minimize next-token prediction loss on new data $\mathcal{D}_{new}$ while maintaining performance on protected tasks $\mathcal{T}$ within a tolerance $\epsilon$.
+- **Gradient Orthogonality Hypothesis:** Capability degradation is governed by the inner product between the training gradient and the protected-task gradient. Samples with gradients orthogonal to an anchor gradient ($\langle g_{new}, g_{T_i} \rangle \approx 0$) should cause minimal first-order interference.
+- **Orthogonal Junk Pipeline:**
+    1.  **Anchor Gradient Computation:** Uses 400 examples (150 GSM8K, 150 MMLU, 100 Alpaca). Gradients are computed only for the LM head and embedding layers (21.25% of parameters) for efficiency.
+    2.  **Orthogonality Scoring:** Scores samples using $1 - |\cos(g_i, g_{ref})|$. Scores near 1 indicate high orthogonality.
+    3.  **Pool-Weighted Selection:** Filters to the top-50% most orthogonal samples (the "pool") and samples with probabilities proportional to $\exp(\text{Orth}(x_i)/T)$ where $T=2.0$. This balances selection quality with data diversity.
+
+# Experiments
+
+- **Setup:**
+    - **Model:** Llama-3.2-1B-Instruct.
+    - **Data:** 69,056 engagement-optimized junk tweets (avg 16.7 tokens) vs 12,068 high-quality control tweets (avg 100.4 tokens). Token budget matched at ~1.22M tokens.
+    - **Baselines:** Base SFT, Control SFT, Junk-Random SFT, Perplexity SFT.
+    - **Training:** CPT uses LR $1 \times 10^{-5}$, 3 epochs, DeepSpeed ZeRO-3 on 8 GPUs. SFT uses Alpaca 5K, LR $2 \times 10^{-5}$, 3 epochs.
+    - **Metrics:** ARC-Challenge (CoT prompting) and RULER (4096 sequence length).
+- **Main Results (Table 1):**
+    - **Base SFT:** ARC 31.06%, RULER 80.35%.
+    - **Junk-Random SFT:** ARC 28.33%, RULER 51.77%.
+    - **Perplexity SFT:** ARC 21.76%, RULER 62.71%.
+    - **Orth Junk SFT:** ARC 23.21%, RULER 54.66%.
+- **Analysis:**
+    - **Task Dependency:** Brain rot affects RULER more severely than ARC. Control CPT on high-quality tweets also degrades RULER significantly (-13.52pp vs Base).
+    - **Performance:** Orth Junk improves RULER by +2.89pp over Junk-Random but degrades ARC by -5.12pp. Perplexity filtering outperforms Orth Junk on RULER by +8.05pp.
+    - **Repetition Confound (Table 3):**
+        - Top-10% selection (9.57x repetition): ARC 15.36%.
+        - Pool 50% selection (2.31x repetition): ARC 23.21%.
+        - Reducing repetition improves ARC monotonically, while RULER remains relatively flat (60.72% to 54.66%).
+
+# Conclusion
+
+- **Summary:** Orthogonal Junk provides modest RULER improvement (+2.89pp) but degrades ARC (-5.12pp). A simple perplexity baseline is more effective for RULER.
+- **Key Insights:**
+    1.  Brain rot effects are task-dependent; long-context understanding is more vulnerable than reasoning at the 1B scale.
+    2.  Data repetition is a critical confound in subset selection. Reducing repetition from 9.57x to 2.31x significantly improves reasoning (ARC 15.36% to 23.21%).
+- **Limitations:** Gradient orthogonality computed at the LM head may not capture the full dynamics of capability preservation across all model layers.
+
+# References
+
+- **Data Selection:** Cites works on heuristic filters (perplexity, deduplication) and principled methods (DSIR, DataComp-LM).
+- **Gradient-Based Methods:** References Gradient Episodic Memory (GEM), PCGrad, GRAD-MATCH, LESS, and recent work on gradient orthogonality for domain adaptation.
+- **Continual Pre-Training:** Discusses catastrophic forgetting, Elastic Weight Consolidation (EWC), and the "brain rot" phenomenon introduced by Xing et al. (2025).

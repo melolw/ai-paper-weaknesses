@@ -1,0 +1,29 @@
+# Integrity & Consistency Risk Report
+
+## Executive Summary
+The manuscript demonstrates **high internal consistency** across claims, methodology, and results. All primary metrics, relative improvements, and experimental setups align precisely between the text, tables, and figures. No evidence of data fabrication, logical contradictions, or methodological flaws was identified. Two minor reporting inconsistencies are flagged below for clarification prior to publication.
+
+---
+
+## Detailed Findings
+
+### 1. Action Categorization Mismatch (Section 3.2 vs. Figure 2)
+- **Claim/Description:** Section 3.2 explicitly states: *"agent actions can be categorized into three types: (1) `search[query]` actions..., (2) `click[ASIN]` actions..., and (3) navigation actions..."*
+- **Evidence:** Figure 2 (and its embedded table) reports divergence rates across **four** categories: `Search Result`, `Navigation`, `Unknown`, and `Product Detail`. The `Unknown` category is never defined in the text, and the mapping between the three textual categories and four figure categories is unexplained.
+- **Impact:** Minor reporting inconsistency that slightly obscures how the divergence analysis was partitioned. Clarifying whether `Unknown` represents out-of-vocabulary actions or parsing failures would improve reproducibility.
+
+### 2. Table 2 Footnote Contradiction (Section 4.4)
+- **Claim/Description:** Table 2 stratifies Consistency Ratio by search count. For the `First-search anchored` row under the `1 search` column, the entry reads `N/A (n=0)*`.
+- **Evidence:** The corresponding footnote states: `*Small sample size`. This directly contradicts the `n=0` and `N/A` notation. Furthermore, since first-search anchoring is applied to all episodes, it is unclear why this stratification was excluded or yielded zero valid samples, especially when `Pure WM` and `All-search anchored` report valid counts (`n=21` and `n=37`) for the same category.
+- **Impact:** Creates ambiguity regarding the evaluation scope for the first-search baseline in single-search episodes. The authors should either report the value or clarify why it was omitted.
+
+### 3. Numerical & Logical Verification
+- **Metric Consistency:** All reported Consistency Ratios (CR), Real/WM/W2R success rates, and relative improvements (e.g., `+38.7%`, `+22%`) in the Abstract, Introduction, and Section 4.2 are mathematically verified against Table 1 and Table 2.
+- **Sample Sizes:** Table 2 sample sizes sum to exactly 200 episodes per method, consistent with the experimental setup described in Sections 3.4 and 4.1.
+- **CR > 1.0 Observation:** Table 2 reports `CR = 1.034` for `All-search anchored` on 1-search episodes. Under the definition `CR = W2R / Real` (Eq. 1), this is mathematically valid and indicates that the hybrid rollout's transferred actions slightly outperformed the baseline real-environment success rate (likely due to variance or agent behavior shifts). This does not indicate an error.
+- **Step Indexing:** Section 4.3 claims divergences occur `"always at step 0"`. Given standard RL indexing where $s_0$ is the initial state and $s_1$ is the first predicted observation, this likely refers to the first predicted observation (0-indexed). While slightly ambiguous, it does not contradict the data.
+
+---
+
+## Conclusion
+**No clear integrity-related or consistency problems were identified.** The manuscript is rigorously structured, with claims tightly supported by quantitative evidence. The two flagged items are minor reporting discrepancies that do not undermine the scientific validity or trustworthiness of the work but should be corrected for clarity and reproducibility.

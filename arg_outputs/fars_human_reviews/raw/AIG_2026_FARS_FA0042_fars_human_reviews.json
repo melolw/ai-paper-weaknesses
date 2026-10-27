@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0042",
+    "title": "Distilling Bidirectional Embedding Teachers into Streaming-Compatible Causal Students",
+    "abstract": "Text embedding applications increasingly require real-time streaming updates---from conversational agents to recommendation systems processing continuous user interactions. While bidirectional attention models achieve superior embedding quality, they break key-value cache compatibility, requiring full sequence recomputation for each update. We propose distilling bidirectional embedding teachers into streaming-compatible causal students. Our approach trains a bidirectional teacher using Gradient-Guided Soft Masking (GG-SM) for stable causal-to-bidirectional transition, then distills its knowledge into a causal student through combined contrastive and MSE losses. The distilled student achieves 68.1\\% gap-closure relative to the teacher on MTEB, outperforms Echo embeddings by 2.0 percentage points without the 2$\\times$ token overhead, and enables 4.1$\\times$ streaming speedup through KV-cache reuse. Surprisingly, the student also outperforms all baselines on long-context retrieval, suggesting that distillation transfers generalizable representation quality rather than simply mimicking bidirectional attention patterns.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This work follows a standard teacher-student distillation pipeline to solve the practical pain point of streaming embedding updates: it first trains a bidirectional embedding teacher using the existing GG-SM progressive soft masking strategy, then distills the teacher’s embedding knowledge back to a causal student via standard embedding alignment losses, to retain KV-cache compatibility for low-latency incremental updates. The core hypothesis is that this pipeline will close most of the performance gap between vanilla causal embeddings and high-quality bidirectional embeddings, without incurring the overhead of existing streaming embedding solutions like Echo. Validation is fully empirical: tests are run on a 6-task MTEB subset, LoCoV1 retrieval  benchmarks. Results support that: the distilled student closes 68.1% of the performance gap between the baseline causal model and bidirectional teacher, outperforms Echo by 2.0% without Echo’s 2x token overhead, and delivers a 4.1x average streaming speedup. An unexpected secondary finding is that the student outperforms even the bidirectional teacher on long-context retrieval, which the authors attribute to distillation regularizing position bias artifacts from the teacher’s short-sequence training.",
+        "strengths": "1. Streaming incremental embedding updates are a hard requirement for real-world use cases from chatbots to real-time recommendation systems, but existing solutions either sacrifice embedding quality (vanilla causal embeddings) or incur prohibitive overhead (Echo’s input duplication, full sequence recomputation). This work provides a usable middle ground for engineering teams.\n2. The entire pipeline uses off-the-shelf, widely implemented components (LoRA fine-tuning, standard contrastive and MSE losses) with no custom architecture changes. All hyperparameters are explicitly documented, so teams can adapt this to production with minimal engineering lift.\n3. Beyond standard benchmark performance, the authors measure real end-to-end streaming latency, verify numerical equivalence between incremental and full recomputation, and transparently report the unexpected long-context performance gain rather than burying anomalous results. The task-type breakdown of distillation effectiveness is also highly actionable for practitioners.",
+        "weaknesses": "1. The overall pipeline (training a bidirectional teacher then distilling back to a causal student for KV-cache compatibility) follows a well-established teacher-student distillation paradigm for embedding deployment, with no original algorithmic design. The GG-SM bidirectional training strategy is directly reused from prior work with zero modifications or insights, and the combined InfoNCE + MSE embedding alignment objective is a standard, widely used technique in existing embedding distillation literature. The entire contribution is focused on engineering optimization and practical validation, with minimal academic novelty.\n2. The total compute cost of GG-SM teacher training plus student distillation is not compared to the cost of training a high-quality native causal embedding model from scratch. It is unclear what tradeoffs teams face when choosing between this approach and building a native causal embedding stack.\n3. The paper only compares against vanilla causal embeddings, Echo embeddings, and the bidirectional teacher, but does not include comparisons to existing causal embedding distillation approaches or other streaming embedding methods like KV-Embedding.\n",
+        "suggestions": "1. Explicitly clarify the boundary between this work’s engineering contributions and the core methodological contributions of the original GG-SM framework in the introduction, to avoid overstating algorithmic novelty.\n2. Add a small-scale test on a 7B-scale model (even for 2-3 MTEB tasks) to provide preliminary evidence that the approach scales to larger model sizes common in production.\n3. Report total GPU hours for GG-SM teacher training, student distillation, and compare to the cost of training a competitive native causal embedding model on the same data.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T07:38:58.282Z",
+      "updatedAt": "2026-03-26T07:38:58.282Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies whether a causal embedding model can recover much of the quality of a bidirectional embedding model while keeping streaming compatibility. The paper trains a bidirectional teacher with GG-SM and then distills it into a causal student using a contrastive loss together with an MSE distillation loss.",
+        "strengths": "1. The paper is easy to follow. \n\n2. The teacher-student design and the streaming inference procedure are presented clearly. \n\n3. The task-type analysis is useful. The paper does not only report an average score, but also shows that transfer is much stronger for classification and clustering than for pair classification.\n\n",
+        "weaknesses": "1. The main limitation of this paper is its limited scope of validation. It only evaluated a small MTEB model with one model size, one training setting, and six datasets. \n\n2. The baseline set is too narrow. I would like to see the effects of distillation using only MSE, only contrastive learning, different distillation weights,etc. Without these control variables, it is difficult to determine which part of the method is most critical.\n\n3. The findings in the context of long sequences are not fully explained. On page 6, students even outperformed teachers in the LoCoV1 test, which the paper attributes to localization bias caused by teachers receiving short sequence training. I believe this is incomplete.",
+        "suggestions": "",
+        "llmDisclosure": "The review was written using a translation tool that may have been AI-driven.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-29T01:19:24.874Z",
+      "updatedAt": "2026-03-29T01:19:24.874Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0042"
+}

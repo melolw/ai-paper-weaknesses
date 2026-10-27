@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_BALEPUR_smart_mnemonic_sounds_like",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "A SMART Mnemonic Sounds like \"Glue Tonic\": Mixing LLMs with Student Feedback to Make Mnemonic Learning Stick",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper focuses on an intriguing application where LLMs are utilized to enhance students’ vocabulary learning through mnemonics. The system, named SMART, is built using LLaMA fine-tuned on a dataset of user-submitted mnemonics and further refined through alignment with student feedback collected via a flashcard app. The study demonstrates that SMART, while maintaining lower deployment costs, achieves performance on par with GPT-4 in generating effective mnemonics, as evaluated by mnemonic experts.",
+      "strengths": "- The task of generating mnemonics is practical and interesting, providing a valuable downstream application for LLMs.\n- The design of the experiments is well-considered, and the evaluations with students convincingly validate the effectiveness of the proposed system.",
+      "weaknesses": "- The motivation behind the designed reward model in Section 3.1 is unclear. Is there any evidence supporting the use of these metrics?\n- The details about data statistics in Section 3.2 are not clear. What is the distribution of mean time? Does it show statistically significant differences?\n- The observed preferences in Section 3.2.2 lack some details. For example, how do you determine whether a student truly remembers a term?",
+      "questions": "Refer to the questions listed in the weaknesses.",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "91d99041f1c66e318db4afee77191f47c3143e576edf159e00e625015a64d3679cf68fc53686ea2b39511a7a83322eb4b2dbc91ce66d3c8ba302647dc11bc2af"
+    }
+  ]
+}

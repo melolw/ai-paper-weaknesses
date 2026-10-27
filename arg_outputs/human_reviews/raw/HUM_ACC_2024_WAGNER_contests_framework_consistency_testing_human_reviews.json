@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_WAGNER_contests_framework_consistency_testing",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "CONTESTS: a Framework for Consistency Testing of Span Probabilities in Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper investigates the reliability of language model scores as probability estimators without being limited to assessing calibration. The authors introduce ConTestS, a framework for testing score consistency across different ways of assigning joint probabilities to word spans. Experiments show that both MLMs and autoregressive models yield inconsistent probabilities for joint span modeling. Larger discrepancies are found in autoregressive models compared to MLMs. Larger MLMs tend to be more consistent than smaller ones, while the trend reverses for autoregressive models.",
+      "strengths": "The motivation of the paper is clearly outlined.\nThe experimental setting and design are thorough and easy to follow.",
+      "weaknesses": "The motivation for extending this work from MLMs to autoregressive LMs (via instruction prompts) seems to me to be somewhat weak.\nThe joint probabilities considered are limited to two adjacent tokens, without considering any different kind of span.\nSome of the listed 'desired properties of a consistency testing framework' are confusing, or misleading.",
+      "questions": "Typos:\n034: the -> their\n092: models can’t function as tasks\n134: I don’t see how the length of a token can be larger than one.\n237: wrong parenthesis use\n239: ungrammatical segue\n316: inconsistent casing\n\nParagraphs from Line 255 to Line 276 don’t seem too relevant for this paper. I’d suggest removing them and moving more relevant content from the appendix.",
+      "rating": 2.5,
+      "confidence": 1,
+      "soundness": 2.5,
+      "raw_note_id": "c608fc7196a62df19302007c18e4e0d8742267a3f6ebaabecce87d3fc8c49729f75bbe10188b5eb209132202b258fa7f8e30d14993dde6e88965e014c1a72d71"
+    }
+  ]
+}

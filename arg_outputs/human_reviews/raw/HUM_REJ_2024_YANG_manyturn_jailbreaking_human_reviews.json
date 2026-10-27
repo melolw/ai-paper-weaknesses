@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_YANG_manyturn_jailbreaking",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Many-Turn Jailbreaking",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper explores the Many-Turn Jailbreaking of LLMs and constructs a dataset named Multi-Turn Jailbreak Benchmark (MTJ-Bench), revealing the jailbreak risks of LLMs in multi-turn conversations.",
+      "strengths": "1. The exploration of many-turn jailbreaking complements previous work on single-turn jailbreaks of LLMs.\n\n2. Much effort was spent conducting experiments on a large number of open-source LLMs.",
+      "weaknesses": "1. Minimal findings and contributions. I believe the findings of the paper and the constructed dataset offer scant contributions. It is quite obvious that once a single-turn jailbreak is successful, subsequent many-turn jailbreaks become more manageable. Moreover, MTJ-Bench is built upon existing datasets. The authors' contribution should, in my view, focus on how to better design multi-turn questions to reduce the likelihood of LLMs detecting harmful intent.\n\n2. Are the designed questions universally applicable across different jailbreak methods? I think different jailbreak methods should correspond to different types of questions. The paper lacks this analysis.\n\n3. To what extent can existing defense methods protect against many-turn jailbreaks? If single-turn jailbreaks can be defended against, then many-turn jailbreaks, due to their larger and more evident targets, should theoretically be easier to defend against. This should be discussed and analyzed.",
+      "questions": "1. The font size in Tables 2 and 3 is too large, leading to significant whitespace in between.\n\n2. The equations in section 3.3 are not numbered, and the formula for ASR_Gain extends beyond the formatting boundaries.",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 2,
+      "raw_note_id": "e3da9744cc9787700197639381f86db80a013dbb8316de5c63686d0463be44c5176e67102fea500950bc815ec3837aa4dcc4c771fb1f002a6ba4867794998547"
+    }
+  ]
+}

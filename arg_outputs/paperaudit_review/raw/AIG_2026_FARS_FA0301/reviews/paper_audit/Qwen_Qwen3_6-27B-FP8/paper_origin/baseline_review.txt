@@ -1,0 +1,43 @@
+1) Summary
+The paper addresses the challenge of large language models defaulting to memorized conventions rather than adhering to explicitly provided glossary definitions, particularly in mathematical reasoning where multiple valid notations coexist. The authors propose Definition Unit Tests (DUT), a training-free prompting technique that prepends discriminative verification questions with answers to bind the model to the specified convention before solving the main task. Evaluated on ErdosConventionsBench (300 items across three mathematical convention families) using Qwen2.5-Math-7B and Llama-3.1-8B, DUT improves accuracy by +5.0 and +22.7 percentage points over engagement-matched neutral-check baselines, respectively. The method reduces alternate-convention match rates by approximately 80% and outperforms majority-vote inference scaling while requiring only a single generation.2) Strengths
+- **Rigorous Experimental Design Isolating Discriminative Effects**
+  - The introduction of an engagement-matched control (Condition B with neutral checks) effectively rules out additional computation or token length as confounding factors (Section 3.2, Section 3.3).
+  - Table 1 demonstrates that Condition B performs within 2 percentage points of the glossary-only baseline (Condition A) on both models, confirming that the gains in Condition C stem specifically from discriminative content rather than extra reasoning steps.
+  - This controlled setup strengthens causal claims about convention binding, addressing a common methodological flaw in prompt engineering studies where improvements are conflated with increased context length or sampling.
+- **Strong Empirical Performance and Computational Efficiency**
+  - DUT achieves substantial accuracy gains on both evaluated models, particularly on Llama-3.1-8B (+22.7pp over Condition B, Table 1), demonstrating practical utility for weaker models.
+  - The method reduces alternate-convention match rates from 7.0% to 1.3% on Qwen and 9.3% to 2.0% on Llama, directly validating the proposed mechanism of convention locking (Section 4.2).
+  - Single-sample DUT outperforms majority voting over five samples (A@5, B@5) by large margins (+44.3pp to +53.7pp), demonstrating superior computational efficiency for convention adherence without requiring inference-time scaling (Table 1, Section 4.2).
+- **Comprehensive Ablation and Error Analysis**
+  - The ablation study on the number of checks ($k$) reveals model-dependent scaling behavior, showing that weaker models require more repeated binding ($k=3$ vs $k=1$ for Llama, Table 2, Section 4.4).
+  - Error analysis distinguishes between convention confusion and computational/parsing failures, showing that DUT primarily eliminates convention-related errors while leaving arithmetic limitations as the residual failure mode (Section 4.5).
+  - Per-family breakdowns (Figure 2, Section 4.3) provide nuanced insights into where DUT is most impactful (completeness) versus where baseline performance is already near-ceiling (asymptotics), guiding practical deployment.3) Weaknesses
+- **Limited Generalizability Due to Synthetic Benchmark and Narrow Domain**
+  - ErdosConventionsBench is explicitly described as synthetic and derived from a single source (ErdosProblems.com), containing only 300 items across three mathematical convention families (Section 4.1).
+  - No evaluation is provided on non-mathematical domains (e.g., API specifications, legal rubrics, or coding standards) despite the introduction claiming relevance to these settings (Section 1).
+  - The narrow scope limits confidence in DUT's applicability to real-world, high-stakes convention adherence tasks where definitions are more complex, ambiguous, or context-dependent.
+- **Manual Construction of Discriminative Checks Lacks Scalability**
+  - The paper states that DUT requires designing convention-specific discriminative checks, but provides no automated pipeline or algorithm for generating them from arbitrary glossaries (Section 5, Conclusion).
+  - Figure 1 and Section 3.2 illustrate hand-crafted examples (e.g., computing $(f*g)(3)$ vs alternate), but do not detail how these would be generated at scale for new domains or complex definitions.
+  - Without an automated check-generation mechanism, the practical deployment of DUT is constrained, as manual engineering defeats the purpose of a training-free, plug-and-play prompt wrapper.
+- **Insufficient Model Diversity and Statistical Reporting**
+  - Evaluation is restricted to two models of similar scale (~7B–8B parameters), with no testing on larger, more capable models (e.g., 70B+ or frontier models) where convention adherence might already be strong or fail differently (Section 4.1).
+  - While 95% confidence intervals are reported for some comparisons, formal statistical significance tests (e.g., paired t-tests or bootstrap tests) are absent, and the small benchmark size (300 items) raises concerns about variance in per-family analyses (Section 4.2, Table 2).
+  - The computational overhead (token count, latency) of prepending $k$ checks is not quantified, making it difficult to assess the trade-off between accuracy gains and inference cost.4) Suggestions for Improvement
+- **Expand Evaluation to Real-World Domains and Larger Models**
+  - Construct or adopt a benchmark spanning non-mathematical domains (e.g., API tool-calling specs, evaluation rubrics, or coding style guides) to validate the claims made in Section 1.
+  - Evaluate DUT on a broader range of model sizes and architectures (e.g., 13B, 70B, and open-weight frontier models) to assess scalability and identify performance ceilings.
+  - Report inference latency and token overhead for Condition C versus Condition A to provide a complete efficiency analysis alongside accuracy metrics.
+- **Develop and Evaluate Automated Check Generation**
+  - Propose a prompt-based or programmatic pipeline that automatically generates discriminative checks from a given glossary definition, reducing manual engineering effort.
+  - Evaluate the quality and effectiveness of auto-generated checks versus hand-crafted ones on a held-out subset of ErdosConventionsBench or a new domain.
+  - Discuss failure modes of automated generation (e.g., ambiguous definitions, lack of alternate conventions) and provide guidelines for when manual intervention is necessary.
+- **Strengthen Statistical Rigor and Error Analysis**
+  - Apply formal statistical tests (e.g., bootstrap confidence intervals or paired significance tests) to all reported improvements, especially for per-family and $k$-ablation results.
+  - Expand the error analysis in Section 4.5 to include qualitative examples of remaining failures under DUT, clarifying whether they stem from reasoning limits, parsing issues, or prompt formatting constraints.
+  - Provide a sensitivity analysis for the choice of $k$ across different model families and task complexities to establish practical guidelines for practitioners.5) Score
+- Overall (10): 6 — The paper presents a well-motivated, training-free prompting technique with a strong experimental design isolating discriminative effects, but is limited by a small synthetic benchmark, manual check construction, and narrow model evaluation (Sections 3–4, Table 1).
+- Novelty (10): 7 — The concept of using discriminative verification checks to bind conventions is conceptually clear and practically useful, though it builds on established ideas from instruction following and contract testing without introducing a fundamentally new mechanism (Section 2, Section 3.2).
+- Technical Quality (10): 6 — The engagement-matched control and ablation studies are rigorous, but the lack of automated check generation, limited model diversity, and absence of formal statistical tests weaken the technical completeness (Section 3.3, Section 4.4, Section 5).
+- Clarity (10): 8 — The manuscript is well-structured, with clear figures (Figure 1), concise tables (Tables 1–2), and logical flow from problem formulation to error analysis.
+- Confidence (5): 4 — High confidence in the evaluation of the presented results and methodology, as the experimental setup, metrics, and limitations are explicitly detailed in Sections 3–4.

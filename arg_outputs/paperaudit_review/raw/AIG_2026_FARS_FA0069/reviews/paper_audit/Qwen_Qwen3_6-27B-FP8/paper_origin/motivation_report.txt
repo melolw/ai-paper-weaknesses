@@ -1,0 +1,38 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Handling truncated rollouts in Reinforcement Learning with Verifiable Rewards (RLVR) for long Chain-of-Thought (CoT) reasoning without artificially penalizing extended reasoning paths.
+- **Claimed Gap**: *"Standard practice treats truncation as failure, conflating unfinished reasoning with incorrect reasoning."* (Abstract) The authors argue that assigning a hard failure reward ($R=-1$) at token limits biases the policy against long-horizon reasoning.
+- **Proposed Solution**: *"Timeout bootstrapping."* Drawing from classical RL theory, truncation is treated as a non-terminal timeout. The reward signal is bootstrapped from the critic's value estimate at the truncation boundary ($R = \text{clip}(V_{\phi}(s_T), -1, +1)$), supplemented by delayed bootstrapping and a fixed entropy bonus to stabilize training.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Value Bonuses using Ensemble Errors (VBE)
+- **Identified Overlap**: Both works repurpose value function outputs to replace hard/default rewards in uncertain or non-terminal states. VBE uses ensemble-derived value bonuses for exploration; the manuscript uses a single-critic estimate for truncation handling. Both inherit the fragility of value-based reward shaping when estimators lack uncertainty calibration.
+- **Manuscript's Defense**: The manuscript does not cite VBE. Its implicit defense rests on domain specificity: applying classical "time limit vs. terminal state" theory to LLM token limits rather than general RL exploration. It claims novelty in the RLVR/CoT context.
+- **Reviewer's Assessment**: The methodological core is not novel. The manuscript's single-critic bootstrap directly mirrors VBE's value substitution mechanism but omits the ensemble-based uncertainty quantification that prevents pessimistic collapse. The observed critic collapse to -1.0 is a direct consequence of this architectural simplification, making the contribution an application-oriented adaptation rather than a substantive methodological advance.
+
+### vs. Contextual Rollout Bandits for RLVR
+- **Identified Overlap**: Both address inefficient or noisy rollout signals in RLVR. The bandit framework schedules rollouts based on induced performance gain; the manuscript refines the reward signal at truncation points using critic values. Both assume that accurate value estimation is the bottleneck for stable RLVR optimization.
+- **Manuscript's Defense**: The manuscript does not cite this work. It positions its contribution as a low-level reward-shaping fix for a specific boundary condition (token limits), distinct from high-level rollout scheduling or buffer management.
+- **Reviewer's Assessment**: The manuscript operates as a micro-optimization within the broader rollout optimization paradigm. While focusing on truncation is a valid practical concern, the reliance on an uncalibrated critic for signal refinement echoes the same theoretical bottleneck identified in rollout scheduling literature. The difference is architectural scope, not fundamental novelty. Incremental.
+
+### vs. MedEyes: Learning Dynamic Visual Focus for Medical Progressive Diagnosis
+- **Identified Overlap**: Both target RLVR training instability (entropy collapse, reward assimilation) in long-horizon reasoning. MedEyes employs off-policy decoupling and adaptive termination to stabilize training; the manuscript uses a fixed entropy bonus (0.001) and delayed bootstrapping.
+- **Manuscript's Defense**: The manuscript does not cite MedEyes. It acknowledges entropy instability as a failure mode and notes that the entropy bonus *"prevents collapse in stable runs but causes explosion in unstable runs,"* suggesting future work on *"more sophisticated entropy control."*
+- **Reviewer's Assessment**: The manuscript's stabilization strategy is rudimentary compared to contemporary RLVR frameworks. The entropy explosion and critic collapse observed are well-documented phenomena in on-policy RLVR. By failing to integrate established stability mechanisms (e.g., off-policy anchoring, dual-stream optimization), the manuscript's proposed solution remains fragile. The novelty lies more in the empirical diagnosis than in the stabilization technique itself.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental
+- **Assessment**: 
+  The paper successfully identifies a practical bottleneck (truncation-as-failure bias) in RLVR but proposes a solution that is methodologically derivative. The core mechanism—bootstrapping rewards from a value function at non-terminal boundaries—is a standard RL technique repurposed for LLM token limits. The manuscript fails to cite or differentiate itself from established literature on value bonuses, rollout optimization, and RLVR stability controls. 
+  Crucially, the paper's most valuable contribution is not the proposed method, but its **mechanistic diagnosis**: it empirically demonstrates that naive critic bootstrapping in long-horizon RLVR leads to severe miscalibration (negative correlation with correctness) and pessimistic collapse. This serves as a critical warning for the community rather than a validated solution. The existence of the similar works significantly weakens the methodological novelty claim, though the empirical findings retain practical significance for RLVR practitioners.
+  - **Strength**: Clear problem formulation, rigorous pre-registered experimental design, and highly valuable mechanistic analysis exposing critic miscalibration (Pearson $r = -0.211$, AUROC = 0.314) and entropy instability in long-horizon RLVR.
+  - **Weakness**: Low methodological novelty; relies on a naive single-critic bootstrap without uncertainty quantification or advanced stability controls; fails to engage with relevant prior work on value-driven reward shaping and RLVR instability; results are statistically underpowered (2 seeds) and show average performance degradation relative to baselines.
+
+## 4. Key Evidence Anchors
+- **Abstract**: *"Standard practice treats truncation as failure, conflating unfinished reasoning with incorrect reasoning."*
+- **Experiments (Condition C)**: *"$R = \text{clip}(V_{\phi}(s_T), -1, +1)$ if truncated. Includes delayed bootstrapping (first 10 steps use $R=-1$) and entropy bonus (0.001)."*
+- **Training Dynamics (Figure 2)**: *"Critic value at truncation ($V(s_T)$) drops to -1.0 by training step 15–20. Fraction of positive bootstrapped values remains 0.0%."*
+- **Value Informativeness (Table 2)**: *"Pearson $r = -0.211$ ($p < 0.001$). AUROC = 0.314 (worse than random). Critic assigns lower values to correct responses (Mean $V = -0.377$) than incorrect ones."*
+- **Discussion**: *"The critic learns a pessimistic prior (-1.0) before encountering enough positive examples."* & *"This suggests a need for more sophisticated entropy control (e.g., EntroPIC)."*

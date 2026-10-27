@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_CHANG_communitykgrag_leveraging_community_structures",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "CommunityKG-RAG: Leveraging Community Structures in Knowledge Graphs for Advanced Retrieval-Augmented Generation in Fact-Checking",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes the CommunityKG-RAG framework for zero-shot fact-checking. The framework utilizes both the semantic and structural information of knowledge graph through context-aware retrieval and multi-hop utilization to enhance the fact-checking capabilities of LLMs. Experiments show that the framework is effective.",
+      "strengths": "1.\tThe authors propose a novel idea of utilizing Knowledge Graph for Retrieval Augmented Generation, which is largely unexplored. \n2.\tThe framework is explained in details with well-illustrated workflow figure. \n3.\tComprehensive experiments are conducted to validate the framework’s effectiveness and the influence of different parameters.",
+      "weaknesses": "1.\tThe authors want to solve is that LLMs can only access out-of-date data, therefore RAG is adopted. But with the addition of knowledge graph, is the time and space cost of maintaining an up-to-date model too high? Regularly updating the knowledge graph with the latest information necessitates a continual data curation process, which is resource-intensive.\n2.\tI also have concerns regarding the community detection section. In this paper, Knowledge Graph is statically partitioned into predefined communities without concerning the variability in user inquiries, which poses a potential limitation. When user queries originate from diverse perspectives, the rigidity of these fixed communities may hinder the system's ability to efficiently locate the most pertinent information segments, thereby compromising the relevance and precision of retrieved data.",
+      "questions": "1.\tNone of the formulas in the paper are numbered.\n2.\tThe framework name “CommunityKG-RAG” is a bit too long, which makes the layouts of several paragraphs a bit awkward.",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "18550299b2dc72bd5f801a2f1d71b6e5fa9842a5ec3423715c95bd6f36d9701aeb29be148602fa85891e255b3f60f0d6c84785a81ea405cdc5b9d2a4b6a16fe0"
+    }
+  ]
+}

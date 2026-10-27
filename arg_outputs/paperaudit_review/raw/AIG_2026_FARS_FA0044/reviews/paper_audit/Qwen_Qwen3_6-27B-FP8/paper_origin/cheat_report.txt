@@ -1,0 +1,27 @@
+Based on a critical review of the manuscript, several substantive internal inconsistencies and structural issues were identified, particularly regarding the presentation of experimental results and the alignment between text, tables, and figures.
+
+### 1. Misleading Structure of Table 1 (Gate Metrics for Baselines)
+**Issue:** Table 1 lists "Gate-On Rate" and "Gate Precision" for the baseline methods "No-Reference (A)" and "Always Self-Ref (B)".
+**Evidence:**
+- **Table 1:** Rows for No-Reference and Always Self-Ref contain values for "Gate-On Rate" (44.86%) and "Gate Precision" (78.66%).
+- **Section 4.1:** Defines baselines as "No-Reference (A) discards self-solves..." and "Always Self-Reference (B) always uses the majority self-answer...". Neither method employs a gate.
+- **Section 4.2:** States, "SSR-Judge’s $\ge 4/5$ threshold yields a higher Gate-On Rate (63.79% vs. 44.86% for strict unanimity)..."
+**Analysis:** The values 44.86% and 78.66% correspond to the properties of a "strict unanimity" (5/5) gate, not the performance of methods A or B. Placing these metrics in the rows for A and B creates a false association, implying these baselines have gate characteristics or were evaluated under a strict unanimity condition, which contradicts their definitions. This structure is confusing and potentially misleading.
+
+### 2. Inconsistent Labeling and Data in Table 2 and Figure 2
+**Issue:** There is a fundamental mismatch between the slice labels (which imply partitioning by correctness) and the sample counts (which correspond to agreement levels).
+**Evidence:**
+- **Table 2 Labels:** Rows are labeled "Unanimous + Correct", "Unanimous + Wrong", "Non-unan. + Correct", "Non-unan. + Wrong". This implies a 2x2 partition based on Agreement and Correctness.
+- **Table 2 Counts:**
+    - "Unanimous + Correct": $n=647$.
+    - "Unanimous + Wrong": $n=246$.
+    - "Non-unan. + Correct": $n=160$.
+    - "Non-unan. + Wrong": $n=347$.
+- **Section 4.4 (Calibration Analysis):**
+    - 5/5 agreement: $n=647$.
+    - 4/5 agreement: $n=246$.
+    - 3/5 agreement: $n=507$.
+**Analysis:**
+- The counts in Table 2 ($647$ and $246$) match the sample sizes for **5/5** and **4/5** agreement from Section 4.4, not the counts for "Correct" vs "Wrong" majority answers.
+- If the labels referred to correctness, the counts should reflect the number of correct/wrong items within those agreement groups (e.g., 5/5 has ~78.7% correctness, so correct count should be ~509, not 647).
+- Instead, it appears Table 2 Row 1 represents "5/5 Agreement" and Row 2 represents "4/5 Agreement", but they are mislabeled as "+ Correct" and "+ Wrong

@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0123",
+    "title": "Compute-Matched Repetition Advantage in Long-CoT Supervised Fine-Tuning",
+    "abstract": "Recent work shows that repeating a small curated dataset outperforms training on 32$\\times$ more unique data in long chain-of-thought (CoT) supervised fine-tuning (SFT). However, step-matched comparisons contain a compute confound: the repetition condition processes more total tokens due to longer average responses. We introduce token-budget matching---early-stopping the repetition condition when cumulative tokens match the baseline---to isolate the true repetition effect. Under token-matched conditions, the repetition advantage is not only preserved but amplified 6.33$\\times$ ($\\Delta_{\\text{tok}}/\\Delta_{\\text{step}}$ ratio on aggregate Pass@k), definitively refuting the compute confound hypothesis. Analysis reveals the mechanism: repetition training dramatically improves termination rates (87--91\\% vs. 29--48\\%) rather than conditional accuracy, teaching models to produce complete, decisive reasoning chains. Our results establish that data curation and repetition genuinely outperform data scaling for long-CoT SFT, independent of compute effects.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces token-budget matching in repetition training. In stead of matching the total iterations for training, it matches the token budget, which gives a more rigorous comparison. The results show token-budget matching significantly improves the model performance compared with step-matching repetition. Analysis releals this is due to the improved termination rate.",
+        "strengths": "1. The paper is well-written and easy to follow.\n2. The improvements are significant. \n3. The analysis of termination rate v.s. individual accuracy is interesting.",
+        "weaknesses": "1. The focus of the paper seems a little trivial to me. It explored a known phenomenon in a more rigorous condition, without much technical or theoretical contribution. Although the finding is interesting, I think the contribution is not enough to be an independent paper.\n2. The experimental results looks strange to me. The only difference between token-matching and step-matching is that the token-matching stops slightly earlier than step-matching. The difference of the step is actually very tiny (~3.3%). It is hard to explain the huge difference (10%~20% accuracy improvement). \n3. Although the paper gives analysis and conclude token-matching improves the termination rate while step-matching improves the individual accuracy, it is still difficult to understand why just train 3.3% fewer steps can lead to such difference. And there is no explicit connection between early stopping and termination. Without a reasonable hypothesis on the mechanism behind it, the results are not convincing to me. \n4. To make the conclusion more general, it would be interesting to see whether the observations still hold if different data scale/step budgets/token budgets are used.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-30T12:56:00.847Z",
+      "updatedAt": "2026-04-02T13:49:04.919Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "The paper tests the hypothesis that \"repetition advantage\" in long-CoT SFT is not merely a step-matching compute artifact. Three conditions are considered, namely data scaling, step-matched repetition, and token-matched repetition. The final results show that the hypothesis is refuted and the proposed method does not work. Results show that token-matched repetition preserves and amplifies the advantage over data scaling.",
+        "strengths": "1. The hypothesis is clear and well-motivated.\n2. The FLOPs proxy is quite interesting.\n3. The paper is concise and easy to follow.",
+        "weaknesses": "1. The experimental settings tested are quite narrow, I don't this is sufficient to support the claims.\n2. The paper is more like presenting controlled experiments for verification, rather than proposing a novel method or insight.\n3. Potential mismatch found in code and paper description (See AI Integrity below)",
+        "suggestions": "Too many em dashes in the paper.\nRelated work section is too thin.\nGiven that I also reviewed \"Length-Weighted Loss Does Not Explain the Repetition Advantage in Long-CoT Supervised Fine-Tuning\", it is clear that the two papers follow a similar style, which may highlight the limitation of this system.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "See AI Integrity Audit below."
+      },
+      "audit": {
+        "findings": "1. If the uploaded code is correct, then there appears to be mismatch between paper description and the code. The paper states that the model used is Qwen2.5-1.5B-Instruct, yet the ckpts config.json all show Olmo3, and in results, we see tokenizer is actually allenai/Olmo-3-7B-Instruct. \n\n2. The paper claims to use NuminaMath-CoT, but the code appears to use dakopi/dolci_think__train\n\n3. The setup citation is also inaccurate. It says the Qwen2.5-1.5B-Instruct setup follows Kopiczko et al. (2026), but that work uses Olmo3 and Qwen3.\n\n4. I also found this code repo quite confusing and difficult to navigate, so there might be more issues that I did not catch."
+      },
+      "submittedAt": "2026-04-03T04:15:39.402Z",
+      "updatedAt": "2026-04-03T04:15:39.402Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates the “repetition advantage” in long chain-of-thought (CoT) supervised fine-tuning (SFT), where prior work reported that repeatedly training on a small curated dataset can outperform training on a much larger set of unique samples. The authors identify a potential confound in earlier comparisons: step-matched setups may allow the repetition condition to process more tokens due to longer responses.\n\nTo address this, the paper proposes token-budget matching, in which training is early-stopped so that the total number of processed tokens matches the baseline. Under this controlled setup, the authors show that the repetition advantage not only persists but is amplified. Further analysis suggests that the improvement primarily comes from significantly higher termination rates (i.e., models more reliably produce complete reasoning chains), rather than improved conditional accuracy.\n\nOverall, the paper provides a careful empirical re-examination of a previously reported phenomenon and offers a more controlled experimental methodology to isolate the effect of data repetition in long-CoT SFT.",
+        "strengths": "The paper correctly points out a subtle but important issue in prior work: step-matched comparisons do not guarantee equal compute in long-CoT settings due to varying sequence lengths. This is a meaningful and non-trivial observation.\n\nThe proposed token-level matching is simple, well-motivated, and broadly applicable. It provides a cleaner way to compare training regimes in settings where sequence length varies significantly.\n\nThe experiments are well-designed and show consistent improvements across multiple benchmarks. The effort to tightly match token budgets and even approximate FLOPs strengthens the credibility of the conclusions.\n\nThe finding that gains come primarily from improved termination rates rather than conditional accuracy is interesting and sheds light on how repetition affects model behavior. This is arguably the most insightful part of the paper.",
+        "weaknesses": "While the paper provides a more rigorous validation, the central claim that repetition of high-quality data can outperform scaling has already been observed in prior work. This paper mainly strengthens and clarifies that finding rather than introducing a fundamentally new idea.\n\nThe main contribution is largely methodological (removing a confound) and confirmatory. The work does not substantially expand the conceptual understanding of learning dynamics beyond refining an existing observation.\n\nExperiments are conducted on a single model (Qwen2.5-1.5B) and a specific task type (math/science reasoning with long CoT). It is unclear whether the conclusions generalize to:\n- larger-scale models,\n- non-reasoning tasks,\n- instruction tuning more broadly.\n\nAlthough the paper shows that repetition improves termination behavior, it does not translate this insight into actionable training strategies (e.g., how to design datasets or curricula to maximize this effect without overfitting).\n\nThe paper could more clearly position itself as a validation and refinement of prior findings. As written, it may overstate novelty relative to its actual contribution.",
+        "suggestions": "The contribution is primarily confirmatory and methodological, rather than conceptually novel. As such, the work is better suited as a findings-style paper rather than a main conference proceeding. It would likely be a strong candidate for venues or tracks that emphasize empirical validation, negative/positive findings, or methodological rigor, but may fall short of the novelty bar expected for main proceedings at top-tier conferences.",
+        "llmDisclosure": "Use ChatGPT to verify some understandings.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T03:41:09.661Z",
+      "updatedAt": "2026-03-31T03:41:09.661Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0123"
+}

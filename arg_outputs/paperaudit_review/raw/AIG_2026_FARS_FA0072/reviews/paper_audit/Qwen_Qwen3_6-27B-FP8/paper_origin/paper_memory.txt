@@ -1,0 +1,77 @@
+# Global Summary
+
+The paper addresses the limitation of existing remasking strategies in diffusion code generation, which rely on model confidence or perturbation heuristics rather than semantic error localization. The authors propose execution-trace guided remasking, an inference-time method that uses runtime diagnostics (exception tracebacks and line-level execution traces) to identify failure-relevant code regions and target conditional diffusion repair.
+
+Evaluation is performed on HumanEval+ and MBPP+ using the LLaDA-8B-Base model. The method achieves a pass@1 of 31.22% on MBPP+, representing an 11.38 percentage point improvement over the no-repair baseline and 4.24 points over the CORE baseline ($p < 0.001$). Analysis reveals that trace-guided repair produces meaningful code modifications (mean token edit distance 10.01), whereas global low-confidence repair rarely changes code (89.4% zero-edit fraction). Improvements on HumanEval+ are limited (1.83% to 2.64%) due to low base performance.
+
+# Abstract
+
+- Proposes execution-trace guided remasking for diffusion code generation to localize failures using runtime diagnostics.
+- When code fails unit tests, the method parses exception tracebacks or collects line-level execution traces to identify failure-relevant regions.
+- Only tokens in these regions are remasked for conditional diffusion repair.
+- On MBPP+, the method achieves 31.22% pass@1.
+- This is an 11.38 percentage point improvement over the no-repair baseline and 4.24 points over CORE, with statistical significance ($p < 0.001$).
+- Analysis shows trace-guided repair produces meaningful modifications (mean edit distance 10.01 tokens), while global low-confidence repair rarely changes code (89.4% zero-edit fraction).
+
+# Method
+
+- **Problem Setup:** Uses masked diffusion language models. Access to feedback test subset $T_{fb}$ during inference; evaluation on disjoint held-out set $T_{eval}$.
+- **Stage 1: Initial Generation:** Generates code using standard masked diffusion sampling with $N$ denoising steps. Employs low-confidence remasking during generation.
+- **Stage 2: Execution and Localization:**
+    - **Exception-Based:** Extracts line number from the topmost frame in the traceback. Expands to a window of $\pm w$ lines (default $w = 1$).
+    - **Assertion-Based:** Uses Python's `sys.settrace` to collect the last $M$ executed lines before assertion failure (default $M = 20$).
+    - **Fallback:** If localization fails, falls back to global low-confidence repair (selecting $K$ lowest-confidence tokens).
+- **Stage 3: Targeted Conditional Repair:**
+    - Maps localized source lines to token indices.
+    - Constructs a repair mask $R$: remasks all tokens in the region if count $\leq K$, otherwise selects $K$ lowest-confidence tokens within the region.
+    - Performs conditional diffusion repair with $S$ denoising steps (default $S = 64$) and repair temperature $\tau > 0$ (default $\tau = 0.2$).
+    - **Iterative Repair:** Can iterate localization and repair up to $R_{max}$ rounds (default $R_{max} = 3$).
+
+# Experiments
+
+- **Model and Benchmarks:**
+    - Model: LLaDA-8B-Base.
+    - Datasets: HumanEval+ (164 problems) and MBPP+ (378 problems after filtering).
+    - Test Splitting: Deterministic split into feedback ($T_{fb}$, 20%) and evaluation ($T_{eval}$, 80%).
+- **Hyperparameters:**
+    - Initial generation: $N = 128$ steps.
+    - Repair: $S = 64$ steps, $K = 64$ max remasked tokens, $\tau = 0.2$.
+    - Localization window: $\pm 1$ line default.
+    - Max repair rounds: 3.
+    - Results averaged over 3 random seeds.
+- **Baselines:**
+    - No Repair (NFE 128).
+    - Global Low-Confidence (remask $K=64$ globally lowest-confidence tokens, $S=32$ steps).
+    - CORE (context-robust remasking).
+    - Best-of-2 (generate two candidates, select best).
+- **Main Results (Table 1):**
+    - **MBPP+ pass@1:** Trace-Guided 31.22% (NFE 294) vs No Repair 19.84% vs CORE 26.98% vs Global Low-Confidence 19.84% vs Best-of-2 9.52%.
+    - **HumanEval+ pass@1:** Trace-Guided 2.64% vs No Repair 1.83% vs CORE 3.05%.
+    - McNemar test on MBPP+: $p < 0.001$. 72 problems fixed by trace-guided that CORE failed; 24 problems where CORE succeeded but trace-guided failed.
+- **Ablation Study (Table 2):**
+    - Wide window ($\pm 5$ lines) improves pass@1 to 32.28% (vs 29.10% default).
+    - Random selection within trace region matches confidence-based selection (29.10%).
+    - Reducing repair steps to $S = 8$ degrades performance to 27.78%.
+- **Analysis:**
+    - **Localization Distribution (Figure 2):** On MBPP+, exception-based localization covers 51.5% of failures, assertion-based covers 41.5%, and fallback is 7.0%.
+    - **Edit Locality (Figure 3):** Trace-guided mean token edit distance is 10.01. Global low-confidence mean edit distance is 0.95 with 89.4% zero-edit fraction.
+    - **Error Type (Table 3):** Runtime errors have highest repair success rate (15.6%). Syntax errors dominate failures (66.1%) with 12.1% repair success. Assertion failures have 8.8% success.
+
+# References
+
+- Austin et al. (2021): Structured denoising diffusion models in discrete state-spaces (D3PM).
+- Bai et al. (2026): PRISM: Efficient test-time scaling via hierarchical search.
+- Chen et al. (2023): Teaching large language models to self-debug.
+- Gong et al. (2025): DiffuCoder: Understanding and improving masked diffusion models for code generation.
+- Huang et al. (2026): TraceCoder: A trace-driven multi-agent framework.
+- Le et al. (2022): CodeRL: Mastering code generation through pretrained models and deep reinforcement learning.
+- Liu et al. (2023): Is your code generated by ChatGPT really correct? (HumanEval+/MBPP+).
+- Lou et al. (2023): Discrete diffusion modeling by estimating the ratios of the data distribution (SEDD).
+- Nie et al. (2025): Large language diffusion models (LLaDA).
+- Sahoo et al. (2024): Simple and effective masked diffusion language models (MDLM).
+- Shinn et al. (2023): Reflexion: Language agents with verbal reinforcement learning.
+- Singh et al. (2023): CodeFusion: A pre-trained diffusion model for code generation.
+- Wang et al. (2025): Remasking discrete diffusion models with inference-time scaling (ReMDM).
+- Ye et al. (2025): Dream 7B: Diffusion large language models.
+- Zeng et al. (2025): TreeDiff: AST-guided code generation with diffusion LLMs.
+- Zhai et al. (2026): CORE: Context-robust remasking for diffusion language models.

@@ -1,0 +1,52 @@
+# Global Summary
+
+This paper addresses the vulnerability of long-context language models to "hard distractors"—semantically similar but misleading passages that cause systematic errors. The authors argue that standard self-consistency fails in this setting because errors are context-driven rather than decoding-driven, leading to correlated wrong answers. They propose Context Bagging (CoBag), an inference-time ensembling method that allocates compute to context diversity (via subset sampling and order shuffling) rather than decoding diversity. Evaluated on a noisy split of MuSiQue (2,314 examples) using Qwen2.5-7B-Instruct, CoBag significantly outperforms self-consistency (+3.12 EM, $p < 0.001$). However, ablation studies reveal that order diversity is the dominant mechanism (+1.44 EM), while subset diversity provides only marginal benefit (+0.40 EM), suggesting simple order shuffling may be sufficient for many applications.
+
+# Abstract
+
+- **Problem:** Long-context models struggle with hard distractors. Self-consistency fails because all samples converge to the same wrong answer due to context-driven errors.
+- **Method:** Context Bagging (CoBag) samples $K$ diverse context subsets using relevance-weighted selection, randomly permutes paragraph order, generates answers via greedy decoding, and aggregates via majority voting.
+- **Results:** On MuSiQue with hard distractors, CoBag outperforms self-consistency by +3.12 EM ($p < 0.001$).
+- **Ablation:** Order diversity is the dominant mechanism (+1.44 EM), while subset diversity provides marginal additional benefit (+0.40 EM).
+
+# Method
+
+- **Problem Setup:** The task is long-context QA with a question $q$ and retrieved paragraphs $P$. Hard distractors are defined as paragraphs semantically similar to the question/evidence but leading to incorrect answers. These distractors rank highly by relevance and survive standard filtering.
+- **Why Self-Consistency Fails:** Self-consistency samples multiple decoding trajectories from the same context. Diagnostic analysis shows self-consistency has an agreement rate of 0.85 and wrong-answer concentration of 0.82, indicating correlated errors.
+- **CoBag Procedure:**
+    - **Step 1: Relevance Scoring:** Computes relevance score $s_i$ using cosine similarity between embeddings (BGE-M3 model).
+    - **Step 2: Subset Sampling:** For $K$ ensemble members, constructs an $m$-paragraph context. Always includes top-$r$ paragraphs (core set). Samples remaining $m-r$ paragraphs with probability proportional to $\exp(s_i/\tau)$.
+    - **Step 3: Order Shuffling:** Randomly permutes the order of the $m$ selected paragraphs to mitigate positional bias.
+    - **Step 4: Majority Voting:** Generates answers via greedy decoding ($T=0$). Aggregates via majority vote. Ties are broken by selecting the answer from the context with the highest mean relevance score.
+- **Design Rationale:** The core set ensures critical evidence is retained. Order shuffling varies positional context. Greedy decoding ensures improvements stem from context diversity, not output entropy. Hard distractors in the top-$r$ are included in 100% of contexts, proving gains are not due to distractor exclusion.
+
+# Experiments
+
+- **Dataset:** MuSiQue noisy split with 2,314 examples. Each example contains 20 paragraphs. Hard distractors are the highest-scoring non-supporting paragraphs (top-4 by relevance) placed at the end of the sequence to induce recency bias.
+- **Model:** Qwen2.5-7B-Instruct.
+- **Baselines:**
+    - Filtered-Single: Deterministic top-$m$ selection, greedy decoding.
+    - Self-Consistency: Fixed context, $K$ temperature-sampled trajectories ($T=1.0$).
+    - Permute-Vote: Fixed top-$m$ paragraphs, $K$ random order permutations, greedy decoding.
+- **Hyperparameters:** Default $K=5$, $m=12$, $r=6$, $\tau=1.0$.
+- **Main Results:**
+    - CoBag-Vote achieves EM 0.2939.
+    - Outperforms Filtered-Single (+3.03 EM, $p=0.0002$) and Self-Consistency (+3.12 EM, $p=0.0001$).
+    - Does not significantly outperform Permute-Vote (+0.39 EM, $p=0.641$).
+    - Hard distractor is present in 100% of CoBag contexts (11,570/11,570).
+- **Ablation Study:**
+    - Order shuffling contributes +1.44 EM (CoBag-Vote vs. CoBag-NoShuffle).
+    - Relevance-weighted sampling contributes +0.40 EM (CoBag-Vote vs. CoBag-Uniform).
+    - CoBag-NoShuffle (subset diversity only) underperforms Permute-Vote by -2.44 EM.
+- **Sensitivity Analysis:**
+    - Context size $m$: Performance improves monotonically from $m=8$ (EM 0.2615) to $m=16$ (EM 0.2982).
+    - Ensemble size $K$: Diminishing returns observed. $K=3 \rightarrow 5$ yields +2.42 EM; $K=5 \rightarrow 7$ yields +0.17 EM.
+- **Diagnostic Analysis:**
+    - CoBag-Vote reduces wrong-answer concentration to 0.64 (vs. 0.82 for Self-Consistency), indicating more diverse error patterns that enable effective majority voting.
+
+# References
+
+- **Long-Context Robustness:** Cites Liu et al. (2023) on "lost in the middle," RULER (Hsieh et al., 2024a), HELMET (Yen et al., 2024), and Lee et al. (2026) on catastrophic drops due to distractors.
+- **Self-Consistency:** Cites Wang et al. (2022) for self-consistency and Byerly & Khashabi (2024) for its failure in long-context problems due to positional bias.
+- **Positional Bias Mitigation:** Cites Hsieh et al. (2024b) on attention calibration, Tang et al. (2023) on permutation self-consistency, and Byerly & Khashabi (2025) on Gold Panning.
+- **Ensemble Methods:** Cites Lewis et al. (2020) for RAG, Izacard & Grave (2020) for Fusion-in-Decoder, and Shi et al. (2023) for RePlug.

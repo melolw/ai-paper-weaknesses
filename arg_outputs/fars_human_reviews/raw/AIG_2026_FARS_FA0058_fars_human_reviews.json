@@ -1,0 +1,34 @@
+{
+  "paper": {
+    "code": "FA0058",
+    "title": "Chunked Budget Allocation Prevents Non-Monotonic Regressions in World-Model Verification",
+    "abstract": "World models that predict environment dynamics can serve as pre-execution verifiers for agents facing irreversible actions. However, sequential verify-and-retry---where rejected actions trigger agent re-planning---can paradoxically \\emph{reduce} task success as verification budget increases. We identify \\emph{trajectory drift} as the root cause: when verification rejects a checkout (often a false negative), the agent re-browses and frequently selects a worse product than originally found. We propose \\emph{chunked budget allocation}: instead of spreading verification budget across many sequential cycles, spend it in fewer cycles with more parallel rollouts per cycle. On WebShop, chunked verification ($M=1$ cycle) achieves 21.50\\% task success versus 0.86\\% for sequential verify-and-retry ($M=10$ cycles)---a 25$\\times$ improvement at the same budget. Surprisingly, consensus aggregation across parallel rollouts provides no benefit over single-rollout acceptance, as the world model's poor calibration (predicting failure for 98.4\\% of cycles) causes consensus to degenerate. Our results demonstrate that budget allocation structure matters more than aggregation sophistication when world models are poorly calibrated.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 1,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies a verification-based agent where a text-based world model is utilized to justify whether the agent needs to recycle. They claim that the commonly used sequential verify-and-retry protocol can induce trajectory drift and reduce the performance. The proposed solution is simple: allocate a fixed verification budget in larger parallel chunks and fewer sequential cycles. On WebShop, the paper reports a large improvement over sequential verification at the same budget, and further argues that the gain comes from reducing sequential cycles.",
+        "strengths": "This paper provides a case study on a verification-based agent loop and identifies a failure mode that might provide insights for future study.\n",
+        "weaknesses": "1. The main concern is that this paper is mainly talking about how to reduce damage from a poor verifier, and current results do not even provide a comparison with a no-verification agent. I'm really wondering whether it's a meaningful topic.\n2. The novelty is limited, as mentioned before, this paper just gives a case study.\n3. The failure analysis is not fully convincing. The paper reports that trajectory drift accounts for 60.5% where chunked succeeds and sequential fails, but the labeling procedure is not described clearly. It is also a selected subset of episodes, not a global decomposition over all failures.",
+        "suggestions": "",
+        "llmDisclosure": "GPT 5.4 Thinking model for summary and polish.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T10:24:51.054Z",
+      "updatedAt": "2026-04-01T10:24:51.054Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0058"
+}

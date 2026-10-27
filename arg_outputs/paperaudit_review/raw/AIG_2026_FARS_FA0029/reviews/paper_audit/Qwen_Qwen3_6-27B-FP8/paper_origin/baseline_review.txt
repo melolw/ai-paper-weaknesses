@@ -1,0 +1,37 @@
+1) Summary
+The paper investigates whether aligning the global budget allocation objective with the per-layer factorization objective in the ROCKET compression framework improves model fidelity. The authors propose ROCKET-ActCost, which replaces the weight-space Frobenius error with an output-space (whitened) error in the Multi-Choice Knapsack Problem (MCKP) solver. Experiments on Qwen3-8B (50% compression) show a trade-off: ROCKET-ActCost improves average zero-shot accuracy by 0.8 percentage points but degrades WikiText perplexity by 16%. Conversely, on Llama-3.2-1B (20% compression), both metrics improve. Analysis reveals a high correlation (>0.99) between weight-space and output-space errors, which limits allocation divergence and explains the modest effect size.2) Strengths
+*   **Logical Consistency in Objective Alignment**
+    *   The paper identifies a clear inconsistency in the baseline method: ROCKET derives per-layer factorization from an output reconstruction objective (Equation 1) but uses weight-space error for global allocation (Equation 3). Addressing this mismatch is a theoretically sound motivation.
+    *   The proposed solution (ROCKET-ActCost) directly addresses this by using the output-space error (Equation 4) for the MCKP solver, ensuring the global budget allocation respects the same error metric as the local factorization.
+    *   This alignment is conceptually cleaner than the baseline, as it prioritizes errors that actually impact the model's output on the calibration distribution rather than abstract weight-space distances.*   **Computational Efficiency and Practicality**
+    *   The method introduces zero additional runtime overhead. As stated in Section 2.2 and Section 3.5, the output-space error is computed from matrices ($W_L$ and $\hat{W}_L$) already available during the profiling phase.
+    *   The MCKP solver complexity remains identical regardless of the cost function used, meaning the proposed change is a "drop-in" improvement for existing ROCKET implementations.
+    *   The authors report that ROCKET-ActCost was actually 7.7% faster on average due to different allocation decisions (Section 3.5), highlighting a practical benefit beyond just accuracy.*   **Insightful Analysis of Effect Size**
+    *   The paper goes beyond reporting results to explain *why* the improvements are modest. Section 3.3 provides a correlation analysis showing that weight-space and output-space errors are highly correlated (>0.99).
+    *   This analysis reveals that only 70 of 252 layers receive different allocations, providing a concrete explanation for the limited divergence in results.
+    *   This depth of analysis adds value by characterizing the fundamental limits of the proposed change, rather than just claiming success or failure.3) Weaknesses
+*   **Accuracy-Perplexity Trade-off in Primary Setting**
+    *   The main result on Qwen3-8B (Table 1) shows a significant degradation in WikiText perplexity (16% increase from 52.98 to 61.46) despite the accuracy gain.
+    *   Perplexity is a standard proxy for language modeling quality; a 16% degradation is substantial and suggests the model may be overfitting to the specific zero-shot benchmarks at the expense of general language modeling capability.
+    *   The paper does not sufficiently justify why the accuracy gain (+0.8pp) outweighs the perplexity loss, leaving the reader to question the overall utility of the method in this setting.*   **Limited Experimental Scope**
+    *   The evaluation is restricted to only two models (Qwen3-8B and Llama-3.2-1B) and two compression ratios (50% and 20%). Section 3.1 mentions these as the primary and secondary checks, but this is insufficient to claim generalizability.
+    *   There is no evaluation on other architectures (e.g., Mixture of Experts) or different model sizes (e.g., 70B+), which might exhibit different error correlation behaviors.
+    *   The lack of a broader evaluation makes it difficult to determine if the accuracy-perplexity trade-off is a universal phenomenon or specific to the Qwen3-8B/50% setting.*   **Lack of Theoretical Justification for Cost Choice**
+    *   While the paper empirically tests the output-space cost, it lacks a theoretical discussion on *why* output-space error should theoretically lead to better downstream performance. Section 2.2 states the hypothesis but does not provide theoretical bounds or insights.
+    *   The high correlation found in Section 3.3 suggests that the two metrics are nearly equivalent in ranking candidates, which weakens the argument that output-space error is fundamentally superior.
+    *   Without theoretical grounding, the choice of cost function appears somewhat arbitrary, relying solely on the empirical observation that it improves accuracy in some cases.4) Suggestions for Improvement
+*   **Address the Accuracy-Perplexity Trade-off**
+    *   Discuss the implications of the perplexity degradation in Section 3.2. Is the accuracy gain robust across different domains, or is it specific to the benchmarks used?
+    *   Consider proposing a weighted objective function that balances accuracy and perplexity, or analyze if a different calibration dataset could mitigate the perplexity loss.
+    *   Provide a more nuanced conclusion about when ROCKET-ActCost is preferable to the baseline, acknowledging the trade-off rather than presenting the accuracy gain as a blanket improvement.*   **Expand Experimental Evaluation**
+    *   Include additional models of varying sizes and architectures (e.g., Mistral, Mixtral) to test the generalizability of the findings.
+    *   Evaluate at intermediate compression ratios (e.g., 30%, 40%) to see if the trade-off behavior is consistent or if there is a "sweet spot" where both metrics improve.
+    *   Test on a broader range of benchmarks, including generative tasks, to better assess the impact of the perplexity degradation on downstream generation quality.*   **Deepen Theoretical and Ablation Analysis**
+    *   Provide a theoretical discussion or ablation study on the relationship between weight-space and output-space errors. Why is the correlation so high? Is it due to the whitening transformation?
+    *   Investigate if the correlation varies across different layers (e.g., attention vs. FFN) or different model families, which could explain the setting-dependent results.
+    *   Analyze the specific layers where allocation diverges (the 70 layers mentioned in Section 3.3) to understand what characteristics make them sensitive to the choice of cost function.5) Score
+*   Overall (10): 5 — The paper presents a logical improvement to an existing method with efficient implementation, but the modest gains and significant perplexity trade-off in the primary setting limit its impact.
+*   Novelty (10): 4 — The core idea of aligning allocation cost with factorization objective is incremental, and the high correlation between metrics limits the novelty of the findings.
+*   Technical Quality (10): 6 — The experimental setup is sound and the analysis is insightful, but the limited scope and lack of theoretical depth reduce the technical contribution.
+*   Clarity (10): 8 — The paper is well-written, clearly structured, and easy to follow, with effective use of figures and tables.
+*   Confidence (5): 4 — The reviewer is confident in the assessment based on the clear presentation of methods and results, though the limited experimental scope introduces some uncertainty about generalizability.

@@ -1,0 +1,82 @@
+{
+  "paper": {
+    "code": "FA0046",
+    "title": "QuoteVerify: Inference-Time Quote-Backed Citation Verification for Deep Research Reports",
+    "abstract": "Deep research agents that synthesize long-form reports with citations are increasingly deployed, yet citation quality remains problematic: models frequently hallucinate references, fabricate quotes, or cite sources that do not support the claimed statements. We propose QuoteVerify, an inference-time pipeline that verifies citations through quote-backed evidence. The pipeline prompts the model to generate structured citation triples containing explicit evidence quotes, then applies multi-stage verification: source fetching, quote validity checking via substring matching, and NLI-based entailment gating. Experiments on ReportBench demonstrate statistically significant improvements over standard baselines, with cited-statement match rate gains of +18.7 percentage points on GPT-4o ($p=0.019$) and +12.5 percentage points on Gemini-2.5-Pro ($p=0.011$). Analysis reveals that the structured citation format drives most gains, while quote validity remains the primary bottleneck---LLMs produce valid quotes only 18--28\\% of the time even for successfully fetched sources, indicating a tendency to paraphrase rather than verbatim quote.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper proposes QuoteVerify, a 5-stage pipeline for verifying the reliability of citations used by deep research agents, with the further goal of repairing faulty citations. The five stages are: (1) Structured Triple Generation, (2) Source Fetching, (3) Quote Validity Check, (4) NLI Entailment Gate, and (5) Repair-or-Drop. Experiments are conducted on GPT-4o and Gemini-2.5-Pro using ReportBench, with ablation studies on Stage 4 (removing the NLI gate) and Stage 5 (dropping directly instead of repairing).\n\n- Hypothesis: (i) Current research agents produce unreliable citations and (ii) the proposed 5-stage pipeline, particularly the semantic matching between statements and quotes via DeBERTa-v3-large, can effectively identify and correct citation mismatches.\n- Validation: Empirical, with small-scale experiments (20 prompts) on two models.\n- Main outcome: QuoteVerify's improvement over citation reliability is very limited. Most gains come from the structured citation format itself (Prompt-Only), not from the verification pipeline.",
+        "strengths": "1. The problem is well-defined. The paper does not merely check whether a citation matches its statement, but considers multiple failure modes, such as bad URLs, fabricated quotes, quotes that are present in the source but semantically irrelevant to the claim, and sources that are unfetchable altogether.\n\n2. The pipeline is simple to deploy. It is essentially an extension of existing research agents and can be seamlessly layered on top of any base report generator for citation verification without additional training.\n\n3. The pipeline goes beyond citation checking. Stage 5 actively attempts to repair failing citations by prompting the LLM for a replacement quote, an alternative source, or deletion, rather than simply flagging errors.",
+        "weaknesses": "1. The citation for DeBERTa-v3-large (Wang et al., 2020) is incorrect.\n\n2. The paper's claim that \"cited-statement match rates ranging from 27% to 79%\" does not match the source. According to the original ReportBench paper, the actual range should be 31.43% to 78.87%.\n\n3. The effectiveness is unconvincing. Across different models, the metrics show no consistent advantage over Standard and Prompt-Only, and in some cases QuoteVerify is not even likely to be better. The ablation studies also show that the individual components have limited impact.\n\n4. Compared to the Standard baseline, both Prompt-Only and QuoteVerify drop a significant number of citations. While this may effectively reduce incorrect citations, it also suggests that the repair mechanism is not functioning as intended and citations are simply being dropped rather than repaired.\n\n5. Following the above, consider an extreme case: if a system starts with 50 citations and uses very strict criteria to drop 40 or even 45 of them, the Match Rate will increase substantially, but such behavior is clearly not desirable. Comparing metrics like Match Rate and Quote Valid requires controlling for the same number and quality of citations.",
+        "suggestions": "",
+        "llmDisclosure": "Which parts used LLM assistance: Phrasing and grammar polishing.\n\nWhich tool/model/service: Claude Opus 4.6.\n\nWhat information was shared: The original review draft.\n\nFinal judgment and scores independently verified by the reviewer: Yes.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "1. The citation for DeBERTa-v3-large (Wang et al., 2020) is incorrect.\nLocation: First paragraph of Section 3.6\n\nEvidence: DeBERTaV3 proposed by \"DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing\"\nbut\nthe corresponding entry in the reference list is \"Asking and answering questions to evaluate the factual consistency of summaries\"\n\n2. The paper's claim that \"cited-statement match rates ranging from 27% to 79%\" does not match the source. According to the original ReportBench paper, the actual range should be 31.43% to 78.87%.\nLocation: First paragraph of Section 1"
+      },
+      "submittedAt": "2026-03-23T17:19:10.353Z",
+      "updatedAt": "2026-03-23T17:19:48.708Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 1,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "1. This work proposes an inference-time wrapper to enhance the quality of citations generated by LLMs. \n2. The wrapper incorporates a multi-stage verification pipeline, including source retrieval, quote validity checking via substring matching, and NLI-based entailment gating.\n3. It conducts empirical validation on a single benchmark, ReportBench, consisting of only 20 prompts.\nThe results indicate substantial improvements over standalone LLMs, including GPT-4o and Gemini-2.5-Pro.",
+        "strengths": "1. The topic is well motivated.\n2. The methodology is clearly presented overall and supports reproducibility.\n3. The paper is well organized.\n4. It provides detailed analyses of each component in the design, particularly highlighting the challenges associated with quote validity.",
+        "weaknesses": "1. The baselines are relatively weak. Retrieval-augmented approaches should be included as strong baselines rather than deferred to future work.\n2. The experiments are conducted only on a subset of ReportBench, lacking sufficient scale and statistical analysis.\n3. There are inconsistencies between the textual description and the figures. For example, Section 3.7 states that “Triples that fail quote validity or entailment checks enter the repair stage,” which appears inconsistent with Figure 1.\n4. The ablation study shows that removing the NLI gate leads to a significant performance improvement, raising concerns about the effectiveness of the proposed design.",
+        "suggestions": "The manuscript suffers from severe citation inaccuracies. Alarmingly, 12 out of the 15 references contain factual errors, detailed as follows:\n* Inaccurate publication year, page numbers, or venues: 3 instances\n* Incorrect authorship: 1 instances\n* Fabricated/Missing sources: 5 instances\n* 5 provide the arxiv versions instead of the final publications",
+        "llmDisclosure": "* phrasing/grammar polishing\n* GPT-5.3\n* human-written reviews\n* yes",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T05:35:27.761Z",
+      "updatedAt": "2026-04-01T06:14:29.127Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "The paper hypothesizes that citation errors deep-research can be reduced with an inference-time pipeline that verifies citations through quote-backed evidence. It forces each cited claim to include an explicit evidence quote and then verify that quote  on the cited source. \nTo test this, The paper proposes QuoteVerify, a pipeline that generates structured citation triples (statement, source, quote), fetches the cite source documents, uses substring matching to check whether the quote appears in the source, and applies an NLI entailment gate to  verify semantic support. If the citation fails quote validity or entailment checks, then try to repair or drop failing citations.\nThey did empirical evaluation using a 20-prompt pilot subset of ReportBench with GPT-4o and Gemini-2.5-Pro. They compare three conditions: (1) Standard: baseline report generation with standard citation prompts (URL/arXiv ID only, no evidence quotes); (2) Prompt-Only: structured triple generation requiring evidence quotes, but no verification or repair; (3) QuoteVerify: full pipeline with quote validity checking, NLI entailment gating, and repair-or-drop. \nThe results suggest partial support for the hypothesis: compared with a standard citation baseline, the QuoteVerify pipeline improves cited-statement match rate, but Prompt-Only gets a similar match rate with the full QuoteVerify pipeline. Most of the gain comes from the structured citation prompt format itself rather than the downstream verification stages.\n\n",
+        "strengths": "A clear hypothesis. The hallucinate citation is an important problem. \nThe writing is clear and easy to follow. \n\n",
+        "weaknesses": "The experiment scale is too small to support claims. The study uses only a 20-prompt pilot subset of ReportBench, which is  too limited to generalize  across domains.\nQuoteVerify is not significantly better than Prompt-Only. This weakens the effect of proposed full pipeline.\n",
+        "suggestions": "",
+        "llmDisclosure": "technical fact checks + grammar polishing. \nchatgpt. turned down  “improve model for everyone”\nThe final judgment and scores are independently verified by the reviewer.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "DeBERTa-v3-large citation is not correct. \n\nThe paper says, \"Triples that fail quote validity or entailment checks enter the repair stage.\".\nHowever, in exp/quoteverify/pipeline/run_pipeline.py (lines 157–158 and 173–175), triples with entailment_pass=True but qv=False (i.e., neither exact nor fuzzy quote validity passed) are placed into entailment_only and then marked as final_status = \"pass\", rather than entering the repair stage.\n\n "
+      },
+      "submittedAt": "2026-04-09T02:25:08.440Z",
+      "updatedAt": "2026-04-09T02:46:26.348Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0046"
+}

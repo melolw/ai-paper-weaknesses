@@ -1,0 +1,34 @@
+# Integrity & Consistency Risk Report
+
+Based on a critical review of the manuscript, four substantive internal inconsistencies and factual mismatches were identified. These issues affect the mathematical rigor, numerical reproducibility, and reference accuracy of the work.
+
+### 1. Numerical Mismatch in Learning Rate Matching Analysis (Table 2 vs. Table 1 & Section 4.2)
+- **Issue:** The "Original BWT Gap" values reported in Table 2 do not align with the Backward Transfer (BWT) differences reported in Table 1 and the main text.
+- **Evidence:** 
+  - Table 1 (Section 4.2) reports BWT values: PiSSA = −15.0%, MiLoRA = −5.0%, MidPC = −1.7%. The absolute differences (gaps) are 13.3 percentage points (0.133) for MidPC vs. PiSSA, and 3.3 percentage points (0.033) for MidPC vs. MiLoRA.
+  - Table 2 (Section 4.4) lists "Original BWT Gap" as `0.242` for MidPC vs. PiSSA and `0.079` for MidPC vs. MiLoRA. These values do not match the 0.133 and 0.033 differences derived from Table 1, nor is any normalization or alternative scaling factor explained in the text.
+- **Impact:** This numerical discrepancy undermines the transparency of the learning rate matching experiment. Readers cannot verify how the "Gap Retained (%)" values (35.2% and 91.9%) were computed, casting doubt on the claim that the improvement reflects a "genuine spectral effect."
+
+### 2. Mathematical Inaccuracy in SVD Definition (Section 3.1)
+- **Issue:** The manuscript contains a fundamental linear algebra error in the definition of the SVD components.
+- **Evidence:** Section 3.1 states: *"Given $W = U\Sigma V^\top$, where $U \in \mathbb{R}^{m \times m}$ and $V \in \mathbb{R}^{m \times n}$ are orthogonal matrices..."* For a weight matrix $W \in \mathbb{R}^{m \times n}$, the right singular matrix $V$ must be $\mathbb{R}^{n \times n}$ (or $V^\top \in \mathbb{R}^{n \times n}$) to satisfy dimensional consistency and the definition of orthogonal matrices (which are strictly square). Stating $V \in \mathbb{R}^{m \times n}$ is mathematically incorrect.
+- **Impact:** While the downstream equations (Eq. 1 & 2) are dimensionally consistent, this foundational error suggests a lack of rigorous mathematical verification and may confuse readers attempting to implement or extend the method.
+
+### 3. Discrepancy Between Theoretical Formula and Experimental Implementation for Slice Index $s$ (Section 3.3 vs. Section 4.1)
+- **Issue:** The theoretical definition of the middle slice index $s$ does not match the value used in experiments.
+- **Evidence:** 
+  - Section 3.3 defines MidPC as using $s = \lfloor r_{\max}/2 \rfloor$, where $r_{\max} = \min(m, n)$.
+  - Section 4.1 states: *"For MidPC, we set $s = 508$ (middle of the 1024-dimensional spectrum)."* If $r_{\max} = 1024$, then $\lfloor 1024/2 \rfloor = 512$, not 508. The implemented value (508) corresponds to $\lfloor (r_{\max} - r)/2 \rfloor$ for rank $r=8$, which centers the slice within the valid range, but this adjustment is not reflected in the theoretical formula.
+- **Impact:** This creates ambiguity regarding the exact algorithmic specification. Reproducibility is compromised unless the centering adjustment is explicitly documented in the method section or appendix.
+
+### 4. Citation/Model Name Mismatch (Section 4.1 vs. References)
+- **Issue:** The base model name and its citation do not align factually.
+- **Evidence:** Section 4.1 states: *"We use Qwen3-0.6B (Bai et al., 2023) as the base model."* The corresponding reference in the bibliography points to *"Jinze Bai... Qwen technical report. ArXiv, abs/2309.16609, 2023."* This 2023 report describes the original Qwen/Qwen1.5 series. Qwen3 was released significantly later, and no 2023 publication documents it.
+- **Impact:** This indicates a factual/reference mismatch that affects the traceability of the experimental setup. While the abstract explicitly notes the paper was auto-generated, accurate model attribution remains essential for scientific validity.
+
+### Conclusion
+No clear evidence of intentional misconduct was found; however, the manuscript contains **four high-impact internal inconsistencies** spanning numerical reporting, mathematical definitions, algorithmic specification, and reference accuracy. These issues materially affect reproducibility and trustworthiness. The authors should:
+1. Reconcile Table 2's "BWT Gap" values with Table 1 or clarify the normalization scheme.
+2. Correct the SVD dimensionality statement in Section 3.1.
+3. Update the theoretical formula in Section 3.3 to match the implemented centering logic ($s = \lfloor (r_{\max} - r)/2 \rfloor$).
+4. Verify and correct the base model citation

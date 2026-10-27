@@ -1,0 +1,43 @@
+1) Summary
+The paper investigates the "repetition advantage" in long chain-of-thought (CoT) supervised fine-tuning (SFT), where repeating a small curated dataset outperforms training on a larger unique dataset. The authors identify a potential compute confound in prior step-matched comparisons, where the repetition condition processes more total tokens due to longer average response lengths. To address this, they propose "token-budget matching," which early-stops the repetition condition to match the cumulative token budget of the data-scaling baseline. Using Qwen2.5-1.5B-Instruct on NuminaMath-CoT, the authors demonstrate that under token-matched conditions, the repetition advantage is amplified (6.33× ratio on aggregate Pass@k). Mechanism analysis reveals this advantage stems from significantly improved termination rates (87–91% vs. 29–48%) rather than conditional accuracy, suggesting repetition teaches models to produce complete reasoning chains.2) Strengths
+*   **Rigorous Methodological Control for Compute Confounds**
+    *   The introduction of token-budget matching (Section 3.2) directly addresses a critical flaw in prior work (Kopiczko et al., 2026) by isolating the repetition effect from token volume disparities.
+    *   The authors provide robust verification of compute equivalence, reporting a token deviation of only 0.50% and a FLOPs proxy deviation of 0.56% (Table 3), which strengthens the validity of the comparison.
+    *   The decision rule (Section 3.4) offers a formal, quantitative threshold (ratio ≥ 0.8) for refuting the compute confound, adding statistical rigor to the qualitative claim.
+*   **Insightful Mechanism Analysis via Accuracy Decomposition**
+    *   The decomposition of accuracy into termination rate and conditional accuracy (Section 4.4, Table 4) provides a novel explanation for the repetition advantage, shifting the focus from answer quality to reasoning completeness.
+    *   Figure 2 visually demonstrates the dramatic gap in termination rates between Condition C (87–91%) and Conditions A/B (29–55%), clearly supporting the claim that repetition induces a behavioral shift.
+    *   The finding that Condition C achieves higher overall accuracy despite lower conditional accuracy (Table 4) is a counter-intuitive and valuable insight into how SFT dynamics affect model behavior.
+*   **Clear Experimental Design and Reproducibility**
+    *   The experimental setup is clearly defined with three distinct conditions (A, B, C) illustrated in Figure 1, making the comparison easy to follow.
+    *   The authors report results across multiple benchmarks (AIME'24, AIME'25, GPQA Diamond) and use three random seeds (Section 3.5), ensuring robustness.
+    *   The code is publicly available (Abstract, footnote 1), facilitating verification and extension of the work.3) Weaknesses
+*   **Limited Generalizability Due to Single Model Size**
+    *   The experiments are conducted exclusively on Qwen2.5-1.5B-Instruct (Section 3.1), raising questions about whether the token-budget matching effect and repetition advantage hold for larger models (e.g., 7B, 70B) where scaling laws may differ.
+    *   The authors acknowledge this limitation in the Conclusion (Section 5) but do not provide any ablation or discussion on how model capacity might interact with the repetition mechanism.
+    *   Without testing on larger models, it is unclear if the "termination" mechanism is specific to smaller models that struggle with long-context generation or a general property of long-CoT SFT.
+*   **Ambiguity in the Value of "Termination" vs. Reasoning Quality**
+    *   While the paper frames high termination rates as a benefit, Table 4 shows that Condition C has the lowest conditional accuracy (e.g., 41.71% on GPQA) compared to Condition A (45.63%) and B (55.46%).
+    *   This suggests that the repetition advantage may be driven by the model learning to stop early rather than learning better reasoning, which could be a superficial improvement if the terminated answers are less accurate.
+    *   The paper does not analyze *why* conditional accuracy drops in Condition C, leaving open the question of whether the model is "giving up" or simply being more decisive.
+*   **Narrow Domain Scope**
+    *   The evaluation is restricted to mathematics and science benchmarks (AIME, GPQA) using the NuminaMath-CoT dataset (Section 3.1).
+    *   It is unclear if the repetition advantage and termination mechanism generalize to other domains such as coding, logical reasoning, or general instruction following.
+    *   The lack of diversity in benchmarks limits the broader impact of the findings on general SFT practices.4) Suggestions for Improvement
+*   **Expand Model Evaluation or Discuss Capacity Dependence**
+    *   Include experiments with at least one larger model (e.g., Qwen2.5-7B) to verify if the token-budget matching effect persists across scales.
+    *   If larger models are not feasible, add a discussion in Section 5 on how model capacity might influence the trade-off between termination and conditional accuracy.
+    *   Reference prior work on scaling laws (e.g., Chinchilla) to contextualize whether the 1.5B results are representative of compute-optimal training regimes.
+*   **Deepen Analysis of Conditional Accuracy Trade-offs**
+    *   Investigate the quality of the terminated responses in Condition C versus the non-terminated responses in Condition A to understand if the lower conditional accuracy is due to premature stopping or lower reasoning quality.
+    *   Add a qualitative analysis of failure cases in Condition C to see if the model is "hallucinating" answers to terminate early or simply being more concise.
+    *   Clarify in Section 4.4 whether the goal of SFT is to maximize termination or to maximize accuracy given termination, and discuss the implications of the observed trade-off.
+*   **Broaden Benchmark Diversity or Acknowledge Domain Limits**
+    *   Evaluate the method on at least one non-mathematical benchmark (e.g., GSM8K, MMLU, or a coding benchmark) to test the generalizability of the repetition advantage.
+    *   If additional benchmarks are not possible, explicitly state in the Limitations section that the findings are specific to long-CoT reasoning in mathematics and science.
+    *   Discuss whether the "termination" mechanism is specific to problems with a fixed token limit or if it applies to open-ended generation tasks.5) Score
+- Overall (10): 6 — The paper presents a rigorous methodological contribution (token-budget matching) and insightful mechanism analysis, but the limited model scope and narrow domain evaluation constrain its broader impact.
+- Novelty (10): 7 — The token-budget matching approach and the decomposition of accuracy into termination vs. conditional accuracy offer novel perspectives on SFT dynamics.
+- Technical Quality (10): 7 — The experiments are well-controlled with tight compute matching (Table 3), but the lack of larger model evaluation and deeper analysis of conditional accuracy trade-offs reduces technical completeness.
+- Clarity (10): 8 — The paper is well-structured, with clear experimental design (Figure 1) and concise presentation of results and mechanisms.
+- Confidence (5): 4 — I am confident in the evaluation of the methodology and results, but cannot verify the code or the generalizability to larger models without further evidence.

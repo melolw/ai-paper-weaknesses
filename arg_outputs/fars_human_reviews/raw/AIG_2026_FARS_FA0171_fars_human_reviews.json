@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0171",
+    "title": "SourceJS-LoRA: Source-Referenced Jensen-Shannon Divergence for Learning LoRA Merge Coefficients",
+    "abstract": "Merging multiple task-specific LoRA adapters into a single multi-task adapter is challenging due to parameter interference. Existing adaptive methods learn merge coefficients by minimizing entropy on unlabeled data, but this reference-free objective can lead to ``confidently wrong'' predictions where the model becomes overconfident on incorrect outputs. We propose SourceJS-LoRA, which learns merge coefficients by minimizing Jensen-Shannon divergence between the merged model's predictions and each task expert's predictions. This source-referenced objective anchors the optimization to task-specific expert models, preventing confidence collapse. On 8 GLUE tasks with T5-base, SourceJS-LoRA achieves 83.10\\% average accuracy, outperforming the state-of-the-art DO-Merging by +2.29 points and entropy-based coefficient learning by +5.55 points. Analysis reveals that our method produces stable, balanced coefficients while entropy minimization leads to extreme values with negative weights.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper puts forward the hypothesis that the entropy minimization strategy used in AdaMerging to learn LoRA merge coefficients may have negative effects, and may even perform worse than uniform merging. This hypothesis is validated empirically, and under the limited experimental setting considered in the paper, it is supported. Based on this observation, the authors propose a new unsupervised coefficient learning strategy that learns merge coefficients by optimizing the Jensen-Shannon divergence between the merged model’s predictions and the predictions of the original task experts, and experiments show that this strategy is effective.",
+        "strengths": "1. The hypothesis is clear, namely that minimizing entropy may cause the model to become overconfident and make mistakes.\n\n2. The method is described clearly and succinctly.",
+        "weaknesses": "1. Insufficient validation. The hypothesis is only tested on a T5 model and in a single experimental setting; at a minimum, experiments on larger models should be included. The paper itself also acknowledges that entropy-minimized predictions may only possibly bring negative effects. In addition, since the proposed method uses the original experts as optimization targets, it remains unclear how the method would behave when there are outlier experts.\n\n2. The scope of the paper is unclear. In practice, this merging method appears applicable to any adapter, rather than only LoRA, but the paper limits itself to LoRA.\n\n3. Missing baselines. Since the paper emphasizes LoRA merging, it should compare with methods such as KnOTS and CoreSpace, even though these methods do not learn coefficients from data.\n\n4. Missing necessary ablations. For example, the paper does not explain why it chooses the symmetric JS divergence rather than KL divergence.",
+        "suggestions": "",
+        "llmDisclosure": "The reviewer used GPT-5.4 for translating and grammar polishing. Only the review was provided, and the final judgment and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T06:27:42.097Z",
+      "updatedAt": "2026-03-22T06:27:42.097Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "The paper hypothesizes that entropy minimization for learning LoRA merge coefficients is flawed because it lacks a reference distribution, leading to overconfident but incorrect predictions. It proposes SourceJS-LORA, which optimizes merge coefficients by minimizing the Jensen-Shannon (JS) divergence between the merged model's predictions and the original task-specific expert predictions. Empirical validation on eight GLUE tasks using T5-base demonstrates that SourceJS-LORA achieves an average accuracy of 83.10%, outperforming uniform merging, entropy-based merging, and DO-Merging. The analysis concludes that anchoring to expert distributions yields stable, positive merge coefficients, whereas reference-free entropy minimization causes coefficient collapse.",
+        "strengths": "1. The paper correctly identifies a logical flaw in reference-free entropy minimization (optimizing for confidence without regard for accuracy) and proposes a mathematically sound alternative by anchoring to expert distributions via JS divergence.\n2. The comparison between task-wise and layer-wise coefficients (both matched and optimized) effectively demonstrates the parameterization tradeoffs and the necessity of proper hyperparameter tuning.",
+        "weaknesses": "1. Section 4.4 claims entropy minimization produces extreme negative values ranging from -3.04 to +2.50. However, Figure 2(b) explicitly reports the Entropy range as exactly 2.07. Furthermore, Figure 2(a) visually confirms that no entropy coefficients approach -3.04 or +2.50; the lowest is approximately -1.4 (QQP) and the highest is +0.7 (QNLI). The text fabricates extreme numbers to artificially inflate the instability of the baseline method.\n2. The methodology requires running inference through all $K$ expert models to compute the reference distributions $q_{\\theta_k}(\\cdot|x)$ for the JS divergence objective. The paper completely omits the significant memory and compute overhead this entails compared to data-free or reference-free methods.",
+        "suggestions": "1. Provide a quantitative table detailing the wall-clock time and peak GPU memory required for Stage 2  compared to AdaMerging and DO-Merging to contextualize the trade-offs of the JS divergence objective.\n2. Validate the method on at least one generative task using a decoder-only architecture to ensure the JS divergence objective remains stable and computationally feasible over large vocabularies.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "In Section 4.4, the text explicitly claims: \"Entropy minimization produces highly unstable coefficients with negative values ranging from -3.04 to +2.50\". However, the paper's own artifacts directly contradict this. Figure 2(b) plots the Entropy \"Range\" as 2.07. Visual inspection of Figure 2(a) confirms the lowest plotted entropy coefficient is ~-1.4 and the highest is ~+0.7. The text fabricates numerical extremes to exaggerate the failure mode of the baseline method, violating the claim-evidence alignment required for scientific integrity."
+      },
+      "submittedAt": "2026-03-30T08:28:57.111Z",
+      "updatedAt": "2026-03-30T08:28:57.111Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper addresses a pervasive failure mode of adaptive LoRA merging: entropy minimization on unlabeled data, the standard objective for learning merge coefficients, pushes models toward high-confidence but incorrect outputs. It hypothesize that anchoring the merged model’s predictions to individual task expert outputs via Jensen-Shannon divergence would eliminate this reference-free bias and avoid confidence collapse. Empirical validations on 8 GLUE tasks (T5-base) show the proposed SourceJS-LoRA hits 83.10% average accuracy, outperforming SOTA DO-Merging by 2.29% and entropy-based merging by 5.55%. Analysis further confirms the method produces stable, positive coefficients, whereas entropy minimization yields erratic negative weights that directly harm performance.",
+        "strengths": "1. The paper provides the first clear empirical demonstration that entropy-minimization adaptive merging can underperform even trivial uniform merging. This finding alone carries significant value for the community, as it directly identifies a core flaw in a widely used class of adaptive merging methods and guides future research directions.\n2. The idea of aligning expert predictions via JS divergence is highly intuitive. It retains the unlabeled data requirement of adaptive methods while solving the core reference-free limitation of entropy objectives, and supports both task-level and layer-level coefficient granularity with minimal engineering overhead. The method is immediately deployable for real-world use cases.\n3. Baseline coverage is comprehensive, spanning all major merging paradigms (data-free, adaptive unlabeled, supervised). Beyond end performance comparisons, the authors include coefficient granularity ablations and coefficient distribution analysis that clearly explain why the entropy method fails and why the JS method works, with no gaps in the logical chain.",
+        "weaknesses": "1. All experiments are run only on the small T5-base model and NLP classification tasks from GLUE. No tests are conducted on 7B/13B-scale large models, generative tasks, or cross-modal settings, so the method’s broader generalizability remains unconfirmed.\n2. The paper notes that layer-wise coefficients outperform task-level coefficients only after hyperparameter tuning, but provides no details on the compute cost or number of tuning steps required. This hidden overhead is not discussed, which could mislead users looking to implement the layer-wise variant in production.\n3. Calculating JS divergence requires running inference on all single-task expert models first, while entropy minimization only requires computing the merged model’s output entropy. For large numbers of tasks or large expert models, this preprocessing cost is non-trivial, but the paper does not quantify this cost or propose optimization strategies.\n4. The paper frames negative coefficients produced by entropy methods as inherently harmful, but prior work has demonstrated meaningful use cases for negative LoRA weights, such as knowledge unlearning and harmful capability mitigation. The paper does not discuss whether the JS objective can produce useful negative coefficients, or under what constraints negative weights should be prohibited.",
+        "suggestions": "1. Add low-resource unlabeled data experiments, testing performance when only 16/32 unlabeled samples are available per task, to further validate the method’s utility in low-data settings.\n2. Add a small exploratory experiment testing whether the JS objective produces meaningful negative coefficients when the positive weight constraint is lifted, to clarify whether negative weights are truly unnecessary for optimal performance.\n3. Add small-scale test results for 1-2 larger models (e.g., Llama-2-7B) and 1-2 generative tasks in the appendix, to provide preliminary evidence of the method’s generalizability.",
+        "llmDisclosure": "I used GPT-4o to assist with polishing the phrasing of the review. Only publicly available content of the submitted paper was shared with the model, and no confidential materials were uploaded. All review content, assessments, and scoring decisions were independently reviewed and finalized by me.",
+        "ethicsReproducibility": "None. The paper uses the public GLUE benchmark dataset, with no ethical concerns related to human subjects, privacy, bias, or dual-use risk. Code is publicly available and experimental details are fully disclosed, with no reproducibility barriers."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T07:29:28.814Z",
+      "updatedAt": "2026-03-26T07:29:28.814Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0171"
+}

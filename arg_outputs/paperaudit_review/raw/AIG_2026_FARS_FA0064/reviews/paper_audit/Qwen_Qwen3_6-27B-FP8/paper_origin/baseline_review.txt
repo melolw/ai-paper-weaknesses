@@ -1,0 +1,43 @@
+1) Summary
+The paper addresses the challenge of selecting which Transformer layers should retain full attention (FA) versus sliding-window attention (SWA) in hybrid long-context inference. The authors propose NLL-guided layer selection, a training-free calibration method that scores each layer by measuring the negative log-likelihood (NLL) degradation on answer tokens when switching from FA to SWA. The top-$k$ layers with the highest NLL degradation are retained as FA during prefill. Evaluated on Qwen3-4B using the LongMemEval benchmark, the method achieves 64.6% accuracy with only 1/4 FA layers, matching a 1/2-FA periodic baseline while halving the computational budget. It significantly outperforms fixed periodic patterns and attention-based heuristics. De-confounding analysis confirms the scoring signal specifically captures long-range attention requirements rather than generic layer sensitivity.2) Strengths
+- **Direct and Principled Scoring Metric**
+  - Uses NLL on answer tokens directly tied to downstream task quality (Eq. 1, Section 3.2). This matters because it aligns the selection objective with actual deployment accuracy rather than indirect proxy metrics.
+  - Teacher-forced forward passes avoid generation variance and gradient computation (Section 3.2, Appendix A.2). This matters as it ensures stable, reproducible scoring without backpropagation overhead.
+  - De-confounding analysis validates signal specificity to long-context needs (Fig. 2, Section 4.4). This matters because it rules out trivial explanations like generic layer sensitivity or short-context artifacts.
+- **Strong Empirical Performance & Efficiency**
+  - Matches 1/2-FA periodic accuracy (65.0%) with only 1/4 FA budget (64.6%) (Table 1, Section 4.2). This matters because it demonstrates substantial computational savings without sacrificing downstream performance.
+  - Outperforms LightTransfer by 26.4 percentage points across all task types (Table 2, Section 4.3). This matters as it shows clear superiority over existing heuristic-based selection methods.
+  - Calibration cost is low (~15 minutes on 4 GPUs) and amortizes quickly (~1,354 requests) (Section 3.4, Abstract). This matters because it makes the method practical for real-world deployment pipelines.
+- **Comprehensive Experimental Validation**
+  - Per-task breakdown reveals consistent gains, especially on temporal-reasoning and single-session-user tasks (Table 2, Section 4.3). This matters because it highlights where long-range attention is most critical for model capability.
+  - Calibration stability analysis shows robustness to dataset size (16 vs 64 examples) with high Jaccard similarity (Section 4.6). This matters as it provides practical guidance for production tuning and resource allocation.
+  - Visualizes non-periodic layer selection patterns spanning early, middle, and late depths (Fig. 3, Section 4.5). This matters because it offers mechanistic insights into layer-specific roles in long-context processing.3) Weaknesses
+- **Limited Model and Benchmark Generalization**
+  - Evaluation is restricted to a single model (Qwen3-4B-Thinking-2507) and one benchmark (LongMemEval) (Section 4.1, Conclusion). This matters because it raises questions about transferability to other architectures or task domains.
+  - No comparison to other training-free or lightweight adaptation methods beyond LightTransfer and periodic baselines (Section 4.1). This matters as it limits understanding of the method's position in the broader efficiency landscape.
+  - Calibration data relies on LongAlign-10k and fusang-v1-filtered without discussing domain mismatch risks (Appendix A.1). This matters because performance may degrade if calibration data distribution differs significantly from deployment queries.
+- **Computational Overhead of Calibration Procedure**
+  - Requires $L+1$ forward passes per calibration example, scaling linearly with model depth (Section 3.4, Eq. 1). This matters because for deeper models, calibration time and memory could become prohibitive.
+  - Uses 64 long-context examples (16k–32k tokens) which demands significant GPU memory during calibration (Appendix A.1). This matters as it may be inaccessible for resource-constrained settings or very large context lengths.
+  - No analysis of how calibration time scales with context length or batch size (Section 3.4). This matters because break-even point calculations assume fixed conditions, potentially overestimating practical efficiency gains.
+- **Lack of Theoretical or Mechanistic Depth**
+  - The method relies on empirical NLL degradation without explaining why certain layers exhibit higher sensitivity (Section 3.2). This matters because it limits interpretability and ability to predict behavior on unseen models.
+  - No investigation into how the selected layers interact or whether greedy top-$k$ selection is suboptimal compared to joint optimization (Section 3.3). This matters as layer dependencies might mean marginal gains diminish or compound in non-linear ways.
+  - The de-confounding analysis uses Spearman correlation but does not explore alternative confounding factors like layer normalization statistics or residual stream dynamics (Section 4.4). This matters because it leaves open questions about the fundamental drivers of the observed signal.4) Suggestions for Improvement
+- **Expand Evaluation Scope and Baselines**
+  - Evaluate on at least two additional model families and diverse benchmarks to demonstrate cross-architecture generalization and task robustness.
+  - Include comparisons with recent training-free efficiency methods to contextualize performance gains against the broader literature.
+  - Analyze calibration robustness under domain shift by testing on out-of-distribution prompts or different task categories.
+- **Optimize and Analyze Calibration Efficiency**
+  - Propose or evaluate approximation techniques to reduce the $L+1$ forward pass requirement for deeper models.
+  - Provide memory and time complexity analysis as a function of context length, model depth, and batch size, including hardware-specific benchmarks.
+  - Report break-even calculations across varying inference workloads to clarify deployment trade-offs under realistic conditions.
+- **Deepen Mechanistic Analysis and Selection Strategy**
+  - Investigate layer interaction effects by comparing greedy top-$k$ selection against combinatorial or iterative selection strategies to assess suboptimality.
+  - Analyze internal model statistics for the selected vs. non-selected layers to provide mechanistic explanations for the observed NLL sensitivity.
+  - Extend the de-confounding study to control for additional architectural factors to isolate the true drivers of long-range attention requirements.5) Score
+- Overall (10): 7 — The method offers a practical, training-free solution with strong empirical gains on LongMemEval (Table 1, Section 4.2), but limited model/benchmark coverage and calibration overhead constrain broader impact.
+- Novelty (10): 6 — The direct NLL-based scoring criterion is a clear improvement over attention heuristics (Section 3.2, Table 1), though the concept of training-free layer selection has precedents in related work (Section 2.4).
+- Technical Quality (10): 7 — Experiments are well-structured with de-confounding and stability analyses (Fig. 2, Section 4.4, Section 4.6), yet the lack of scalability analysis for deeper models and domain-shift robustness reduces rigor.
+- Clarity (10): 8 — The manuscript is well-organized with clear figures (Fig. 1, Fig. 3) and concise mathematical formulation (Eq. 1), making the method and results easy to follow.
+- Confidence (5): 4 — High confidence based on clear experimental setup and results (Section 4.1, Table 1), though limited to a single model and benchmark reduces certainty about generalization.

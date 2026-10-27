@@ -1,0 +1,58 @@
+{
+  "paper": {
+    "code": "FA0034",
+    "title": "Adaptive Rerank Budgeting for Video-Text Retrieval via Layer-Disagreement Routing",
+    "abstract": "Two-stage retrieve-then-rerank pipelines are effective for video-text retrieval but face a fundamental efficiency-quality tradeoff: the reranking budget $K$ determines both accuracy and computational cost. We observe that not all queries require the same reranking effort---some are ``easy'' while others benefit from deeper reranking. We propose using \\textbf{cross-layer ranking disagreement} as a confidence signal for adaptive budget allocation. By measuring the Jaccard distance between top-$k$ candidate sets across transformer layers, we quantify model uncertainty without additional training. Our 3-tier routing architecture maps disagreement scores to budgets $K \\in \\{10, 60, 100\\}$, allocating more compute to ambiguous queries. On MSR-VTT and DiDeMo benchmarks, our training-free method achieves +0.9 and +1.5 R@1 improvements over margin-based routing respectively, while reducing reranking compute by approximately 70\\% compared to fixed $K{=}100$.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "Noticing the rethink budgeting issue for two-stage retrieve-then-rank video-text retrieval pipelines, the authors propose to adopt cross-layer ranking disagreement to adaptively allocate rethinking budgets. Experiments show that the performance is improved, and the reranking computation is noticeably reduced.",
+        "strengths": "- The idea is easy to understand, and the reported gains are potentially useful. ",
+        "weaknesses": "- The submission appears to be more of a course project instead of a solid publication-level paper. It focused on refining an ad hoc model with minor modifications.\n\n- The method design is ad hoc. For example, selecting the embedding layers as {20, 24, 27} is not shown with solid justifications. The Alt layers setting in Table 2 could also be ad hoc.\n\n- The method design should be better justified. For example, providing an analysis of the correlation between the proposed disagreement indicator and retrieval performance would be helpful.\n\n- The threshold calibration in Sec. 3.4 has not been well clarified. \n\n- The experiments are not convincing enough. First, given the method's avg-K as 30.9, a baseline with fixed K~31 should also be provided as a reference. Second, the proposed method is only marginally superior on one evaluated dataset and less competitive on the other. Third, the analyses are insufficient. For example, showing the performance curve along with K increasing would be clearer. \n\n- Visualizations of video-text retrieval samples should be provided.",
+        "suggestions": "",
+        "llmDisclosure": "GPT 5.4 for polishing. The judgements and scores are independently verified.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "In Sec. 4.2, the \"Exceeds full reranking with 70% fewer passes\" is inconsistent with Sec. 4.3 where union pool reranking is better."
+      },
+      "submittedAt": "2026-04-03T03:47:55.156Z",
+      "updatedAt": "2026-04-03T03:47:55.156Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes a training-free adaptive reranking strategy for video-text retrieval, tests the hypothesis that cross-layer ranking disagreement reflects model uncertainty, and can guide per-query reranking budget allocation. The method computes Jaccard distance between top-k candidate sets across transformer layers, and uses a 3-tier routing scheme (K ∈ {10, 60, 100}) to allocate compute. Empirical validation on MSR-VTT and DiDeMo shows modest improvements over margin-based routing (+0.9 / +1.5 R@1) while reducing compute by ~70%. The results partially support the hypothesis that cross-layer disagreement is a better confidence signal than embedding margin.",
+        "strengths": "- Clear motivation/hypothesis\nThe paper clearly tests cross-layer disagreement is a better uncertainty signal for adaptive reranking than margin.\n- Training-free design\nNo additional training or model modification.",
+        "weaknesses": "1. Missing comparisons with alternative training-free uncertainty signals such as entropy, score dispersion, and cross-layer score variance.\n2. Experiments are conducted on only two datasets and a single backbone (VideoLLaMA3-7B). There is no evidence that the proposed signal generalizes across models.",
+        "suggestions": "",
+        "llmDisclosure": "I use ChatGPT for phrasing/grammar polishing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T15:03:13.128Z",
+      "updatedAt": "2026-03-25T15:03:13.128Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0034"
+}

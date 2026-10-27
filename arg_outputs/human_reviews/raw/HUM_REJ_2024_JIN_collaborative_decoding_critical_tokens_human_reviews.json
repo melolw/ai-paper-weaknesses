@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_JIN_collaborative_decoding_critical_tokens",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Collaborative decoding of critical tokens for boosting factuality of large language models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents a novel method called Collaborative Decoding Strategy (CDS) to enhance the factuality of large language models. The strategy hinges on the concept of 'critical tokens' which guide the decoding process using a specially designed critical token classifier. This classifier determines which model should be used for generating the next token. Essentially, the Model CDS leverages the high factuality inherent in pretrained models while capitalizing on the instruction-following capabilities of the aligned model. \n\nThe performance of the Model CDS is demonstrated as superior when compared to various baselines. It achieves improved factuality without compromising on the diversity of responses. Importantly, the Model CDS exhibits compatibility with other approaches involving updates to parameterized knowledge within models, thereby pushing the performance ceiling higher than that of the pretrained model.",
+      "strengths": "1. The idea of a unique, collaborative decoding approach to increase factuality in language models is well-motivated.\n2. Versatility of the Model CDS, allowing it to be compatible with other methodologies, implying broad applicability.",
+      "weaknesses": "1. The core assumption is that pre-trained models inherently perform better, which has only been verified on limited benchmarks, which may be biased.\n2. Holding two models for decoding is also expensive.",
+      "questions": "1. Is it limited to QA tasks? How do we understand and define critical token predictors in a more general scenario?\n2. How well does the critical token prediction model generalize?",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "56fbe36783553ff6ab592bb3032019b9990ad9c5477b9343d47469dd71ecad05eac59a10485de923e9d0467180a8428ca5e925b6d5f828a4937ab81775a4f4a3"
+    }
+  ]
+}

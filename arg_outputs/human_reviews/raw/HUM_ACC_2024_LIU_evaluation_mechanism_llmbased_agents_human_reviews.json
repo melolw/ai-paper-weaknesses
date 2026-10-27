@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_LIU_evaluation_mechanism_llmbased_agents",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "An Evaluation Mechanism of LLM-based Agents on Manipulating APIs",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents an evaluation mechanism for LLM-based agents that manipulate APIs. The authors decompose tool use capability into seven aspects and propose a comprehensive evaluation schema. They also design and release an instruction dataset and a toolset that reflect real-world challenges. The paper's structure includes an introduction, related works, methodology (evaluation schema, toolset, instruction data, and metrics), and concludes with findings that can inspire future research in improving LLM-based agents and rethinking API design philosophy.",
+      "strengths": "**Well-defined instruction types and task types**:\nThe paper presents five types of instructions (Section 3.3) that align well with the evaluation schema. These types cover a range of complexities and scenarios, from simple queries to complex multi-step tasks. For example, Type-I instructions test the agent's ability to decide whether to use a tool, while Type-V instructions evaluate planning capabilities for complex tasks.\n\n**Clear toolset construction process**:\nThe authors provide a detailed and logical process for building their toolset (Section 3.2, Figure 3). They start by determining application scenarios, designing tool classes, collecting real-world tools with documentation, and complementing tools. This systematic approach ensures a diverse and coherent set of tools that reflect real-world API challenges.\n\n**Thorough evaluation of tool use scenarios**:\nThe paper presents a comprehensive evaluation schema (Section 3.1, Figure 2) that covers seven aspects of tool use capability. This detailed breakdown allows for a nuanced understanding of agent performance across different stages of task completion, from planning to formulating tool calls and interpreting results.",
+      "weaknesses": "**Imbalanced distribution of instruction types and task types**:\nWhile the paper defines five types of instructions, there appears to be a significant disparity in the proportion of each type. This imbalance could potentially skew the evaluation results or limit the assessment of certain capabilities.\n\n**Limited evaluation of tool retrieval in real-world scenarios**:\nAlthough the paper includes tool selection as part of its evaluation schema (Section 3.1), it doesn't seem to provide a dedicated evaluation of tool retrieval in a more realistic setting with a large number of available tools. This limitation may not fully capture the challenges agents face in real-world applications.",
+      "questions": "The authors could consider expanding on the rationale behind the chosen proportions of instruction types. This would help readers understand the trade-offs made in dataset design.\n\nIt would be beneficial to include a more extensive evaluation of tool retrieval, perhaps as a separate task type or by expanding Task 2. This could involve testing agents' ability to select appropriate tools from a much larger pool, mirroring real-world API platforms.\n\nThe paper could benefit from a more detailed discussion of the metrics used for each evaluation aspect. While mentioned in Section 3, a comprehensive breakdown of how each capability is quantitatively assessed would strengthen the methodology.\n\nConsider adding a section on limitations and future work. This could address potential shortcomings in the current evaluation mechanism and suggest directions for improvement.\n\nSuggestion: In the abstract (lines 015-017), consider providing a brief preview of some key findings to give readers a taste of the paper's contributions.",
+      "rating": 4,
+      "confidence": 5,
+      "soundness": 4.5,
+      "raw_note_id": "c9dc936e866c9c9fe94a36ea51441cbe38ea3d66f85d6514c51897cd529b9f145dd068b2fb19b3114bf36d9aaf880d9298efccf162c19261df5014e84322068a"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper addresses the wide evaluation gap of serving users by manipulating massive API-based tools. It  builds a toolset and a dataset of instructions, following the principle of reflecting real-world challenges. The authors construct the toolset by addressing a series of concerns: \n(1) To ensure reflection of real-world challenges, the authors collect tools from the real API platform. It matters to reflect the properties of API design and documentation.\n(2) They intentionally control the diversity of tools regarding functionalities and API structures. According to their observation, a tool may have a single API, a list of APIs, or several collections of APIs.These organizational structures can indicate the variety of functionality and expose different difficulties in calling. \n3) It finds some APIs depend on other APIs and includes those in the toolset.\n(4) To enable high-level tasks applied to the toolset, they take measures to increase the coherence of tools regarding application scenarios. (5) They noticed that the affordability of toolset can be one potential problem for individual researchers. To avoid this problem, they devoted lots of engineering work to make the toolset usable at low or even no cost.",
+      "strengths": "The following are the strengths of the paper:\n\n1. The paper is easy to follow and well written.\n2. They evaluate multiple generic agents with their framework which helps to prove the robustness of the tool.\n3. The authors propose very interesting and relevant work for the research community which is highly valuable.",
+      "weaknesses": "The following are the weaknesses of the paper:\n\n- The toolset and dataset might suffer from the limitation of multi-turn interaction in LLM.\n- The GPT generated instructions are sensitive to the prompts which may not be ideal for reproducing the results.",
+      "questions": "Q1. Is the current toolset scalable enough to include the multi-turn interactions in the future work.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "98fb738c5b2597f2cdb9cb1ad543c051860df76752eb13ae4f1e0b1259273b42713b23683e4d2276ffd5b65abaf36e33eed4cd06de17a3f6ff698bfb717c8593"
+    }
+  ]
+}

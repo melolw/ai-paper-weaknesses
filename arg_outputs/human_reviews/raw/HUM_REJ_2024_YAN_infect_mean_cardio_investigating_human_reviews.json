@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_YAN_infect_mean_cardio_investigating",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "What Does Infect Mean to Cardio? Investigating the Role of Clinical Specialty Instructions in Medical LLMs",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces S-MedQA, a novel medical question-answering dataset designed to benchmark large language models (LLMs) across 15 distinct clinical specialties. By leveraging GPT-3.5 for initial annotation and expert validation, the dataset achieves high accuracy. The study examines two hypotheses: whether instruction tuning injects knowledge and whether it merely helps LLMs learn language styles or formats. The findings suggest that while instruction tuning improves performance, these improvements are not solely due to knowledge injection. Instead, correct and high-quality instructions play a critical role, surpassing the impact of stylistic learning alone. The release of S-MedQA aims to advance research in medical LLMs, providing a resource for further exploration of instruction data's role in knowledge-intensive domains.",
+      "strengths": "This paper introduces S-MedQA, a unique medical question-answering dataset annotated with clinical specialties, addressing a significant gap in existing resources. The novel methodology combines GPT-3.5 with expert validation, ensuring high accuracy and leveraging multiple prompts and majority voting to counteract the non-deterministic nature of GPT-3.5 outputs. The study provides valuable insights into the role of instruction data in fine-tuning LLMs, challenging the notion that improvements are primarily due to knowledge injection and highlighting the critical importance of high-quality instructions. These findings prompt a rethinking of existing theories and open new avenues for research in the role of instruction data in LLMs.\n\nThe paper's relevance to the ACL community is underscored by its contribution to fundamental NLP issues, particularly the application of LLMs to specialized domains. The introduction of S-MedQA as a well-annotated, specialty-specific medical dataset will be a valuable resource for NLP researchers and practitioners. The comprehensive literature review, clear presentation, and open-source release of S-MedQA foster further advancements in medical LLM development and evaluation.",
+      "weaknesses": "While the paper presents valuable contributions, several concerns may affect its prioritization for publication. First, the study's focus on the medical domain limits the generalizability of its findings to other knowledge-intensive fields. Additionally, the restriction of each example to a single clinical specialty may oversimplify complex real-world scenarios where multiple specialties could be relevant. The lack of detailed error analysis and the absence of new theoretical frameworks or comprehensive explanations for the observed phenomena are also areas where the paper could be strengthened.\n\nMoreover, the complexity of the experimental setup may pose reproducibility challenges, and the paper's impact might be limited primarily to researchers working in NLP and medical AI. The reliance on expert validation introduces potential biases, and there is an insufficient discussion on practical applications and implications for real-world medical settings.",
+      "questions": "N/A",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "92cc64816d632c791f1c50f5c7cd42b565a3f1060cd1b5e6116a9cb1fdb6e4704c4a9ab1baf849a5a828637048c7e1e7a177e712e0213131ee1bdf24ba69e1ed"
+    }
+  ]
+}

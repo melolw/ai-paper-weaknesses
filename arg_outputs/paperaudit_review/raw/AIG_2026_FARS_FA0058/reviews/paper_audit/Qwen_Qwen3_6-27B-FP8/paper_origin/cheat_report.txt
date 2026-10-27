@@ -1,0 +1,7 @@
+### Integrity and Consistency Risk Report
+
+**1. Major Numerical Inconsistency: Success Rate for $M=1$ (Chunked Verification)**
+*   **Issue:** The reported success rate for the chunked verification strategy with $M=1$ cycle differs between the main results and the mechanism analysis.
+*   **Evidence:**
+    *   **Abstract & Table 1:** State that chunked verification ($M=1$) achieves **21.50%** success (Condition C, No-Aggregation).
+    *   **Section 4

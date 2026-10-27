@@ -1,0 +1,61 @@
+# Integrity and Consistency Risk Report
+
+**Manuscript:** LASCON: LOOP-AWARE SCRATCHPAD CONDENSATION FOR TERMINAL AGENTS
+**Date:** [Current Date]
+**Reviewer:** Automated Integrity Analysis System
+
+## Executive Summary
+This manuscript presents significant methodological flaws and internal inconsistencies that undermine the validity of its primary claims. The most critical issues involve the **unverified nature of the completion metric** due to reported infrastructure failures (Docker unavailability) and a **severe confounding variable** in the ablation study (context window size differences) that invalidates the comparison between the proposed system and its components. Additionally, there are factual mismatches regarding the model citation and minor numerical discrepancies.
+
+## Detailed Findings
+
+### 1. Critical Validity Issue: Unverified Completion Metric
+**Severity:** High
+**Evidence:** Section 4.1, Section 5 (Limitations)
+
+The paper evaluates performance on "Terminal-Bench 2.0," described as "80 Dockerized CLI tasks" with "automated verification through outcome-based tests" (Section 4.1). However, the authors explicitly state:
+> "Docker unavailability prevented Pass@1 evaluation with automated test verification. Completion rate serves as a proxy." (Section 4.1)
+
+**Problem:** If Docker was unavailable, the automated verification scripts could not run. The reported "Completion Rate" (e.g., 68.8% for LASCon) is therefore a proxy metric, likely based on the agent's self-reported status rather than ground-truth verification. In CLI tasks, agents frequently hallucinate success. Without automated verification, the primary metric of the paper is unreliable, rendering the claimed improvements (+21.2pp) unsubstantiated.
+
+### 2. Critical Methodological Flaw: Context Window Confound in Ablation
+**Severity:** High
+**Evidence:** Section 4.1, Section 4.3, Table 1
+
+The ablation study compares the full LASCon system (Condition C) against ablation variants (DCC-Only, PLC-Only) under different context window constraints:
+> "Due to infrastructure constraints, condition C used a 40K token context limit while ablation variants used 131K, which we note as a confound in our analysis." (Section 4.1)
+
+**Problem:**
+*   **Invalid Comparison:** The full system (C) is evaluated with a 40K limit, while ablations use a 131K limit (3x larger).
+*   **Contradictory Results:** The ablation "DCC-Only" achieves **70.0%** completion, outperforming the full LASCon system (**68.8%**). The authors attribute this to the context window difference (Section 4.3).
+*   **Impact:** The core claim that "structured context management is the primary driver of improvement" is weakened because the ablation with the *larger* context window performs better. The "improvement" of the full system over the baseline may be conflated with the specific constraints of the 40K window, while the ablations benefit from the 131K window. The paper admits this confound but still draws strong conclusions about component efficacy, which is scientifically unsound.
+
+### 3. Factual Mismatch: Model Citation
+**Severity:** Moderate
+**Evidence:** Section 4.1 vs. References
+
+*   **Text:** "We use **Qwen3-32B** (Yang et al., 2024b) as the base model..." (Section 4.1)
+*   **Reference:** The citation (Yang et al., 2024b) corresponds to "**Qwen2.5 technical report**" in the reference list.
+
+**Problem:** The manuscript cites a Qwen2.5 paper to support the use of a Qwen3 model. This indicates a factual error in the experimental setup description or reference management.
+
+### 4. Numerical Discrepancy: Improvement Calculation
+**Severity:** Low
+**Evidence:** Abstract, Section 4.2, Table 1
+
+*   **Claim:** "LASCon achieves 68.8% completion rate, a **+21.2 percentage point** improvement over the OpenHands default baseline (47.5%)." (Abstract, Section 4.2)
+*   **Calculation:** $68.8 - 47.5 = 21.3$.
+*   **Discrepancy:** The reported improvement is 21.2pp, but the arithmetic difference is 21.3pp.
+
+### 5. Logical Inconsistency: PLC-Only Timeout Behavior
+**Severity:** Moderate
+**Evidence:** Table 1, Section 4.3
+
+*   **Data:** Table 1 shows "PLC-Only" has a **75.0%** completion rate but **19 timeouts**.
+*   **Claim:** The Progress-Conditioned Loop Controller (PLC) is designed to "prevent unproductive action repetition" and eliminate timeouts (Abstract).
+*   **Inconsistency:** If PLC is effective at preventing loops/timeouts, why does the PLC-Only condition still exhibit 19 timeouts (compared to 0 in the full LASCon system)? The authors note this is confounded by the context window (131K vs 40K), but the high timeout rate in the PLC-Only condition suggests that PLC alone is insufficient to prevent timeouts, contradicting the implication that it is a robust safety mechanism.
+
+## Conclusion
+The manuscript contains **critical integrity risks** related to the validity of its evaluation metric (lack of automated verification) and the internal consistency of its experimental design (context window confound). The claim that LASCon improves performance is not robustly supported because the comparison groups are not equivalent, and the success metric is unverified. The model citation error further suggests carelessness in preparation.
+
+**Recommendation:** Major Revision required to address the verification proxy issue and re-run ablations under identical context window constraints.

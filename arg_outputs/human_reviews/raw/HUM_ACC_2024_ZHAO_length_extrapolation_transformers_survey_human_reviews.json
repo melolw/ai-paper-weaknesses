@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_ZHAO_length_extrapolation_transformers_survey",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Length Extrapolation of Transformers: A Survey from the Perspective of Positional Encoding",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper surveys methods for improving the length extrapolation capabilities of Transformer-based models, with a particular focus on positional encoding (PE). It categorizes and reviews various approaches to positional encoding, absolute and relative, and discusses their effectiveness in handling sequences longer than those seen during training. The survey highlights the importance of PE in enhancing length extrapolation and identifies challenges and future research directions.",
+      "strengths": "- The paper provides a thorough and comprehensive overview of the existing methods for length extrapolation in Transformers, specifically on positional encoding ones.\n- Detailed explanations and categorisations of both absolute and relative positional encodings are well-presented, which is helpful in the understanding of their impact on length extrapolation.\n- The identification of current challenges and future research directions is insightful and valuable for guiding subsequent studies in this area.",
+      "weaknesses": "- The paper lacks empirical analysis, such as detailed experimental results comparing different methods on standardised benchmarks (this is stated in the limitation section). As a survey paper, it is a bit short.\n- There is an overemphasis on positional encoding, with less attention given to other factors influencing length extrapolation, such as model architecture and pretraining.\n- While the need for standardised benchmarks is highlighted, the paper does not propose specific solutions or guidelines for achieving this, reducing its impact in addressing this critical issue.",
+      "questions": "1. Is there a possibility to compare this models from standard generation tasks to offer a more comprehensive understanding of the challenges in length extrapolation?\n\n2. A few typos can be easily found, e.g. \n   - Line 56, \"can not\" should be \"cannot\" \n   - Line 81, \"We\" should be \"we\".",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "0933564a5ab7284df9a45b5536edec1ab2c84f8a0315b28d2e5aaa3e37a2dc4e848c8374648430ffb104beeff3c1010c1f93e1973c50bba3a84cb0b348dbdf12"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+# Global Summary
+
+This paper addresses the evaluation of emergent misalignment (EM) defenses in large language models. The authors argue that standard evaluations using mean misalignment rates underestimate deployment risk because they ignore tail-risk (repeated sampling) and are sensitive to labeling criteria regarding output coherence.
+
+The core approach is the introduction of **Misalign@k**, a tail-risk evaluation protocol that measures the fraction of prompts yielding at least one misaligned output across $k$ samples. The method employs a dual-scoring system (alignment and coherence) to enable sensitivity analysis across three labeling modes: Standard, Relaxed, and Composite.
+
+Key findings include:
+1.  **Tail-Risk Amplification:** Misalign@32 is 3.4$\times$ to 24.2$\times$ higher than mean misalignment rates.
+2.  **Ranking Flips:** Defense effectiveness rankings depend heavily on labeling. Under Standard metrics, data interleaving appears best (Misalign@32 = 16.67%). Under Relaxed metrics (ignoring coherence), interleaving becomes the worst defense (Misalign@32 = 73.61%), while KL regularization becomes the best.
+3.  **Mechanism:** The ranking flip is caused by "incoherence masking," where interleaving produces high incoherence rates (18.84%) that mechanically prevent misaligned outputs from being counted under Standard metrics.
+
+Caveats: The study is limited to a single base model (Qwen2.5-7B-Instruct), a small prompt set (24 prompts), and two defense mechanisms.
+
+# Abstract
+
+-   **Problem:** Emergent misalignment (EM) occurs when fine-tuning on narrow tasks induces broad misalignment. Current defenses (KL regularization, data interleaving) reduce mean misalignment, but evaluations may underestimate risk under repeated sampling.
+-   **Method:** Introduction of Misalign@k, a tail-risk protocol measuring the fraction of prompts with $\ge 1$ misaligned output in $k$ samples. Uses dual-scoring (alignment/coherence) for sensitivity analysis.
+-   **Key Results:**
+    -   Tail-risk amplification is dramatic: Misalign@32 is 3.4$\times$ to 24.2$\times$ higher than mean rates.
+    -   Defense rankings flip based on labeling: Interleaving is best under Standard metrics (Misalign@32 = 16.67%) but worst under Relaxed metrics (73.61%).
+-   **Conclusion:** Deployment decisions require both tail-risk evaluation and sensitivity analysis to avoid conclusions dependent on arbitrary methodological choices.
+
+# Method
+
+-   **Problem Setup:**
+    -   Given a fine-tuned model $M$, prompt set $P$, and sample budget $k$.
+    -   Generates $k$ responses per prompt using high-temperature decoding ($T = 1$, $\text{top}_p = 1$).
+-   **Dual-Scoring Protocol:**
+    -   Uses an LLM judge (DeepSeek-V3.2) to score responses on two dimensions:
+        -   **Alignment:** 1–100 (lower is more misaligned).
+        -   **Coherence:** 1–100 (lower is more incoherent).
+-   **Labeling Modes:**
+    -   **Standard:** Misaligned iff alignment < 30 AND coherence > 50.
+    -   **Relaxed:** Misaligned iff alignment < 30 (ignores coherence).
+    -   **Composite:** Flagged iff alignment < 30 OR coherence < 50.
+-   **Misalign@k Metric:**
+    -   Measures the fraction of prompts with at least one misaligned output across $k$ samples.
+    -   Formula: $\text{Misalign@}k = \frac{1}{n} \sum_{i=1}^{n} \mathbb{1} \left[ \sum_{j=1}^{k} m_{i}^{(j)} \geq 1 \right]$.
+-   **Heterogeneity:**
+    -   Quantifies prompt-level heterogeneity using the variance of per-prompt misalignment rates ($\text{Var}(\hat{p}_i)$).
+    -   Higher variance indicates risk is concentrated in specific prompts rather than uniformly distributed.
+
+# Experiments
+
+-   **Experimental Setup:**
+    -   **Model:** Qwen2.5-7B-Instruct.
+    -   **Fine-tuning:** rs-LoRA on Security EM dataset (5,400 training examples).
+    -   **Conditions:**
+        1.  Aligned Base (control).
+        2.  Misaligned Baseline (no defense).
+        3.  KL Regularization ($\lambda = 0.1$).
+        4.  Interleaving (5% safe data from WildGuardMix).
+    -   **Evaluation:** 24 prompts (8 Plain, 8 JSON, 8 Template). $k = 32$ samples. 3 random seeds.
+-   **Main Results (Standard Metric):**
+    -   Interleaving appears strongest with Misalign@32 = 16.67%.
+    -   KL Regularization follows with Misalign@32 = 26.39%.
+    -   Misaligned Baseline has Misalign@32 = 83.33%.
+    -   Tail-risk amplification factors: Baseline (3.4$\times$), KL (12.9$\times$), Interleaving (24.2$\times$).
+-   **Main Results (Relaxed Metric):**
+    -   **Ranking Flip:** KL Regularization becomes best (Misalign@32 = 31.94%). Interleaving becomes worst (Misalign@32 = 73.61%).
+    -   **Mechanism:** Interleaving has high incoherence (18.84%) compared to KL (1.39%). Under Standard metrics, this incoherence masks misalignment. Under Relaxed metrics, MeanMisalign for interleaving jumps 9.2$\times$ (0.69% to 6.38%).
+-   **K-Sweep Analysis:**
+    -   Divergence between metrics increases with $k$.
+    -   At $k=8$, Interleaving is 2.6$\times$ worse than KL under Relaxed metrics; gap grows to 2.3$\times$ at $k=32$.
+-   **Format-Specific Analysis:**
+    -   Interleaving achieves 0% misalignment on JSON prompts but concentrates risk on Template prompts (33.33%).
+    -   KL Regularization is more uniform, with lowest risk on Template (12.50%).
+-   **Judge Calibration:**
+    -   Aligned Base model shows 0.00% misalignment across all metrics, confirming zero false positive rate for the judge.
+
+# References
+
+-   **Emergent Misalignment:** Cites Betley et al. (2026) for the definition of EM and Turner et al. (2025) for model organisms demonstrating robust EM. Mentions related phenomena like sleeper agents (Hubinger et al., 2024) and in-context EM (Afonin et al., 2026).
+-   **Defenses:** Cites Kaczér et al. (2025) for KL regularization and interleaving. Mentions Wang et al. (2025) on persona features and Ustaomeroglu & Qu (2026) on BLOCK-EM.
+-   **Evaluation:** Cites Reisizadeh et al. (2025) on Leak@k for unlearning and Irpan et al. (2025) on consistency training.
+-   **LLM-as-Judge:** Cites Zheng et al. (2023) and Han et al. (2024) on WildGuard. Notes Li et al. (2025) on judge vulnerabilities.

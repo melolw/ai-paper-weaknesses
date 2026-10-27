@@ -1,0 +1,43 @@
+1) Summary
+The paper addresses catastrophic forgetting in continual learning with large language models when using Low-Rank Adaptation (LoRA). The authors propose MidPC, an initialization strategy that extracts LoRA adapters from intermediate singular components of the pretrained weight matrix, positioning it between the top-slice (PiSSA) and bottom-slice (MiLoRA) extremes. The core contributions include a unified SVD-slice formulation, empirical validation on the FOREVER Standard CL benchmark using Qwen3-0.6B, and spectral diagnostics demonstrating stable subspace alignment and moderate spectral imbalance. MidPC achieves 84.8% overall performance and −1.7% backward transfer, outperforming both endpoint baselines. Learning rate matching experiments are used to isolate the spectral effect from conditioning artifacts.2) Strengths
+- **Unified and Mathematically Sound Formulation**
+  - Formalizes SVD-slice initialization as a continuous parameterized framework (Section 3.3, Eq. 1), explicitly showing PiSSA and MiLoRA as boundary cases, which provides theoretical clarity and simplifies comparative analysis.
+  - Guarantees function-preserving initialization through explicit factor decomposition (Section 3.3, Eq. 2), ensuring that observed performance differences arise from training dynamics rather than initialization bias.
+  - Visualizes the spectral selection process and continual learning pipeline intuitively (Figure 1), enhancing reproducibility and conceptual accessibility for practitioners.
+- **Rigorous and Multi-Faceted Experimental Validation**
+  - Evaluates across two distinct task orderings with multiple random seeds (Section 4.1, Table 3), demonstrating that the method’s benefits are robust and not sequence-dependent.
+  - Conducts learning rate matching to isolate spectral effects from conditioning artifacts (Section 4.4, Table 2), strengthening causal claims about the intermediate slice’s advantage.
+  - Reports statistically significant improvements with confidence intervals (Section 4.2, Table 1), establishing the reliability and practical significance of the gains over strong baselines.
+- **Insightful Spectral Diagnostics and Mechanistic Analysis**
+  - Tracks subspace alignment degradation across sequential tasks (Figure 2a, Section 4.3), directly linking forgetting to representation disruption and validating the stability hypothesis.
+  - Quantifies spectral imbalance to characterize update energy distribution (Figure 2b, Section 4.3), providing a mechanistic explanation for the observed stability-plasticity trade-off.
+  - Correlates moderate spectral imbalance with optimal backward transfer (Section 4.3, Table 1), offering actionable insights for future SVD-based adapter design and initialization tuning.3) Weaknesses
+- **Limited Scope of Evaluation and Baselines**
+  - Evaluated exclusively on a single model architecture and size (Qwen3-0.6B) (Section 4.1), which limits generalizability claims to larger or structurally different LLMs.
+  - Tested only on text classification tasks within the FOREVER benchmark (Section 4.1), leaving unverified whether the method transfers to generation, reasoning, or domain adaptation scenarios.
+  - Lacks direct comparison with modern replay-free continual learning baselines under identical compute budgets (Table 1), making it unclear how MidPC scales against recent regularization or merging techniques.
+- **Insufficient Analysis of Slice Selection and Hyperparameter Sensitivity**
+  - Uses a fixed middle index $s = \lfloor r_{\max}/2 \rfloor$ without exploring alternative slice positions (Section 3.3), leaving open whether the exact midpoint is optimal or if performance varies smoothly across the spectrum.
+  - Does not investigate the interaction between slice width $r$ and slice position $s$ on the stability-plasticity balance (Section 4.1), despite rank selection being critical in LoRA.
+  - No ablation on different network layers or modules (e.g., attention vs. MLP) where MidPC is applied (Section 4.1), ignoring that spectral properties and forgetting susceptibility vary significantly across layers.
+- **Theoretical and Practical Deployment Gaps**
+  - Lacks formal theoretical bounds linking intermediate singular values to forgetting metrics or gradient variance (Section 3.4), leaving the stability-plasticity hypothesis purely empirical.
+  - Does not analyze the computational overhead of full SVD computation during initialization (Appendix A), which can be prohibitive for large-scale deployment without approximation strategies.
+  - The learning rate matching experiment only adjusts early-step update norms without controlling for long-term optimization trajectories (Section 4.4), potentially confounding the claim that the advantage is a "genuine spectral effect" throughout training.4) Suggestions for Improvement
+- **Expand Evaluation Scope and Baseline Comparisons**
+  - Include experiments on at least one larger model (e.g., 7B or 13B) and a different architecture family to assess scalability and cross-model generalizability (Section 4.1).
+  - Extend evaluation to generative or instruction-tuning continual learning benchmarks to verify task-agnostic benefits beyond classification (Section 4.1).
+  - Add direct comparisons with recent replay-free continual learning methods under matched parameter budgets and training steps to contextualize practical impact (Table 1).
+- **Conduct Comprehensive Slice and Rank Ablations**
+  - Perform a systematic sweep over slice start indices $s$ (e.g., 0.25, 0.5, 0.75 of the spectrum) to map the performance landscape and identify optimal regions (Section 3.3).
+  - Analyze the interaction between rank $r$ and slice position $s$ to identify optimal configurations for different forgetting regimes and task complexities (Section 4.1).
+  - Evaluate layer-wise spectral properties and test selective MidPC application to layers with highest forgetting susceptibility to improve parameter efficiency (Section 4.1).
+- **Strengthen Theoretical Analysis and Practical Considerations**
+  - Derive or cite theoretical bounds relating singular value magnitude to gradient variance and forgetting, grounding the stability-plasticity claim mathematically (Section 3.4).
+  - Report initialization time and memory costs for full SVD, and propose low-rank approximation or randomized SVD alternatives for large-scale deployment (Appendix A).
+  - Extend the learning rate matching analysis to monitor update norms and loss landscapes across the full training trajectory, not just early steps, to fully validate the spectral effect claim (Section 4.4).5) Score
+- Overall (10): 7 — The paper presents a well-motivated and empirically validated initialization strategy (Section 3.3, Table 1), but limited evaluation scope and lack of theoretical grounding temper its broader impact.
+- Novelty (10): 6 — The idea of exploring intermediate SVD slices is conceptually straightforward and builds directly on existing endpoint methods (Section 2, Section 3.3), offering incremental rather than paradigm-shifting novelty.
+- Technical Quality (10): 7 — Experiments are rigorously designed with spectral diagnostics and learning rate matching (Section 4.3, Table 2), though the absence of rank/slice ablations and computational analysis reduces completeness (Section 4.1, Appendix A).
+- Clarity (10): 8 — The manuscript is well-structured with clear mathematical formulations (Eq. 1-2) and intuitive visualizations (Figure 1, Figure 2), making the method and results easy to follow.
+- Confidence (5): 4 — High confidence due to clear experimental setup and reproducible claims (Section 4.1, Table 3), though limited to a single model size and benchmark reduces certainty about generalizability.

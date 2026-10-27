@@ -1,0 +1,31 @@
+# Integrity & Consistency Risk Report
+
+## 1. Critical Numerical Inconsistency: FMR Metric Mismatch (Table 1 vs. Figure 2)
+**Severity:** High  
+**Location:** Table 1 (Block 5) vs. Figure 2 & Section 4.3 (Blocks 6-7)  
+**Evidence:** 
+- Table 1 reports the overall False Memory Resistance (FMR) for the `Dialogue-Wide` baseline as **58.76%** and for `SAG (relaxed)` as **70.70%**.
+- Section 4.3 and Figure 2 break down FMR by interference source type for the exact same methods: `Dialogue-Wide` achieves **86.65%** on assistant-only interference and **80.45%** on user-repeated interference. `SAG` achieves **91.25%** and **80.45%**, respectively.
+- The text states these subgroups comprise the entire evaluation set: *"70.9% appear only in assistant turns, 27.8% are repeated by users... and 1.4% appear in neither."*
+- **Mathematical Contradiction:** A weighted average of the subgroup FMRs must equal the overall FMR. Calculating the weighted average for `Dialogue-Wide`: `(0.709 × 86.65) + (0.278 × 80.45) + (0.013 × X) ≈ 83.8% + 0.013X`. Even if the remaining 1.3% category has 0% FMR, the overall FMR cannot mathematically be **58.76%**. The subgroup values (~80-86%) are ~25 percentage points higher than the reported overall value. This indicates a fundamental calculation error, mislabeled metric, or data fabrication.
+
+## 2. Ablation Attribution Ambiguity & Variant Conflation
+**Severity:** Medium  
+**Location:** Abstract (Block 1), Section 4.4 (Block 6), Table 2 (Block 8)  
+**Evidence:**
+- The Abstract and Section 4.2 highlight `SAG (relaxed)` as the primary result, citing an FMR gain of **+11.94pp**.
+- Section 4.4 and Table 2 state that the length-matched baseline accounts for **52.5%** of SAG's gain, leaving **47.5%** for the speaker restriction mechanism.
+- **Inconsistency:** The 52.5% figure is calculated relative to `SAG (strict)`'s gain of **+15.66pp** (`8.22 / 15.66 ≈ 0.525`), not the primary `SAG (relaxed)` result. The abstract's claim that *"47.5% of the improvement stems from the speaker restriction itself"* implicitly shifts the baseline of comparison to the strict variant without explicit clarification, creating a disconnect between the headline result and the ablation breakdown.
+
+## 3. Schematic vs. Empirical Data Discrepancy
+**Severity:** Low-Medium  
+**Location:** Figure 1 (Block 4) vs. Table 1 (Block 5)  
+**Evidence:**
+- Figure 1 illustrates the `Dialogue-Wide` baseline pipeline with a label stating **99.98% pass**, implying an FMR of ~0.02%.
+- Table 1 empirically reports the `Dialogue-Wide` FMR as **58.76%**.
+- While Figure 1 is likely illustrative, the specific "99.98%" figure directly contradicts the experimental results and may mislead readers regarding the baseline's actual failure rate.
+
+## Summary & Recommendation
+The manuscript contains a **critical numerical contradiction** regarding the FMR metric. The overall FMR values in Table 1 are mathematically incompatible with the subgroup breakdowns in Figure 2 and Section 4.3. This discrepancy severely undermines the validity of the reported results and suggests either a major calculation error or inconsistent data reporting. The ablation claims also conflate the `relaxed` and `strict` variants without clear attribution. 
+
+**Recommendation:** The authors must reconcile the FMR calculations across the overall and subgroup analyses, verify the underlying data aggregation, and explicitly state which SAG variant the ablation percentages reference. Until these numerical inconsistencies are resolved, the empirical claims cannot be trusted.

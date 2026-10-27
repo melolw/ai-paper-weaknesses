@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_ZHOU_incontext_learning_type_gradientbased",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Is In-Context Learning a Type of Gradient-Based Learning? Evidence from the Inverse Frequency Effect in Structural Priming",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper discusses the hypothesis that in-context learning is an emergent ability of LLMs, and, in particular, that the inverse frequency effect shown un human processing may be a processing mechanism for some LLMs as well, when both a fine-tuning and a concatenation modes are applied.",
+      "strengths": "The most relevant issue dealt by the paper is the “similarity” of  humans and models behaviour.",
+      "weaknesses": "To overcome a potential weakness, I recommend the author(s) to share data, training scripts and outputs .",
+      "questions": "See previous section",
+      "rating": 3.5,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "69030fa8ec308db4d1ad6c47aca01ab6b066cdb99cc1f93fea47c8959169f57a07a1e0f44341293a797844e4342aede0cb12cb3dc0ec1d3876658fc0db18bbdf"
+    }
+  ]
+}

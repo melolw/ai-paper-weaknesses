@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_DELUCIA_natural_language_inference_improve",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Using Natural Language Inference to Improve Persona Extraction from Dialogue in a New Setting",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces a method for improving persona extraction from dialogues in fantasy settings using Natural Language Inference (NLI). The authors address the limitations of current persona extraction models, typically trained on real-world datasets like PersonaChat, by proposing a post-hoc adaptation method using NLI to ensure the extracted persona information is reasonable given the original utterance. The study shows that their approach improves the quality of extracted personas and requires less human annotation compared to existing methods.",
+      "strengths": "- The research question is interesting, offering a novel angle on persona extraction.",
+      "weaknesses": "- The value and motivation for persona extraction in the context of large language models need more discussion. For example, LLMs are already proficient in role-playing [1][2] and adhering to persona settings in system prompts.\n- The downstream applications of the extracted personas require further exploration. More experiments are needed to validate the effectiveness of the proposed method.\n\n[1] Shanahan, Murray, Kyle McDonell, and Laria Reynolds. \"Role play with large language models.\" Nature 623.7987 (2023): 493-498.\n\n[2] Shao, Yunfan, et al. \"Character-llm: A trainable agent for role-playing.\" arXiv preprint arXiv:2310.10158 (2023).",
+      "questions": "None",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "d2846b9585db388db3f5711ed42ef4e2e88bbfb8fb1a07a9171faf29edeb21009c22537dd2434bd4cd1dd740de350bf194bd2d638c85ce0e94b1a6c614043f5e"
+    }
+  ]
+}

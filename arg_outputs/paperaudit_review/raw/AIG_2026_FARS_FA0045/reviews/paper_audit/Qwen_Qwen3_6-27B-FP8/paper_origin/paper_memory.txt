@@ -1,0 +1,62 @@
+# Global Summary
+
+This paper investigates data selection strategies for repetition-heavy long chain-of-thought (CoT) supervised fine-tuning. The authors compare selecting easy-to-fit examples (low negative log-likelihood, NLL) versus hard-to-fit examples (high NLL) under identical training conditions. Contrary to the intuition that easy examples might better teach formatting, high-NLL examples significantly outperform low-NLL examples, achieving 33.0% versus 23.6% aggregate accuracy on AIME and GPQA benchmarks. The analysis attributes the failure of low-NLL examples to a confound with high textual repetition (trigram rate 0.457 vs. 0.206), which leads to poor termination behavior (36.7% vs. 65.8% termination rate). Optimization attempts, including hyperparameter tuning and trigram filtering, failed to recover low-NLL performance. The study recommends selecting hard-to-fit examples for repetition-heavy training regimes.
+
+# Abstract
+
+- **Problem:** Determining which examples to select for repetition-heavy training (fine-tuning on small datasets for many epochs) in long-CoT reasoning.
+- **Comparison:** Low-NLL (easy-to-fit) vs. High-NLL (hard-to-fit) examples.
+- **Key Results:** High-NLL examples significantly outperform Low-NLL examples (33.0% vs. 23.6% aggregate accuracy).
+- **Analysis:** Low-NLL examples are confounded with high textual repetition (trigram rate 0.457 vs. 0.206), resulting in poor termination behavior and unstable training dynamics.
+- **Optimization:** Hyperparameter tuning and trigram filtering failed to recover Low-NLL performance, suggesting the limitation is fundamental to the selection strategy.
+- **Conclusion:** Practitioners should select hard-to-fit examples rather than easy-to-fit ones for many-epoch repetition on small datasets.
+
+# Experiments
+
+- **Setup:**
+    - Base Model: OLMo3-7B.
+    - Dataset: Dolci-Think (filtered pool of 6,400 examples).
+    - Training: 32 epochs on 800 length-matched examples (25,600 updates).
+    - Benchmarks: AIME 2024, AIME 2025, GPQA Diamond.
+    - Metrics: Avg@n, Pass@n, Termination rate (fraction of generations ending with EOS).
+
+- **Main Results (Table 1):**
+    - **High-NLL:** 33.00% Aggregate Accuracy.
+    - **Random:** 28.66% Aggregate Accuracy.
+    - **Low-NLL:** 23.57% Aggregate Accuracy.
+    - High-NLL outperforms Low-NLL by 9.43 points (bootstrap 95% CI: [3.27, 20.36]).
+    - Low-NLL exhibits high variance across seeds (e.g., ±12.6 on AIME 2024 vs. ±2.1 for High-NLL).
+
+- **Termination Analysis (Table 1, Figure 2):**
+    - High-NLL models achieve 65.8% average termination rate.
+    - Random models achieve 48.4% average termination rate.
+    - Low-NLL models achieve 36.7% average termination rate.
+    - Low-NLL models frequently fail to emit end-of-sequence tokens, producing truncated outputs.
+
+- **Optimization Attempts (Table 2):**
+    - **Low-NLL (HP Tuned):** Reduced epochs (32→8), lowered LR (2e-5→1e-5), added weight decay (0.01). Result: 15.63% Aggregate Accuracy (degraded by 7.94 points).
+    - **Low-NLL (Trigram Filtered):** Filtered examples with trigram repetition < 0.3. Result: 19.56% Aggregate Accuracy (degraded by 4.01 points), though termination improved to 44.5%.
+
+# Method
+
+- **Selection Strategy:**
+    - NLL is computed per-token on response tokens under the base model before fine-tuning.
+    - **Length-Matched Selection:** The pool is partitioned into 10 deciles by response token length. Within each decile, examples are ranked by NLL. A fixed quota (80 examples per decile) is selected to ensure identical length distributions for Low-NLL, High-NLL, and Random subsets.
+
+- **Training Configuration:**
+    - Learning rate: 2e-5 with cosine schedule.
+    - Batch size: 1.
+    - Precision: bfloat16.
+    - Checkpoint selection: Best validation loss.
+
+- **Evaluation Metrics:**
+    - **Avg@n:** Accuracy averaged over n samples per problem.
+    - **Pass@n:** Fraction of problems solved in at least one sample.
+    - **Termination Rate:** Fraction of generations ending with EOS rather than being truncated.
+
+# References
+
+- **Data Selection:** Cites works on instruction-following difficulty (Li et al., 2023), weak-to-strong consistency (Li et al., 2024), multi-criteria selection (Zhang et al., 2025), and representation-based selection (Ivison et al., 2025).
+- **Long CoT:** References DeepSeek-R1 (DeepSeek-AI et al., 2025), Qwen3 (Yang et al., 2025a), and surveys on long CoT (Chen et al., 2025).
+- **Repetition:** Cites Kopiczko et al. (2026) regarding repetition-heavy training outperforming data scaling, and scaling laws (Kaplan et al., 2020; Hoffmann et al., 2022).
+- **Benchmarks:** GPQA (Rein et al., 2023).

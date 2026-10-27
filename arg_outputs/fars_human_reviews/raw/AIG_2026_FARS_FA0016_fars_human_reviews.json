@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0016",
+    "title": "Query-Conditioned Marginals for OT-Based Context Compression: An Empirical Investigation",
+    "abstract": "Context compression reduces inference costs for large language models by replacing long inputs with shorter representations. Optimal transport (OT) based methods like ComprExIT achieve strong results by aggregating context tokens into compression slots via the Sinkhorn algorithm, but operate in a query-agnostic manner that may allocate capacity to task-irrelevant tokens. We propose QCap-OT, an inference-time modification that reweights OT sender marginals based on query-anchor similarity to bias compression toward query-relevant content. Our experiments show that QCap-OT produces results statistically indistinguishable from vanilla ComprExIT (F1 delta $\\approx$ 0, $p > 0.05$). However, this finding is confounded by a fundamental reproducibility challenge: our ComprExIT re-implementation achieves only 2.47\\% F1 compared to the published 68.08\\% F1---a gap of approximately 65 points that persisted despite extensive debugging. We document this negative result and reproducibility challenge to inform future research on context compression methods.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper attempts to improve ComprExIT for prompt compression; however, the original ComprExIT results are not reproducible, which undermines the validity of the comparison.",
+        "strengths": "Prompt compression is an interesting and important research problem, and reporting reproducibility constitutes a valuable contribution.",
+        "weaknesses": "Negative results typically rely on previously published work. However, the paper under consideration is unpublished, which weakens the significance of this contribution. Moreover, a failure to reproduce the results does not necessarily indicate an inherent issue with reproducibility.",
+        "suggestions": "This negative report is interesting. Maybe the AI-authors can contact the original authors to know future reproduce methods.",
+        "llmDisclosure": "polish",
+        "ethicsReproducibility": "NA"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-03T07:00:04.914Z",
+      "updatedAt": "2026-04-03T07:00:04.914Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper test a hypothesis that query-conditioned marginal reweighting can make OT-based compression better. To validate the hypothesis, the author proposes a new version of ComprExIT that has an adaptive weighting term. They further test this new method on two QA tasks. The result doesn't support this hypothesis. ",
+        "strengths": "Problem and motivation is clearly defined and very meaningful. ",
+        "weaknesses": "The result is meaningless! The experiment fails to replicate the original performance of the original paper, and the QA performance is too low to be meaningful. This may be a problem with the chosen LLM or with the code. As a result, results in this paper can't be used to validate the hypothesis. ",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Results are not meaningful"
+      },
+      "submittedAt": "2026-03-27T23:34:37.414Z",
+      "updatedAt": "2026-03-27T23:34:37.414Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes QCap-OT, an inference-time modification to OT-based context compression (ComprExIT), which reweights sender marginals based on query-anchor similarity to bias compression toward query-relevant tokens. The hypothesis is that query-conditioned marginals improve compression quality for downstream QA tasks. The authors validate this empirically on MRQA benchmarks (SQuAD, HotpotQA). The key finding is a negative result: QCap-OT performs statistically indistinguishably from the baseline. However, this conclusion is heavily confounded by a severe reproducibility failure, where their reimplementation of ComprExIT achieves only ~2.47% F1 vs. the reported 68.08% F1.",
+        "strengths": "1. QCap-OT only modifies the sender marginal, without retraining or adding parameters. This is a clean intervention on OT structure, which is conceptually insightful.\n2. Demonstrates that OT coordination still outperforms naive query-based selection, even in a degraded regime.",
+        "weaknesses": "1. Missing analyses including distribution of similarity scores and whether reweighting actually changes transport plan.\n2. The paper implies QCap-OT is ineffective, but evidence only supports it is ineffective under a failed baseline implementation",
+        "suggestions": "",
+        "llmDisclosure": "Claude for summary/phrasing",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-27T03:51:33.639Z",
+      "updatedAt": "2026-03-27T03:51:33.639Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0016"
+}

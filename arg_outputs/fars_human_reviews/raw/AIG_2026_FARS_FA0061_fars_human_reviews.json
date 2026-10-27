@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0061",
+    "title": "Entropy Dynamics Do Not Provide Reliable Execution-Free Selection Signals for Code Generation",
+    "abstract": "Best-of-N sampling improves code generation but requires execution for candidate selection. Entropy dynamics (EDIS) have shown promise for detecting reasoning errors in math problems by identifying instability patterns in per-token entropy trajectories. We test whether entropy dynamics can provide execution-free selection signals for code generation by adapting EDIS as nEDIS with pre-registered success criteria. Our experiments demonstrate a clear negative result: nEDIS fails the pre-registered criterion, underperforming even random first-sample selection by 12.8--27.5 percentage points on HumanEval and MBPP. We identify entropy sparsity as a key failure mode---88.3\\% of entropy values are exactly zero with instruction-tuned code models, undermining spike detection. The optimization required to improve nEDIS contradicts the original hypothesis, suggesting the method captures length bias rather than meaningful entropy dynamics. This negative result prevents wasted effort and suggests alternative approaches are needed for execution-free code selection.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates whether entropy dynamics can serve as execution-free selection signals for best-of-N code generation. Building on EDIS, a method originally proposed for detecting reasoning errors via entropy trajectories in mathematical tasks, the authors adapt it to code generation as nEDIS and evaluate it on HumanEval and MBPP. The study adopts a pre-registered success criterion, requiring the method to outperform confound baselines such as length-only and entropy variability on both benchmarks. The experimental results present a clear negative finding: nEDIS fails to meet the pre-registered criterion and, more importantly, underperforms even trivial baselines such as random first-sample selection. The authors attribute this failure primarily to entropy sparsity in instruction-tuned code models, which undermines the spike-detection mechanism underlying entropy dynamics.",
+        "strengths": "1. The paper studies an important and practically relevant problem, namely execution-free candidate selection for code generation, which has clear implications for efficiency and safety.\n2. The experimental methodology is rigorous and commendably transparent. In particular, the use of pre-registered success criteria and explicit refutation conditions is uncommon and significantly strengthens the credibility of the conclusions.\n3. The empirical results are clear and convincing as a negative finding. The observation that entropy-based ranking can underperform even random selection provides a strong signal that the current formulation is not suitable for this task.\n4. The paper provides a reasonable initial analysis of failure modes, including entropy sparsity and the inconsistency between the optimized variant (nEDIS v2) and the original hypothesis.\n",
+        "weaknesses": "1. While the paper convincingly demonstrates that entropy dynamics fail in their current form, the investigation remains largely diagnostic and does not sufficiently explore how the underlying insight could be extended or improved. Given that entropy-based signals are intuitively reasonable, it would be valuable to examine alternative formulations (e.g., focusing on informative entropy regions, early decoding stages, or different normalization schemes), rather than concluding based solely on the current implementation.\n2. The identified failure mode of entropy sparsity is not fully validated as a fundamental limitation. It remains unclear whether this phenomenon is specific to instruction-tuned models, particular decoding settings, or dataset characteristics. Additional controlled experiments (e.g., with base models or different sampling strategies) would help assess the generality of the conclusion.\n3. The claim that the optimized variant (nEDIS v2) primarily captures length bias is plausible but not rigorously supported. A more systematic decomposition through controlled ablations would strengthen this argument.\n4. The conclusion that this result can “prevent wasted effort” in this research direction appears somewhat overstated, as the evaluation is limited to a specific formulation and setting (code generation with best-of-N). It does not fully rule out the potential value of entropy-based signals under alternative formulations or tasks.\n5. More importantly, the paper lacks a deeper theoretical or conceptual explanation for why entropy dynamics fail in this setting. In code generation, correctness is determined by program semantics rather than token-level likelihood, and erroneous solutions can remain locally consistent and low-entropy. As a result, the core assumption that entropy instability correlates with errors may not hold, unlike in reasoning tasks where entropy dynamics were originally validated. A more principled analysis of this mismatch would significantly strengthen the paper and clarify whether the negative result reflects a fundamental limitation or a modeling artifact.",
+        "suggestions": "",
+        "llmDisclosure": "I used ChatGPT to summary the paper content, and I based on both summary and pdf to write the draft of weakness and strength by myself. Finally, I used ChatGPT to polish my draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T05:57:44.959Z",
+      "updatedAt": "2026-03-22T05:57:44.959Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 1,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies whether entropy-dynamics signals from EDIS can originally be adapted to execution-free code selection, with a clear now answer.",
+        "strengths": "Maybe this can be a case study that provides insights.",
+        "weaknesses": "First, the results are negative. I am not suggesting that negative results are not worth reporting; they can be valuable. However, a negative finding by itself is not enough to make the paper successful. The paper mainly introduces an idea and shows that it does not work, but it does not provide sufficiently deep analysis, meaningful refinement, or substantive follow-up improvements. As a result, the contribution feels incomplete for a research paper.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-27T10:48:10.408Z",
+      "updatedAt": "2026-03-27T10:48:10.408Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests whether entropy dynamics (EDIS), previously shown to diagnose reasoning errors in mathematical problem-solving, can provide execution-free selection signals for best-of-N code generation. The authors adapt EDIS to code as nEDIS with length and scale normalizations, and pre-register a success criterion: nEDIS must significantly outperform both confound baselines (length-only, CV_H) on both HumanEval and MBPP. Using DeepSeek-Coder-6.7B-Instruct with N=32 candidates, the experiments yield a clear negative result: nEDIS fails the pre-registered criterion (fails to beat length-only on MBPP, p=1.0), and all entropy-based methods underperform even random first-sample selection by 12.8–27.5 percentage points. The paper identifies entropy sparsity (88.3% zero entropy values) as the key failure mode.",
+        "strengths": "- Well-designed methodology: the pre-registered success criterion (must beat both confound baselines on both benchmarks) prevents post-hoc rationalization, which is exactly the right way to structure a negative-result study.\n- Good set of confound baselines (length-only, CV_H, mean-H, self-certainty) that cleanly tease apart what signal the method is actually picking up on.\n- The entropy sparsity finding (88.3% zero values) is a clear mechanistic explanation for the failure — instruction-tuned models are simply too confident on most code tokens for entropy dynamics to carry any signal.\n- The \"optimization paradox\" is genuinely insightful: the only way to improve nEDIS was to invert the selection direction and multiply by length, which fundamentally contradicts the original hypothesis and reveals the method is just capturing length bias.",
+        "weaknesses": "- Only one model (DeepSeek-Coder-6.7B-Instruct). The 88.3% entropy sparsity could be specific to this model's calibration — instruction tuning pushes confidence very high on most tokens, which kills the entropy signal. The paper acknowledges this but never tests a base model (without instruction tuning) to verify, which is a significant gap given it's the core failure explanation.\n- The paper identifies entropy sparsity as the failure mode but doesn't explore any remedies. Even simple ideas like computing EDIS only over non-zero positions or using top-k logit entropy are left untested. This limits the contribution to \"EDIS doesn't work for code on this model\" without offering much of a path forward.\n- N=32 at temperature 0.8 is not well-justified and may not reflect practical usage (best-of-N typically uses N=4–16). No per-problem breakdown is provided either — the aggregate numbers could be hiding subsets where entropy-based selection actually works (e.g., easy vs hard, short vs long). Both of these limit how much we can take away from the negative result.",
+        "suggestions": "- Test on at least one base model (not instruction-tuned) to verify whether the entropy sparsity finding is specific to instruction tuning.\n- Explore simple modifications to handle entropy sparsity (e.g., compute EDIS only over non-zero entropy positions, or use top-k logit entropy).\n- Provide per-problem analysis showing whether entropy-based selection correlates with correctness for any problem subset.\n- Test with smaller N (e.g., N=4, 8) to see if the negative result holds at more practical scales.",
+        "llmDisclosure": "Claude Code (Opus 4.6) was used to assist with summarizing the paper, checking log/code consistency, and polishing phrasing. The paper PDF and experiment logs were shared with the tool for analysis. Final judgments and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T11:12:50.996Z",
+      "updatedAt": "2026-04-11T12:19:51.883Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0061"
+}

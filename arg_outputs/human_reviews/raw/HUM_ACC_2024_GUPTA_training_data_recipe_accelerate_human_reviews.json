@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_GUPTA_training_data_recipe_accelerate",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "A Training Data Recipe to Accelerate A* Search with Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "- Authors argue that A* + LLM setup contains two subsystems where each each subsystem can impose different requirements on training data and complicating optimization\n- They proposes a distribution to downsample training data by identifying relevant data points to learn a performant heuristic, while constraining computational costs.\n- For that, they divide the search trajectory into three equally sized portions, the beginning, the middle, and the end, and test the effect of using each portion as training data.\n    * For the LLM, training on the last portion, leads to better generalization\n    * As for A*, we may expect a similar behavior since erroneous predictions on the end portion are detrimental.\n- The authors showed that they reduced the number of iterations required to find the solutions by upto 13×, with a wall-clock speed-up of upto 5×.",
+      "strengths": "- The related works section covers prior works clearly.\n- The paper addresses an interesting problem which can be valuable to the AI Planning research community\n- Authors devised a sampling strategy for LM training data that includes a higher proportion of search nodes near the end, than the beginning, outperforming baselines by 8% fewer iterations and outperforming models that were trained with double the data.",
+      "weaknesses": "- Please justify your choices for loss function by adding more description. It is not clear how these two losses are used together. Is there any coefficient when you put these two loss functions together? Or do you use them separately as your experiment shows. It is a bit confusing.\n- Please justify your choice of top-k decoding with $k=5$.\n- Line 407: How did you introduce the error? Please explain more.\n- Is this always true in all scenarios? \"sampling with a higher proportion of search nodes near the end\" leads to better performance? Please justify better.\n- What would be the other alternatives to Eq. (6) for assigning higher value to nodes closer to the goal? It would be interesting to have a comparison.",
+      "questions": "- Please spell out LLMs, MCTS, and LMs when you refer to the concept for the first time.\n- Would be great to have a figure showing your solution in high-level.\n- A table summarizing the related works would be appreciated - maybe keep it in Appendix due to space limit\n- Line 242 \"closed list list\" is a typo, it is \"closed list\"\n- Line 244, please put a space between node and (alias root node). Similar cases on line 258, 259, 325, 363, 365, 476 and a few more...\n- Line 293: You say that you considers nodes on the optimal path... how do you know the optimal path at this stage?\n- Line 310: Can you please provide an example of your input? If you did in Appendix - referred to the them in the main content.\n- Line 411: Bad read / typo \"we use to use\"\n- Mention Maze in the caption of Table 1 (if the results are for Maze Navigation)\n- Line 429: (discussed later) $\\rightarrow$ mention the section\n- I suggest using Maze and Sokoban as the first row in Table 2, and Train Split, Test Split, etc. as the 2nd row.\n- I don't see any bottom line in Table 2\n- You may not have had enough time to polish your paper before the deadline - please do so for the final version!",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "2f2e6463b5fe1e3c06ab2e5a212376763a19269140c868681ffe794e1026775ba05f5ae26114b832ad6ab6b287486ba64e9820e1585107e8b93af4f4130586f6"
+    }
+  ]
+}

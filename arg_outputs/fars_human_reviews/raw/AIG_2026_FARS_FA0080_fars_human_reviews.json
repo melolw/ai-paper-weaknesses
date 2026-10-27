@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0080",
+    "title": "Misalign@k: Tail-Risk Evaluation of Emergent Misalignment Defenses Under Repeated Sampling",
+    "abstract": "Emergent misalignment---where fine-tuning on narrow tasks induces broadly misaligned behaviors---poses a significant safety concern for large language models. While recent defenses such as KL regularization and data interleaving reduce mean misalignment rates, current evaluations may underestimate deployment risk where users can sample multiple responses. We introduce Misalign@k, a tail-risk evaluation protocol that measures the fraction of prompts yielding at least one misaligned output across $k$ samples, with dual-scoring (alignment and coherence) enabling sensitivity analysis across labeling criteria. Evaluating emergent misalignment defenses on Qwen2.5-7B-Instruct, we find that tail-risk amplification is dramatic: Misalign@32 is 3.4$\\times$ to 24.2$\\times$ higher than mean rates. Critically, defense rankings flip depending on labeling choices---interleaving appears best under standard metrics (Misalign@32=16.67\\%) but becomes worst under relaxed metrics (73.61\\%) due to high incoherence rates masking underlying misalignment. These findings demonstrate that deployment decisions require both tail-risk evaluation and sensitivity analysis to avoid conclusions dependent on arbitrary methodological choices.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 2,
+        "soundness": 1,
+        "presentation": 1,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper asks whether current evaluations of emergent misalignment defenses give a misleadingly optimistic picture of safety. The concern is twofold: users in practice can regenerate responses until they get what they want, and the way you define \"misaligned\" (particularly whether incoherent outputs count) can change which defense looks best. To test this, the authors fine-tune Qwen2.5-7B-Instruct to trigger emergent misalignment, apply two defenses (KL regularization and data interleaving), and generate 32 samples per prompt scored by an LLM judge on both alignment and coherence. The findings support both concerns. Tail risk is much worse than mean rates suggest, with Misalign@32 running anywhere from 3x to 24x higher than single-sample estimates. More strikingly, the ranking of defenses completely reverses depending on how you handle incoherent outputs: interleaving looks safest under the standard metric but becomes the worst performer under a relaxed metric, because its high incoherence rate hides misaligned content from being counted.",
+        "strengths": "1. The most valuable insight is incoherence masking. Showing that a defense can appear safe simply because it produces incoherent outputs that get excluded from misalignment counts is the kind of finding that should change how people run evaluations.\n\n2. The dual-scoring design is clean and practical. Separating alignment from coherence and defining three labeling modes makes it easy to see how sensitive the conclusions are to choices that usually go unexamined.\n\n3. The tail-risk framing reflects how people actually use models. Users can regenerate responses, so single-sample metrics genuinely understate risk. The Misalign@k metric captures this simply and effectively.\n\n4. Checking that the aligned base model scores 0% across all metrics is a small but important detail. It rules out false positives from the LLM judge, which is always a concern with automated evaluation.\n\n5. The format-specific breakdown adds unexpected nuance, showing that interleaving eliminates JSON misalignment entirely but pushes residual risk into template prompts. That kind of uneven effect is worth knowing about for anyone designing defenses.",
+        "weaknesses": "1. The evaluation uses only 24 prompts, which is very small for a paper making claims about tail risk. With 8 prompts per format, a single prompt behaving differently can swing the Misalign@32 numbers by several percentage points. The large standard deviations in Table 3 (for example, 19.09 for the misaligned baseline on Template) reflect this. It is hard to trust format-specific conclusions or fine-grained defense comparisons at this scale.\n\n2. The paper tests only one base model and one fine-tuning recipe for inducing misalignment. The headline findings (tail-risk amplification, ranking flips) might look very different on larger models, different architectures, or different misalignment triggers. The paper acknowledges this limitation but still frames its conclusions broadly.\n\n3. The LLM judge (DeepSeek-V3.2) is validated only against false positives on the aligned base model. There is no check of false negatives (misaligned outputs scored as safe) or inter-annotator agreement with human labels. Since the entire ranking-flip argument depends on the judge correctly distinguishing low-alignment-low-coherence from low-alignment-high-coherence outputs, this gap matters.\n\n4. The threshold choices (alignment below 30, coherence above 50) are presented without justification or sensitivity analysis. If the alignment threshold were 20 or 40 instead of 30, the ranking flip might disappear or become more extreme. For a paper whose main point is that methodological choices drive conclusions, it is surprising that these particular choices are not themselves tested.\n\n5. The connection between incoherence and misalignment is treated as purely mechanical (incoherent outputs get filtered out), but there is no discussion of whether incoherent outputs are actually harmful in practice. If an incoherent response is unusable by the person receiving it, filtering it out may be the right thing to do, and the relaxed metric might be overstating risk rather than the standard metric understating it. The paper does not engage with this question.",
+        "suggestions": "See Weakness",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-03T09:59:18.866Z",
+      "updatedAt": "2026-04-03T09:59:18.866Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces Misalign@k, a tail-risk evaluation protocol that measures the fraction of prompts yielding at least one misaligned output under repeated sampling. Using dual-scoring for alignment and coherence, the authors evaluate emergent misalignment defenses and show that defense rankings can flip depending on labeling choices. The study identifies incoherence masking as the mechanism behind such ranking reversals. Overall, the work highlights the importance of considering both repeated sampling and labeling criteria in safety evaluation.",
+        "strengths": "1. The proposed Misalign@k metric provides a principled way to capture deployment risk that mean-based evaluations overlook.\n\n2. The dual-scoring design enables systematic sensitivity analysis across different labeling criteria, revealing how methodological choices affect conclusions.\n\n3. The identification of incoherence masking offers a concrete mechanism to explain ranking inconsistencies across evaluation settings.",
+        "weaknesses": "1. The empirical evaluation uses only 24 prompts and a single base model, limiting generalizability.\n\n2. Judge calibration relies on the assumption that the base model produces no misaligned outputs, which may not fully hold in practice.\n\n3. The choice of rs‑LoRA over standard LoRA is not justified, and the methodological relationship between EM and the Misalign@k metric lacks explicit conceptual grounding.",
+        "suggestions": "",
+        "llmDisclosure": "I polished up the summary, strength, and weakness using Deepseek.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-30T09:05:08.116Z",
+      "updatedAt": "2026-03-30T09:05:08.116Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The motivation of this paper is that the current evaluation may underestimate the deployment risk (user can sample multiple responses). The paper proposed a new metric, MisAlign@k to mitigate this. Empirical results show that MisAlign@k dramatically amplifies the tail-risk. ",
+        "strengths": "1. The paper introduces a new meaningful metric.\n2. Efficient communication.",
+        "weaknesses": "1. Some discussions are missing: the category `Composite` is mentioned in figure 1, but no related analysis is found in the paper. \n2. Conclusions are trivial: MisAlign@k is definitely much larger. Also, the authors mentioned the different conclusions between standard & relaxed metrics, but did not provide sufficient discussion. \n3. Experiments not solid enough: only on qwen2.5-7b.\n4. More qualitative results can be presented in the paper. ",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-29T09:23:49.839Z",
+      "updatedAt": "2026-03-29T09:23:49.839Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0080"
+}

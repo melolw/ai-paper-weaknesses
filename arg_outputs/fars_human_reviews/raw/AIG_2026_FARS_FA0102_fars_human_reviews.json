@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0102",
+    "title": "KL-Time Replay: Function-Space Drift Monitoring for Continual Learning in LLMs",
+    "abstract": "Replay-based continual learning for large language models requires deciding \\emph{when} to revisit past examples. Recent work has shown that model-centric scheduling, which triggers replay based on accumulated parameter updates, outperforms fixed step-based approaches. However, parameter-space metrics may not directly reflect the behavioral changes that constitute forgetting. We propose KL-Time Replay, which monitors function-space drift by computing KL divergence between current and reference predictions on fixed anchor sets from previous tasks. When cumulative drift exceeds thresholds calibrated to an Ebbinghaus-inspired schedule, replay is triggered. On a 5-task text classification benchmark, KL-Time achieves comparable performance to FOREVER's parameter-space approach (OP 0.704 vs 0.708) while producing substantively different scheduling decisions (14.24\\% trigger divergence). Our analysis reveals that while KL drift and parameter update norms are highly correlated within tasks ($>$0.97), they diverge at task boundaries, establishing function-space drift as a viable alternative signal for replay scheduling.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies the problem of replay scheduling in continual learning and proposes to replace parameter-space signals with function-space drift as the trigger for replay. Specifically, the method monitors KL divergence between the current model and a reference model on a fixed anchor set, and triggers replay when the accumulated drift exceeds thresholds derived from an Ebbinghaus-inspired schedule. Experiments on a 5-task text classification benchmark show that the proposed approach achieves performance comparable to a parameter-based baseline (FOREVER), while producing different replay scheduling decisions. Further analysis reveals that the two signals are highly correlated within tasks but diverge at task boundaries, suggesting that function-space drift can serve as an alternative signal for replay scheduling.",
+        "strengths": "1. The core intuition is well-motivated: modeling forgetting as function-level behavioral drift rather than parameter-level changes is conceptually sound and better aligned with the actual objective of maintaining model behavior.\n2. Extending function-space signals (e.g., KL divergence) from regularization or distillation to replay scheduling is a natural and potentially useful direction.\n3. The paper provides a clear analysis of the relationship between parameter-space and function-space signals, particularly the observation that they are highly correlated within tasks but diverge at task boundaries, which offers useful insight into continual learning dynamics.\n4. The experimental setup is relatively well-controlled, including matching replay compute across methods to ensure fair comparison.",
+        "weaknesses": "1. While the function-space perspective is reasonable, the current results only demonstrate that it can replace parameter-space signals rather than improve upon them (performance is essentially on par). In this setting, a more critical question is whether the proposed signal carries meaningful information. For example, comparisons against randomized or weakly informative signals would help establish whether the design is necessary, but such analyses are missing.\n2. The method remains relatively shallow in its use of the proposed insight. It simply substitutes the scheduling signal with KL-based drift without further exploring how function-level information could be better utilized (e.g., finer-grained representations, task-aware modeling, or adaptive scheduling strategies), leaving the core idea under-explored.\n3. An important observation from the experiments is that different scheduling signals lead to different replay decisions but similar final performance. This may indicate that the tasks in the benchmark are not sufficiently diverse to expose meaningful differences between scheduling strategies. However, this possibility is not discussed, nor is the method evaluated on more challenging or diverse settings (e.g., cross-domain or generative tasks), limiting the strength of the conclusions.\n4. Some experimental findings, such as the fact that current-task anchors outperform past-task anchors, are potentially important but not further analyzed or leveraged to improve the method. As a result, the paper largely remains at the level of empirical observation rather than providing deeper mechanistic understanding.",
+        "suggestions": "",
+        "llmDisclosure": "I used ChatGPT to summary the paper content, and I based on both summary and pdf to write the draft of weakness and strength by myself. Finally, I used ChatGPT to polish my draft.",
+        "ethicsReproducibility": "NONE"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T05:42:09.295Z",
+      "updatedAt": "2026-03-22T05:42:09.295Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper tests the hypothesis that monitoring function-space drift (behavioral changes in output) via KL divergence on anchor sets provides a more direct and effective signal for replay scheduling in LLM continual learning than traditional parameter-space metrics. The methodology is empirical, evaluating the proposed KL-Time Replay framework on a 5-task text classification benchmark using a Qwen3-0.6B model. The main outcome is a positive confirmation: KL-Time achieves performance comparable to the state-of-the-art parameter-space approach (OP 0.704 vs 0.708) while producing substantively different scheduling decisions at task boundaries (14.24% trigger divergence), establishing function-space drift as a viable alternative signal.",
+        "strengths": "Well-Motivated Hypothesis: The shift from parameter-space metrics to function-space drift addresses a fundamental intuition: catastrophic forgetting is a behavioral phenomenon, and parameter changes do not always map linearly to behavioral drift.\n\nRigorous Statistical Analysis: The results are averaged over 9 independent runs (3 seeds × 3 task orders), providing high confidence in the reported metrics.\n\nIn-Depth Signal Analysis: The correlation analysis (Pearson/Spearman) and Phase-0 gate analysis successfully demonstrate that while the signals are locally correlated, they provide distinct information at task boundaries.",
+        "weaknesses": "Limited Experimental Scale: The validation is restricted to a small-scale model (Qwen3-0.6B) and a single task type (text classification). It remains unclear if these findings generalize to larger LLMs or more complex generative tasks where output distributions are significantly more sparse.\n\nIncremental Contribution (Dimension B): While the method introduces a more principled signal, the final performance (Overall Performance) is only on par with the existing parameter-space baseline (FOREVER). The gain is conceptual rather than a breakthrough in efficiency or accuracy.\n\nUnresolved Tension in Ablation Results: The ablation study reveals that using current-task anchors actually achieves higher performance (0.713) with 37% fewer replay events compared to the proposed past-task anchor method. This finding somewhat undermines the paper’s primary methodological choice of using past-task anchors.\n\nShort Task Sequence: The use of only 5 tasks may not be sufficient to test the long-term stability of KL-based scheduling over extended learning horizons.",
+        "suggestions": "",
+        "llmDisclosure": "Use NotebookLM to summarize the paper, then review the original text based on the summary and check the details. Engage in a dialogue with Notebook to ensure a thorough understanding of all aspects of the work, then draft the review, and finally have NotebookLM organize and polish it. The final judgment, specific weaknesses, and numerical scores were independently determined and verified by the reviewer based on the provided technical artifacts.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T00:47:33.838Z",
+      "updatedAt": "2026-04-12T00:47:33.838Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates a straightforward but significant question in continual learning for LLMs: how do we decide when to replay past data?\nThe authors suggest monitoring how much the model's predictions change on a small, fixed set of past examples, instead of tracking parameter changes like previous research, such as FOREVER.\nThis change was measured using KL divergence, which is referred to as \"function-space drift\". When this drift becomes significant, the replay is initiated.\nThe method is tested on a 5-task text classification benchmark. The main finding is that KL-based scheduling yields similar results to the parameter-based method, with an overall accuracy of 0.704 compared to 0.708, while making different replay choices, with about 14% of triggers differing.\nThe paper concludes that function-space drift serves as a valid alternative signal.",
+        "strengths": "1. The idea is clear, and the study is well-motivated. The core intuition is easy to understand: forgetting is about model behavior changing, not just parameters, so it makes sense to monitor outputs instead of weights. The conceptual contribution seems clean.\n2. The paper compares against SOTA method, FOREVER, which seems to be a fair comparison against a strong baseline.\n3. KL-Time Replay is easy to plug into existing pipelines, as it directly replaces the scheduling signal without changing the rest of the training. This modular design is advantageous.\n4. The overall presentation is clear, and the paper is concise.",
+        "weaknesses": "1. The key weakness is that the main result is rather weak. Although compared to the SOTA method, the result is just comparable performance, not a significant improvement (0.704 vs 0.708). This makes the contribution feel incremental.\n2. Also, the experimental scope is a bit limited. Evaluation uses only one model, one benchmark, and one training setup. This concerns the generalizability.\n3. Given 1 and 2, the claim of \"behavioral signal is better\" is not justified. The paper argues \"function-space drift is a more direct signal of forgetting\", but based on the experimental results, there is no evidence that it is actually better or more reliable.\n4. The method is intuitive but lacks formal justification on the choice of methods, e.g., why KL divergence? Why cumulative thresholds? Some more clarification would help.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-30T20:29:17.383Z",
+      "updatedAt": "2026-03-30T20:29:17.383Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0102"
+}

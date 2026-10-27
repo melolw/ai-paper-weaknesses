@@ -1,0 +1,33 @@
+# Academic Integrity & Consistency Risk Report
+
+## Executive Summary
+A critical internal inconsistency was identified between the reported GradRatio scores and the claimed behavior of the method during the threshold ablation study. The manuscript explicitly states that without the adaptive threshold, the method selects **Layer 4** for both models. However, the provided scores in Figure 2 and Section 3.4 show that **Layer 6** (Qwen) and **Layer 0** (LLaMA) have the highest raw scores, directly contradicting the ablation claims. This inconsistency undermines the validity of the ablation analysis and the justification for the adaptive threshold mechanism.
+
+---
+
+## Detailed Findings
+
+### 1. Contradiction in Threshold Ablation Claims vs. Reported Scores
+**Location:** Section 3.4 (Layer Scoring Analysis), Section 3.5 (Ablation Studies), Figure 2 (Table & Caption)
+**Issue:** The manuscript claims that removing the adaptive threshold causes GradRatio-Select to pick Layer 4 for both models, but the reported scores mathematically contradict this.
+
+* **Evidence (Section 3.4):** The text states: *"For LLaMA-3-8B, layer 0 has the highest raw GradRatio score (12195.09), followed by layers 4 (5360.01)... Without the threshold, GradRatio would select layer 4..."* This is a direct logical contradiction within the same paragraph. If Layer 0 has the highest score, an unthresholded argmax operation would select Layer 0, not Layer 4.
+* **Evidence (Section 3.5):** The text claims: *"Without the adaptive threshold, GradRatio selects layer 4 for both models based on raw scores."*
+* **Evidence (Figure 2 Table):** 
+  * For **Qwen2.5-7B**, Layer 6 has a score of `18500`, while Layer 4 has `7200`. Layer 6 is the clear maximum.
+  * For **LLaMA-3-8B**, Layer 0 has a score of `12200`, while Layer 4 has `5300`. Layer 0 is the clear maximum.
+* **Impact:** The ablation study's conclusion that the threshold prevents selection of Layer 4 is unsupported by the provided data. If the scores in Figure 2 are accurate, the threshold would not change the selection for Qwen (Layer 6 remains highest) and would change the selection for LLaMA from Layer 0 to Layer 21, not Layer 4. This raises serious questions about whether the reported scores match the actual experimental runs, or if the ablation description contains a significant factual error.
+
+### 2. Minor Numerical Rounding Discrepancy
+**Location:** Section 3.4 vs. Figure 2 Table
+**Issue:** Section 3.4 states the selected LLaMA layer (21) has a score of `4131.54`, while the accompanying table in Figure 2 lists it as `4200`. 
+**Impact:** Low. This is likely due to rounding or formatting differences between the text and the table, and does not materially affect the scientific claims. However, it highlights a lack of strict numerical consistency in reporting.
+
+---
+
+## Recommendations for Revision
+1. **Resolve the Threshold Ablation Contradiction:** The authors must reconcile the claimed selection of Layer 4 without the threshold against the reported scores. If Layer 4 was indeed selected in the actual ablation run, the scores in Figure 2 and Section 3.4 must be corrected to reflect this. If the scores are correct, the text in Sections 3.4 and 3.5 must be rewritten to accurately describe which layer would be selected (Layer 0 for LLaMA, Layer 6 for Qwen) and how the threshold impacts each model differently.
+2. **Clarify Qwen Threshold Impact:** Section 3.5 notes that the threshold has "less impact" on Qwen because Layer 6 is already highest. This should be explicitly contrasted with the LLaMA case to avoid the misleading claim that Layer 4 is selected for *both* models without the threshold.
+3. **Standardize Score Reporting:** Ensure exact numerical values are consistent between the main text, tables, and figures to maintain rigorous reproducibility standards.
+
+**Conclusion:** The manuscript presents a novel gradient-based layer selection method with clear experimental structure. However, the direct contradiction between the reported GradRatio scores and the ablation study's claims constitutes a high-impact internal inconsistency that must be resolved before the paper can be considered scientifically reliable.

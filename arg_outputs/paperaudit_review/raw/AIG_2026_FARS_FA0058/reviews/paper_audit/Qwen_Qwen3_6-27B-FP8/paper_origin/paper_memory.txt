@@ -1,0 +1,36 @@
+# Global Summary
+Problem: Sequential verify-and-retry protocols using world models to verify irreversible actions paradoxically reduce task success as the verification budget increases. The root cause is identified as trajectory drift, where rejected checkouts trigger agent re-browsing that frequently leads to worse product selections.
+Approach: Chunked budget allocation, which spends a fixed verification budget B across fewer sequential cycles M with more parallel world-model rollouts K=B/M per cycle. Setting M=1 eliminates sequential retries entirely.
+Evaluation Scope: WebShop benchmark (text-based e-commerce), 600 episodes per condition across 3 seeds. Acting agent: Gemini-2.5-Flash. World model: fine-tuned Qwen2.5-7B. Fixed budget B=10. Primary metric: task success rate.
+Key Findings: Chunked verification (M=1) achieves 21.50% success versus 0.86% for sequential verify-and-retry (M=10), a 25× improvement at identical budget. Consensus aggregation across parallel rollouts provides no benefit over single-rollout acceptance due to severe world model miscalibration (predicting failure for 98.4% of cycles). Budget allocation structure dominates aggregation sophistication.
+Caveats: Evaluated on a single domain and single world model; absolute success rates remain modest (21.50%). Generalization to other domains and better-calibrated models remains untested.
+
+# Abstract
+- Identifies trajectory drift as the dominant failure mode in sequential verify-and-retry, where verification rejections trigger re-browsing that degrades product selection.
+- Proposes chunked budget allocation: allocate fixed budget B across M cycles with K=B/M parallel rollouts per cycle.
+- Reports 21.50% task success for chunked verification (M=1) versus 0.86% for sequential (M=10) on WebShop, a 25× improvement.
+- Finds consensus aggregation provides no benefit over single-rollout acceptance because the world model predicts failure for 98.4% of cycles, causing consensus to degenerate.
+- Concludes that budget allocation structure matters more than aggregation sophistication when world models are poorly calibrated.
+
+# Introduction
+- Contextualizes world models as pre-execution verifiers for irreversible actions (e.g., checkout, email sending).
+- Highlights counterintuitive non-monotonic behavior: increasing verification budget reduces success due to sequential feedback loops.
+- Defines trajectory drift: re-browsing after a false-negative rejection frequently leads to selecting a worse product than originally found.
+- Proposes chunked budget allocation to eliminate sequential cycles; setting M=1 spends the entire budget in one parallel chunk.
+- Claims trajectory drift accounts for 60.5% of failures when agents re-browse after verification rejection.
+- States that M=1 consistently outperforms finer-grained allocations, with performance degrading monotonically as M increases.
+- Notes that consensus aggregation fails due to poor calibration (p-hat = 0 for 98.4% of cycles).
+
+# Experiments
+- Dataset & Setup: WebShop benchmark with 500 test tasks. Sampled 200 tasks per seed across 3 seeds (600 total episodes per condition). Maximum 50 steps per episode. Fixed verification budget B=10. 95% bootstrap confidence intervals reported.
+- Models: Acting agent is Gemini-2.5-Flash (temperature 1.0). World model is fine-tuned Qwen2.5-7B (temperature 0.7, top_p 0.9).
+- Conditions: A (Sequential, K=1, M≈10), B (Chunked Consensus, M=1, K=10, threshold τ=0.1), C (Chunked No-Aggregation, M=1, K=10, first-rollout only).
+- Main Results (Table 1): Condition A: 0.86% [0.17, 1.72]. Condition B: 14.83% [12.00, 17.67]. Condition C: 21.50% [18.33, 24.83]. Paired CI for C−A: [+17.50, +24.00] percentage points. Condition C outperforms B by 6.67 percentage points.
+- Cycle Count Analysis (Figure 2): Varying M ∈ {1, 2, 5, 10} with B=10 yields success rates of 20.0% (M=1), 8.5% (M=2), 14.0% (M=5), and 0.83% (M=10). Non-monotonic intermediate values attributed to interaction between K and threshold τ.
+- Failure Analysis (Table 2): Analyzed 81 episodes where chunked verification succeeded but sequential failed. Trajectory drift: 49 cases (60.5%). Wrong product checkout: 22 cases (27.2%). Never reached checkout: 10 cases (12.3%). Only 2 reverse cases observed.
+- Temperature Ablation (Table 3): Tested M=2, K=5, τ=0.5. At temperature 0.7: A=0.83%, B=8.50% (+7.67 pp). At temperature 0.0: A=7.67%, B=17.33% (+9.67 pp). Advantage persists under deterministic decoding, confirming structural benefit over stochastic diversity.
+- Calibration Analysis: Across 311 verification cycles in Condition B, consensus estimate p-hat=0.0 for 98.4% (306/311). Brier score: 0.28. Expected calibration error (ECE): 0.28. Actual success rate when p-hat=0.0 is 27.5% (84/306). Only 5 cycles had p-hat>0, all resulting in success.
+
+# References
+- Lists foundational and recent literature on web agents (WebShop, WebArena, Mind2Web, WebVoyager), world models for planning (Ha & Schmidhuber, Schrittwieser et al., WebDreamer, Word2World, DynaWeb), test-time scaling and compute allocation (Self-consistency, Lee et al., Zhu et al.), and error recovery mechanisms (Reflexion, WebRollback).
+- No quantitative results, datasets, or methodological details are reported in this section. Not specified in this section.

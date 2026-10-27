@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0044",
+    "title": "Selective Self-Reference for LLM-as-a-Judge: Using Self-Consistency to Reduce Error Propagation",
+    "abstract": "Self-reference, where an LLM judge first solves a task before evaluating candidate responses, has been shown to improve judgment accuracy. However, when the judge's self-generated answer is incorrect, using it as reference can propagate errors into the final judgment. We identify this error propagation problem and observe that self-consistency among multiple sampled solutions serves as a reliable proxy for answer correctness: unanimous agreement across five samples yields 78.66\\% correctness compared to only 35.51\\% for three-of-five agreement. Building on this insight, we propose Selective Self-Reference (SSR-Judge), which uses an agreement gate to conditionally enable self-reference only when the model exhibits high confidence. On MMLU-Pro pairwise preference judgment, SSR-Judge achieves 58.93\\% accuracy, outperforming both no-reference (52.07\\%) and always self-reference (58.21\\%) baselines by avoiding error propagation on uncertain items while preserving self-reference benefits when confidence is high.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper argues that self-reference can improve LLM-as-a-judge only when the judge’s own answer is reliable, because incorrect self-answers can propagate errors into the final comparison. It proposes SSR-Judge, which uses agreement across multiple self-sampled solutions as a confidence gate, enabling self-reference only on high-consistency items and otherwise falling back to standard no-reference judging.",
+        "strengths": "The idea is reasonable and practically motivated, though somewhat incremental, as it largely combines existing techniques (self-reference and self-consistency).\n\nThe method is simple and demonstrates performance improvements.",
+        "weaknesses": "The performance gain is relatively modest, especially over the always-self-reference baseline.\n\nThe experimental evaluation is somewhat limited, as the method is only tested on a single dataset. Evaluating it on a broader range of tasks and benchmarks would provide stronger evidence of its generality and robustness.\n\nNovelty is limited.\n\nWhy does it choose 4/5 as the threshold? Looks like too empirical.",
+        "suggestions": "See the weakness.",
+        "llmDisclosure": "I used Grammarly to polish my writing.",
+        "ethicsReproducibility": "None."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T16:17:27.904Z",
+      "updatedAt": "2026-03-22T16:17:27.904Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tackles error propagation in LLM-as-a-Judge with self-reference: if the judge solves a problem first and then uses its own answer as a reference, a wrong self-answer can drag the judgment down with it. The fix proposed here—SSR-Judge—is to sample the judge's answer multiple times, check if they agree, and only use self-reference when agreement is high. On MMLU-Pro pairwise preference with Qwen2.5-72B-Instruct, SSR-Judge hits 58.93%, beating both no-reference (52.07%) and always-reference (58.21%).",
+        "strengths": "1. The numbers tell the story clearly: on uncertain items, always using self-reference gets you 24.50% accuracy vs. 37.75% without it. That's a big gap in the wrong direction.\n2. The agreement gate is easy to understand and implement—no extra training, no model changes, just sample a few times and check if the answers match. Hard to get simpler than that.\n3. Breaking things down by unanimous/non-unanimous × correct/wrong (Table 2) shows SSR-Judge doing exactly what you'd hope: using self-reference when it helps, skipping it when it would hurt.",
+        "weaknesses": "1. **The \"unanimous but wrong\" blind spot.** This slice is 17.6% of the data, and SSR-Judge still uses self-reference there, scoring just 25.20%—way worse than the 45.53% you'd get without reference. High agreement does not mean correct, and the paper doesn't really grapple with this.\n2. Self-consistency isn't the only game in town. Verbalized confidence, token probabilities, ensemble disagreement—none compared.\n3. Everything is Qwen2.5-72B-Instruct. Different models might have very different self-consistency calibration, so it's hard to know if this generalizes.\n4. SSR-Judge beats Always Self-Reference by just 0.72pp. You're generating 5 samples and running an agreement check for less than 1 percentage point. For most practical scenarios, that's hard to justify.",
+        "suggestions": "",
+        "llmDisclosure": "1. Used GPT-5.4 to help polish the language and organize the structure of this review.\n2. All academic judgments and scores were made independently by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-07T16:16:42.161Z",
+      "updatedAt": "2026-04-07T16:20:15.795Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces an optimized method for using Large Language Models as automated evaluators. The central research revolves around when the judge first solves the task and then uses their own answer as a reference; a wrong self-answer can contaminate the final preference decision. The proposed SSR-Judge samples five self-solutions, computes agreement, and only enables self-reference when agreement exceeds a threshold; otherwise, it falls back to standard no-reference judging.",
+        "strengths": "1. The paper identifies a genuine and practically important failure mode. It does not simply assume self-reference is beneficial, but shows that when the judge is uncertain, always using self-reference can substantially hurt performance. This is a meaningful diagnostic contribution.  \n2. The proposed method is straightforward and easy to integrate into existing LLM judge pipelines. The agreement-gated routing mechanism is clearly formulated and simple.\n3. The analysis of slices is interesting. In particular, the comparison across unanimous versus non-unanimous cases supports the paper’s central narrative about when self-reference helps and when it causes err propagation.",
+        "weaknesses": "1. The main concern is that the technical novelty is limited. Conceptually, the method combines two already familiar ideas: self-reference judging and self-consistency (used by cot-sc in 2023) as a proxy for confidence. The proposed mechanism is essentially a hard-threshold router deciding when to trust the model’s own answer. That is a reasonable engineering refinement, but the paper itself does not bring much methodological delta.\n2. SSR-Judge improves over baseline self-reference by only 0.72 percentage. This does not seem to be solid empirical results and I’m not sure whether it is statistically significant.\n3. Another issue is the narrowness of the eval setup. The task is framed as pairwise judgment, but the actual construction is highly synthetic: for each MMLU-Pro question, the authors generate one candidate ending with the correct answer and one ending with a randomly sampled incorrect answer. This reduces the problem largely to judging answer correctness under an MCQ scaffolding, rather than realistic LM-as-a-Judge scenarios where both candidates may be partially correct or differ in reasoning quality rather than the final answer alone.\n4. The evidence is also restricted to a single judge model Qwen2.5-72B. That is insufficient for a claim about a general judging method.",
+        "suggestions": "",
+        "llmDisclosure": "I use Gemini-3.1-pro to help me write concise summaries and grammar check. The reviewer independently curated the final judgment and scores without LLM.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T17:29:29.235Z",
+      "updatedAt": "2026-04-12T17:29:29.235Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0044"
+}

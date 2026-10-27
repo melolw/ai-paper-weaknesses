@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_TYAGI_stepbystep_reasoning_solve_grid",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Step-by-Step Reasoning to Solve Grid Puzzles: Where do LLMs Falter?",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The authors first develop GridPuzzle, an evaluation dataset comprising 274 grid-based puzzles with different complexities. Second, they propose a new error taxonomy derived from manual analysis of reasoning chains from LLMs including GPT-4, Claude-3, Gemini, Mistral, and Llama-2. Then, they develop an LLM-based framework for large-scale subjective evaluation (i.e., identifying errors) and an objective metric, PuzzleEval, to evaluate the correctness of reasoning chains. Evaluating reasoning chains from LLMs leads to several interesting findings. They further show that existing prompting methods used for enhancing models' reasoning abilities do not improve performance on GridPuzzle.",
+      "strengths": "1. The studied task is interesting and important.\n2. The motivation and challenges are clear.\n3. The details of the methodology are provided.\n4. The design and results of the results are reasonable.",
+      "weaknesses": "I don't think there's any obvious fatal weakness. Overall, I like the content of this paper and its writing.\n\nI have the following questions:\n1. How do you control the quality of your collected data? Can you provide some quantitative results to verify the quality of your data?\n2. Why must you use Exact Match (EM)? I think this is too hard for LLMs-generated content. Maybe there are better soft indicators, such as the recall of words or performing a semantic comparison between the generated and gt texts by LLMs directly.",
+      "questions": "1. In the Related Work section, more advanced works about puzzles could be discussed, such as [1].\n2. In the Ethics Statement section, more ethical considerations about the collected dataset itself should be provided.\n\n[1] LatEval: An Interactive LLMs Evaluation Benchmark with Incomplete Information from Lateral Thinking Puzzles",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "7d6540251e7a636b8e20c825fecc829f52b7bbdf2a8ee6cd25e44ee4cd1d12a6510bfaa89330376a17c90bd029512b1f0165ac4cc4e8ba285c5e4b90184e8924"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper first propose a novel evaluation dataset, GridPuzzle, to comprehensively verify the logical reasoning capabilities of various LLMs. In addition, the authors introduce a reference-free LLM-based automatic framework, PuzzleEval, to evaluate the correctness of reasoning chains. With extensive experiments, the authors show existing prompting methods cannot well enhance the reasoning performance on GridPuzzle.",
+      "strengths": "- This paper is well-written and well-motivated.\n- The use of grid puzzles to evaluate logical reasoning capabilities is both innovative and engaging.\n- The proposed dataset holds significant value for future research focused on assessing the logical reasoning abilities of large language models (LLMs).\n- The authors introduce a novel, reference-free, LLM-based automatic framework to evaluate the reasoning chains of LLMs.\n- The authors conduct extensive experiments across various LLMs using their proposed dataset.",
+      "weaknesses": "- There is no technical novelty; however, considering this paper introduces a novel evaluation dataset, it is acceptable.\n- The performance will vary depending on the prompting method. The authors reveal the effectiveness of different prompting strategies in Table 5. I wonder whether leveraging code-style prompting or code-specific language models, such as the program-of-thought or Code-LLaMA models, will improve performance.\n- In addition, I wonder whether the model scaling effect is also validated on the proposed dataset. If the authors show the scaling effects on the proposed dataset, it will be helpful to understand the behavior of LLMs more accurately. However, if the authors do not have suitable resources to execute larger LLMs (e.g., 70B), it is understandable that they did not conduct \"scaling\" experiments.",
+      "questions": "- See Weaknesses",
+      "rating": 4.5,
+      "confidence": 2,
+      "soundness": 4,
+      "raw_note_id": "cf81dddc8ae4f0f1fda950a1658e4fdcae946152185db6ba5cf45f22dd9e9ea80c9d5f91dc5545d897069ee5c7d5f19c6b0c3fc0b145576cf1967280da03f272"
+    }
+  ]
+}

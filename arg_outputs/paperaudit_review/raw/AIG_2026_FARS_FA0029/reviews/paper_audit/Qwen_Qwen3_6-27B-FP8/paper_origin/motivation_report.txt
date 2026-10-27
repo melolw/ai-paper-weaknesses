@@ -1,0 +1,38 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: A design inconsistency in the ROCKET training-free LLM compression pipeline, where per-layer factorization is derived from an output reconstruction objective, but global budget allocation relies on a weight-space Frobenius error cost.
+- **Claimed Gap**: *"Identifies a design inconsistency in ROCKET: output-space factorization paired with weight-space MCKP allocation cost."* (Abstract)
+- **Proposed Solution**: ROCKET-ActCost, which replaces the weight-space allocation cost with an output-space (whitened) error metric ($e_{\ell,i}^{out}$) within the Multi-Choice Knapsack Problem (MCKP) solver, ensuring objective consistency across compression stages with zero runtime overhead.
+
+## 2. Comparative Scrutiny (The "Trial")
+*Here, we analyze how the paper stands against the identified similar works.*
+
+### vs. Output-Space Allocation Costs for Calibration-Guided LLM Compression: An Empirical Study (Tang et al.)
+- **Identified Overlap**: Direct methodological and empirical overlap. Both papers propose the exact same intervention (ROCKET-ActCost), report identical results on Qwen3-8B @ 50% compression (+0.8pp accuracy, +16% PPL), and cite the same >0.99 correlation limiting allocation divergence to 70/252 layers.
+- **Manuscript's Defense**: The provided text does not cite or explicitly differentiate from this work. The manuscript frames the contribution as a novel identification of ROCKET's internal inconsistency and a targeted cost-function substitution.
+- **Reviewer's Assessment**: This is a critical novelty threat. The resemblance analysis confirms this is the "direct methodological and empirical instantiation" of the exact premise. Without explicit citation, priority claim, or technical differentiation, the manuscript fails to defend against this direct overlap. If concurrent, it severely undermines the novelty claim; if prior, it constitutes a duplicate submission.
+
+### vs. Understanding Calibration and Truncation Error Propagation in Training-Free Low-Rank Compression for LLMs (Odema et al.)
+- **Identified Overlap**: Both address calibration-driven allocation and error misalignment in training-free low-rank compression. Odema et al. propose iterative compression and layer-by-layer calibration correction to mitigate error propagation across layers.
+- **Manuscript's Defense**: The manuscript does not explicitly reference this work. It implicitly defends its approach by focusing on a single-pass, zero-overhead MCKP cost substitution rather than iterative correction, claiming direct alignment with ROCKET's whitened space formulation.
+- **Reviewer's Assessment**: The distinction is valid but narrow. Odema et al. tackle systemic, cross-layer error propagation, while this paper addresses a localized cost-function mismatch. The manuscript's approach is a lightweight, single-stage refinement of the broader calibration-aware paradigm. It successfully carves out a specific engineering niche but does not challenge or extend the foundational error-propagation insights of Odema et al.
+
+### vs. UniRank: Unified Rank Allocation for Low-Rank LLM Compression (Han et al.)
+- **Identified Overlap**: Both shift global rank allocation from static weight-space heuristics to dynamic, output-aware importance scoring. UniRank uses input-output cosine similarity; this paper uses whitened output-space Frobenius error.
+- **Manuscript's Defense**: Not explicitly stated in the provided text. The manuscript's implicit defense rests on the mathematical consistency of using the whitened space ($W_L = LW$), which directly mirrors ROCKET's factorization objective, rather than a geometric similarity metric.
+- **Reviewer's Assessment**: The difference is metric-specific rather than conceptual. Both methods rely on forward-pass profiling to compute activation-aware scores that bypass naive weight norms. Substituting cosine similarity with whitened Frobenius error is a reasonable engineering choice within the same theoretical framework. It does not constitute a substantive theoretical advance, but rather a domain-specific adaptation of the output-aware allocation paradigm.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental (Methodological Refinement / Engineering Tweak)
+- **Assessment**:
+  The paper identifies a genuine and logically sound design inconsistency in ROCKET and proposes a mathematically consistent fix. However, the novelty is significantly constrained by three factors: (1) direct empirical and methodological overlap with Tang et al., which the manuscript does not address; (2) the broader, well-established trend of shifting allocation metrics from weight-space to output/activation-space (evident in UniRank, BALF, MGAA); and (3) the authors' own finding that a >0.99 correlation between weight and output errors limits practical allocation divergence to only ~28% of layers. The contribution is best characterized as a targeted, zero-overhead optimization within an existing framework rather than a paradigm shift. The observed accuracy-perplexity tradeoff further indicates that the method's efficacy is setting-dependent rather than universally superior.
+  - **Strength**: Mathematically consistent alignment with ROCKET's factorization objective; zero runtime overhead with measurable speedup; transparent reporting of the accuracy-perplexity tradeoff and correlation bounds.
+  - **Weakness**: Fails to cite or differentiate from near-identical concurrent work (Tang et al.); contribution reduces to a metric substitution within an established MCKP pipeline; modest effect size bounded by high metric correlation; lacks theoretical generalization beyond ROCKET's specific architecture.
+
+## 4. Key Evidence Anchors
+- **Abstract**: *"Identifies a design inconsistency in ROCKET: output-space factorization paired with weight-space MCKP allocation cost."*
+- **Method**: Output-space error formulation: $e_{\ell,i}^{out} = \|W_{L,\ell} - \hat{W}_{L,\ell,i}\|_F / \|W_{L,\ell}\|_F$
+- **Experiments**: *"Spearman correlation between weight-space and output-space errors exceeds 0.99 for nearly all layers. Consequently, only 70 of 252 compressible layers receive different allocations..."*
+- **Experiments**: Qwen3-8B @ 50% results: *"average accuracy improves by +0.8pp (53.1% vs 52.3%)... WikiText perplexity increases to 61.46 from 52.98 (+16%)."*
+- **Method**: *"Adds zero runtime overhead. The whitened weights and reconstructions are already computed during the profiling phase. The MCKP solver execution time remains identical regardless of the cost function used."*

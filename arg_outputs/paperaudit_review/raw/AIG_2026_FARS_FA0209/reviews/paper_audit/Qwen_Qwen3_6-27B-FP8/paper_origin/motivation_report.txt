@@ -1,0 +1,32 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Automating the selection of optimal transformer layers for fine-tuning-based knowledge editing, replacing costly, model-specific manual layer sweeps.
+- **Claimed Gap**: As stated in the Abstract: *"Current practice uses model-specific heuristics determined through expensive layer sweeps."* The authors argue that existing methods lack an automated, computationally efficient mechanism to identify editable layers while preserving general model capabilities.
+- **Proposed Solution**: `GradRatio-Select`, a gradient-based scoring method that computes the ratio of edit-to-retain gradient magnitudes ($S(\ell) = \|g_{edit}\|^2 / \|g_{retain}\|^2$) across layers. It incorporates an adaptive depth threshold ($\ell_{\min} = \max(3, \lceil 0.15 \cdot L \rceil)$) to exclude structurally critical early layers, requiring only two forward-backward passes.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Golden Layers and Where to Find Them: Improved Knowledge Editing for Large Language Models Via Layer Gradient Analysis
+- **Identified Overlap**: Both works target the exact same sub-problem: automating transformer layer selection for knowledge editing using gradient dynamics to avoid exhaustive layer sweeps. The similar works analysis correctly identifies that both rely on gradient attribution as a proxy for editability.
+- **Manuscript's Defense**: The manuscript does **not** cite this work in its references. Technically, the authors differentiate their approach by formalizing a specific edit-to-retain gradient magnitude ratio and introducing a fixed adaptive threshold to prevent early-layer selection. They also note discarding a cosine similarity term due to low discriminative signal.
+- **Reviewer's Assessment**: The defense is weak. The gradient ratio is a straightforward normalization of the same gradient attribution signals used in prior work, and the adaptive threshold is itself a heuristic rule rather than a learned or theoretically grounded constraint. The failure to cite this direct predecessor suggests a gap in related work coverage. Empirically, the manuscript's own results confirm this is an incremental engineering variant: it matches the baseline on one model and degrades on another, offering no performance advantage over existing gradient-based or heuristic approaches.
+
+### vs. Neuron-Level Knowledge Attribution in Large Language Models
+- **Identified Overlap**: Both papers operate on the localization hypothesis, seeking to map where knowledge resides in transformers to enable safe editing. The similar works analysis notes that both restrict their search space to FFN/MLP components and use attribution signals to guide updates.
+- **Manuscript's Defense**: The authors position their work at the *layer* granularity rather than the *neuron* granularity, arguing that layer-level selection is more practical for fine-tuning-based editing. They use dynamic gradient magnitudes during optimization rather than static attribution scores.
+- **Reviewer's Assessment**: This is a valid but minor distinction. Layer-level selection is a coarser, more established target in the editing literature. The shift from static neuron attribution to dynamic layer gradients does not constitute a substantive theoretical advance; it is a practical adaptation for fine-tuning pipelines. The manuscript does not claim to solve the localization problem more accurately, only more efficiently.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental
+- **Assessment**:
+  The paper does not survive rigorous comparison with the identified similar works. While it successfully automates layer selection and reduces computational overhead (2 passes vs. full sweeps), it explicitly admits in the Discussion that it *"does not improve upon carefully-tuned heuristics."* The existence of prior gradient-attribution methods for layer selection (e.g., Datta et al.) significantly weakens the motivation, as the proposed ratio metric and threshold rule are engineering refinements rather than novel theoretical constructs. The severe capability degradation on LLaMA-3-8B (particularly the -23.86 pp drop on GSM8K) further demonstrates that the gradient ratio fails to capture reasoning-critical layer dependencies, limiting its generalizability.
+  - **Strength**: Computationally efficient (requires only two forward-backward passes); provides a transparent, gradient-based scoring mechanism that matches manual heuristics on Qwen2.5-7B; honestly reports performance limitations and capability drops.
+  - **Weakness**: Fails to outperform baselines; relies on a fixed heuristic threshold ($\ell_{\min}$) that contradicts the goal of fully automated selection; omits citation of the most direct methodological predecessor; the gradient ratio metric lacks theoretical grounding for why it should correlate with safe editability across diverse model architectures.
+
+## 4. Key Evidence Anchors
+- **Abstract**: *"Gradient-based selection automates layer identification but does not improve upon carefully-tuned heuristics."* (Directly undermines performance novelty)
+- **Method**: $S(\ell) = \|g_{\text{edit}}(\ell)\|_F^2 / \|g_{\text{retain}}(\ell)\|_F^2$ and $\ell_{\min} = \max(3, \lceil 0.15 \cdot L \rceil)$ (Shows the method is a ratio metric + fixed heuristic threshold)
+- **Experiments (Table 2)**: LLaMA-3-8B GSM8K drops from 51.91% to 28.05% (-23.86 pp), proving the scoring function fails to protect reasoning-critical layers.
+- **Discussion**: *"The method underperforms on LLaMA-3-8B, specifically regarding mathematical reasoning tasks."* (Authors acknowledge the limitation, confirming incremental nature)
+- **References**: Absence of Datta et al. ("Golden Layers...") despite direct methodological overlap indicates incomplete related work coverage.

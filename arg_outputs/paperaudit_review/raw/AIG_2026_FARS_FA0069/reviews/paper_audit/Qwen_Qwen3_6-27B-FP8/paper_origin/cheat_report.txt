@@ -1,0 +1,47 @@
+# Integrity Risk and Consistency Report
+
+**Manuscript Title:** TIMEOUT BOOTSTRAPPING FOR LONG-COT RLVR: PROMISE AND PITFALLS
+
+## Executive Summary
+This review identifies **two major internal contradictions** regarding the experimental setup and metric definitions. These inconsistencies materially affect the interpretation of the paper's primary failure mode (critic value collapse) and the validity of the reported "collapse incidence." Specifically, the Method and Discussion sections provide mutually exclusive descriptions of how the critic was trained on truncated rollouts, and the Results and Discussion sections contradict each other regarding whether the pre-registered collapse criteria were met.
+
+## Detailed Findings
+
+### 1. Contradiction: Inclusion vs. Exclusion of Truncated Rollouts in Critic Training
+There is a direct contradiction between the Method and Discussion sections regarding whether truncated rollouts were used to train the critic network. This is critical because the paper's main conclusion is that the critic "collapses" to -1.0, and the explanation for this collapse depends on whether the critic received supervision on truncation states.
+
+*   **Claim A (Method, Section 3.4):** The authors state they **included** truncated rollouts in the critic loss.
+    > *"Second, we include truncated rollouts in the critic loss at 10% weight, providing some direct supervision on truncation states."*
+*   **Claim B (Discussion, Section 5):** The authors state they **excluded** truncated rollouts from critic training.
+    > *"This is exacerbated by our design choice to exclude truncated rollouts from critic training to avoid self-fulfilling targets..."*
+
+**Impact:** This contradiction undermines the mechanistic analysis.
+*   If **Claim A** is true (included at 10%), the critic *did* receive supervision on truncation states (likely receiving $R=-1$ during the "delayed bootstrapping" phase), which explains why it learned to predict -1.0 (as seen in Figure 2c).
+*   If **Claim B** is true (excluded), the critic had *no* supervision on truncation states, making the collapse to -1.0 a result of initialization or spurious correlations, not the training signal.
+*   The authors cannot simultaneously claim the critic was supervised on these states (Method) and unsupervised (Discussion).
+
+### 2. Inconsistency: Definition vs. Application of "Collapse" Criteria
+The paper defines strict pre-registered criteria for "collapse" but then applies the metric inconsistently in the Results and Discussion sections.
+
+*   **Definition (Section 4.1):** Collapse is defined formally.
+    > *"Collapse is defined as NaN/Inf in gradients, entropy below 0.2 nats for 200 consecutive steps, or no improvement for 500 steps with KL below 0.01."*
+*   **Application (Section 4.2):** The authors count a divergent run as a "collapse."
+    > *"seed 137 diverged due to entropy explosion, giving C a collapse incidence of 1/2 versus 0/2 for both baselines."*
+*   **Retraction (Section 5, Limitations):** The authors admit the criteria were not met.
+    > *"With only 2 seeds per condition and 100 training steps... the pre-registered collapse criteria (requiring 200–500 consecutive steps) could not formally trigger."*
+
+**Impact:** This creates a logical inconsistency in the reported metrics.
+*   If the criteria "could not formally trigger" (Section 5), then the "collapse incidence of 1/2" reported in Section 4.2 and Table 1 is technically incorrect based on the paper's own definition.
+*   Conversely, if the incidence is truly 1/2 (Section 4.2), then the criteria *did* trigger (or were applied loosely), contradicting the statement in Section 5.
+*   This ambiguity makes it impossible to verify if the method truly failed the pre-registered stability criteria or if the authors are using a post-hoc definition of "collapse" (divergence) that differs from their pre-registered definition.
+
+### 3. Supporting Evidence: Critic Collapse Timeline
+Figure 2(c) and Section 3.4 provide further evidence supporting **Claim A** (Method) over **Claim B** (Discussion), highlighting the severity of the contradiction in Point 1.
+
+*   **Observation:** Figure 2(c) shows the critic value at truncation ($V(s_T)$) dropping from ~0.0 to -1.0 between training steps 0 and 10.
+*   **Context:** Section 3.4 states that for the first 10 steps, "truncated rollouts receive $R = -1$".
+*   **Analysis:** If truncated rollouts were **excluded** from critic training (Claim B), the critic values at truncation points during steps 0-10 should remain near initialization (random) or drift slowly. They should not collapse precisely to -1.0.
+*   **Conclusion:** The fact that values collapse to -1.0 during the delay period strongly suggests the critic *was* being trained on these states with a reward of -1 (consistent with Claim A: "include... at 10% weight"). This makes the Discussion's claim of exclusion (Claim B) factually inconsistent with the presented data in Figure 2(c).
+
+## Conclusion
+The manuscript contains significant internal inconsistencies regarding the experimental protocol (critic training on truncation states) and the evaluation metrics (collapse criteria). These issues prevent a clear understanding of why the proposed method failed and cast doubt on the reliability of the reported "collapse incidence." The authors must clarify whether truncated rollouts were included in the critic loss and reconcile the definition of collapse with the reported results.

@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0035",
+    "title": "LASCon: Loop-Aware Scratchpad Condensation for Terminal Agents",
+    "abstract": "LLM-based terminal agents face significant context management challenges in long-horizon tasks, where growing interaction histories can exceed context windows and lead to timeout failures. Existing approaches rely on LLM-based summarization, which may lose critical CLI-specific information such as exact error messages and file paths. We present LASCon (Loop-Aware Scratchpad Condensation), a training-free scaffold that combines a Deterministic CLI Condenser (DCC) for rule-based observation compression with a Progress-Conditioned Loop Controller (PLC) for preventing unproductive action repetition. On Terminal-Bench 2.0 with Qwen3-32B, LASCon achieves 68.8\\% completion rate, a +21.2 percentage point improvement over the OpenHands default baseline (47.5\\%), while eliminating all timeout failures (0 vs 36). Ablation studies reveal that DCC alone achieves 70.0\\% completion, demonstrating that structured context management is the primary driver of improvement. PLC maintains a conservative 0.12\\% block rate with zero deadlock events, serving as a safety net rather than an aggressive intervention.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 5,
+        "soundness": 1,
+        "presentation": 3,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "The paper proposes the hypothesis that for long-horizon terminal agents, a  rule based Deterministic CLI Condenser (DCC) and a Progress-Conditioned Loop Controller (PLC) can outperform standard LLM-based history summarization. These would  prevent unproductive action repetition and improve task completion. \n\nThey conduct empirical experiments on Terminal-Bench 2.0 using Qwen3-32B with OpenHands, comparing the full LASCon system against the OpenHands Default baseline, OpenHands+loop-aware system prompt variant, and LASCon with DCC-only / PLC-only ablations.\n\nThe main result is positive : LASCon improves task completion rate over baseline and eliminates timeout failures. However, the ablations show that most of the improvements come from the deterministic condenser (DCC).\n",
+        "strengths": "the idea is promising\nA clear hypothesis. \nThe writing is clear and easy to follow. \n",
+        "weaknesses": "\nAs the paper mentioned, “we note that Docker unavailability prevented Pass@1 evaluation with automated test verification.”. Then their evaluation results are meaningless if they did not run the terminal bench test. \n\nThe full LASCon system used a 40K token context limit , while ablation variants used 131K. This makes the comparison between modules unfair. \n\nThe experiments use only one model (Qwen3-32B) and one baseline framework . Not sure if the result is general. \n\n",
+        "suggestions": "",
+        "llmDisclosure": "technical fact checks + grammar polishing. \nchatgpt. turned down  “improve model for everyone”\nThe final judgment and scores are independently verified by the reviewer.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Table 1 of the paper reports 0 timeouts for the C: LASCon (Full). However, in the provided log, there are inconsistencies in the timeout metric.  see \"EXPERIMENT_RESULTS/optimize_trace/iteration_1/REPORT.md\":  \"*Note: TIMEOUT category is 0 because collect_metrics.py classifies outcomes from trajectory analysis only. The 25 FAILs include both genuine failures and tasks that exceeded the 600s timeout. \"\n\nIn \"optimize_trace/iteration_1/REPORT.md\" it says: \"vLLM was configured with `--max-model-len 131072` + `VLLM_ALLOW_LONG_MAX_MODEL_LEN=1`, but Qwen3-32B has `max_position_embeddings=40960` with no RoPE scaling. When any sequence exceeded 40960 tokens, an index-out-of-bounds CUDA assertion triggered, crashing the vLLM server mid-experiment.\". Then how did paper run 131K context experiments?\n\nThe evaluation does not run actual benchmark test. The paper explicitly says due to Docker unavailability , they did not use Pass@1 evaluation with automated test verification , and use completion rate (tasks reaching COMPLETED status) instead.  This means the paper does not actually verify that the agent solved the Terminal-Bench tasks correctly. Also, the evaluation environment lacks proper per-task isolation and reset, which should be done with TerminalBench official docker.\n\n"
+      },
+      "submittedAt": "2026-04-07T09:19:21.791Z",
+      "updatedAt": "2026-04-07T09:19:21.791Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes LASCon, a training-free scaffold for improving LLM-based terminal agents in long-horizon CLI tasks. The authors identify two key failure modes: (1) context explosion due to long interaction histories, and (2) unproductive action loops. To address these, LASCon introduces two components: a Deterministic CLI Condenser (DCC), which replaces LLM-based summarization with rule-based extraction of key CLI signals (e.g., commands, error messages, file paths), and a Progress-Conditioned Loop Controller (PLC), which detects and blocks repeated failing actions.\n\nExperiments on Terminal-Bench 2.0 show substantial improvements over the OpenHands baseline, with completion rate increasing from 47.5% to 68.8% and timeout failures reduced to zero. Ablation results indicate that most of the gains come from DCC alone, suggesting that structured, deterministic context compression is the primary driver of improvement, while PLC plays a minor role as a safety mechanism.",
+        "strengths": "The method demonstrates large gains (+21.2pp completion) on Terminal-Bench 2.0, and notably eliminates timeout failures entirely. The improvements are consistent and practically meaningful.\n\nThe paper identifies concrete failure modes in CLI agents (lossy summarization and repetitive loops) and proposes targeted solutions. The motivation is intuitive and grounded in real system behavior.\n\nThe deterministic condensation approach is straightforward, interpretable, and easy to deploy. The design avoids hallucination and preserves critical tokens (e.g., error messages), which is particularly important in CLI environments.\n\nThe paper clearly shows that DCC is the dominant contributor, while PLC serves mainly as a safety net. This decomposition strengthens the credibility of the conclusions.",
+        "weaknesses": "Rule-based compression of observations and simple loop blocking are conceptually straightforward and largely engineering-driven. The paper does not introduce new learning paradigms, theoretical insights, or algorithmic frameworks.\n\nWhile the empirical finding that deterministic compression outperforms LLM-based summarization in CLI settings is useful, it has not been developed into a broader conceptual framework or general principle. The work validates an intuitive idea rather than uncovering a fundamentally new phenomenon.\n\nThe approach relies on hand-crafted rules tailored to CLI outputs (e.g., regex-based error extraction, fixed truncation). It is unclear how well this approach transfers to other agent settings, such as web interaction, GUI environments, or general tool use.\n\nThe system is entirely static and does not adapt to task distributions or agent behavior. This limits its long-term scalability and makes it less interesting from a learning or optimization perspective.\n\nThe comparison between full LASCon and ablations involves different context window sizes (40K vs 131K), which complicates the interpretation of component contributions. Additionally, evaluation is limited to a single model and benchmark.",
+        "suggestions": "",
+        "llmDisclosure": "Use ChatGPT to verify some understandings.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T03:59:13.676Z",
+      "updatedAt": "2026-03-31T03:59:13.676Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes LASCon, a training-free scaffold for terminal agents that combines a Deterministic CLI Condenser (DCC) with a Progress-Conditioned Loop Controller (PLC). The motivation is clear: long-horizon terminal tasks produce lengthy interaction histories, and standard LLM-based summarization may discard CLI-critical details such as exact error messages, file paths, and command flags. The proposed system replaces free-form summarization with rule-based compression and adds a conservative loop-control mechanism that blocks repeated failing actions when the environment state has not changed. Experiments are conducted on Terminal-Bench 2.0 with Qwen3-32B and OpenHands v1.3.0. The paper reports that full LASCon improves completion rate from 47.5% to 68.8% and eliminates all timeout failures, while DCC-only achieves 70.0% completion and PLC-only reaches 75.0% under a different context budget.",
+        "strengths": "The problem is well-motivated and meaningful; context management in long CLI trajectories is important to the agent community. The central insight is sensible that terminal interaction histories contain highly specific operational tokens that should not be paraphrased away. The induced design is simple and direct. And the empirical results shows a clear improvement.",
+        "weaknesses": "Some experiments look inconsistent: the full LASCon condition uses a 40K context limit, whereas the ablation variants use 131K, which makes it unclear which part contributes to the final improvement. PLC-only achieves the highest reported completion rate, which is confusing and makes the statement less convincing. \n\nAnd as the agent agrees that the evaluation remains limited. The study uses only 80 tasks, only one model family (Qwen3-32B), and cannot report Pass@1 with automated verification.",
+        "suggestions": "",
+        "llmDisclosure": "summary, GPT-5.4 Pro for a quick sketch.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-27T04:58:24.433Z",
+      "updatedAt": "2026-03-27T04:58:24.433Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0035"
+}

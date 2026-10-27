@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_LI_think_twice_before_trusting",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Think Twice Before Trusting: Self-Detection for Large Language Models through Comprehensive Answer Reflection",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The authors propose Think Twice before Trusting (T3), a framework to improve self-detection of LLMs in classification tasks. Self-detection is defined as the ability of an LLM to evaluate the correctness of its own response. In T3, after an answer is produced, the authors asks the LLM to generate multiple justifications for each possible answer choice or label in the classification task. Afterwards, the LLM is asked to merge all of the justifications into a single confidence score. On three tasks (Sentiment Analysis, Natural Language Inference, and Commonsense Multiple-Choice Question Answering), the authors show that their approach generally outperforms baselines in AUROC, PRAUC, and ECE",
+      "strengths": "- As the authors note, self-detection with black-box LLMs is an important area of research, and is one of many ways that we can try to verify the correctness and reliability of LLM responses\n- The proposed technique is sound, and I like the idea of a framework that generates multiple explanations from different perspectives for calibration. I do feel, however, that there is some missing discussion about related work that also uses these techniques (see weaknesses)",
+      "weaknesses": "- The proposed technique is not completely novel, and I see it more as an adaptation of existing works. For example, Process of Elimination with Chain-of-Thought [1], Maieutic Prompting [2], Point-of-View Prompting [3], and Debate [4] all generate rationales for multiple sides of the argument (i.e. the different labels/choices). I feel there needs to be discussion of these works because to me, the current approach seems quite similar\n\n- I am wondering whether any of the baselines use the exact same number of prompts used in T^3. My concern is that the performance gains of T^3 could just be coming from the fact that this framework uses many more LLM outputs to synthesize the correct answer (i.e. \"n\" choices times \"m\" explanations per choices). Ablating this would let us see if the benefits of T^3 come just from the increased number of prompts, or actually considering the validity of each choice/label\n\n- One weakness that should be discussed is that T^3, as of now, can only be applied to classification tasks. Are there any experiments testing T^3 in open-ended domains like question answering? I feel that is where black-box confidence calibration and self-detection is the most important\n\n[1] It's Not Easy Being Wrong: Large Language Models Struggle with Process of Elimination Reasoning\n[2] Maieutic Prompting: Logically Consistent Reasoning with Recursive Explanations\n[3] Self-Contradictory Reasoning Evaluation and Detection\n[4] Debate Helps Supervise Unreliable Experts",
+      "questions": "- The word \"Trustability\" is used a lot in the paper. First, I think the authors should use the word \"Trustworthiness\". Also, this word is sometimes used a little too loosely and it does not always make sense. Like in Line 584 and 587 the authors use the phrase \"Trustability of each answer choice\", but I think they actually mean the validity or plausibility\n\n- While I understand the author's focus on black-box method, I feel it would still be useful to have a white-box comparison (i.e. token probabilities) as one of the baselines\n\n- I am also wondering whether the authors can report Accuracy statistics beyond just calibration metrics. I would be interested in knowing how frequently the LLM gets the original question correct, and how effective T^3 is at the binary classification task of detecting an incorrect response (e.g. precision, recall)",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "b67d3396e01da2a6f90bf0c202b38f7ae0a0bddb67ce085eb8e49c294b20b1ed1425f87a7415385f1c2c310932f3c0b45efef6994c58ed8f8dff7c18db2c221b"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper introduces a new self-detection paradigm aimed at enhancing the trustworthiness of Large Language Models (LLMs). They propose a two-step framework that prompts LLMs to reflect on and justify multiple candidate answers before evaluating the reliability of the target answer. This approach is designed to mitigate the over-trust in LLM-generated incorrect answers by comparing their reliability with other potential answers. The framework is tested across six datasets and three different LLMs, demonstrating improved self-detection performance.",
+      "strengths": "1.The paper addresses a critical issue in LLMs regarding the reliability of their outputs.\n2.The \"Think Twice Before Trusting\" (T3) framework proposed by the authors is an intriguing concept. It offers a novel approach by prompting LLMs to reflect and provide justifications for each candidate answer before conducting a comprehensive evaluation.\n3.The paper is well-written with a rigorous logic, and the experimental design is sound, enabling the effectiveness of the proposed method to be demonstrated across multiple datasets.",
+      "weaknesses": "1.In the T3 framework, a more detailed explanation is needed on how to generate and select candidate answers, and the rationale behind this process.\n2.There may be entirely unreasonable answers within the answer space. In this case，Are the methods proposed still valid? And why？\n3.It would be better to see more baselines in the experiments.\n4.The effectiveness of the proposed framework assumes that LLMs will follow the instructions for reflection and justification, which may not always be the case.",
+      "questions": "See weakness above.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "acfa7c9809c605ffe82ff961cf84d642c90da8465f68f3a66a3b7b6fbf94cc13789f57b959ba9f0793d1457b9c85f82673c753e63a480fd73216a04535eaae56"
+    }
+  ]
+}

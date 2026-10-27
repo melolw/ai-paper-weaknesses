@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_RAM_dem_distribution_edited_model",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "DEM: Distribution Edited Model for Training with Mixed Data Distributions",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents a new method called Distribution Edited Model (DEM) for optimizing multi-task models with mixed data distributions. \n\nDEM combines individually trained models using simple vector operations, making it 11 times cheaper than standard methods and yielding performance improvements. It also allows for flexible and scalable training without full re-training when modifying a data source.",
+      "strengths": "- A simple yet effective approach for training on diverse data distributions.\n- Experimental results are promising across a wide range of tasks.\n- Analysis shows that the method remains useful even as LLMs scale up and additional training datasets are incorporated.",
+      "weaknesses": "Most questions are adequately addressed in the response PDF. Here are two additional questions:\n\n- In Table 2, how is $w_i$ chosen in *DEM - Interpolation* given that there is a constraint on the sum of weights being 1?\n- The analysis is mostly insightful with clear conclusions. However, in the \"Individual model distance from base\" part, the main conclusions are unclear. DEM is closer to the original model, whereas data-mixing is not. What is the implication of this finding? Does being closer to the original model indicate a better or worse outcome based on the experimental results?",
+      "questions": "- Missing some related references: Training different experts individually with different data and combining them in a Mixture of Experts (MoE) approach [1]; Using vector operations for efficient model unlearning [2].\n- A typo: Line 399 \"improvemnet\"\n\n[1] Branch-Train-MiX: Mixing Expert LLMs into a Mixture-of-Experts LLM https://arxiv.org/pdf/2403.07816\n\n[2] Separate the Wheat from the Chaff: Model Deficiency Unlearning via Parameter-Efficient Module Operation https://arxiv.org/pdf/2308.08090",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "332f17f155c553a721a017282cbc0da20e6775c473a1be3ab82cd1641eb437620390307d5f4104bddd06ecd3cb3e302b86a20f31968b6edebe4752344cb0241f"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_MUKHERJEE_cultural_conditioning_placebo_effectiveness",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Cultural Conditioning or Placebo? On the Effectiveness of Socio-Demographic Prompting",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "In this paper, the authors conducted various experiments to investigate cultural biases in large language models (LLMs) using socio-demographic prompts. They created culture-specific prompts with culturally sensitive cues and compared the results by infering LLMs to perform either sensitive or neutral tasks. They revealed that LLMs responded differently to the same task based on the type of proxy and cues used, with GPT-4 showing the least variation. Comparisons were also made among the other LLMs.",
+      "strengths": "1. The motivation behind the research is clear and the idea of reducing cross-lingual bias, even within the same LLM, is essential.\n2. They were able to quantify numerous interesting results by using a variety of cues and proxies to construct socio-demographic prompts.",
+      "weaknesses": "1. Comparisons between LLMs have shown that gpt-4 has the least variation, but these are relative results, and the absolute level of cultural bias in each LLM was not discussed. Even though gpt-4 performed better than the others, it may exhibit bias, which seems to have been overlooked.\n2. While it is commendable that the authors chose four datasets for their culture-sensitive experiments, the reasons for selecting MMLU or ETHICS were not clearly explained. In particular, the choice of datasets that are completely unrelated to culture, such as MMLU, seems to be too far removed from the intended experiment. This raises the question of whether the results from experiments using culturally isolated datasets, such as MMLU, should be seen as hallucinations due to the absence of cultural elements in the data. The authors need to provide a more detailed rationale for their dataset choices or demonstrate that this approach aligns with existing research.\n3. While the authors did not experiment with a large number of LLMs by choosing only four, they did explain each result under exceptional circumstances (lines 338-339, 364). This raises the question of whether the results should be taken with a grain of salt.",
+      "questions": "-  I recommend that the authors conduct more experiments with a broader range of LLMs, using different versions of the same model or comparing results across models with varying numbers of parameters.",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "160ea5b500c52fdec0f908a61e8b9f9af585bfe98fda84417a2a8405d38efb288e44210c360a5cb5497f9f3cd937788aafd882619486b312a4213cc1b0fd4d9a"
+    }
+  ]
+}

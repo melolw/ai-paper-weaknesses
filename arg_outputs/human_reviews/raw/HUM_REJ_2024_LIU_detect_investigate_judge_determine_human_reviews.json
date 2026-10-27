@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LIU_detect_investigate_judge_determine",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Detect, Investigate, Judge and Determine: A Novel LLM-based Framework for Few-shot Fake News Detection",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces a DAFND model for few-shot fake news detection using LLMs, addressing ambiguity and information scarcity with a dual-perspective approach, demonstrating effectiveness on two datasets.",
+      "strengths": "- This paper focuses on fake news detection based on LLM, which is a very promising research direction.\n- This paper provides detailed experimental setup information, making it easy for readers to understand its implementation.",
+      "weaknesses": "- Lack of novelty: The paper's connection to the FND task is not clear enough. The proposed issues of \"Understanding Ambiguity\" and \"Information Scarcity\" are more likely to stem from the intrinsic characteristics of  LLMs (i.e., how to improve LLM In-context learning capabilities and the issue of LLM knowledge updates) rather than the scenario characteristics of FND. The provided solutions are the common strategies for addressing such issues in LLMs (selecting appropriate demonstrations to enhance ICL capabilities and using RAG to introduce the latest knowledge). This makes the paper appear less like a study focused on the FND problem and more like an application-specific exploration of existing LLM solutions. Though this is somewhat acceptable, the submission may benefit from a clearer focus.\n- Necessary Baselines Missing:\n  - Following the previous issue, if we consider this paper as addressing an LLM application problem, merely comparing it with few-shot LLM is insufficient. Numerous works in the LLM field should be considered, such as methods to enhance LLM ICL performance like Auto-CoT[1], and various approaches that use RAG to improve LLM performance.\n  - If we understand the paper's Outside Investigation as introducing external knowledge to enhance detection, there are many existing works that need to be compared. In fact, even when narrowing the focus to \"enhancing LLM for FND tasks using internet-based knowledge retrieval\", there are existing works like Re-search[2] that need to be compared.\n  - As a paper emphasizing the \"few-shot scenario\", it does not compare with genuine few-shot methods: Baselines 1-4 and 9 are not specifically designed for few-shot settings, making comparisons with these methods unfair. The FND field itself has few-shot methods that can be compared, such as [3] and [4]. Even if these baselines are not used, the authors should include common few-shot methods as baselines.\n- Potential Data Leakage Issue: DAFND uses data retrieved from the internet, but it seems that no control has been placed on ensuring that the retrieved data predates the data in the test set. This could lead to serious data leakage issues, such as using fact-checking information that appeared after the publication of fake news as retrieval results for detection, which could significantly interfere with the detection performance.\n\n[1] Zhang, Zhuosheng, et al. \"Automatic Chain of Thought Prompting in Large Language Models.\" *The Eleventh International Conference on Learning Representations*.  \n[2] Li, Guanghua, et al. \"Re-Search for The Truth: Multi-round Retrieval-augmented Large Language Models are Strong Fake News Detectors.\" *arXiv preprint arXiv:2403.09747* (2024).  \n[3] Jiang, Gongyao, et al. \"Fake news detection via knowledgeable prompt learning.\" *Information Processing & Management* 59.5 (2022): 103029.  \n[4] Ma, Jing, et al. \"Kapalm: Knowledge graph enhanced language models for fake news detection.\" *Findings of the Association for Computational Linguistics: EMNLP 2023*. 2023.",
+      "questions": "None",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "f9e099bb8f19dcbf6ba979b2d6a21101680aa06728dfd0ed5e6d0aa3f6501e86018e191df10e7a009b8bab1c7d1b0efe231e9a25a0c129ccbc0c27a223ddc1d2"
+    }
+  ]
+}

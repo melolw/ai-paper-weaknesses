@@ -1,0 +1,36 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: The high computational cost (~16 GPU-hours) required to train DefensiveTokens (DT) for prompt injection defense on a per-model basis, which hinders rapid deployment across model families.
+- **Claimed Gap**: *"DefensiveTokens provide effective defense but require expensive per-model training (~16 GPU-hours)."* (Abstract). The authors position this as a critical deployment bottleneck, claiming their work is the *"First method for transferring DefensiveTokens between models."* (Introduction)
+- **Proposed Solution**: AlignDefTok, a training-free transfer protocol that uses Orthogonal Procrustes alignment on vocabulary embeddings to rotate source DTs into the target model's space. The method explicitly preserves the high $\ell_2$ norm property critical to DT efficacy. For asymmetric/harder transfer directions, a lightweight "tiny-adapt" stage (~20K parameters) refines the transferred tokens.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Defending Against Prompt Injection With a Few DefensiveTokens (Chen et al.)
+- **Identified Overlap**: Direct methodological lineage. The manuscript inherits the exact threat model, defense mechanism (high-norm soft tokens), and optimization setup. The "tiny-adapt" stage directly replicates the original DT training loop.
+- **Manuscript's Defense**: The authors do not attempt to replace DTs but explicitly frame their work as solving the *"deployment bottleneck"* introduced by the original paper. They differentiate by replacing the full training loop with a geometric alignment step, claiming *"Orthogonal Procrustes alignment provides training-free, norm-preserving transfer"* and enabling *"133–285× compute savings compared to full training."*
+- **Reviewer's Assessment**: This is a valid, well-motivated extension rather than a strawman argument. The manuscript correctly identifies a real-world scalability constraint of the foundational work. However, the novelty is strictly **incremental/engineering-focused**. The core security mechanism remains unchanged; the contribution lies in optimizing the deployment pipeline. The defense successfully justifies the work as a necessary evolutionary step for practical adoption, but it does not introduce a new defense paradigm.
+
+### vs. Cross-device Zero-shot Label Transfer via Alignment of Time Series Foundation Model Embeddings (Ravindra & Sehanobish)
+- **Identified Overlap**: Strong methodological parallel. Both papers use embedding-space alignment to transfer task-specific artifacts (clinical labels vs. defensive tokens) across related models/domains without full retraining. Both acknowledge that harder transfer directions require lightweight post-alignment refinement.
+- **Manuscript's Defense**: The manuscript does not cite this work. It differentiates implicitly by focusing on LLM vocabulary embeddings and emphasizing the mathematical constraint of Orthogonal Procrustes (strict norm preservation), which it argues is critical for maintaining the high-norm defensive signal.
+- **Reviewer's Assessment**: The resemblance analysis correctly identifies that the core transfer technique (linear alignment/SVD for cross-model knowledge transfer) is not novel. The manuscript's novelty rests entirely on the **application domain** (LLM security) and the specific insight that norm preservation is non-negotiable for DTs. While the application is novel, the methodological foundation is borrowed from broader transfer learning literature. This weakens claims of theoretical novelty but does not invalidate the practical contribution.
+
+### vs. SecAlign: Defending Against Prompt Injection with Preference Optimization (Chen et al.)
+- **Identified Overlap**: The similarity analysis claims a "methodological echo" in alignment-based defense, suggesting both treat defense as a structured alignment problem.
+- **Manuscript's Defense**: The manuscript does not cite SecAlign. The resemblance is superficial: SecAlign uses preference optimization (DPO/ORPO-style) to align output distributions, while AlignDefTok uses linear algebra to rotate input embeddings.
+- **Reviewer's Assessment**: The similarity analysis overstates the connection. There is no direct methodological conflict. The manuscript's approach operates at the input-embedding boundary, while SecAlign modifies model weights via preference data. The manuscript's defense holds by default, as the works address different layers of the LLM stack.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental (Engineering Optimization)
+- **Assessment**: 
+  The paper successfully defends its motivation against the identified similarities. It does not attack a strawman; rather, it addresses a genuine, quantifiable bottleneck (16 GPU-hours/model) that limits the real-world utility of the foundational DefensiveToken framework. The existence of prior embedding-alignment transfer works (e.g., in time-series or general ML) confirms that the mathematical tool (Procrustes alignment) is not novel, but the authors' insight into its specific application to high-norm security tokens is valid and empirically sound. The paper survives the comparison as a highly practical, deployment-focused contribution, though it should not be positioned as a theoretical breakthrough.
+  - **Strength**: Clear, quantifiable motivation; mathematically rigorous norm preservation; strong empirical results (0% ASR in favorable direction, 285× speedup); effective fallback mechanism ("tiny-adapt") that demonstrates deep understanding of DT training dynamics.
+  - **Weakness**: Methodological novelty is limited to the application of a known linear algebra technique to a specific security artifact; strictly constrained to models sharing identical tokenizers and embedding dimensions; does not generalize to unrelated model families or address fundamental limitations of the DT paradigm itself.
+
+## 4. Key Evidence Anchors
+- **Abstract**: *"training-free method to transfer DT between related models using Orthogonal Procrustes alignment on vocabulary embeddings."*
+- **Introduction**: *"First method for transferring DefensiveTokens between models."* / *"Orthogonal Procrustes alignment provides training-free, norm-preserving transfer (0% ASR for favorable directions)."*
+- **Method**: SVD formulation $W^* = UV^\top$ with orthogonality constraint $W^\top W=I$; *"Exact norm preservation confirmed (maximum difference < $10^{-5}$)."*
+- **Experiments (Table 1 & Ablation)**: Llama-3.1→Llama-3 achieves 0.0% ASR with ~5 min compute (285× speedup); Direct Copy vs. Procrustes ablation shows marginal improvement in hard direction, validating that embedding spaces are nearly aligned but norm preservation remains critical for optimal performance.

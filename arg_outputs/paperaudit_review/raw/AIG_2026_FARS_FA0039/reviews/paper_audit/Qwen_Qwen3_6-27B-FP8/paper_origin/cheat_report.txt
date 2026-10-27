@@ -1,0 +1,22 @@
+# Integrity & Consistency Risk Report
+
+## 1. Clear Mathematical Inconsistency (Conclusion vs. Method)
+**Issue:** The mathematical definition of the proposed prefix-aware ratio $\tilde{\rho}_t$ in the **Conclusion** directly contradicts the definition provided in the **Abstract**, **Introduction**, and **Section 3.3 (Eq. 4)**.
+- **Abstract & Section 3.3 (Eq. 4):** $\tilde{\rho}_t = \underline{\rho}_t \cdot \rho_t$
+- **Section 5 (Conclusion):** $\tilde{\rho}_t = \frac{\rho_t}{\underline{\rho}_t} \cdot \rho_t$
+**Impact:** The conclusion formula introduces a division by $\underline{\rho}_t$ and squares $\rho_t$, which fundamentally changes the mathematical operation and would invert the intended dampening behavior for good prefixes. This is a clear typographical or drafting error that must be corrected to maintain scientific accuracy.
+
+## 2. Missing Definition for Selectivity Analysis Threshold
+**Issue:** In **Section 4.3**, the authors state: *"We define a token as 'dampened' if its effective importance ratio falls below a threshold..."* However, the specific numerical threshold used to classify tokens as "dampened" is never specified in the text, tables, or experimental setup.
+**Impact:** Without this threshold, the selectivity rates reported in **Table 2** (e.g., 99.4% bad-prefix dampening) cannot be independently verified or reproduced. This missing detail materially affects the reproducibility of the core ablation analysis.
+
+## 3. Minor Parameter Mismatch in Staleness Simulation
+**Issue:** **Section 4.1** states: *"We simulate bounded staleness $S = 11$ by delaying policy snapshot publication every $\kappa = 10$ learner updates..."* 
+**Impact:** Delaying snapshots every 10 updates typically induces a maximum lag of $S=10$, not $S=11$. While this may be an off-by-one indexing convention, the mismatch between the stated staleness parameter ($S=11$) and the simulation mechanism ($\kappa=10$) creates minor ambiguity in the experimental configuration.
+
+## 4. Unspecified Edge Case Handling
+**Issue:** **Section 3.3 (Eq. 3)** defines the minimum prefix ratio as $\underline{\rho}_t = \min_{k < t} \rho_k$. For the first token ($t=1$), the set $\{k < t\}$ is empty. The manuscript does not specify how $\underline{\rho}_1$ is initialized (typically $\underline{\rho}_1 = 1$ to avoid undefined behavior or zero-gradient collapse).
+**Impact:** While likely handled correctly in code, the omission of this boundary condition in the method description reduces mathematical completeness.
+
+## Overall Assessment
+No evidence of data fabrication, plagiarism, or severe logical contradictions was found. The experimental results in **Tables 1 & 2** align consistently with the claims in the abstract and main text, and the training dynamics in **Figure 2** match the reported numerical trends. The primary integrity risk is the **formula typo in the Conclusion**, which misrepresents the proposed method. Correcting this equation and explicitly defining the dampening threshold and $t=1$ initialization will resolve the identified consistency gaps.

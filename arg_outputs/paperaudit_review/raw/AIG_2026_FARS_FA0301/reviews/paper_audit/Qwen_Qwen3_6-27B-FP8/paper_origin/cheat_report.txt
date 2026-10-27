@@ -1,0 +1,29 @@
+### Integrity and Consistency Risk Report
+
+**Overall Assessment:**
+The manuscript presents a coherent methodology and results that generally align with the claims. However, there are **minor numerical inconsistencies** between the text and tables, and a **discrepancy between the figure and the text** regarding the number of checks. No major logical contradictions or evidence of fabrication were found.
+
+**Specific Issues Identified:**
+
+1.  **Numerical Mismatch in Llama Improvement Claim:**
+    *   **Claim:** The Abstract and Section 4.2 state that DUT improves accuracy by **+22.7 percentage points** on Llama-3.1-8B-Instruct compared to the engagement-matched baseline.
+    *   **Evidence:** Table 1 reports Llama Condition B (Neutral) accuracy as **58.7%** and Condition C (DUT) accuracy as **81.3%**.
+    *   **Inconsistency:** The difference is $81.3 - 58.7 = 22.6$ percentage points, not 22.7. This discrepancy appears consistently in Section 4.2 where the text claims "+22.7pp over A@5" (Table 1: $81.3 - 58.7 = 22.6$) and "+20.7pp over B@5" (Table 1: $81.3 - 60.7 = 20.6$). The text consistently rounds up or miscalculates the difference by 0.1pp.
+
+2.  **Figure-Text Discrepancy on Number of Checks ($k$):**
+    *   **Claim:** Section 3.2 and Section 4.1 state that the default number of discriminative checks is **$k=3$**.
+    *   **Evidence:** Figure 1 illustrates the prompt structure for Condition B and Condition C. In the figure, both "Neutral Verified Facts" and "Discriminative Verified Facts" boxes list only **Q1 and Q2** (i.e., $k=2$).
+    *   **Inconsistency:** The figure visually depicts $k=2$ checks, while the text specifies $k=3$. While the figure is illustrative, this mismatch should be corrected for clarity.
+
+3.  **Ambiguous Error Analysis Phrasing:**
+    *   **Claim:** Section 4.5 states, "On Llama's completeness family, **18% of errors** are parsing failures... compared to 0% convention errors."
+    *   **Evidence:** Table 1 shows Llama Completeness accuracy under Condition C is **82%**, implying an error rate of **18%**.
+    *   **Inconsistency:** If the error rate is 18%, stating that "18% of errors" are parsing failures would imply only a small fraction of the total errors (approx. 3.2% of total items) are parsing failures. Given the context ("DUT effectively eliminates convention confusion, leaving computational limitations as the primary error source"), it is highly likely the authors mean that **18% of the total items** (i.e., 100% of the errors) resulted in parsing failures. The phrasing "18% of errors" is misleading and likely a typo for "18% of items" or "18 percentage points".
+
+4.  **Missing Per-Family Alternate Convention Rates:**
+    *   **Claim:** Section 4.3 states, "The completeness family has the highest baseline convention confusion, with alternate-convention match rates of **11–24%** under conditions A and B."
+    *   **Evidence:** Table 1 provides overall alternate-convention match rates but **does not break them down by family**.
+    *   **Inconsistency:** The specific per-family alternate-convention rates (11-24%) are cited in the text but not provided in any table or figure, making it impossible to verify this claim from the provided manuscript content.
+
+**Recommendation:**
+The authors should correct the numerical calculations in the text to match the tables (22.6pp instead of 22.7pp), update Figure 1 to show $k=3$ checks or clarify that it is illustrative, clarify the error analysis phrasing in Section 4.5, and include the per-family alternate-convention rates in a table or appendix to support the claims in Section 4.3.

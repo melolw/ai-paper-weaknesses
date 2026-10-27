@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_TANG_m3d_multimodal_multidocument_finegrained",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "M3D: MultiModal MultiDocument Fine-Grained Inconsistency Detection",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces a novel method and benchmark for fine-grained inconsistency detection in claims across multimodal and multidocument sources. The authors use AMR to construct a knowledge graph for the purpose of fine-grained labelling and prediction. Experiments demonstrate the effectiveness of the proposed approach in outperforming existing methods on new and existing benchmarks.",
+      "strengths": "- The proposed dataset effectively incorporates a range of media types, including text, images, videos, and audio, contributing to the advancement of multimodal fact-checking systems.\n- This paper offers detailed insights by labelling and predicting the logical relationship of each claim aspect, enhancing the utility and interpretability of fact-checking beyond binary true/false classification.\n- Experimental results show significant improvements over state-of-the-art methods on M3DC, indicating the efficacy of the approach in multimodal fact-checking tasks.",
+      "weaknesses": "- The process of dataset construction is not described clearly and the introduction of the fine-grained claim labeling is missing.\n- The presentation of the methodology proposed in this paper is not very clear. For example, how to initialize the GCN? How to get and use the Joint Representation in Figure 3?\n- What is the relationship between sample-level claim labels and fine-grained claim labels? Are these two levels labels independent when labelling and predicting?\n- The method proposed in this paper does not perform well on the MOCHEG dataset. The gap with LLaVA and MiniGPT in sample-level prediction is relatively large.",
+      "questions": "- The paper needs further proofreading. For example, $b_e^(l)$ is mentioned in line 438, but it does not appear in equation 4.\n- The figures in the paper need further proofreading. Extra characters appear in both Figures 2 and 3.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "d20b881e7362dce115a04a3cc7208e177879dc5653290b31b64b81294995275268f79479b39adc19cda26435c88f13202aaa3de4775952159fd99f524f169607"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+# Global Summary
+The paper addresses context management challenges in LLM-based terminal agents, specifically timeout failures and information loss during long-horizon tasks. The authors propose LASCon (Loop-Aware Scratchpad Condensation), a training-free scaffold comprising a Deterministic CLI Condenser (DCC) for rule-based observation compression and a Progress-Conditioned Loop Controller (PLC) to prevent unproductive action repetition. Evaluated on Terminal-Bench 2.0 using Qwen3-32B, LASCon achieves a 68.8% completion rate, representing a +21.2 percentage point improvement over the OpenHands default baseline (47.5%) and eliminating all timeout failures (0 vs 36). Ablation studies indicate that DCC alone achieves 70.0% completion, identifying structured context management as the primary driver of performance. PLC operates conservatively with a 0.12% block rate and zero deadlocks. A noted limitation is a context window confound where the full LASCon condition used a 40K limit while ablation variants used 131K.
+
+# Abstract
+- **Problem:** LLM terminal agents suffer from context window overflow and loss of critical CLI-specific information (e.g., exact error messages, file paths) in long-horizon tasks.
+- **Method:** LASCon combines a Deterministic CLI Condenser (DCC) for rule-based compression and a Progress-Conditioned Loop Controller (PLC) for action-space shaping.
+- **Results:** On Terminal-Bench 2.0 with Qwen3-32B, LASCon achieves 68.8% completion (+21.2pp over baseline 47.5%).
+- **Key Metrics:** Timeout failures reduced from 36 to 0. DCC alone achieves 70.0% completion. PLC maintains a 0.12% block rate with zero deadlock events.
+
+# Introduction
+- **Context:** LLM agents are deployed for CLI tasks (software engineering, system administration). Benchmarks like Terminal-Bench reveal that long trajectories cause context window saturation and performance degradation.
+- **Gap:** Existing LLM-based summarization risks omitting exact tokens critical for CLI tasks (error messages, flags). Current stuck detectors terminate execution rather than aiding recovery.
+- **Solution:** LASCon is a training-free scaffold. DCC replaces LLM summarization with deterministic extraction. PLC converts loop detection into action blocking to force exploration.
+- **Contributions:**
+    - LASCon system deployable with any LLM backend.
+    - Empirical finding: DCC alone achieves 70.0% completion (+18.8pp over prompt-only baseline).
+    - Analysis: Loop-induced failures are rare (2.5% in baseline); PLC serves as a safety net.
+
+# Method
+- **Architecture:** LASCon operates as an intermediary layer between the LLM agent and CLI environment.
+- **Deterministic CLI Condenser (DCC):**
+    - Replaces LLM-based summarization with rule-based extraction.
+    - Extracts: Canonicalized command string, exit code, current working directory (CWD), error lines (via regex matching `error`, `failed`, `exception`, `traceback`, `permission denied`), and head/tail (10 lines) of output.
+    - Offloads full raw logs to disk.
+    - Maintains a structured scratchpad visible to the agent containing: GOAL, CWD, RECENT_COMMANDS, FILES_EDITED, DO_NOT_REPEAT, and TEST_SUMMARY.
+- **Progress-Conditioned Loop Controller (PLC):**
+    - Monitors three signals: Action signature (canonicalized tool call), Error signature (hash of error lines/tail output), and State version (SHA-256 hash of sorted file metadata).
+    - Loop Detection: Uses a sliding window $W=12$. A loop is declared when a pattern of length $L \in \{1, 2, 3\}$ repeats $R=3$ times with no state version increase.
+    - Intervention: Adds action to a blocklist (max $M=10$ entries). Returns `ACTION_BLOCKED` observation.
+    - Safety: Blocked entries expire after $T=20$ steps.
+- **Integration:** Drop-in replacement for OpenHands components. No fine-tuning required.
+
+# Experiments
+- **Setup:**
+    - Dataset: Terminal-Bench 2.0 (80 Dockerized CLI tasks).
+    - Model: Qwen3-32B (temperature 0).
+    - Framework: OpenHands v1.3.0.
+    - Conditions: (A) OpenHands Default, (B) + Loop Prompt, (C) LASCon (Full), DCC-Only, PLC-Only.
+    - **Confound:** Condition C used a 40K token context limit; ablation variants used 131K.
+- **Main Results (Table 1):**
+    - **A (Default):** 47.5% completion, 36 timeouts, 6 explicit failures.
+    - **B (+ Loop Prompt):** 51.2% completion, 32 timeouts.
+    - **DCC-Only:** 70.0% completion, 0 timeouts, 24 explicit failures.
+    - **PLC-Only:** 75.0% completion, 19 timeouts, 0 explicit failures.
+    - **C (LASCon Full):** 68.8% completion, 0 timeouts, 25 explicit failures.
+- **Analysis:**
+    - DCC is the primary driver of improvement, eliminating timeouts.
+    - PLC-Only achieves the highest completion (75.0%) but benefits from the larger 131K context window.
+    - Token usage increases (164K to 202K for Full LASCon), but tool calls increase (10.8 to 14.1), indicating productive computation.
+- **Loop Analysis:**
+    - Baseline loop-induced failure rate is 2.5% (2/80 tasks).
+    - Loop-aware prompt alone eliminates loop-induced failures (0%).
+- **PLC Safety (Table 2):**
+    - Across 806 proposed actions in Condition C, PLC blocked 1 action (0.12% block rate).
+    - Zero deadlock events occurred. Maximum consecutive blocks was 1.
+
+# References
+- **Key Citations:**
+    - SWE-bench (Jimenez et al., 2023)
+    - SWE-agent (Yang et al., 2024a)
+    - Terminal-Bench (Merrill et al., 2026)
+    - OpenHands (Wang et al., 2025)
+    - Qwen2.5 Technical Report (Yang et al., 2024b)
+    - LongLLMLingua (Jiang et al., 2023)
+    - Reflexion (Shinn et al., 2023)
+    - Various context management works (ACON, CaT, SWE-Pruner, AgentDiet, RE-TRAC).

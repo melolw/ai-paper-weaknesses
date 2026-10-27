@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LU_importance_initialization_attention",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "On the Importance of Initialization and Attention in Sample-Efficient Prompt Tuning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper studied the initialization of soft prompt embeddings for prompt tuning using Flan-T5-large. Authors proposed the Prompt Tuning Refactoring method, which in essence is softmax with temperature scaling. Experiments are done on few-shot settings from AGnews, SST-2, TREC and Amazon datasets. Baselines include LoRA, Prefix tuning. Compared with random initialization and initializing with (random) vocabulary embeddings, initializing with label word embeddings does not excel on AGnews and SST-2. Overall, the paper requires improvement for clearer motivation and clarity on few-shot evaluations.",
+      "strengths": "Initialization is an important problem for PEFT.",
+      "weaknesses": "1. This paper does not offer new findings. Using label words embeddings as initialization was studied in the original prompt tuning paper [1] (Figure 3b). \n2. Only Flan-T5-large is used. This might not be sufficient to support the general claim.\n3. Baselines are insufficient. This paper only compared with random and vocab initialization. The current state of the arts are mainly data-driven initialization methods [2]. \n4. Authors claim that PTR improves convergence and robustness in addition to generalization. But only test accuracy is reported.\n5. Results are weak. PTR does not excel on all the 4 datasets (Table 1). It works comparably with baselines on two of them. \n6. Lacking experimental details. See questions below. \n7. The method does not seem to depend on the choice of the base model (Flan-T5-large) and PEFT method (prompt tuning). It does not seem to require a few-shot setting as the only evaluation. Can PTR be used in full-data settings?",
+      "questions": "1. how many runs on each dataset? how much is the standard deviation for each result? Is the result significant?\n2. how is the few-shot evaluation set up? how is the train, validation and test sets splitted? \n3. how is the prompt length determined? the original paper recommended 100 prompt tokens, why choose 10? \n4. how is the template and verbalizer look like for each dataset? Especially TREC and Amazon.\n5. how is the number of bridge tokens determined for each dataset?\n6.  Can PTR be combined with Prefix Tuning and other PEFT methods?",
+      "rating": 1.5,
+      "confidence": 4,
+      "soundness": 1.5,
+      "raw_note_id": "959e09e774414274a8a41cab18cc9715740f865c30268397dee50f9c344997e0fc533db1ca3db45b3fb1a3b2b622ba854e7ec67c6912d37ecd04ad379a4467fd"
+    }
+  ]
+}

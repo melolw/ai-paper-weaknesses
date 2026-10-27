@@ -1,0 +1,41 @@
+**Integrity Risk and Consistency Report**
+
+**1. Numerical Inconsistency: Per-Token Weight Disparity Calculation**
+*   **Issue:** There is a significant mismatch between the reported mean sequence lengths and the claimed per-token weight disparity ratio.
+*   **Evidence:**
+    *   **Section 3.1** and **Table 2** state the mean length of "Junk Tweets" is **16.7 tokens** and "Control Docs" is **100.4 tokens**.
+    *   The ratio of these lengths is $100.4 / 16.7 \approx \mathbf{6.01\times}$.
+    *   However, **Section 3.1**, **Section 4.3**, and **Table 2** consistently claim an **8.17×** per-token weight disparity.
+    *   **Table 2** lists unpacked weights as 0.0822 (Junk) and 0.0101 (Control). The ratio $0.0822 / 0.0101 \approx \mathbf{8.14\times}$.
+    *   Inverting these weights implies effective lengths of $\approx 12.2$ and $\approx 99.0$, which contradicts the explicitly reported means of 16.7 and 100.4.
+*   **Impact:** The core quantitative claim of the paper (the magnitude of the disparity driving the "Brain Rot" artifact) is numerically inconsistent with the provided dataset statistics.
+
+**2. Numerical Inconsistency: Step Reduction in Figure 1 vs. Text**
+*   **Issue:** The step reduction metric reported in Figure 1 contradicts the values provided in the main text and tables.
+*   **Evidence:**
+    *   **Figure 1** (summary box) states a **"Step reduction: 135x"**.
+    *   **Section 4.4** and **Table 3** report Condition C (Unpacked) has **25,638 steps** and Condition B (Packed) has **64 steps**.
+    *   The calculated reduction is $25,638 / 64 \approx \mathbf{400\times}$.
+    *   **Section 4.4** explicitly states: "Condition B requires only 64 CPT steps compared to Condition C's 25,638 steps—a **400× reduction**."
+*   **Impact:** Figure 1 presents a value (135x) that is nearly three times smaller than the value derived from the experimental data (400x), indicating a labeling error or data mismatch in the figure.
+
+**3. Definitional Inconsistency: Recovery Metric Description**
+*   **Issue:** The Abstract's description of the recovery metric contradicts the formula and calculation provided in the Results section.
+*   **Evidence:**
+    *   **Abstract** claims: "119.7% ARC reasoning recovery... **relative to the no-CPT baseline**."
+    *   **Section 4.2** defines recovery as: $\text{Recovery} = (B - C) / (A - C) \times 100$.
+    *   This formula calculates recovery relative to the gap between Condition A (Control, Packed) and Condition C (Junk, Unpacked). It **does not** use the "No-CPT Baseline" (74.9% ARC) in the calculation.
+    *   Using the No-CPT baseline would yield a different result: $(76.3 - 57.1) / (74.9 - 57.1) \approx 107.8\%$, not 119.7%.
+*   **Impact:** The Abstract misrepresents how the primary success metric was calculated, potentially misleading readers about the baseline of comparison.
+
+**4. Logical Issue: Variable Tracking Recovery Interpretation**
+*   **Issue:** The application of the recovery metric to the "Variable Tracking" sub-task is logically flawed and misleading.
+*   **Evidence:**
+    *   **Section 4.5** and **Figure 2(b)** show scores for Variable Tracking: A (Control) = 1.3%, B (Junk Packed) = 11.6%, C (Junk Unpacked) = 48.1%.
+    *   Here, Condition C (the "degraded" unpacked condition) actually performs **better** than Condition A (the control).
+    *   The recovery formula $(B - C) / (A - C)$ yields $(11.6 - 48.1) / (1.3 - 48.1) \approx 78\%$.
+    *   While mathematically consistent with the formula, reporting "78% recovery" implies improvement, whereas Condition B (11.6%) is significantly **worse** than Condition C (48.1%).
+*   **Impact:** The metric obscures the fact that packing did not improve performance on this specific task relative to the unpacked baseline; it only made it closer to the poor performance of the control condition.
+
+**Summary**
+The manuscript contains clear internal inconsistencies regarding the calculation of the central disparity metric (8.17× vs ~6.0×), conflicting values for step reduction between the figure and text (135× vs 400×), and a mischaracterization of the recovery metric in the Abstract. These issues suggest a need for careful verification of the numerical results and figure labels.

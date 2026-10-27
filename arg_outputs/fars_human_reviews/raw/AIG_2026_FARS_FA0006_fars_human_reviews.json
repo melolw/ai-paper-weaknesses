@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0006",
+    "title": "View-Disagreement Escalation for Robust Web-Agent Trajectory Judges",
+    "abstract": "LLM-based judges are widely used to evaluate web agent trajectories, but they are vulnerable to manipulation through unfaithful chain-of-thought (CoT) reasoning. We propose view-disagreement escalation, a training-free framework that compares judgments from two counterfactual input views---one with CoT and one without---to detect unreliable predictions. When views disagree, we escalate to strict evidence-anchored evaluation. Our key insight is that CoT manipulation affects CoT-dependent judgments while leaving CoT-agnostic judgments stable, causing disagreement that signals potential manipulation. On AgentRewardBench, our method achieves 63\\% relative reduction in attack sensitivity ($\\Delta$-FPR: 4.31\\% vs 11.71\\%) while maintaining competitive F1 (72.13\\% vs 72.93\\%) and achieving the best recall (77.63\\%). The 2.15$\\times$ disagreement enrichment under attack validates our mechanistic hypothesis.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 5,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper attempts to address the attack vulnerability of LLM-as-a-judge with CoT. The key insight is that CoT manipulation affects CoT-dependent judgments while leaving CoT-agnostic judgments stable, causing disagreement that signals potential manipulation. The author proposes view-disagreement escalation to detect unreliable predictions. The experiments show that the proposed method can achieve better accuracy-robustness for LLM-as-a-judge.",
+        "strengths": "1. The proposed method addresses the attack vulnerability of LLM-as-a-judge with CoT.\n2. The experiments show that the proposed method can achieve better accuracy-robustness for LLM-as-a-judge.",
+        "weaknesses": "1. In Section 1, more introduction about web agents, web agent trajectories, and LLM-as-a-judge should be provided. The research background is unclear.\n2. The presentation is bad, some problems are not addressed in the method section: 1) Why not directly use view2 that ignores CoT manipulation? 2) Why not always use $p_{strict}$ that is robust to CoT manipulation? These questions shouldn't be answered just in experiments.\n3. The proposed method seems to be irrelevant to manipulation but relevant to any LLM-as-a-judge tasks.\n4. The bold and underline annotations in Table 1 are wrong (see the columns of Recall and $FPR_{attacked}$).\n5. The metrics used in experiments are not introduced in detail in Section 4.\n6. The design rationale behind $p_{strict}$ is not investigated. Why not design a different prompt?\n7. Qualitative analysis is not provided in experiments.",
+        "suggestions": "1. Improve the presentation of research background.\n2. Improve the explanation on rationale behind the method design.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "The metrics in experiments are not introduced in detail."
+      },
+      "submittedAt": "2026-03-28T07:27:55.183Z",
+      "updatedAt": "2026-03-28T07:27:55.183Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates the vulnerability of judges for web agent trajectories to unfaithful chain-of-thought attacks, and proposes a procedure to improve judge robustness. The method, view-disagreement escalation, compares judge decisions with CoT and without CoT and uses an evidence-anchored rubric to obtain a strict judgment when the two views disagree. The results indicate that view-disagreement escalation achieves lower false positive rates under attack and smaller delta FPR relative to a vanilla baseline.",
+        "strengths": "Novel problem setting: this paper work on judge robustness for web agent trajectories under unfaithful CoT attacks. This field is underexplored. \n\nPractical relevance: it is important to get lower FPR for applications such as data selection and reject sampling.",
+        "weaknesses": "Clarity: several components remain unclear, including the overall motivation, the precise process of the attack, the source of the rubric in strict evaluation and how it is evaluated, and the detailed design of the ablation study.\n\nData and metrics presentation: the label distribution is unbalanced (positive labels account for only 30%). For general metrics like precision, recall and f1, reporting results both before and after the attack is needed. The paper only show the unmodified part. For view2-only and strict, they do not involve the attack, making the FPR after attack and delta FPR confusing.\n\nMethodological concerns: the method relies on view2-only and strict evaluation. However, these methods get lower general metrics in unmodified settings, which may hurt overall performance. Additionally, the view-disagreement escalation roughly doubles the inference cost, which may limit its efficiency. ",
+        "suggestions": "Expand the discussion noted above.\n\nAdd experiments that quantify inference cost and examine generalizability of the method across different evaluators.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-04T06:52:02.279Z",
+      "updatedAt": "2026-04-04T06:52:02.279Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes a training-free defence for web-agent trajectory judges that compares predictions from two views of the same trajectory, one with the agent’s chain-of-thought and one without it, and escalates only disagreeing cases to a strict evidence-anchored judge. The method reduces sensitivity to chain-of-thought manipulation attacks substantially while largely preserving overall evaluation quality, suggesting that view disagreement is a useful signal for detecting unreliable judgments.",
+        "strengths": "The method is simple, intuitive, and practical. It is training-free, easy to implement on top of existing judges.\n\nThe paper is well-motivated by a concrete and important failure mode: web-agent trajectory judges can be manipulated via an unfaithful chain-of-thought, which is highly relevant when judge outputs are used as rewards or data filters.",
+        "weaknesses": "While the idea is reasonable and practical, the technical contribution may feel more like a prompt engineering. So the novelty is limited.\n\nThe validation is restricted to a single benchmark and a single attack type. The experiments shall be more comprehensive.\n\nThe paper assumes that the CoT-free view is comparatively stable and trustworthy, but this assumption may be incorrect. In some trajectories, removing CoT may also remove useful context needed for correct evaluation, so disagreement may reflect ambiguity or information loss rather than manipulation specifically. A more detailed error analysis of cases of disagreement would strengthen this claim.",
+        "suggestions": "See the weakness above.",
+        "llmDisclosure": "I used Grammarly.",
+        "ethicsReproducibility": "none."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T17:01:21.079Z",
+      "updatedAt": "2026-03-22T17:01:21.079Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0006"
+}

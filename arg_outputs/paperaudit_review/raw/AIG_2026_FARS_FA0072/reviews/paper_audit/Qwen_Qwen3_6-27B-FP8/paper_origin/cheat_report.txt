@@ -1,0 +1,19 @@
+# Integrity & Consistency Risk Report
+
+## 1. Critical Inconsistencies & Logical Problems
+
+### 🔴 Numerical Mismatch: Ablation Study NFE vs. Stated Hyperparameters
+* **Claim/Method:** Section 4.1 and Appendix A explicitly state that the default repair step count is **$S = 64$**. Initial generation uses **$N = 128$** steps.
+* **Evidence:** Table 2 (Ablation Study) reports an average NFE (Number of Forward Evaluations) of **154** for the "Full Method" on MBPP+ (seed=0).
+* **Inconsistency:** Given $N=128$ and $S=64$, a single repair round yields an NFE of $128 + 64 = 192$. Accounting for the reported pass rate (110/378 problems pass initially, failure rate $\approx 70.9\%$), the expected average NFE would be $\approx 128 + 0.709 \times 64 \approx 173.4$. The reported value of **154** implies an effective repair step count of $\approx 26$, directly contradicting the documented $S=64$. 
+* **Impact:** This mismatch affects reproducibility and the validity of compute-budget comparisons in the ablation study. It suggests either an unreported hyperparameter change, a table typo, or a discrepancy between the documented configuration and the actual run.
+
+### 🟡 Citation Year Discrepancy for CORE Baseline
+* **Claim:** Section 4.2 (Baselines) cites the CORE method as `(Zhai et al., **2024**)`.
+* **Evidence:** The References section lists the corresponding entry as: `Kevin Zhai... Core: Context-robust remasking for diffusion language models. **2026**.`
+* **Inconsistency:** Direct mismatch in the publication year for the same reference within the manuscript.
+* **Impact:** Minor factual error indicating a lack of careful reference management or proofreading.
+
+## 2. Verification Requests & Observations
+
+* **HumanEval+ Baseline Performance:** Table 1 reports a pass@1 of **1.83%** for the "No Repair" baseline on HumanEval+ using LLaDA-8B-Base. While the model is trained on general text, this figure is exceptionally low compared to typical baselines on HumanEval (even with

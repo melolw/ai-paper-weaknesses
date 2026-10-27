@@ -1,0 +1,33 @@
+Based on a critical review of the manuscript, the following integrity risks and internal inconsistencies were identified. While the core experimental logic appears sound, several discrepancies in citations, methodology reporting, and data presentation reduce the manuscript's trustworthiness.
+
+### 1. Citation Inconsistency (Kopiczko et al.)
+There is a direct contradiction regarding the publication year of a key reference within the text.
+*   **Evidence:**
+    *   **Section 1 (Introduction):** "A surprising finding from **Kopiczko et al. (2026)** shows that repetition-heavy training..."
+    *   **Section 2.3 (Data Repetition in LLM Training):** "Most recently, **Kopiczko et al. (2024)** discovered a surprising phenomenon..."
+    *   **References:** The entry lists "Dawid J. Kopiczko... **2026**."
+*   **Impact:** This indicates a lack of proofreading and creates confusion regarding the timeline of related work. It suggests the manuscript may have been assembled from drafts with conflicting citation updates.
+
+### 2. Methodological Asymmetry in Experimental Seeds
+The number of random seeds used for evaluation is inconsistent across the compared methods, which undermines the statistical validity of the variance claims.
+*   **Evidence:**
+    *   **Table 1:** The "Seeds" column lists **3** for Low-NLL, **6** for Random, and **3** for High-NLL.
+    *   **Section 4.1:** The text claims, "Low-NLL exhibits substantially higher variance across seeds (e.g., ±12.6 on AIME 2024 vs. ±2.1 for High-NLL)."
+*   **Impact:** The authors claim Low-NLL is unstable (high variance) but evaluate it with only 3 seeds, while the Random baseline (which shows low variance) is evaluated with 6 seeds. There is no explanation for this discrepancy. If Low-NLL is indeed unstable, 3 seeds may be insufficient to characterize its performance distribution reliably. This asymmetry makes the comparison statistically uneven.
+
+### 3. Numerical Mismatch Between Figure and Table
+There is a minor but observable discrepancy between the data presented in the main results table and the visualization figure.
+*   **Evidence:**
+    *   **Table 1:** For the Random method on AIME 2024, the Termination Rate (Term%) is listed as **59.7**.
+    *   **Figure 2:** The bar chart for Random on AIME 2024 is labeled **59.6%**.
+*   **Impact:** While likely a rounding artifact, this mismatch indicates a lack of synchronization between the data processing pipeline for tables and figures.
+
+### 4. Missing Dataset Citation
+The manuscript relies on a specific dataset but does not provide a clear citation for it in the reference list.
+*   **Evidence:**
+    *   **Section 3.4:** "We use OLMo3-7B... and train on the **Dolci-Think dataset**, a long-CoT reasoning corpus..."
+    *   **References:** There is no entry for "Dolci-Think" or a paper explicitly describing this dataset. The text mentions "Following Kopiczko et al. (2026)," implying the dataset might be from that paper, but it is not explicitly linked.
+*   **Impact:** This hinders reproducibility. Readers cannot verify the source or composition of the training data without guessing which reference contains it.
+
+### Summary
+The manuscript contains **clear internal inconsistencies** regarding citation years and experimental seed counts. The asymmetry in seed counts (3 vs. 6) is particularly concerning given the paper's focus on the instability of the Low-NLL method. These issues suggest the manuscript requires careful revision to ensure methodological rigor and consistency.

@@ -1,0 +1,74 @@
+# Global Summary
+
+This paper addresses "rollout drift" in LLM-based world models for web agents, where simulated trajectories diverge from real environment behavior. The authors identify search-result simulation as the root cause, finding that 100% of first divergences occur at search observations with a 99.8% per-step divergence rate. To fix this, they propose "search-anchored hybrid rollouts," a method that intercepts search actions and substitutes the world model's prediction with real search results (via a cached BM25 index), while keeping other observations simulated. Evaluated on WebShop (1.18M products), the method improves the Consistency Ratio (CR) from 0.594 to 0.824 (+38.7%). The authors demonstrate that anchoring only the first search provides negligible benefit (CR 0.598), confirming that compounding errors drive drift. The approach outperforms agent-side baselines like Best-of-N and ReAct prompting. Limitations include evaluation restricted to WebShop and the requirement for a search cache or API.
+
+# Abstract
+
+- Problem: LLM-based world models suffer from rollout drift, limiting their utility for training and evaluation.
+- Discovery: 100% of first divergences occur at search-result observations. Search results exhibit a 99.8% per-step divergence rate.
+- Method: Search-anchored hybrid rollouts ground search observations with real data while keeping other observations simulated.
+- Results: On WebShop, Consistency Ratio improves from 0.594 to 0.824 (+38.7% relative improvement).
+- Key Insight: Anchoring only the first search yields negligible benefit (CR 0.598), while anchoring all searches yields substantial gains, confirming compounding search errors drive drift.
+- Comparison: Outperforms agent-side baselines (Best-of-N, ReAct), showing observation grounding addresses a different failure mode than action selection.
+
+# Method
+
+- Problem Setup:
+  - World model $M$ predicts next observation $s_{t+1}$ given state $s_t$ and action $a_t$.
+  - Metric: Consistency Ratio (CR) = W2R (World-to-Real success) / Real (Real environment success). CR of 1.0 indicates perfect fidelity.
+- Motivation:
+  - Search-result simulation is the primary failure mode. World models hallucinate product ASINs and descriptions.
+  - WebShop observations decompose into structured state updates (learnable) and high-entropy retrieval channels (search results, difficult to memorize).
+- Search-Anchored Hybrid Rollouts:
+  - During rollout, intercept `search[query]` actions.
+  - Bypass world model prediction; fetch real results from WebShop environment.
+  - Use a search cache (Pyserini/BM25) for determinism and efficiency.
+  - Non-search actions remain simulated by the world model.
+- Implementation Details:
+  - World Model: Qwen2.5-7B (fine-tuned on WebShop trajectories, temperature 0).
+  - Acting Agent: Gemini-2.5-Flash (temperature 1.0).
+  - Search Index: BM25 over 1.18M products.
+  - Evaluation: 200 test episodes, 3 random seeds.
+
+# Experiments
+
+- Experimental Setup:
+  - Dataset: WebShop (1.18M products, 12,087 task instructions).
+  - Baselines: Pure WM, Best-of-N (N=4), ReAct prompt.
+  - Proposed Methods: First-search anchored, All-search anchored (basic), All-search anchored + ReAct.
+- Main Results (Table 1):
+  - Pure WM CR: 0.594 ± 0.099.
+  - All-search anchored + ReAct CR: 0.824 ± 0.018 (Best performance, lowest variance).
+  - All-search anchored (basic) CR: 0.819 ± 0.130.
+  - First-search anchored CR: 0.598 ± 0.067 (Negligible improvement over Pure WM).
+  - Best-of-N CR: 0.748 ± 0.089.
+  - ReAct prompt CR: 0.812 ± 0.062.
+- Error Source Analysis (Figure 2):
+  - Search Result divergence rate: 99.8% (n=14,359).
+  - Navigation divergence rate: 68.4% (n=7,456).
+  - Product Detail divergence rate: 50.9% (n=674).
+  - 100% of first divergences occur at search results (step 0).
+- Stratified Analysis by Search Count (Table 2/Figure 3):
+  - 1 Search (~10% episodes): Pure WM CR 0.879 -> Anchored CR 1.034.
+  - ≥2 Searches (~90% episodes): Pure WM CR 0.513 -> Anchored CR 0.624 (+22% relative improvement).
+  - ≥3 Searches: Pure WM CR 0.371 -> Anchored CR 0.618 (+0.247 absolute improvement).
+  - Conclusion: Benefits scale with search count, confirming compounding errors are the root cause.
+
+# Conclusion
+
+- Summary: Search-result simulation is the primary failure mode in LLM-based world models for web agents. Search-anchored hybrid rollouts address this by grounding search observations with real data.
+- Key Result: Consistency Ratio improves from 0.594 to 0.824 (+38.7%) on WebShop.
+- Mechanism: Compounding search errors drive rollout drift; anchoring only the first search is insufficient.
+- Limitations: Evaluation limited to WebShop. Requires access to a search cache or real search API.
+- Future Work: Extend search anchoring to other high-entropy action types (e.g., API calls, database queries) and investigate learned retrieval augmentation.
+
+# References
+
+- Key Works Cited:
+  - Word2World (Li et al., 2025): Framework for evaluating LLM-based world models.
+  - WebDreamer (Gu et al., 2025): Model-based planning for web agents.
+  - WebShop (Yao et al., 2022a): Simulated e-commerce environment (1.18M products).
+  - ReAct (Yao et al., 2022b): Synergizing reasoning and acting in LLMs.
+  - Qwen2.5 (Yang et al., 2024): Technical report for the world model used.
+  - Pyserini (Lin et al., 2021): Toolkit for IR research (used for BM25 search).
+  - Other related works: DynaWeb, R-WoM, WebArena, Mind2Web, MuZero, Dreamer.

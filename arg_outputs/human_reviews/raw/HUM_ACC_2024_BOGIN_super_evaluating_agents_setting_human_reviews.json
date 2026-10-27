@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_BOGIN_super_evaluating_agents_setting",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "SUPER: Evaluating Agents on Setting Up and Executing Tasks from Research Repositories",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper presents SUPER, a benchmark to evaluate the ability LLMs to set up and execute tasks from research repositories. The benchmark is composed of 152 scenarios derived from 42 research repositories in ML and NLP. It introduces two evaluation measures: task success and progress towards the task. The results show that even SOTA models struggle with these tasks, showing the difficulty of automating research experiments.",
+      "strengths": "The work is a great beginning of a very relevant application of LLMs, definitely a great addition for the research community.\n\nSUPER fills a significant gap in evaluating LLMs on realistic research tasks, which are more complex than typical programming benchmarks.\nThe use of both outcome-based and landmark-based evaluations provides a nuanced understanding of model performance and helps in recognizing partial successes.\nThe paper shows analysis of model performance, including both proprietary and open-source models, and highlights specific areas where current models fall short.",
+      "weaknesses": "There are a few concerns with respect to this work : \n\n While the paper mentions comparisons to other benchmarks,  a more in-depth analysis of how existing benchmarks specifically fall short in addressing the challenges SUPER targets. For instance, a side-by-side performance comparison on a subset of common tasks would provide better insights into the new contributions.\n\nThe paper could improve by categorizing tasks based on their complexity and the specific skills they test (say, dependency resolution, code modification, etc.). This would help in understanding the granular weaknesses of the models and guide future improvements. \n\n\nThe scenarios presented, while realistic, could be further validated against actual researcher workflows. Some kind of human eval would be really useful here, since its one of a kind work. Surveys or interviews with researchers about the most common issues they face when replicating experiments could ensure that the benchmark covers all critical aspects of this task. This would add as a really important contribution too.",
+      "questions": "Minor : Please keep all ethical considerations in one section and limitations in another.",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "c31f7f1c07ca7cf83f7b19b2e88b04b6209ede305c0a2832b39b71405654889e35bbe654efcc517fcd4c985c891cd88658b6e22a7f260d141587ad1aae2d751e"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The following paper proposes a benchmark SUPER (Setting UP and Executing tasks from Research repositories) for 152 scenarios that are commonly encountered when running experimental tasks in low-profile research repositories. The main contributions of this paper are -\n\n1. The authors derive these scenarios by first collecting expert solutions for research-related end-to-end tasks based on a diverse set of repositories. They extract scenarios using their proposed \"Code Masking\" mechanism, loosely inspired by cloze tests and masked language models (MLM), where they remove parts of the expert-written code to generate a diverse set of scenarios targeting a specific challenge.\n\n2. To solve these scenarios the agents are given a specific goal to complete and a final metric to provide. Since there is often more than one way to achieve these goals, the agents are evaluated on both proprietary and open-source models on SUPER as the underlying models of strong baseline agents with access to file editing tools.\n\n3. They find that agents struggle to correctly solve many of the scenarios, with only 38.3% of the scenarios being solved correctly by our strongest agent. These agents are even further away from solving entire research tasks, completing correctly only 7.1% of the end-to-end tasks. Open-source models entirely fail on both the scenarios and end-to-end tasks. Through analysis of model trajectories, we find that agents are better at resolving well-specified scenarios, such as solving exceptions, bugs, and other issues than at scenarios that require going through the repository and files to understand the structure of code.",
+      "strengths": "The following are the strengths of the paper :\n\n1. The paper is well-written and easy to read and understand.\n2. The Masked coding approach where the authors remove parts of the expert-written code to generate a diverse set of scenarios targeting a specific challenge is very useful in other scenarios.\n3. The two-step evaluation procedure partially helps to compare the models.",
+      "weaknesses": "The weaknesses of the paper are :\n\n1. The approach should be tried on other open-source LLMs such as Llama3-8B before making conclusions about the open-source LLMs.\n2. The LLM provides no explanations for performing a certain step in the process.",
+      "questions": "Q1. Why only 1 open-source LLM is chosen for evaluation?\nQ2. Did you explore the explanations provided by the LLMs for performing a particular step? such as Chain-of-Thought?\nQ3. How are the limits for the max tokens selected?",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "eb1522f77b3098a24a9b5c773bb9986b7eef6522df82307ac8dacf7fc86cc3817b29de778f81580a17a912bb720cddb6ad273917194ded39424027cf1c3d20f5"
+    }
+  ]
+}

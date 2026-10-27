@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_LONG_multiexpert_prompting_improves_reliability",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Multi-expert Prompting Improves Reliability, Safety and Usefulness of Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes \"Multi-expert prompting,\" extending the idea of ExpertPrompting (Xu et al., 2023) by expanding it to multiple experts (original ExpertPrompting conditions the model on a single expert). It differs from the original work first by conditioning multiple experts, hence potentially getting more diverse generations, then applying a group decision-making method (Nominal group technique, NGT), which uses a 7-step process to produce a group response. At an implementation level, multiple expert responses are generated with an expert-conditioning prompt - these responses are aggregated into an aggregation prompt, which results in a final conclusion from the multiple responses.",
+      "strengths": "1. The proposed method is pragmatic and easy to implement, and the experiment results demonstrate the method's efficacy.\n2. The paper is easy to follow and explains the method well.\n3. Applying a method from social science to NLP is an interesting twist - I couldn't have thought of this.\n\nNote: My previous review raised concerns on point 2, which have since been addressed in the current revision.",
+      "weaknesses": "Section 5.2 conducts an ablation study on which steps of the NGT method have different effects, followed by an expert count vs performance experiment. I have a suspicion that the characteristics of this would be different based on the model size - but the authors only discuss GPT. The latter (number of experts), in particular, would likely vary depending on whether the pre-train corpus has diverse (in particular, not open) data used for training.\n\nThe method has no countermeasures against hallucinating experts. For example, if the model has been poorly trained on a specific domain (e.g., poor/biased training data for said domain), a hallucinating expert on that topic can have adversarial effects on the response quality. An extreme version of that would be a (majority) mixture of hallucinating experts (e.g., the minority is factual, but gets drowned out in consensus). The authors discuss weighting in the limitations, which can be a potential mitigation - but I would like to see a bit more discussion from the authors on this matter as a limitation of their work.",
+      "questions": "Please see the weaknesses suggestion above.\n\nNit: The red vs green color coding used in Figure 1 and 2 are not CVD-friendly.",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "5fd6c161ae9a227e2c3b1d52e901799db0df0867523db399376ea62d2bf16b615929919657ed14c287b1bb3fbb7ae34d435ef72ba1b56e491c50fda59fc179f0"
+    }
+  ]
+}

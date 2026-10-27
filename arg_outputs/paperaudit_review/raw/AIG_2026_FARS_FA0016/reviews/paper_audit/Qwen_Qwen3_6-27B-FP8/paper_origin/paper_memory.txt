@@ -1,0 +1,55 @@
+# Global Summary
+- Problem: Large language models face high inference costs with long contexts. Context compression reduces these costs, but optimal transport (OT) methods like ComprExIT operate query-agnostically, potentially wasting capacity on irrelevant tokens.
+- Approach: Proposes QCap-OT, an inference-time modification that reweights OT sender marginals based on query-anchor similarity to bias compression toward query-relevant content without retraining.
+- Evaluation: Tested on SQuAD and HotpotQA validation sets using a frozen Llama-3.2-1B backbone with a 4x compression ratio. Metrics include Exact Match (EM) and token-overlap F1. Baselines cover published ComprExIT, a re-implemented version, and a hard-selection QueryTopK method.
+- Key Findings: QCap-OT yields results statistically indistinguishable from the re-implemented baseline (F1 delta ≈ 0, p > 0.05). However, a massive reproducibility gap exists: the re-implementation achieves only 2.47% F1 on SQuAD versus the published 68.08% F1 (~65-point gap).
+- Caveats: The negative result is confounded by the inability to reproduce the baseline's performance despite extensive debugging and architectural corrections. The paper explicitly documents this reproducibility challenge and releases code/checkpoints.
+
+# Abstract
+- Context compression reduces LLM inference costs by replacing long inputs with shorter representations.
+- OT-based methods like ComprExIT aggregate tokens via the Sinkhorn algorithm but operate query-agnostically.
+- Proposes QCap-OT: reweights OT sender marginals based on query-anchor similarity to focus on query-relevant content.
+- Results: QCap-OT is statistically indistinguishable from vanilla ComprExIT (F1 delta ≈ 0, p > 0.05).
+- Major caveat: Reproducibility challenge. Re-implementation achieves 2.47% F1 vs published 68.08% F1 (~65-point gap).
+- Documents negative result to inform future research. Code is publicly available.
+
+# Conclusion
+- Reiterates QCap-OT as an inference-time modification reweighting sender marginals via query-anchor similarity.
+- Confirms QCap-OT produces results statistically indistinguishable from vanilla ComprExIT across all metrics.
+- Highlights the ~65-point F1 gap (2.47% vs 68.08%) as a fundamental reproducibility challenge persisting despite debugging.
+- Emphasizes that in the low-performance regime, query-conditioned reweighting has no measurable effect.
+- Contributions: QCap-OT proposal, empirical evaluation showing no improvement, documentation of reproducibility challenges.
+- Code and checkpoints released to support future reproducibility efforts.
+
+# Preliminaries
+- Covers the ComprExIT framework for context compression via optimal transport (OT).
+- OT formulation: Senders are token anchors; receivers are K compression slots constructed via field-wise mean representations.
+- Utility matrix measures compatibility via cosine similarity in a learned projection space.
+- Sender marginal is predicted by a linear layer plus softmax; receiver marginal is uniform (1/K).
+- Transmission plan solves an entropy-regularized OT problem via the Sinkhorn algorithm.
+- QCap-OT modifies the sender marginal by computing query-anchor similarity via cosine similarity between the query embedding and each anchor token.
+- Reweighting formula applies a temperature parameter beta > 0 to bias the transport plan toward tokens that are both important and query-relevant.
+- Not specified in this section: Specific mathematical bounds or convergence guarantees for the reweighting mechanism.
+
+# Method
+- Implementation requires no additional training or parameters beyond the original ComprExIT model.
+- Query embedding computed using the frozen LLM backbone; similarity computation reuses existing projection weights.
+- Computational overhead is negligible: one forward pass through query tokens and N cosine similarity computations.
+- Temperature parameter set to beta = 1.0 in all experiments.
+- Context anchor representations can be cached per document; only lightweight per-query reweighting and OT solve are added at inference.
+- Pipeline comparison shows standard ComprExIT uses learned sender marginals, while QCap-OT uses reweighted marginals based on query similarity scores.
+
+# Experiments
+- Setup: MRQA benchmark (SQuAD, HotpotQA) validation sets. Frozen Llama-3.2-1B backbone. 4x compression ratio. Segment size 128, entropy regularization epsilon = 0.1, 30 Sinkhorn iterations. Beta = 1.0.
+- Baselines: ComprExIT (Published), ComprExIT (Re-impl), QCap-OT, QueryTopK (hard selection baseline). 3 random seeds (42, 123, 456). Metrics: EM, F1.
+- Main Results: Published ComprExIT achieves 68.08% F1 on SQuAD and 68.40% F1 on HotpotQA. Re-impl achieves 2.47±0.07% F1 on SQuAD and 1.66±0.10% F1 on HotpotQA. QCap-OT achieves 2.49±0.07% F1 on SQuAD and 1.66±0.10% F1 on HotpotQA. QueryTopK achieves 0.38±0.26% F1 on SQuAD and 0.19±0.08% F1 on HotpotQA.
+- Statistical testing: Paired bootstrap with 10,000 resamples confirms no significant difference between QCap-OT and Re-impl (95% CIs for mean delta include zero).
+- QueryTopK ablation: OT coordination outperforms hard selection even at low performance levels, suggesting global coordination and locality bias are valuable.
+- Reproducibility analysis: Over 10 training runs. Fixed 3 architectural discrepancies (per-layer projections, column normalization, L2 normalization in MLP), improving performance from 0.65% to 2.47% F1 on SQuAD. Hyperparameter sweeps (learning rates: 5e-5, 1e-4, 5e-4; batch sizes: 256, 2048) did not close the gap. Suggests success depends on unreported implementation details.
+- Not specified in this section: Detailed hardware specifications or exact training duration per run.
+
+# References
+- Contains citations for context compression methods (ICAE, Gist Tokens, AutoCompressors, 500xCompressor, Activation Beacon, LLMLingua, Selective Context, EXIT, OSCAR, ATACompressor).
+- Includes foundational optimal transport work (Sinkhorn distances) and dataset citations (SQuAD, HotpotQA, MRQA).
+- Lists backbone model references (Llama 3) and the original ComprExIT paper (Ye et al., 2026).
+- Not specified in this section: Specific licensing terms for cited datasets or code repositories beyond standard academic citation format.

@@ -1,0 +1,53 @@
+1) Summary
+The paper addresses the challenge of handling truncated rollouts in Reinforcement Learning with Verifiable Rewards (RLVR) for long Chain-of-Thought (CoT) reasoning. The authors propose "timeout bootstrapping," a method grounded in classical RL theory that treats token-limit truncation as a timeout rather than a terminal failure, bootstrapping the reward from the critic's value estimate at the truncation point. The authors conduct a pre-registered comparison of this method against standard truncate-as-failure and DAPO overlong shaping on the MATH-500 dataset using a DeepSeek-R1-Distill-Qwen-1.5B model. While timeout bootstrapping fails to meet pre-registered success criteria on average due to critic value collapse (where value estimates degenerate to -1.0), it demonstrates promise on stable training runs (+2.20pp over baseline). The paper provides a mechanistic analysis identifying critic miscalibration as the primary barrier to success.2) Strengths
+*   **Strong Theoretical Grounding**
+    *   The proposed method is not merely a heuristic but is derived from established RL theory regarding time limits (Pardo et al., 2017), providing a principled justification for treating truncation as a non-terminal state (Section 3.3, Equation 5).
+    *   The distinction between "terminal" and "timeout" terminations is clearly articulated, offering a novel conceptual lens for analyzing LLM training dynamics (Section 1, Section 3.2).
+    *   The theoretical framework explains *why* standard truncate-as-failure might be suboptimal (biasing against long-horizon reasoning), adding depth to the motivation (Section 3.3).
+*   **Rigorous and Transparent Experimental Design**
+    *   The study employs pre-registered success criteria, enhancing the credibility of the negative results and preventing p-hacking (Section 4.1).
+    *   The comparison includes relevant baselines (Truncate-as-Failure and DAPO Overlong Shaping) and uses multiple random seeds to assess stability (Table 1).
+    *   The evaluation focuses on a specific "long subset" of problems where truncation is most relevant, ensuring the metric aligns with the problem setting (Section 4.1).
+*   **Deep Diagnostic and Mechanistic Analysis**
+    *   Rather than simply reporting failure, the authors perform a thorough analysis of *why* the method failed, identifying critic value collapse as the key issue (Section 4.3, Figure 2).
+    *   The mechanistic analysis reveals that the critic is fundamentally miscalibrated, exhibiting negative correlation with correctness (AUROC < 0.5), which is a significant insight for the community (Section 4.4, Table 2).
+    *   The analysis of entropy dynamics highlights the trade-off between preventing collapse and causing explosion, providing valuable practical insights (Section 4.3, Figure 2a).
+*   **Nuanced Reporting of Results**
+    *   The authors honestly report that while the method fails on average, it shows promise on stable runs, avoiding a binary "success/failure" narrative (Section 4.2).
+    *   The discussion clearly separates fundamental flaws from engineering issues (e.g., entropy hyperparameter sensitivity), guiding future work effectively (Section 5).3) Weaknesses
+*   **Limited Model Scale and Generalizability**
+    *   The experiments are conducted solely on a 1.5B parameter model, which may lack the representational capacity for accurate value estimation in complex reasoning tasks, limiting the generalizability of the findings (Section 4.1, Section 5).
+    *   With only two random seeds per condition, the statistical power is limited, and the results may be sensitive to initialization (Section 4.1, Section 5).
+    *   The study does not test the method on larger models (e.g., 7B or 14B) where critic calibration might behave differently, leaving open the question of whether the failure mode persists at scale (Section 5).
+*   **Unresolved Critic Training Strategy**
+    *   The authors identify that excluding truncated rollouts from critic training may starve the critic of supervision, but they do not experimentally test the alternative of including them (Section 3.4, Section 5).
+    *   The proposed "delayed bootstrapping" (waiting 10 steps) is a heuristic fix that is not ablated to determine its optimal duration or necessity (Section 3.4).
+    *   The paper suggests critic pre-training as a future direction but does not implement it, leaving the primary failure mode (critic collapse) unaddressed in the experimental results (Section 5).
+*   **Entropy Instability and Hyperparameter Sensitivity**
+    *   The reliance on a fixed entropy bonus coefficient (0.001) leads to divergence in one seed, indicating high sensitivity to hyperparameters (Section 4.3, Figure 2a).
+    *   The paper mentions EntroPIC as a potential solution but does not integrate it, leaving the entropy control mechanism as a weak point in the implementation (Section 2, Section 5).
+    *   The divergence in seed 137 significantly impacts the average performance, suggesting the method is not yet robust enough for practical use without careful tuning (Table 1).
+*   **Lack of Ablation on Critic Miscalibration Causes**
+    *   While the paper identifies negative correlation between critic values and correctness, it does not ablate potential causes (e.g., reward sparsity, horizon length, or model capacity) to pinpoint the root of the miscalibration (Section 4.4).
+    *   The analysis does not explore whether the critic is failing due to the specific nature of mathematical reasoning or if this is a general issue with value estimation in long-horizon LLM training (Section 5).4) Suggestions for Improvement
+*   **Expand Model Scale and Seed Diversity**
+    *   Conduct experiments on larger models (e.g., 7B or 14B) to assess whether critic calibration improves with increased representational capacity.
+    *   Increase the number of random seeds (e.g., to 5 or more) to provide more robust statistical estimates and better characterize the failure rate.
+    *   Test the method on different reasoning domains (e.g., coding or logical reasoning) to evaluate generalizability beyond mathematics.
+*   **Experiment with Critic Training Strategies**
+    *   Implement and compare the strategy of including truncated rollouts in the critic loss (with appropriate weighting) to verify if this mitigates value collapse.
+    *   Ablate the "delayed bootstrapping" period to determine the optimal duration and whether it is strictly necessary.
+    *   Implement critic pre-training on completed rollouts before RL begins, as suggested in the discussion, to provide better initial value estimates.
+*   **Adopt Robust Entropy Control**
+    *   Integrate a more sophisticated entropy control mechanism, such as EntroPIC (Yang et al., 2025), to stabilize training without manual hyperparameter tuning.
+    *   Perform a sensitivity analysis on the entropy coefficient to identify a safe range that prevents both collapse and explosion.
+    *   Report the entropy dynamics for all seeds to provide a clearer picture of training stability.
+*   **Deepen Analysis of Critic Miscalibration**
+    *   Conduct ablation studies to isolate the causes of critic miscalibration (e.g., varying horizon length, reward sparsity, or model size).
+    *   Analyze the critic's value estimates on different types of reasoning errors (e.g., calculation errors vs. logical errors) to understand what features the critic is learning.
+    *   Explore auxiliary objectives for the critic, such as predicting intermediate step correctness, to improve calibration on long horizons.5) Score
+- Overall (10): 6 — The paper provides a valuable negative result with deep mechanistic insights, but the limited scale and unresolved failure modes prevent a stronger recommendation.
+- Novelty (10): 7 — Applying classical RL timeout theory to LLM truncation is a conceptually sound and novel approach, even if the practical implementation faces challenges.
+- Technical Quality (10): 6 — The experimental design is rigorous and the analysis is thorough, but the method's failure due to critic collapse and entropy instability limits its technical contribution.
+- Clarity (10): 8 — The paper is well-written, clearly structured, and honest about its limitations, making the findings easy to understand and reproduce.
+- Confidence (5): 4 — High confidence in the assessment based on the clear presentation of methods, results, and limitations in the manuscript.

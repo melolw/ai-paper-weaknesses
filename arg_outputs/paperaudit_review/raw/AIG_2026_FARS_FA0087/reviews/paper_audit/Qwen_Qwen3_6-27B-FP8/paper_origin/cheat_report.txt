@@ -1,0 +1,27 @@
+**Integrity and Consistency Risk Report**
+
+**1. Citation Year Inconsistencies (Text vs. Bibliography)**
+There are significant mismatches between the citation years used in the main text and the dates provided in the reference list. This suggests a lack of synchronization between the manuscript body and the bibliography.
+*   **Shenfeld et al.:** Section 2 cites "Shenfeld et al., 2025" and "Shenfeld et al., 2026". However, the reference list (Block 12) only contains entries for "Shenfeld et al., 2024" (two distinct papers). There is no 2025 or 2026 reference for this author.
+*   **Lai et al.:** Section 2 cites "Lai et al., 2025". The reference list (Block 12) lists "Song Lai... 2024".
+*   **Chen et al.:** Section 2 cites "Chen et al., 2025", which matches the reference list (Block 8).
+*   **Impact:** The citation of a "2026" paper that does not exist in the bibliography is a clear factual error or hallucination.
+
+**2. Numerical Inconsistencies Across Tables (Table 1 vs. Table 2)**
+The results for the method labeled "RazorSFT-8" and the baseline "Offline SFT" differ between the main results table and the ablation table, without explanation.
+*   **RazorSFT-8 AvgAcc:** Table 1 reports **0.616**, while Table 2 reports **0.619**.
+*   **RazorSFT-8 FM:** Table 1 reports **-0.039**, while Table 2 reports **-0.032**.
+*   **Offline SFT FM:** Table 1 reports **-0.643**, while Table 2 reports **-0.642**.
+*   **Impact:** While the differences are small, they indicate that the tables likely represent different experimental runs or settings. The manuscript does not explain why the "RazorSFT-8" method yields different metrics in the ablation study compared to the main results.
+
+**3. Method Naming vs. Experimental Setup**
+*   **Issue:** Section 4.1 states: "For RazorSFT, we use $k = 8$ candidates for stages 1–2 and $k = 16$ for stage 3".
+*   **Contradiction:** Table 1 labels the method **"RazorSFT-8"**. If the method uses $k=16$ for the final stage, the label "RazorSFT-8" is potentially misleading, as it implies a fixed $k=8$ throughout.
+*   **Impact:** This creates ambiguity regarding which specific configuration produced the main results in Table 1.
+
+**4. Minor Text-Table Discrepancy (Section 4.3)**
+*   **Issue:** Section 4.3 states: "RazorSFT’s KL-minimal selection further improves FM to −0.032 and AvgAcc from 0.598 to 0.619."
+*   **Verification:** This text accurately reflects Table 2. However, as noted in point 2, these numbers differ from Table 1 (FM -0.039, AvgAcc 0.616). The text in Section 4.2 accurately reflects Table 1. The manuscript fails to reconcile these two sets of results for the same named method.
+
+**Conclusion**
+The manuscript contains clear internal inconsistencies regarding citation years and numerical results across tables. The citation of a non-existent 2026 reference and the mismatch between text citations and the bibliography are significant integrity risks. The numerical discrepancies between Table 1 and Table 2 require clarification to ensure the reproducibility and correctness of the reported results.

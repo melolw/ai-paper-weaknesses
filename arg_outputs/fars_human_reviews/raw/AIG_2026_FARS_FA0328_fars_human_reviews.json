@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0328",
+    "title": "Position Bias Correction is Insufficient for One-Pass Attention Sorting",
+    "abstract": "Long-context language models suffer from position bias, where information in middle positions is under-utilized. Attention Sorting addresses this by iteratively reordering documents based on attention patterns, but requires multiple expensive prefill passes. We hypothesize that position bias is the primary bottleneck and propose Debiased One-Pass Attention Sorting, which estimates a per-prompt position-bias curve from distractor documents and subtracts it from raw attention scores to enable single-pass sorting. Our experiments on two models refute this hypothesis: on LLaMA-2-7B-32K-Instruct, debiasing produces identical results to uncalibrated single-pass sorting (94.83\\% accuracy), while on YaRN-Llama-2-7b-64k, debiasing improves accuracy by 8.67 percentage points but remains 14.84pp behind iterative sorting, closing only 37\\% of the gap. These results demonstrate that position bias is not the primary bottleneck on well-tuned models and that iterative sorting provides benefits beyond bias correction, likely from attention context refinement across passes.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper tests the hypothesis that position bias is the primary bottleneck in one-pass attention-based document sorting, and that explicitly estimating and removing this bias can enable single-pass sorting to match iterative Attention Sorting. To validate this, the authors propose Debiased One-Pass Attention Sorting, which estimates a per-prompt position-bias curve from distractor documents and subtracts it from raw attention scores. The method reduces prefill cost from k+1 passes to 2 passes. Empirically, the hypothesis is refuted, the paper concludes that position bias is not the main bottleneck, and iterative sorting works due to additional effects such as attention refinement.",
+        "strengths": "- Clear motivation/hypothesis\nThe paper clearly tests if the position bias explains the need for iterative sorting.\n",
+        "weaknesses": "- Missing key baselines\nThe paper lacks comparisons with other ranking or calibration approaches, such as in-context re-ranking, rank fusion / permutation consistency\n- Debiasing method is heuristic and weakly justified\nThe paper assumes most documents are distractors.\n- No mechanism-level validation of conclusions\nThe paper claims iterative sorting works due to attention refinement. But no experiment isolates this effect, and no analysis of attention evolution across iterations.",
+        "suggestions": "",
+        "llmDisclosure": "I use ChatGPT for phrasing/grammar polishing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T23:15:56.772Z",
+      "updatedAt": "2026-03-25T23:15:56.772Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that the main reason iterative Attention Sorting helps long-context QA is raw attention’s position bias, and that explicitly estimating and subtracting a per-prompt position-bias curve from document attention scores should let a single-pass method match multi-pass iterative sorting. The paper proposes Debiased One-Pass Attention Sorting, which estimates bias from presumed distractor documents, computes debiased scores, and reorders documents using only two prefill passes. Empirically, on SynthWiki@28K with two long-context LLMs, the hypothesis is largely refuted: on LLaMA-2-7B-32K-Instruct, debiasing gives identical performance to uncalibrated one-pass sorting (94.83%), while on YaRN-Llama-2-7b-64k, debiasing improves over one-pass sorting by 8.67 points but still trails iterative sorting by 14.84 points, suggesting that iterative sorting helps through mechanisms beyond simple position-bias correction. ",
+        "strengths": "The paper asks a clear, falsifiable, and non-trivial question: whether position bias is the primary bottleneck preventing one-pass attention sorting from matching iterative sorting. The hypothesis is explicit, and the paper directly tests it rather than only proposing another heuristic.  \n\nThe contribution is informative even though the main hypothesis is refuted. That is a good fit for this venue: the paper teaches the reader that simple debiasing is insufficient, and that iterative sorting likely provides additional gains via context refinement or noise reduction.  \n\nThe empirical outcome is crisp and easy to interpret. On one model, debiasing has zero effect; on the other, it helps substantially but still fails to close most of the gap to iterative sorting. This is a strong negative result because it cleanly separates “position bias matters somewhat” from “position bias fully explains iterative gains.”  \n\nThe paper includes a useful cross-model comparison. Testing both a relatively well-tuned instruction model and a more severely recency-biased YaRN model helps show that the answer is model-dependent rather than universal.  \n\nThe iterative progression analysis is helpful. The observation that gains continue even after the gold document is already near the end supports the paper’s claim that additional mechanisms beyond bias correction are at work. ",
+        "weaknesses": "The central interpretation is plausible but somewhat speculative. The paper attributes the residual gains of iterative sorting to “attention context refinement” and “error accumulation reduction,” but these mechanisms are not directly measured or isolated.  \n\nValidation is limited to exact-match accuracy on SynthWiki-style extractive QA. A broader set of tasks or retrieval settings would strengthen the claim that one-pass bias correction is generally insufficient.  ",
+        "suggestions": "Add ablations over the debiasing estimator: additive vs. divisive correction, different trimming fractions, different bin counts, and alternative bias-curve estimators. \n\nEvaluate on more models, especially newer instruction-tuned long-context models and models with different positional extension schemes. \n\nInclude at least one non-SynthWiki setting, such as a more realistic multi-document QA or re-ranking task. \n\nStrengthen the related-work discussion around prior positional-bias calibration methods and clarify exactly what is novel here: not debiasing per se, but the specific hypothesis that debiasing is sufficient to replace iterative sorting. ",
+        "llmDisclosure": "LLM usage: Yes \n\nUsed for: \n\nDrafting and structuring the summary, strengths, weaknesses, and suggestions \n\nLanguage polishing and clarity improvements \n\nTool/model: ChatGPT (GPT-5.3) \n\nData sharing: Only user-provided manuscript content was used; no confidential or external data was shared \n\nFinal judgment: All evaluations were independently verified and determined by the reviewer ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T08:05:08.963Z",
+      "updatedAt": "2026-03-28T08:05:08.963Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that position bias is the primary bottleneck limiting the performance of single-pass attention sorting for long-context language models. To validate this hypothesis, the authors propose Debiased One-Pass Attention Sorting, an approach that estimates a per-prompt position bias curve using distractor documents and subtracts this curve from raw attention scores to enable single-pass document sorting without multiple expensive prefill passes. The hypothesis is evaluated empirically across two long-context LLaMA-2 variants: LLaMA-2-7B-32K-Instruct and YaRN-Llama-2-7b-64k. The experiments yield a clear negative result: on the 32K model, debiasing provides no improvement over uncalibrated single-pass sorting, while on the 64K model, debiasing closes only 37% of the performance gap between single-pass and iterative sorting. These findings refute the core hypothesis, demonstrating that position bias is not the main bottleneck for well-tuned long-context models, and that iterative attention sorting provides additional benefits beyond position bias correction, likely from cross-pass attention context refinement.",
+        "strengths": "1. The claim that position bias is the primary barrier to single-pass attention sorting is highly plausible given widespread documented position bias in long-context models, making the hypothesis a relevant and important question for the long-context modeling community.\n2. The authors test their approach across two distinct long-context models with different context window sizes and tuning strategies, ensuring the results are not limited to a single model configuration. The inclusion of both uncalibrated single-pass sorting and iterative sorting as baselines enables clear quantification of how much of the performance gap debiasing actually closes.\n3. The findings directly challenge a common implicit assumption in the long-context modeling space, providing actionable evidence that researchers cannot rely solely on position bias correction to match the performance of iterative attention sorting in single-pass settings. The proposed explanation for iterative sorting’s benefits (attention context refinement across passes) also offers a useful starting point for future work on efficient long-context processing.",
+        "weaknesses": "1. The paper only evaluates performance on two 7B-parameter LLaMA-2 derived models. It is unclear whether the findings generalize to other model families (e.g., Mistral, GPT-3.5/4 style models), larger model sizes, or non-instruction-tuned checkpoints, which may have different position bias profiles and attention behavior.\n2. The abstract provides no information on the specific task used to evaluate sorting accuracy, the number of runs or statistical significance tests for the reported accuracy numbers, or the hyperparameters of the debiasing approach (e.g., how distractor documents are selected, how the position bias curve is estimated). This missing information makes it difficult for readers to assess the robustness of the results or reproduce the experiments without accessing the full paper.\n3. While the authors suggest that iterative sorting’s benefits come from attention context refinement across passes, they provide no empirical evidence to support this explanation (e.g., analysis of how attention patterns change across iterative passes, or ablation studies testing alternative explanations for the performance gap).",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T12:48:47.627Z",
+      "updatedAt": "2026-04-12T12:48:47.627Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0328"
+}

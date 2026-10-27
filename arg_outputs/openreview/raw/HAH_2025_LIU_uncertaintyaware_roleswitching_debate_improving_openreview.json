@@ -1,0 +1,44 @@
+{
+  "paper_id": "HAH_2025_LIU_uncertaintyaware_roleswitching_debate_improving",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=heYWeCpOlS",
+  "venue": "Agents4Science",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 3",
+      "strengths_and_weaknesses": "This paper proposes an \"Uncertainty-Aware Role-Switching Debate Protocol\" to improve truthfulness in large language models. The approach involves a structured 5-phase debate between two LLM agents followed by judgment from a third model.\n\nQuality:\nThe paper is technically sound with a well-defined protocol. The experimental setup is appropriate, using OpenBookQA as a benchmark and comparing against relevant baselines. The ablation studies effectively demonstrate the contribution of both role-switching and uncertainty phases. However, the results are modest - achieving 74.3% accuracy versus 60.4% for BERT-Large baseline, but still well below state-of-the-art methods that use external knowledge (87.2%). The case studies provide useful qualitative insights, though some failure cases highlight limitations in the approach.\n\nClarity:\nThe paper is generally well-written and organized. The 5-phase protocol is clearly explained with good visual illustration. The experimental setup and results are presented clearly. However, some sections could be more concise, and the related work section in the appendix is quite lengthy.\n\nSignificance:\nThe work addresses an important problem of LLM truthfulness and hallucination. The role-switching and uncertainty disclosure mechanisms are novel contributions to debate frameworks. However, the impact is somewhat limited by the modest performance gains and restriction to multiple-choice questions. The computational overhead (9 LLM calls per question) also limits practical applicability.\n\nOriginality:\nThe paper introduces genuinely novel elements: role-switching during debate and explicit uncertainty quantification. These are meaningful departures from existing debate protocols. The structured 5-phase approach is also a clear advancement over prior work.\n\nReproducibility:\nThe experimental setup is well-documented with sufficient detail for reproduction. The authors provide prompt templates and indicate code availability, though the anonymous link cannot be verified.\n\nEthics and Limitations:\nThe paper adequately discusses limitations including computational costs, knowledge boundaries, and potential for rhetorical manipulation. The broader impacts section addresses potential misuse concerns. The authors are appropriately honest about the method's constraints.\n\nWeaknesses:\n1. Performance gains are modest and fall short of methods using external knowledge\n2. Limited to multiple-choice format, reducing generalizability\n3. High computational cost (9x single model calls)\n4. Some failure cases suggest vulnerability to persuasive but incorrect arguments\n5. Evaluation limited to single domain (science QA)\n6. No comparison with other multi-agent approaches or recent debate methods\n\nStrengths:\n1. Novel and well-motivated protocol design\n2. Clear experimental validation with appropriate ablations\n3. Thoughtful analysis including failure cases\n4. Good documentation and reproducibility\n5. Honest discussion of limitations\n6. Addresses important problem in AI alignment\n\nThe paper makes a solid contribution to debate-based AI alignment with novel mechanisms, but the practical impact is limited by modest performance gains and computational overhead.",
+      "questions": "N/A",
+      "rating": "4",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 2",
+      "strengths_and_weaknesses": "This paper proposes a novel multi-phase debate protocol, \"Uncertainty-Aware Role-Switching Debate,\" to improve the truthfulness of Large Language Models (LLMs). The protocol introduces two key innovations: a mid-debate role-switching phase and an explicit uncertainty quantification phase. Evaluated in a zero-shot setting on OpenBookQA, the method shows significant accuracy improvements over a standard debate baseline, with ablation studies demonstrating the importance of both new components.\n\nThe submission is technically strong, with a well-defined and motivated protocol addressing weaknesses in prior work. The experimental design is sound, using strong debaters and a weaker judge to test the debate format. The claims are convincingly supported by ablation results, showing clear efficacy for the new phases. The authors are transparent about their method's absolute performance and its context relative to state-of-the-art approaches, emphasizing the contribution as a robust mechanism for improving truthfulness rather than achieving a new SOTA score.\n\nThe paper is exceptionally clear and well-organized, with detailed descriptions, logical presentation of results, and strong support for reproducibility, including code and prompt templates. The work is original and significant, advancing AI alignment by formalizing role-switching and uncertainty quantification in debate, and demonstrating their impact on a judge's ability to discern correct answers. The ideas are likely to influence future research.\n\nReproducibility is a major strength, with all necessary details provided. The authors also thoroughly address ethical considerations and limitations, including potential misuse and failure modes, and provide both successful and failed case studies. Their transparency and self-reflection are exemplary.\n\nOverall, this is an excellent, well-motivated, and thoroughly evaluated paper that makes a significant contribution to improving LLM truthfulness. It is technically sound, clearly communicated, and a strong asset to the Agents4Science conference.",
+      "questions": "N/A",
+      "rating": "6",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 1",
+      "strengths_and_weaknesses": "This paper proposes an Uncertainty-Aware Role-Switching Debate protocol for LLMs, featuring five structured phases and reporting 74.3% accuracy on OpenBookQA without task-specific training. The approach is methodologically novel, with ablation studies supporting the value of role-switching and uncertainty disclosure. The paper is clear, transparent, and reproducible, with code and prompt templates provided. However, there are major methodological flaws: the evaluation reformulates the 4-way OpenBookQA task into a binary decision, making the main quantitative results invalid and not comparable to standard baselines. The protocol leaks ground truth to one debater, lacks key baselines and statistical robustness, and does not specify distractor selection. Minor inconsistencies and unsupported claims are also present. While the design is interesting and potentially impactful, the flawed evaluation undermines the main claims. The paper is not recommended for acceptance in its current form, but could become valuable with proper evaluation and fair baselines.",
+      "questions": "N/A",
+      "rating": "2",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_n9XJ",
+      "review_type": "human",
+      "summary": "This paper proposes a new debate protocol, the Uncertainty‑Aware Role‑Switching Debate (UARSD) protocol. In that framework, two powerful LLM debaters engage in a structured five‑phase debate stages that encourage honest self‑reflection and compels each model to confront the opponent’s viewpoint. The authors claimed that the debate-enhanced LLM achieves a promising performance on OpenBookQA.",
+      "strengths_and_weaknesses": "- Interesting approach with a novel protocol.",
+      "questions": "- Broader evaluation: Test the protocol on additional domains—e.g., factual knowledge (other QA datasets), mathematical reasoning (MATH, GSM8K), and code generation (HumanEval, MBPP)—to assess how well role‑switching and uncertainty disclosure generalize.\n- Model diversity: Experiment with a wider range of debaters and judges (different sizes, architectures, or domain‑specialized models) to explore how model heterogeneity affects debate dynamics and final accuracy.",
+      "rating": "5",
+      "confidence": "2"
+    }
+  ]
+}

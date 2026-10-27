@@ -1,0 +1,317 @@
+[
+  {
+    "id": "FA0404",
+    "title": "Hazard-Signature Tombstones: Commit-Time Forget Lockout for LLM Agent Memory",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.8
+  },
+  {
+    "id": "FA0001",
+    "title": "Canary-Controlled Safe-Data Interleaving for Reducing Emergent Misalignment",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0006",
+    "title": "View-Disagreement Escalation for Robust Web-Agent Trajectory Judges",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0015",
+    "title": "Orthogonal Junk: Gradient-Orthogonality Data Selection for Continual Pre-Training on Low-Quality Data",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0022",
+    "title": "The Repetition Advantage in Long-CoT SFT is a Termination Effect",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0044",
+    "title": "Selective Self-Reference for LLM-as-a-Judge: Using Self-Consistency to Reduce Error Propagation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0045",
+    "title": "Hard Examples Beat Easy Examples in Repetition-Heavy Long-CoT Fine-Tuning",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0046",
+    "title": "QuoteVerify: Inference-Time Quote-Backed Citation Verification for Deep Research Reports",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0057",
+    "title": "LiveMedBench-Ask1: Evaluating Ask-Before-Answer Behavior in Medical LLMs",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0061",
+    "title": "Entropy Dynamics Do Not Provide Reliable Execution-Free Selection Signals for Code Generation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0064",
+    "title": "NLL-Guided Full-Attention Layer Selection for Training-Free Sliding-Window Adaptation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0069",
+    "title": "Timeout Bootstrapping for Long-CoT RLVR: Promise and Pitfalls",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0072",
+    "title": "Execution-Trace Guided Remasking for Diffusion Code Generation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0080",
+    "title": "Misalign@k: Tail-Risk Evaluation of Emergent Misalignment Defenses Under Repeated Sampling",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0082",
+    "title": "Context Bagging: Inference-Time Ensembling for Robust Long-Context QA Under Hard Distractors",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0087",
+    "title": "RazorSFT: On-Policy Supervised Fine-Tuning with KL-Minimal Target Selection for Continual Learning",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0102",
+    "title": "KL-Time Replay: Function-Space Drift Monitoring for Continual Learning in LLMs",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0104",
+    "title": "Search-Anchored Hybrid Rollouts for Text-Based World Models",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0111",
+    "title": "Label-Free Hyperparameter Calibration for Parallel Context Encoding via KL Divergence Matching",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0151",
+    "title": "MidPC LoRA: Intermediate SVD Slices for Continual Learning with Low-Rank Adaptation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0161",
+    "title": "Speaker-Attested Grounding for False Memory Resistance in Agent Memory Systems",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0171",
+    "title": "SourceJS-LoRA: Source-Referenced Jensen-Shannon Divergence for Learning LoRA Merge Coefficients",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0223",
+    "title": "Delta SVD-EQ: Post-Hoc Spectral Equalization for LoRA Continual Learning",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0237",
+    "title": "Entity-Anonymized Context Prompts for Improving Context Faithfulness in Knowledge-Conflict QA",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0292",
+    "title": "Tiny-LR Proxy SFT for Dataset Ranking: An Empirical Investigation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0328",
+    "title": "Position Bias Correction is Insufficient for One-Pass Attention Sorting",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0005",
+    "title": "Selective Delexicalization to Defend Structured-Output LLM APIs from Control-Plane Jailbreaks",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 4.4
+  },
+  {
+    "id": "FA0035",
+    "title": "LASCon: Loop-Aware Scratchpad Condensation for Terminal Agents",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 4.4
+  },
+  {
+    "id": "FA0123",
+    "title": "Compute-Matched Repetition Advantage in Long-CoT Supervised Fine-Tuning",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 4.4
+  },
+  {
+    "id": "FA0301",
+    "title": "Definition Unit Tests Improve LLM Convention Adherence",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 4.4
+  },
+  {
+    "id": "FA0016",
+    "title": "Query-Conditioned Marginals for OT-Based Context Compression: An Empirical Investigation",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 4.1
+  },
+  {
+    "id": "FA0029",
+    "title": "Output-Space Allocation Costs for Calibration-Guided LLM Compression: An Empirical Study",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 3.9
+  },
+  {
+    "id": "FA0209",
+    "title": "GradRatio-Select: Gradient-Based Layer Selection for Fine-Tuning Model Editing",
+    "gitlab_url": "",
+    "n_reviews": 3,
+    "llm_score": 3.9
+  },
+  {
+    "id": "FA0163",
+    "title": "Execution-Signature Recycling: Deduplicating Unit-Test Failure Feedback for Test-Time Code Scaling",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 6.3
+  },
+  {
+    "id": "FA0042",
+    "title": "Distilling Bidirectional Embedding Teachers into Streaming-Compatible Causal Students",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.8
+  },
+  {
+    "id": "FA0150",
+    "title": "ShallowPPL: Investigating Early-Exit Logit Lens for Code Context Compression",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.8
+  },
+  {
+    "id": "FA0162",
+    "title": "Training-Free Linear Routing for Sparse Attention via Attention-Mass Prediction",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.8
+  },
+  {
+    "id": "FA0233",
+    "title": "PhaseGuard-KL: Output-Dissimilarity-Triggered KL Regularization for Emergent Misalignment Defense",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.8
+  },
+  {
+    "id": "FA0192",
+    "title": "AR-Order RL Post-Training Reduces Order Robustness in Diffusion Language Models",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.6
+  },
+  {
+    "id": "FA0007",
+    "title": "WindowScan-Judge: Robust Safety Judging Against Benign-Padding Attacks via Windowed Scanning and Length-Aware Aggregation",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0020",
+    "title": "AlignDefTok: Training-Free Transfer of DefensiveTokens via Embedding-Space Alignment",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0032",
+    "title": "RC-MemStop: Risk-Controlled Early Stopping for Long-Context Memory Agents",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0033",
+    "title": "Interface-Aware Smoke Tests and Deterministic Import Autofix for Feature-Level Coding Agents: A Negative Result",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0034",
+    "title": "Adaptive Rerank Budgeting for Video-Text Retrieval via Layer-Disagreement Routing",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  },
+  {
+    "id": "FA0039",
+    "title": "Prefix-Ratio GRPO: Improving Gradient Quality for Reinforcement Learning with Verifiable Rewards",
+    "gitlab_url": "",
+    "n_reviews": 2,
+    "llm_score": 5.2
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0015",
+    "title": "Orthogonal Junk: Gradient-Orthogonality Data Selection for Continual Pre-Training on Low-Quality Data",
+    "abstract": "Continual pre-training on low-quality social media content causes ``brain rot''---measurable degradation in LLM capabilities that persists after instruction tuning. We investigate whether gradient-based data selection can mitigate this degradation by selecting training samples whose gradients are orthogonal to capability-preserving anchors. We propose Orthogonal Junk, a three-stage pipeline that computes anchor gradients from diverse benchmarks, scores candidates by gradient orthogonality, and uses pool-weighted sampling to balance selection quality with data diversity. Experiments on Llama-3.2-1B-Instruct reveal mixed results: Orthogonal Junk provides modest improvement on long-context understanding (RULER: +2.89pp vs random selection) but unexpectedly degrades reasoning (ARC-Challenge: $-$5.12pp). A simple perplexity baseline outperforms our method on RULER (+8.05pp). Analysis reveals that data repetition---an artifact of subset selection---is a dominant confound, with repetition rate affecting reasoning more than selection quality. These findings suggest that gradient orthogonality at the LM head may not capture the full dynamics of capability preservation.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "Continual pre-training on low-quality data usually cause the performance drop. To address this problem, this manuscript introduces an orthogonal gradient estimation to filter out the low quality data. They scores candidates by gradient orthogonality, and uses pool-weighted sampling to balance selection quality with data diversity. The results on ARC and Ruler show that their method relieve the drop.",
+        "strengths": "The research problem addressed in this study is both important and timely, with significant implications for the field.\n\nThe proposed idea is novel and well-justified, grounded in a logical and reasonable hypothesis that aligns with practical needs and theoretical foundations.\n\nThe study conducts a comprehensive set of baseline comparisons and ablation experiments, which effectively validate the proposed method. ",
+        "weaknesses": "Motivation and Foundation\nThe foundational premise of the manuscript appears questionable. Given that continued pre-training (CPT) on low-quality data demonstrably degrades model performance, the rationale for pursuing this approach requires stronger justification. While CPT on private or domain-specific data may be necessary in practice, the manuscript fails to adequately explain why this direction is valuable or necessary. A clear articulation of the practical or theoretical motivation—such as data availability constraints, domain adaptation needs, or robustness considerations—is essential to establish the relevance of this work.\n\nEvaluation Scope and Benchmark Selection\nThe current evaluation relies primarily on ARC and Ruler, which, while useful, are insufficient to comprehensively assess the impact of CPT on knowledge retention and reasoning capabilities. To strengthen the validity of the conclusions, a broader and more diverse set of benchmarks—including tasks targeting factual knowledge, multi-step reasoning, and generalization—is strongly recommended. Expanding the evaluation suite would significantly enhance the credibility and impact of the study.\n\nMagnitude of Improvement and Contribution\nAlthough the reported results show some degree of improvement, the gains are modest and lack compelling evidence of a meaningful advance. Given the limited performance enhancement and the absence of strong ablations or case studies demonstrating why the method works, the overall contribution remains underwhelming. To elevate the paper’s impact, the authors should either demonstrate more substantial improvements, provide deeper qualitative analysis, or clarify the practical significance of the observed gains.",
+        "suggestions": "",
+        "llmDisclosure": "Only use llm to polish",
+        "ethicsReproducibility": "NA"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T03:05:35.270Z",
+      "updatedAt": "2026-03-31T03:05:35.270Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that gradient-based data selection -- specifically, selecting training samples whose gradients are orthogonal to a capability-preserving anchor gradient -- can mitigate \"brain rot\" (capability degradation from continual pre-training on low-quality social media content). To verify this hypothesis, it proposes a pipeline that computes anchor gradients from capability benchmarks (GSM8K, MMLU, Alpaca), scores junk tweets based on gradient orthogonality, and uses pool-weighted sampling to promote diversity. Experimental results show mixed results. First, this method can perform better than the baseline that does CPT randomly, but worse than the baseline that uses perplexity for sample selection. Analysis reveals data repetition is a dominant confound, with repetition rate affecting reasoning more than selection quality.",
+        "strengths": "1. Well-grounded hypothesis, which is based on the recent \"brain rot\" paper and previous continual learning theory. \n2. Experiment design is sound, which follows the setting of the \"brain rot\" paper. \n3. The analysis of selection strategy evolution (Table 3, Figure 2) reveals that data repetition dominates selection quality for reasoning is a genuinely useful finding for the data selection community.",
+        "weaknesses": "1. The scale of anchor data and model size is very limited. For example, only three datasets for anchor computation and 1B LLM are adopted. That can't well validate the hypothesis. \n2. The problem it faces here is a traditional problem in active learning where multiple objectives are involved. The first objective is to select diverse data, and the second is to optimize for a loss. Here, it proposes a very vanilla solution to this problem, which totally ignores the second dimension, which makes the observation a bit trivial. \n3. The data mixture design is not well grounded; it seems the ratio is designed by hand. ",
+        "suggestions": "",
+        "llmDisclosure": "use claude code for hallucination detection",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T22:53:22.715Z",
+      "updatedAt": "2026-03-22T22:53:22.715Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates the problem of capability degradation (“brain rot”) during continual pre-training (CPT) on low-quality data (e.g., social media content), and proposes a data selection method, Orthogonal Junk, based on gradient orthogonality. The approach constructs anchor gradients from capability-preserving tasks and measures the orthogonality between candidate data gradients and these anchors, prioritizing samples that are approximately orthogonal in order to reduce interference with existing capabilities. Experiments conducted on Llama-3.2-1B-Instruct show improvements on long-context tasks, but performance degradation on reasoning tasks. Additionally, the authors identify data redundancy as a significant influencing factor and argue that the current gradient orthogonality formulation is insufficient to fully capture the mechanisms of capability preservation.",
+        "strengths": "1. The paper addresses the practically important issue of capability degradation in continual pre-training, and explores a data-centric perspective rather than modifying training algorithms, which is a meaningful and underexplored direction. The use of gradient inner products to characterize task interference, along with the hypothesis that gradient orthogonality can mitigate capability conflicts, is intuitively well-motivated from an optimization standpoint and aligns with prior works such as GEM and PCGrad.\n\n2. The experimental setup is relatively well-structured, including multiple baselines and controlled token budgets, providing a reasonable basis for comparison. Although the overall performance gains are limited, the paper identifies and analyzes data redundancy as a key factor, offering an empirical insight that is valuable for understanding data selection in CPT.",
+        "weaknesses": "1. The method remains somewhat shallow in its design and does not sufficiently explore the core intuition it proposes. For instance, gradients are computed only on the LM head, which is a strong simplification; however, the paper neither justifies this design choice nor investigates more comprehensive formulations (e.g., cross-layer or representation-level alignment).\n\n2. When experimental results reveal limited or even negative effects on certain tasks (e.g., reasoning), the paper does not further analyze differences in gradient structures across capabilities, nor does it leverage these observations to develop improved methods, leaving the discussion largely at a descriptive level.\n\n3. While data redundancy is identified as a major influencing factor, the lack of controlled experiments that isolate this variable makes it difficult to disentangle the effect of the proposed method from that of the data distribution. Finally, the method fails to outperform a simple perplexity-based baseline, suggesting that the current implementation is insufficient to substantiate its central hypothesis.",
+        "suggestions": "",
+        "llmDisclosure": "I used ChatGPT to summary the paper content, and I based on both summary and pdf to write the draft of weakness and strength by myself. Finally, I used ChatGPT to polish my draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-22T05:04:00.665Z",
+      "updatedAt": "2026-03-22T05:04:00.665Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0015"
+}

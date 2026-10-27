@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_WANG_save_all_enabling_full",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Save It All: Enabling Full Parameter Tuning for Federated Large Language Models via Bicycle Black Gradient Descent",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper presents a training paradigm named FedCyBGD, which addresses the computational, memory, and communication challenges associated with pre-training or fine-tuning large language models (LLMs) in a federated learning (FL) environment. By utilizing a cycle block gradient descent approach, FedCyBGD enables full parameter tuning of LLMs on edge devices with minimal resource consumption. The method includes a compression scheme to reduce model download costs and maintains state-of-the-art performance while significantly reducing associated costs. The approach has been evaluated on various public LLMs and datasets, demonstrating its efficacy in terms of memory, computation, and communication efficiency.",
+      "strengths": "1.\tThe introduction of cycle block gradient descent for FL is an innovative approach that addresses limitations of traditional FL methods\n\n2.\tThe method reduces memory, computation, and communication costs by updating only specific blocks of the model, making FL more feasible for LLMs on edge devices.\n\n3.\tThe paper provides experimental results across multiple LLMs and datasets, showcasing the practical benefits and performance improvements of the proposed method.",
+      "weaknesses": "1.\tThe paper mentions that the cycle block update method trains and uploads the responsible block by only one client per cycle. Are the other clients waiting during this period? Does this reduce training efficiency? Additionally, updating only one block at a time may result in slow convergence, requiring more training rounds to achieve desired performance.\n\n2.\tThe proposed method aims to perform full parameter tuning of LLMs in FL, but it compresses the model during transmission. Doesn't this lead to the loss of important parameters, which could negatively impact the model's performance and contradict the goal of full parameter tuning in federated learning?\n\n3.\tThe paper adopts a layer dropout compression method that randomly drops some layers from the frozen components. There are many studies on the importance of layers, and randomly dropping important layers may lead to significant performance degradation of the model. Given the numerous studies highlighting the importance of specific layers, this random dropout approach could result in significant performance degradation, undermining the reliability and robustness of the model. To advance the state of knowledge, the paper needs to improve training efficiency by ensuring more clients actively participate simultaneously, develop sophisticated compression techniques that minimize parameter loss, and refine the layer dropout method to selectively retain important layers based on their contribution to the model's performance.",
+      "questions": "Weaknesses.",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "4b313a0daa3daa75874f621ec4292f19312d9cc702cb6ede4970918b9a77bfe7955963f6d27877db0513d5c263b6d6e51857bc0e223dca2ef8c2c2111f46721c"
+    }
+  ]
+}

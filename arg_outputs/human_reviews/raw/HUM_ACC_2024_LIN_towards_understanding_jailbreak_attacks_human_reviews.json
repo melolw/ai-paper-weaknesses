@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_LIN_towards_understanding_jailbreak_attacks",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Towards Understanding Jailbreak Attacks in LLMs: A Representation Space Analysis",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper aims to study the intermediate representations of LLMs to better understand the behavior of successful jailbreaking attacks. The authors focus on the hypothesis that the successful jailbreak prompts move the LLM representations in the harmless or acceptance direction. Towards this goal, the authors visualize the LLMs last hidden states of the last input text token as the representation of harmful and harmless prompts using 2-dimensional PCA. Furthermore, the insights are used to find the direction that enhance existing white box jailbreaking attacks.",
+      "strengths": "- Similar to a concurrent work [1], the authors find that consistent directions exists for refusal or acceptance of a prompt. \n- This insight is then used to propose a method to find this direction which can enhance and complement other whitebox jailbreak attacks. - This mainly involves moving the representation of current attack in the direction of the acceptance direction.\n\n[1] Refusal in Language Models Is Mediated by a Single Direction https://arxiv.org/abs/2406.11717",
+      "weaknesses": "- The analysis mainly applies for models whose weights are accessible and thus excludes some of the frontier models. \n- The optimization based approach to move the representation in the acceptance direction can lead to the prompt being unfaithful to the original intent of the i initial jailbreaking prompt and requires powerful LLM as a judge to avoid such drift in semantics. \n- The  improvements over baseline for some models/attacks appear less significant based on the empirical results presented.",
+      "questions": "The analysis may be sensitive to the choice of harmless and harmful anchor datasets. It will be interesting to consider more datasets for the analysis.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "47ca9d143eb4540ba689e857ddd5eadc689837fbf38c80f66030b51cbc5be097e8bb5285184a0b5662a80367a710fb328dd881c5d01f46aab16a80198052e517"
+    }
+  ]
+}

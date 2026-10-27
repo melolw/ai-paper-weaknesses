@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_ELBAKIAN_extractive_rationalization_model_accuracy",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Extractive Rationalization and Model Accuracy in Few-Shot Learning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "In this work, the authors investigate the relationship between prediction and extractive rationalization in a few-shot learning setting. They find a strong correlation between classification accuracy and consistency with human-annotated rationales. They also discover that model errors are more attributable to inaccurate rationalization rather than incomplete rationalization.",
+      "strengths": "- The experimental setup is described clearly, utilizing the latest LLM, GPT-4, for the experiments.\n- The experimental results are illustrated with examples.",
+      "weaknesses": "- The paper lacks a clear explanation of the motivation for this work.\n- The experimental methods are very simple and lack technical depth, making it resemble a course assignment report rather than a cutting-edge scientific research paper. Additionally, no valuable insights are evident from the experimental results.",
+      "questions": "- It would be helpful to clearly explain the significance of the research problem.\n- There is room for improvement in the writing of the paper.",
+      "rating": 1,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "4dc63a00c2e752911374bd67bc8d2ba3827eef80c546989c13ffd57bf7669bf7ceddc1ef757f95b50e08fad4d09d3a8528cf070f0aedd4124ab78b66e56c590d"
+    }
+  ]
+}

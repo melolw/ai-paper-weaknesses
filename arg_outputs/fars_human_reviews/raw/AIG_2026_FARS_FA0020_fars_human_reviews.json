@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0020",
+    "title": "AlignDefTok: Training-Free Transfer of DefensiveTokens via Embedding-Space Alignment",
+    "abstract": "Prompt injection attacks pose a critical threat to LLM-integrated applications by embedding adversarial instructions in external data to hijack model behavior. DefensiveTokens provide an effective test-time defense by prepending learned soft tokens to inputs, but require expensive per-model training ($\\sim$16 GPU-hours). We present AlignDefTok, a training-free method for transferring DefensiveTokens between related models via Orthogonal Procrustes alignment. Our approach computes the optimal rotation matrix from vocabulary embeddings and applies it to transfer DefensiveTokens while preserving their critical high-norm property. On the AlpacaFarm benchmark, Procrustes transfer achieves 0\\% attack success rate (ASR) for Llama-3.1$\\rightarrow$Llama-3 with 285$\\times$ speedup. For harder transfer directions, our tiny-adapt stage uses transferred tokens as initialization, achieving 1.9\\% ASR with 133$\\times$ speedup. AlignDefTok enables rapid deployment of prompt injection defenses across model families without per-model retraining.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper hypothesizes that DefensiveTokens learned on one language model can be effectively transferred to a related model through a simple linear alignment of embedding spaces, without requiring costly retraining. To validate this, the authors employ an empirical methodology, using Orthogonal Procrustes alignment to map token embeddings across models and evaluating the transferred tokens on prompt injection benchmarks (e.g., AlpacaFarm), with additional analysis via ablations and a lightweight fine-tuning stage (tiny-adapt). The results provide strong but conditional support for the hypothesis: transfer works extremely well in favorable settings (even achieving 0% attack success rate), while in harder transfer directions it requires minor adaptation, indicating partial but largely positive confirmation.",
+        "strengths": "1. The paper studies an important and practically relevant problem (the cross model transferability of soft prompts) for prompt injection defense, which is well motivated.\n2. The method is supported by a clear and well-grounded mathematical formulation, providing strong intuition through embedding space alignment and orthogonal transformations.",
+        "weaknesses": "1. The paper overlooks relevant prior work such as On Prompt-Driven Safeguarding for Large Language Models, which appears earlier than DefensiveTokens and is closely related to prompt-based defense mechanisms, raising concerns about the completeness of the literature review.\n2. The paper does not sufficiently justify why preserving the high-norm property of DefensiveTokens is sufficient for maintaining defense effectiveness. While norm preservation is empirically observed, the underlying mechanism remains unclear, and it is not well explained whether norm alone captures the critical factors for successful transfer.\n3. The paper does not evaluate the impact of the proposed method on general model utility. It remains unclear whether the transferred DefensiveTokens degrade performance on standard tasks, which is important for assessing the practicality of the approach.\n4. There is a minor formatting issue in Section 4.1, where “128,256” should include a space after the comma (“128, 256”), which affects readability and presentation quality.",
+        "suggestions": "",
+        "llmDisclosure": "I used ChatGPT (GPT-5.3) for minor language polishing and phrasing refinement of the review. No confidential or unpublished content from the submission was shared beyond high-level descriptions. All evaluations, judgments, and scores were independently determined and verified by myself.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-23T08:56:35.288Z",
+      "updatedAt": "2026-03-23T08:56:35.288Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates whether defensive soft prompts trained for prompt-injection robustness can transfer across closely related language models without full retraining. The central hypothesis is that models sharing the same tokenizer and embedding dimensionality have embedding spaces related by a norm-preserving linear transformation, enabling DefensiveTokens learned on a source model to be mapped to a target via Orthogonal Procrustes alignment. Results partially support the hypothesis: transfer from Llama-3.1 to Llama-3 achieves 0% attack success rate (ASR) at roughly 285× lower compute than full retraining, while the reverse direction requires a lightweight adaptation stage to reduce ASR from 33.7% to 1.9%. ",
+        "strengths": "1. Clear, falsifiable hypothesis about the geometric transferability of defensive soft prompts.\n2. Orthogonal Procrustes alignment is closed-form, CPU-friendly, and easy to integrate—making the method practically appealing.\n3. In the favorable transfer direction, performance matches native DefensiveTokens at a fraction of the compute cost.\n4. Useful ablations covering direct copy vs. Procrustes, tiny-adapt initialization, and norm preservation.\n5. Reproducibility is solid, with concrete experimental details and available code.",
+        "weaknesses": "1. Validation is narrow: only two closely related Llama variants are tested, leaving generalization to cross-family or cross-architecture settings unaddressed.\n2. The marginal gain of Procrustes over direct copying (0.9 ASR points in one direction, identical in the other) weakens the case for alignment as the key driver.\n3. No analysis of utility on benign prompts, over-refusal, or general task quality—important dimensions in any security evaluation.\n4. The training-free claim is only partially valid; the harder transfer direction requires a nontrivial tiny-adapt stage.\n5. AlpacaFarm is a limited benchmark, and string-match ASR is unlikely to capture adaptive or semantically sophisticated attacks.",
+        "suggestions": "The paper should narrow its central claim to something like “training-free transfer in favorable same-family settings”.",
+        "llmDisclosure": "I used Gemini for wording/grammar polishing and technical checks. I shared technical words and experimental settings. I have verified the result independently.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T03:50:09.332Z",
+      "updatedAt": "2026-03-25T03:50:09.332Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0020"
+}

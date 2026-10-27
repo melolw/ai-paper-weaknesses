@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_SHAIB_detection_measurement_syntactic_templates",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Detection and Measurement of Syntactic Templates in Generated Text",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This work presents POS tag-sequences or syntactic templates as a means to detect patterns or repetitions in LLM-generated text that can be mapped to their pre-training data. For this, the authors find the most common or frequent POS sequences at least 6 tokens/tags long and measure the diversity and presence of such templates. They present an analysis of such templates for an extensive set of LLMs as well as tasks such as summarization, and open-ended generation. They also examine the pre-training data for Olmo and find that it is indeed the case that Olmo repeats or has \"memorized\" the POS templates that were largely present in its pre-training data. This is used as evidence to hypothesize that the template repetitions in closed-source LLMs could be used to at least identify the types of template patterns present in the LLMs pre-training data (which is often unknown). The authors are also able to isolate exactly how soon during training are such templates learned by the model measured by the perplexity of the template spans.",
+      "strengths": "The paper is well-written and easy to follow. The authors present a thorough analysis and report appropriate metrics to study all 3 research questions. The findings are interesting and hold potential as a means to reveal potential sources of pre-training data of closed-source LLMs. Additionally, they find some interesting and surprising results such as larger models not necessarily memorizing templates less frequently than smaller LLMs. Their analysis also lends another estimate of memorization in LLMs, providing a softer estimate or range which shows it to be higher than previously reported.",
+      "weaknesses": "Some clarification questions/suggestions:\n\n1. Could you elaborate further on why the results in L369-L374 are surprising? i.e. why is it surprising that the templates are being learned early on in pre-training?\n\n2. How was the minimum length (n=6) of the templates chosen?",
+      "questions": "a) Tables 1 & 2: Please check the captions. For example, where are text lengths provided in table 1? \n\nb) L085 : \"estimates that 1%\" -> \"estimates 1%\"\n\nc) Relevant work that also uses frequent POS sequences for authorship obfuscation wrt to the discussion of such features for authorship-related tasks: \n\nXing, E., Venkatraman, S., Le, T., & Lee, D. (2024, March). ALISON: Fast and Effective Stylometric Authorship Obfuscation. In Proceedings of the AAAI Conference on Artificial Intelligence (Vol. 38, No. 17, pp. 19315-19322).",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "d71ca92f9aace65acb2a457866a9163ad7e108c29e7282e1124bb3f291ed056abed313df32fc17c685f915dddd6a75eb21e0ca0175606caaf2c6282b7169072d"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper proposes a method to analyse syntactic features in LLM-generated text that is based on part-of-speech templates. The aim is to show that LLMs produce templated text that can be identified in the pre-training data, where text generated for downstream tasks is more likely to be templated than what humans would produce in reference text. The authors use an existing tool based on \nThese templates also serve as means to differentiate between models, tasks and domains. To this end. the authors use an existing tool to evaluate token- and part-of-speech diversity.",
+      "strengths": "While the method relying on POS tags itself is simple, the analysis and evaluation is carried out with great detail and can provide useful insights on the underlying (training) data and generation process.",
+      "weaknesses": "I find the part-of-speech based templates coarse-grained, and the tasks and datasets are limited (movies, news).\nAs the authors state in the limitations section, they use an existing tool that can contain errors; furthermore I find that the novelty of the approach is somewhat reduced as the purpose of this tool suggests an analysis of the form this paper carries out.",
+      "questions": "I would suggest enhancing the task- and dataset types.",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "a552a5c1aa42cf69d1fe841ffdf974dcf66896a1deab0f8c8c58001b0af7bca388d220401b17de2e86260aa639e904a419f8d48d2a54049aa7387703959c0c4c"
+    }
+  ]
+}

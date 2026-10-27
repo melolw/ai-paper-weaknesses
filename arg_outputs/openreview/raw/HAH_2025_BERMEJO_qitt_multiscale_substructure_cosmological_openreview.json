@@ -1,0 +1,44 @@
+{
+  "paper_id": "HAH_2025_BERMEJO_qitt_multiscale_substructure_cosmological",
+  "source": "openreview",
+  "review_url": "https://openreview.net/forum?id=LENY7OWxmN",
+  "venue": "Agents4Science",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_AIRev3",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 3",
+      "strengths_and_weaknesses": "This paper presents an AI-generated framework for extracting cosmological parameters (Ωm and σ8) from dark matter halo merger trees using multi-scale substructure analysis, Graph Neural Network (GNN) embeddings, and Quantum-Inspired Tensor Train (QITT) decomposition. The methodology is technically sound and well-organized, with a clear experimental design and sufficient detail for understanding and reproduction. However, the complexity of the approach is not convincingly justified, as simple aggregate features achieve comparable or better performance for Ωm. The results show mixed significance, with QITT-enhanced models outperforming raw feature baselines but not surpassing the simple aggregate baseline for the primary parameter. The combination of GNN embeddings with QITT is novel, but the overall improvement is modest. The paper claims reproducibility, though some hyperparameter choices lack justification. Limitations are acknowledged but only superficially discussed, and the ethical disclosure of AI involvement is present. The reference list is comprehensive, but the relationship to existing work could be clearer. Major issues include the lack of clear superiority over simpler methods, limited discussion of the added complexity, superficial treatment of limitations, and persistent challenges with σ8 predictions. Minor issues include unclear figures, insufficient justification for tensor reshaping, and limited statistical testing. Overall, the paper is an interesting proof-of-concept for AI-generated research but does not convincingly demonstrate practical benefits over simpler approaches, and the discussion of limitations is insufficient.",
+      "questions": "N/A",
+      "rating": "3",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev2",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 2",
+      "strengths_and_weaknesses": "This paper presents a novel and sophisticated framework for estimating cosmological parameters (Ωm and σ8) from dark matter halo merger trees, using a multi-stage pipeline that combines physically-motivated substructure identification, GraphSAGE autoencoder embeddings, and Quantum-Inspired Tensor Train (QITT) decomposition for feature compression. The methodology is highly original, generalizable, and exceptionally well-presented, with rigorous and honest evaluation against strong baselines. The authors are transparent about the main technical weakness: their method does not outperform a simple aggregate-feature baseline for Ωm, though it does outperform other baselines and shows promise for σ8. The paper could be improved by deeper discussion of why global features suffice for Ωm and further exploration of σ8. The use of 'Quantum-Inspired' in the terminology is noted as potentially confusing. Overall, this is an outstanding, methodologically innovative, and significant paper, especially as a fully AI-generated work, making it a benchmark demonstration for the Agents4Science conference and a clear candidate for acceptance.",
+      "questions": "N/A",
+      "rating": "6",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_AIRev1",
+      "review_type": "ai",
+      "summary": "Summary by AIRev 1",
+      "strengths_and_weaknesses": "The paper introduces a pipeline for estimating cosmological parameters from dark-matter halo merger trees using multi-scale substructure identification, feature engineering, graph embeddings, and Tensor Train (QITT) compression. The approach is well-motivated and the pipeline is clearly described, with strong points including a sensible simulation-level split, focus on substructure-level signals, and compact feature representations that perform well with linear models. Statistical tests and some implementation details are provided, aiding reproducibility.\n\nHowever, the paper suffers from several methodological inconsistencies (e.g., substructure thresholding, GNN architecture, TT reshaping, padding/truncation), potential representation leakage in the embedding stage, incomplete baseline coverage (missing end-to-end GNNs, dimensionality reduction, and some listed baselines), and limited interpretability of the compressed features. The strongest performance for Ωm comes from simple aggregate features, which weakens the practical impact of the proposed method. Statistical analysis lacks uncertainty estimates and multiple comparison corrections, and hyperparameter tuning protocols are inconsistently described. Reproducibility is hindered by missing or inconsistent details and lack of code/data links.\n\nThe originality lies in applying TT compression to concatenated physical and GNN features in cosmology, but the necessity and superiority over simpler alternatives are not convincingly demonstrated. The approach is promising for compact representations, but its significance is limited without stronger baselines and robustness analyses. No ethical concerns are noted, but limitations regarding leakage, truncation, and generalization should be more thoroughly discussed.\n\nActionable suggestions include resolving all methodological inconsistencies, eliminating representation leakage, adding strong baselines (end-to-end GNNs, set-level models, dimensionality reduction), conducting ablations and sensitivity analyses, improving statistical rigor, enhancing interpretability, and providing full reproducibility details.\n\nOverall, the idea is interesting and potentially useful, but the current submission is weakened by internal inconsistencies, missing baselines, and leakage concerns. Addressing these issues would substantially strengthen the paper.",
+      "questions": "N/A",
+      "rating": "3",
+      "confidence": "5"
+    },
+    {
+      "reviewer_id": "Reviewer_5ZTr",
+      "review_type": "human",
+      "summary": "This paper proposes a pipeline combine multi-scale substructure analysis, GNN-based topological embeddings, and Quantum-Inspired Tensor Train (QITT) decomposition for cosmological parameter estimation from dark matter halo merger trees.",
+      "strengths_and_weaknesses": "Strengths:\n\n1. The paper is clearly structured and well-written.\n\n2. The methodology is technically sound and well-executed. The use of GNNs for topological embeddings and QITT for compression is appropriate and innovative.\n\n3. Experiments are well-described with clear data-splitting, feature engineering, and statistical significance tests.\n\nWeakness:\n\n1.The main methodological innovation (QITT) is adapted rather than invented.\n\n2. The individual components (GNNs, tensor decomposition) are well-established in other fields. The paper could better situate itself in the existing literature on graph representation learning and tensor methods for cosmology.\n\n3. The improvement over baselines, though statistically significant, may not be substantively large to claim a breakthrough in parameter inference.\n\n4. Better to have some figure and table to show the overview of the pipeline and the results.",
+      "questions": "1. Would replacing QITT with PCA yield comparable results? Showing such ablations could clarify the necessity of QITT.\n2. Include runtime and resource comparison versus baseline models would be very helpful.",
+      "rating": "4",
+      "confidence": "2"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_CARRAGHER_balancing_generalization_specialization",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Balancing Generalization and Specialization in Multimodal Retrieval and Multihop QA Systems",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper evaluates the performance of LLMs on multi-modal QA tasks, comparing general-purpose LLMs with specialised models. It utilises a multi-modal multi-hop QA architecture built upon existing models and assesses its performance against LLMs on the WebQA benchmark. The paper also explores the trade-off between zero-shot prompting and fine-tuning, finding that while LLMs excel in certain tasks, fine-tuned specialised models outperform them in closed domains and high-complexity tasks.",
+      "strengths": "The paper addresses an important topic: LLMs performance on multi-modal QA tasks. It provides a comprehensive evaluation of LLMs and specialised models on the WebQA benchmark, offering insights into their strengths and weaknesses. The paper contributes to the multi-modal multi-hop QA field by effectively combining existing models. The analysis of retrieval and QA performance and task complexity provides insights into LLMs behaviour.",
+      "weaknesses": "The paper lacks a comprehensive discussion of related work in multi-modal QA and LLMs, which would provide a broader context for its contributions. While it mentions models used in their methodology, a broader overview of related work is needed to fully situate their approach within the field. Additionally, the experiments are limited to the WebQA benchmark, and evaluating the proposed architecture on other multi-modal QA datasets would demonstrate its generalisability.",
+      "questions": "* Some descriptions are a bit too wordy (e.g., 095: eschewing, 100: disparate)\n* 100: \"In-Context\" instead of \"In-Content\"\n* 232-233: Authors mention the QA classifier, which was not introduced/discusses before.\n* The paper's structure could be improved to enhance readability and make it easier for readers to follow the flow of information.",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 2.5,
+      "raw_note_id": "c87997cb5e314f4bc8251b4458e29f5fd48603c20bbde12f2e3eb7638fa518e49d20c897a1823f5ec108b9b5ac8bea89f2342c88713dfef286aa65478e5155a5"
+    }
+  ]
+}

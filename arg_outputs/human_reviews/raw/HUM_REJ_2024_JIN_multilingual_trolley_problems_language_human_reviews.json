@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_JIN_multilingual_trolley_problems_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Multilingual Trolley Problems for Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper expands the existing dataset for the trolley problem in ethics to a dataset covering 106 languages and evaluates and analyzes the GPT series of large language models. The paper finds that the moral judgment of large language models has a certain consistency with that of humans. It also discovers an unequal alignment between the moral judgment of large language models and the world map, and finds that moral judgment is mainly based on Speciesism, Fairness, and Utilitarianism.",
+      "strengths": "1. Extending the moral dilemma issue to multiple languages and examining the decision-making of Large Language Models (LLMs) in different cultures (Western, Eastern, and Southern) compared to humans is quite interesting.\n2. Some patterns and inequalities in the moral dilemma judgments of LLMs have been discovered.\n3. Using controlled variable data ensures that the conclusions drawn are more scientifically valid.",
+      "weaknesses": "1. The translation was done solely using Google Translate without any manual quality checks, especially for languages that are less resourced, the translation quality may not meet certain standards. In such cases, it could greatly affect the main conclusions drawn by the paper.\n2. The selection of models is insufficient, having only chosen the GPT series of Large Language Models (LLMs), which to some extent affects the generalizability of the conclusions across different LLMs.\n3. The distribution of Speciesism, Fairness, and Utilitarianism should be related to the distribution of the entities being compared in moral decision-making. What is the significance of this distribution as shown in Figures 5 and 6?\n4. The paper does not consider the stability of LLM decision-making, such as the possibility of different decisions being given by the same LLM under the same conditions when asked multiple times.\n5. Analyzing the reasons behind the decisions supported by Large Language Models (LLMs): Analyzing only 100 responses and selecting only three main categories from moral philosophy does not represent the universal reasons for the model's choices.",
+      "questions": "1. For languages with lower translation quality, the analysis quality can be improved by increasing data collection or by using more professional translation tools or human translation.\n2. Consider the differences in dialects.\n3. Expand the range of model selection and compare and analyze with other mainstream Large Language Models (LLMs).\n4. The different levels of \"linguistic inequality\" should be clearly defined and measured with standards.\n5. Expand the test scenarios for a more comprehensive assessment.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "01429a28d253e53083f6a60aac3a8a2df4fed5dd126d840d9650a302c5c96a884ffa7a94932042b5a6943f34da1bb55deaa607eb37362db487894895af343f06"
+    }
+  ]
+}

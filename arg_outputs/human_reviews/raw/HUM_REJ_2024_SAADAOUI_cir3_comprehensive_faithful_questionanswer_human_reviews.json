@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_SAADAOUI_cir3_comprehensive_faithful_questionanswer",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "CIR3: Comprehensive and Faithful Question-Answer Generation",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper studies generating QA paris with multi-agent LLMs from domain-specific documents.\nThe proposed CIR3 first identifies multiple subtopics from documents with few-shot prompting of LLMs.\nThen a Writer is assigned to a subtopic and generates QA pairs based on some perspective.\nThe QA pair generation by writers continues until the curmudgeon judges that the outputs meet the requirements.",
+      "strengths": "* It is an interesting idea to utilize LLMs in a multi-agent setting to generate QA pairs.\n* The experimental results on two datasets show that the proposed method improves statistical, encoder-based, and LLM-based scores compared to the two baselines.",
+      "weaknesses": "* I doubt that comprehensiveness is crucial for QAG. For some applications, comprehensive QA pairs for each document are not necessarily required. I think this paper lacks justification as to why comprehensive QA pairs for every document are crucial.\n* For clarity, this paper may need to improve the descriptions of the proposed method. E.g., I could not figure out from the main text what exactly Transactive Reasoning is, and whether perspectives are identical to subtopics or not.",
+      "questions": "* L43: \"the input answer\" -> Indeed, answers are usually used as input to QG in the literature, but it is not common knowledge for readers who are not familiar with QAG.\n* L149: \"We shift our focus from the typical task of QG to the more challenging QAG, which is inherently more difficult due to the limited search space and increased risk of producing duplicate QA pairs.\" -> Many studies have worked on QAG so far, so just studying QAG cannot be counted as a contribution.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "48d2af3d2613959c714e8286c8905acafeef74fa3695b924cc2d84c00f6b3c3f5fe5cd5d910cfb2c1726d6cc2d9edac130e43d941a59999034794068a471fbbb"
+    }
+  ]
+}

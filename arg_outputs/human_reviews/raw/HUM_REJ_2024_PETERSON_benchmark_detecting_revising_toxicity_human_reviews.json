@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_PETERSON_benchmark_detecting_revising_toxicity",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "A Benchmark for Detecting and Revising Toxicity in Scientific Paper Reviews",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper investigates the detection and rewriting of toxic content in scientific peer reviews, and provides a human-annotated dataset that can be utilized for training a toxic sentence classifier and rewriter.",
+      "strengths": "Toxic content in peer reviews poses a significant threat to the research community, as it can discourage researchers from submitting their work for review. Addressing this issue is crucial, and the paper takes a step in this direction by focusing on the task of identifying and rewriting toxic sentences within peer reviews. Additionally, the authors also contribute a valuable dataset that can benefit future researchers working on the task.",
+      "weaknesses": "1. The paper's writing quality is not ideal, with some sentences sounding unnatural (e.g., lines 10-11) and incomplete paragraphs that hinder the readability and fluency (line 377). Additionally, there are issues with table referencing, where many references do not match the context (e.g., lines 454, 468, 519). I would recommend revising the paper to address these clarity issues.\n\n2. The paper claims that using NLP systems for annotation is a novel contribution (lines 86-97), but this has been a common practice for a long time (e.g., [1]). Therefore, this should not be claimed as an innovative contribution.\n\n3. The paper proposes a GPT-4 generation with human verification approach to reduce human annotation costs and ensure data precision (lines 253-266). However, the recall of this approach is unclear, as GPT-4 may miss sentences that should be labeled as toxic. Without human evaluation of the recall, it is uncertain how reliable this approach is.\n\n4. The comparison between fine-tuned systems and their base counterparts using GPT-4 (lines 505-526) is questionable. The large gap between human performance and GPT-4 performance in Table 3, combined with the explanation that fine-tuned Mistral tends to hallucinate more than its base counterpart (lines 483-487), suggests that GPT-4 is not reliable for evaluation since it cannot measure factuality well. Conducting another GPT-4 based pairwise comparison to demonstrate the effectiveness of fine-tuning seems questionable.\n\n\n\n[1] SCIREX: A Challenge Dataset for Document-Level Information Extraction",
+      "questions": "Q: What does the sentence \"That said, ... sentences\" in line 400-402 mean?",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "859010594f2eac7d450083ac36bf113f1976eb0491fbf5a25472f98648b599cc67a687cbe1ea33541c6cbdbedaf3661b1fccbe6dda010b5c1d3f9396d4032362"
+    }
+  ]
+}

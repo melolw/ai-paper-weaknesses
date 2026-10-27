@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_ZHANG_qqq_quality_quattuorbit_quantization",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "QQQ: Quality Quattuor-Bit Quantization for Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces a new post-training quantization method, named QQQ, for large language models (LLMs). QQQ has two stages: i) adaptive activation aware weight smoothing, ii) Layer-wise hessian based weight quantization. The paper also presents highly efficient W4A8 GPU kernels to support the proposed method. Experimental results show QQQ performs on-par with state-of-the-art quantization approaches on conventional NLP benchmarks while achieving better inference speed.",
+      "strengths": "i) Topic: the paper aims to improve the inference efficiency for LLMs by post-training weight and activation quantization. Different from previous approaches that focusing more on W8A8 or W4A16, the paper pushes one step further to W4A8, which would be of interest to the community\n\nii) Implementation: the paper provides an efficient implementation of W4A8 GPU kernels, which could potentially support future research\n\niii) Inference speed: QQQ demonstrates superior latency results compared to previous approaches",
+      "weaknesses": "i) Method: if the reviewer understood correctly, the proposed adaptive smoothing technique is very similar to SmoothQuant, and the proposed hessian-based optimization is very similar to GPTQ. The authors are encouraged to elaborate more on the distinctions from SmoothQuant and GPTQ, and how QQQ can benefit from these distinctions, e.g. via ablations\n\nii) Comparison to QoQ. From Table 1 and 2, it looks like QoQ is a strong baseline in the W4A8 setting. The reviewer wonders if the authors could provide further comparisons of QoQ and QQQ, regarding the latency, as it seems the QoQ results are not presented in Figure 6.\n\niii) Evaluations for context prefilling and autoregressive decoding. In the abstract, the paper claims that current approaches “often fail to concurrently speed up the prefill and decoding stages of inference”. It would be better if the authors could provide latency evaluations for context prefilling and autoregressive decoding separably, to further demonstrate the advantages of QQQ compared to previous approaches.",
+      "questions": "Please refer to the weaknesses.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "5ebd88dc9c10c7dceba3a2eb8febb4be50e31a7bd7177b6e8b8ff56b548f61dfb9896f4d3e9be74b3fd82cd83145477c8b1bedb9dd69a3ed2936f68681282746"
+    }
+  ]
+}

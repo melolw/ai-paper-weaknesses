@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_WANG_incontext_former_lightningfast_compressing",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "In-Context Former: Lightning-fast Compressing Context for Large Language Model",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper proposes In-Context Former (ICF), a method for compressing long contexts in LLMs. The key idea is to use auxiliary tokens (digest tokens) and a cross-attention mechanism to condense the long context into a fixed number of tokens. These digest tokens are then fed into LLM instead of the original context. ICF undergoes a two-stage training process: pre-training and fine-tuning, to generate features compatible with LLMs. Additionally, the method incorporates a prefix-LM-style attention map, Rotary Embedding, and divide-and-conquer strategy. Experimental results show that ICF achieves competitive performance to ICAE while using significantly smaller memory usage and reducing compression time.",
+      "strengths": "* The paper addresses an import problem, long context compression, which is crucial for efficient LLM inference (although this paper focuses on the compression time rather than LLM inference speed).\n* The method’s careful design (prefix-LM-style attention map, RoPE on cross-attention, etc.) adds value to the proposed method. The visualizations provided are clear and detailed.\n* The analysis of what Cross-Attention learns (Sec. 4.3) seems to be an important contribution.",
+      "weaknesses": "* The paper lacks a discussion and comparison with Key-Value cache compression studies [1,2,3,4].\n  * [1] Model Tells You What to Discard: Adaptive KV Cache Compression for LLMs\n  * [2] SnapKV: LLM Knows What You are Looking for Before Generation\n  * [3] H2O: Heavy-Hitter Oracle for Efficient Generative Inference of LLMs\n  * [4] Soaring from 4K to 400K: Extending LLM’s Context with Activation Beacon\n* The method closely resembles the Q-Former architecture used in Visual-LLMs (LVMs) [5, 6]. While the adaptation for text context compression is valuable, the paper should discuss and compare with previous Q-Former style works.\n  * [5] BLIP-2: Bootstrapping Language-Image Pre-Training with Frozen Image Encoders and LLMs.\n  * [6] Qwen-VL: A Versatile VL Model for Understanding, Localization, Text Reading and Beyond.\n* Some widely used long-context benchmarks, such as LongBench and Needle-In-a-Haystack (NIH), are not included in the evaluation.",
+      "questions": "* (suggestion) Auto-encoding is a useful task, but it seems that the task can also be integrated into the second stage using a proper prompt. Can the two stages be merged?\n* (suggestion) It would be beneficial to show not only the reduced compression time but also the “compression rate” (e.g., length X to length 64) and the relationship between compression rate and compression time.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "16286c37011a4a1058d82064b855494e9b845dde77d5dae7422bad68bdd577fc56154fa4fc6832fda5b20054b50270afed9774e39a08e9227b7b9a3806257bd2"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper proposes the In-Context Former to address the quadratic complexity in attention operations for long context handling. Through Pre-Training and Instruction Tuning, the In-Context Former effectively compresses long contexts into much shorter tokens as soft prompts, significantly reducing the cost required for long context handling. During inference, it shows a much faster context compression time compared to other methods like ICAE, and demonstrates higher accuracy in reconstructed context.",
+      "strengths": "- The paper is easy to follow with clear figures and presentation, making it quick to grasp.\n- The problem of long context handling is crucial for the practicality of LLMs. This paper introduces a novel approach, the In-Context Former, which compresses context into soft prompts effectively.",
+      "weaknesses": "- The cost of Pre-Training and Instruction Tuning appears too high compared to basic context compression methods. Additionally, it is unclear if this method can be used agnostically across different LLMs, or if a separate In-Context Former needs to be created for each LLM. The paper only presents results for LLaMA-2.\n\n- The proposed method aims to solve the overhead in long-context handling, but the **evaluation of actual long-context handling is insufficient.** Evaluations using benchmarks like LongBench and InfiniteBench, with models such as Mistral-v0.3-32K and Phi-3-128K, are needed to confirm if the In-Context Former allows LLMs to robustly solve problems based on the compressed context.",
+      "questions": "The cost of Pre-Training and Instruction Tuning should be properly reported to understand the total cost of creating the In-Context Former. While it brings efficiency during inference, if each model requires its own In-Context Former through two-stage training, it cannot be considered an efficient solution. Therefore, experiments showing that a single In-Context Former can be applied model-agnostically would strengthen the paper’s argument for efficiency.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "80bc482beb0567f6cc05f97544cf085f17c7175dc028c5a722f8cdcf77e8d607cc35f21023bdbdb68a8cf625c4fd0404669ad855bf43139a7e560e67e1f785d3"
+    }
+  ]
+}

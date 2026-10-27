@@ -1,0 +1,38 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Evaluating the value of datasets for Supervised Fine-Tuning (SFT) via full fine-tuning is computationally expensive. Proxy models offer a cheaper alternative, but their ability to reliably transfer dataset rankings to larger target models remains uncertain.
+- **Claimed Gap**: *"Training proxies with tiny learning rates improves ranking transfer to larger models (based on pretraining literature)."* The authors claim that prior work extrapolates pretraining optimization principles to SFT proxy evaluation without empirical validation, leaving a gap in understanding how learning rate magnitude affects ranking signal fidelity across model scales.
+- **Proposed Solution**: An empirical comparison of Standard-LR Proxy ($5 \times 10^{-5}$) vs. Tiny-LR Proxy ($1 \times 10^{-5}$) fine-tuning on 12 math-oriented datasets. Using Qwen2.5-1.5B as a proxy and Qwen2.5-7B as a target, the authors measure Pairwise Direction Accuracy (PDA) and Spearman rank correlation to determine which optimization regime preserves transferable quality signals.
+
+## 2. Comparative Scrutiny (The "Trial")
+*Here, we analyze how the paper stands against the identified similar works.*
+
+### vs. Partial Is Better Than All: Revisiting Fine-tuning Strategy for Few-shot Learning
+- **Identified Overlap**: Both works investigate how learning rate control during fine-tuning governs the boundary between preserving transferable knowledge and introducing superficial or harmful adaptations. The similar work uses evolutionary search to assign layer-specific LRs to modulate transferability; the manuscript tests global LR magnitude for the same conceptual goal.
+- **Manuscript's Defense**: The manuscript does not directly cite this work. Implicitly, it differentiates itself by focusing on *global* LR constraints to maintain a "near-linear optimization regime" specifically for *dataset ranking transfer*, rather than layer-wise tuning for classification accuracy.
+- **Reviewer's Assessment**: The distinction is methodologically valid but narrow. The manuscript essentially applies a known hyperparameter tuning concept to a new evaluation task (proxy ranking). The negative finding (Tiny-LR fails) is empirically sound but does not introduce a new theoretical mechanism; it refutes a direct extrapolation from pretraining literature. The contribution remains incremental within the broader LR-tuning space.
+
+### vs. Transfer Learning between Motor Imagery Datasets using Deep Learning
+- **Identified Overlap**: Both employ a lightweight, parameter-efficient adaptation step as a surrogate oracle to evaluate and rank dataset transferability without full target training. The similar work trains a new linear classification layer on receiver data; the manuscript uses a LoRA-fine-tuned proxy model.
+- **Manuscript's Defense**: The authors position their work as an investigation into *optimization dynamics* (LR variation) within the proxy layer to test ranking signal fidelity, rather than merely validating the proxy framework itself.
+- **Reviewer's Assessment**: The methodological echo is strong. The manuscript's contribution lies in the specific LR ablation, but the underlying proxy-ranking architecture is well-established in transfer learning literature. The finding that proxy signals are benchmark-dependent (MATH-500 vs. GSM8K) aligns with prior work showing that lightweight transfer proxies must balance efficiency with the risk of capturing dataset-specific artifacts. This reinforces an incremental extension rather than a paradigm shift.
+
+### vs. Evaluating Fine-Tuning Efficiency of Human-Inspired Learning Strategies in Medical Question Answering
+- **Identified Overlap**: Both evaluate training-phase interventions to reduce fine-tuning costs and conclude that performance gains are highly context-dependent (benchmark/model-specific). The similar work tests data ordering strategies; the manuscript tests LR constraints.
+- **Manuscript's Defense**: The authors claim their focus is strictly on *ranking transfer fidelity* via LR constraints, not general fine-tuning efficiency or curriculum design.
+- **Reviewer's Assessment**: The conclusion that "reduced learning rates amplify sensitivity to surface-level features" and exhibit "benchmark-specific behavior" directly mirrors the context-dependence findings in this work. This significantly weakens the manuscript's claim of a novel, isolated insight. It positions the paper as another empirical confirmation that LLM fine-tuning heuristics are highly task-contingent, a principle already well-documented in efficiency-focused literature.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental (Empirical Validation/Negation)
+- **Assessment**:
+  The paper successfully executes a rigorous empirical test but does not overcome the fundamental similarities to prior proxy-ranking and fine-tuning efficiency studies. The core contribution is a well-documented negative result that refutes a specific hypothesis (Tiny-LR improves transfer). While practically useful for practitioners designing proxy evaluation pipelines, it lacks substantive theoretical novelty. The existence of the similar works significantly contextualizes the findings, demonstrating that benchmark-specific proxy behavior, the failure of naive optimization shortcuts, and the context-dependence of fine-tuning interventions are established phenomena in transfer learning. The manuscript survives the comparison as a valid empirical study but does not claim or deliver a breakthrough.
+  - **Strength**: Clear experimental design, precise ranking metrics (PDA, Spearman $\rho$), and an actionable, evidence-based recommendation for proxy-based dataset ranking. The benchmark-specific analysis (verbosity sensitivity on GSM8K) provides valuable diagnostic insight.
+  - **Weakness**: Narrow scope (single model family, math domain, only two LR settings). The negative result limits broader methodological impact. Conclusions heavily overlap with established principles of context-dependent transfer learning, and the manuscript does not engage with or differentiate from closely related proxy-ranking literature.
+
+## 4. Key Evidence Anchors
+- **Abstract**: Hypothesis statement linking Tiny-LR to pretraining literature and claim of ranking transfer improvement.
+- **Experiments (Table 1)**: PDA = 0.500 (Tiny-LR) vs. PDA = 0.712 (Standard-LR); Spearman $\rho$ = -0.091 vs. 0.594. Statistical significance ($p = 0.042$) for Standard-LR.
+- **Experiments (Table 2)**: Benchmark-specific divergence: Tiny-LR PDA = 0.818 on MATH-500 vs. PDA = 0.515 on GSM8K. Attribution to "sensitivity to verbose reasoning chains."
+- **Conclusion**: Explicit recommendation to use standard learning rates for proxy-based dataset ranking; acknowledgment of limitations (Qwen2.5 family, math domain, two LR settings).
+- **References**: Cites general proxy evaluation (Wang et al. 2025; DSIR) and LR/transfer works, but lacks direct engagement with the specific proxy-ranking and fine-tuning efficiency studies identified in the similarity analysis.

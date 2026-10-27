@@ -1,0 +1,69 @@
+# Global Summary
+
+This paper addresses the problem of selecting which transformer layer to fine-tune for model editing, a task currently reliant on expensive, model-specific heuristics. The authors propose GradRatio-Select, a gradient-based method that computes the ratio of edit-to-retain gradient magnitudes ($S(\ell) = \|g_{edit}\|^2 / \|g_{retain}\|^2$) to identify editable layers. An adaptive threshold ($\ell_{\min} = \max(3, \lceil 0.15 \cdot L \rceil)$) is introduced to exclude structurally critical early layers.
+
+Experiments on Qwen2.5-7B and LLaMA-3-8B show that GradRatio-Select automates layer identification but does not improve upon manual heuristics. On Qwen2.5-7B, the method matches the heuristic baseline (Capability 54.59 vs 54.61). On LLaMA-3-8B, it selects an adjacent layer but suffers a 5.26 percentage point capability degradation (39.52 vs 44.78), driven primarily by a catastrophic drop in mathematical reasoning performance (GSM8K: 28.05% vs 51.91%).
+
+# Abstract
+
+- **Problem:** Fine-tuning-based model editing requires selecting a specific transformer layer to update. Current practice uses model-specific heuristics determined through expensive layer sweeps.
+- **Method:** GradRatio-Select computes the ratio of edit-to-retain gradient magnitudes: $S(\ell) = \|g_{edit}\|^2 / \|g_{retain}\|^2$. An adaptive threshold excludes early layers to prevent capability catastrophe.
+- **Key Results:**
+    - On Qwen2.5-7B, GradRatio-Select identifies the same optimal layer as manual heuristics, achieving equivalent performance (Capability 54.59 vs 54.61).
+    - On LLaMA-3-8B, it selects an adjacent layer but shows 5.26 percentage point capability degradation (39.52 vs 44.78), primarily due to mathematical reasoning tasks.
+- **Conclusion:** Gradient-based selection automates layer identification but does not improve upon carefully-tuned heuristics.
+
+# Method
+
+- **Problem Setup:** The goal is to update parameters $W_\ell$ at a single layer $\ell$ to minimize an edit objective $\mathcal{L}_{\text{edit}}$ while maintaining performance on a retain set $\mathcal{L}_{\text{retain}}$.
+- **GradRatio Scoring:** The method computes gradients for both objectives with respect to layer parameters $W_\ell$. The score is defined as the ratio of squared gradient magnitudes: $S(\ell) = \|g_{\text{edit}}(\ell)\|_F^2 / \|g_{\text{retain}}(\ell)\|_F^2$.
+- **Adaptive Threshold:** To prevent selecting structurally critical early layers (0–4) which cause catastrophic capability loss, an adaptive threshold is applied: $\ell_{\min} = \max(3, \lceil 0.15 \cdot L \rceil)$. The final selection is $\ell^* = \arg \max_{\ell \geq \ell_{\min}} S(\ell)$.
+- **Target Parameters:** Candidates are restricted to MLP down-projection matrices $\{W_{\ell}^{\text{down}}\}_{\ell=0}^{L-1}$.
+- **Efficiency:** The algorithm requires only two forward-backward passes (one for edit gradients, one for retain gradients).
+- **Ablation Note:** An initial formulation including a cosine similarity term ($1 - |\cos(g_{\text{edit}}, g_{\text{retain}})|$) was discarded because cosine similarities were near-zero (0.001–0.14 for Qwen, 0.001–0.052 for LLaMA), providing no discriminative signal.
+
+# Experiments
+
+- **Models:** Qwen2.5-7B-Instruct (28 layers) and LLaMA-3-8B-Instruct (32 layers).
+- **Dataset:** ZsRE dataset containing 3,000 factual edits.
+- **Metrics:**
+    - Reliability: Exact match accuracy on edit prompts.
+    - Generalization: Exact match on paraphrased prompts.
+    - Capability: Average performance across MMLU (5-shot), NQ-Open (5-shot), SST-2 (0-shot), WMT16 en-de (BLEU), and GSM8K (8-shot).
+- **Baselines:** LocFT-BF heuristic (Layer 6 for Qwen, Layer 22 for LLaMA).
+- **Hyperparameters:** Adam optimizer, learning rate $5 \times 10^{-4}$, batch size 1, 25 epochs. 3 random seeds used.
+- **Scoring Setup:** 32 edit samples and 256 retain sequences (128 tokens each). Threshold $\ell_{min} = 5$ for both models.
+- **Main Results (Table 1):**
+    - **Qwen2.5-7B:** GradRatio selects Layer 6. Reliability 99.94% (vs 99.99%), Generalization 77.04% (vs 77.02%), Capability 54.59 (vs 54.61). Performance is statistically indistinguishable.
+    - **LLaMA-3-8B:** GradRatio selects Layer 21. Reliability 99.86% (vs 99.90%), Generalization 75.60% (vs 74.66%), Capability 39.52 (vs 44.78). This represents a 5.26 percentage point degradation.
+- **Benchmark Breakdown (Table 2):**
+    - On LLaMA-3-8B, the capability gap is driven by GSM8K, which drops from 51.91% to 28.05% (-23.86 pp). Other benchmarks show minor differences (MMLU -0.19pp, NQ-Open -0.46pp, SST-2 -1.79pp).
+- **Layer Scoring Analysis:**
+    - Without the threshold, GradRatio selects Layer 4 for LLaMA-3-8B (highest raw score 12195.09), causing capability to drop to 17.62% (-27.16 pp vs baseline).
+    - The threshold excludes these early layers, allowing selection of Layer 21 (score 4131.54).
+
+# Discussion
+
+- **Summary:** Gradient-based scoring automates layer selection but does not improve upon carefully-tuned heuristics.
+- **Caveats:** The method underperforms on LLaMA-3-8B, specifically regarding mathematical reasoning tasks.
+- **Future Work:** Investigate model-specific factors determining optimal editing layers, including the roles of attention versus MLP components and the relationship between layer position and knowledge localization.
+
+# References
+
+- Cobbe et al. (2021): Training verifiers to solve math word problems.
+- Fang et al. (2024): AlphaEdit: Null-space constrained knowledge editing.
+- Geva et al. (2020): Transformer feed-forward layers are key-value memories.
+- Hartvigsen et al. (2022): Aging with grace: Lifelong model editing.
+- Hendrycks et al. (2020): Measuring massive multitask language understanding (MMLU).
+- Kirkpatrick et al. (2016): Overcoming catastrophic forgetting in neural networks.
+- Levy et al. (2017): Zero-shot relation extraction via reading comprehension (ZsRE).
+- Meng et al. (2022a): Locating and editing factual associations in GPT (ROME).
+- Meng et al. (2022b): Mass-editing memory in a transformer (MEMIT).
+- Mitchell et al. (2021): Fast model editing at scale (MEND).
+- Mitchell et al. (2022): Memory-based model editing at scale (SERAC).
+- Wang et al. (2024): WISE: Rethinking the knowledge memory for lifelong model editing.
+- Wang et al. (2023): Knowledge editing for large language models: A survey.
+- Xu et al. (2025): Knowledge decoupling via orthogonal projection.
+- Yang et al. (2025a): The mirage of model editing: Revisiting evaluation in the wild.
+- Yang et al. (2025b): Fine-tuning done right in model editing (LocFT-BF).
+- Zhang et al. (2024): A comprehensive study of knowledge editing for large language models.

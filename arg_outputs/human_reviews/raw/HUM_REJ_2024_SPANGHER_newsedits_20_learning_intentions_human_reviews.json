@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_SPANGHER_newsedits_20_learning_intentions",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "NewsEdits 2.0: Learning the Intentions Behind Updating News",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper presents a study on predicting factual fluidity in news articles, focusing on the ability to anticipate which facts within an article are likely to be updated over time. The authors hypothesize that linguistic features can indicate such fluidity, allowing prediction without relying on external resources. They develop the NewsEdits 2.0 taxonomy, distinguishing fact updates from stylistic and narrative revisions, and annotate over 9,200 sentence revisions. Using this data, they train ensemble models that achieve high precision in identifying potential fact updates. These predictions are applied in a Language Model Question Asking (LLM-QA) abstention task, where the model learns to refrain from answering questions when the information is likely to become outdated, achieving near-oracle accuracy. The work contributes the NewsEdits 2.0 schema, a large corpus of revision histories labeled with edit intentions, and insights into how LLMs struggle with this predictive capability.",
+      "strengths": "The NewsEdits 2.0 taxonomy provides a structured approach to categorizing edits, which aids in the systematic analysis of factual fluidity in news articles.\n\nThe integration of updates predictions into an LLM-QA abstention task demonstrates real-world utility, potentially improving the performance of language models in dynamic information environments.",
+      "weaknesses": "The reliance on a specific dataset (NewsEdits) and the context of news articles may limit the generalizability of the findings to other text types or domains.\n\nThe prediction accuracy of LLMs on whether a fact will need an update in the future is very low. This result causes concerns about whether this is a task that could be solved in the future. Additionally, whether a fact needs to be updated in the future is a temporally subtle question, and the answer varies a lot in different scenarios. More clarification and experiments should be conducted to explore this question.",
+      "questions": "N/A",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "a9c10c076b51e987c8c7b178227e775c30e5b27830dc016af8f118968147e5481feb6db2716b83f9c8bf9f6a4f2b101ccf567975155cdc1547138c654a7a48b5"
+    }
+  ]
+}

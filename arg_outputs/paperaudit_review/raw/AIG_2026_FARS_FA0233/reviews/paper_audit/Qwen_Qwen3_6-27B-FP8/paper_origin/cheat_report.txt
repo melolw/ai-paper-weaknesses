@@ -1,0 +1,22 @@
+Based on a critical review of the manuscript, the following substantive inconsistencies and logical problems were identified:
+
+### 1. Hyperparameter Mismatch in Figure 1 vs. Main Text
+There is a clear discrepancy between the hyperparameter value depicted in the method overview and the value used in the main experimental results.
+*   **Evidence:** **Figure 1** (Block #4) explicitly labels the "KL Regularization" component with **$\lambda_{KL} = 0.1$**.
+*   **Contradiction:** **Section 4.1** (Block #5) and **Table 1** (Block #6) define the main experimental setting for PhaseGuard-KL as **$\lambda = 0.03$**. The text states: "PhaseGuard-KL ($\lambda = 0.03$): our proposed method..." and reports results (20.83% Security EM, 22.78% OpSwap) corresponding to this value.
+*   **Impact:** The figure illustrates the method with a parameter value ($\lambda=0.1$) that corresponds to the "Always-on KL" baseline or a different experimental condition, not the primary method setting described in the results. This suggests the figure may be outdated or generic.
+
+### 2. Numerical Inconsistency Across Tables for $\lambda=0.1$
+There is a numerical mismatch for the OpSwap accuracy of the "Always-on KL" condition ($\lambda=0.1$) between the main results table and the lambda sweep table.
+*   **Evidence:** **Table 1** (Block #6) lists "Always-on KL ($\lambda=0.1$)" with an OpSwap accuracy of **0.00%**.
+*   **Contradiction:** **Table 2** (Block #6), which presents the lambda sweep, lists the OpSwap accuracy for **$\lambda=0.1$** as **0.19%**.
+*   **Impact:** While both values indicate near-zero performance, the discrepancy (0.00 vs. 0.19) for the exact same hyperparameter setting across tables suggests inconsistent reporting or different experimental runs not accounted for in the text. Additionally, the **Introduction** (Block #1) cites Kaczér et al. (2025) for the claim that always-on KL reduces accuracy to "0%", while Table 1 presents this as a result of the current study, creating ambiguity about whether this is a reproduction or a citation.
+
+### 3. Logical Ambiguity in Trigger Timing vs. Description
+The reported trigger time contradicts the described trigger logic regarding the warmup period.
+*   **Evidence:** **Section 3.2** (Block #3) states: "We monitor every 5 training steps... After a warmup period of 3 measurements, the trigger fires when $D_t > \tau$ for 2 consecutive monitoring points."
+    *   Monitoring steps: 5, 10, 15, 20, 25...
+    *   Warmup (3 measurements): Steps 5, 10, 15.
+    *   Logic: If the condition requires 2 consecutive points *after* the warmup, the earliest possible trigger would be at **step 25** (checking steps 20 and 25).
+*   **Contradiction:** **Section 4.2** (Block #5) and **Table 1** (Block #6) report that "The trigger fires at **step 20**".
+*   **Impact:** For the trigger to fire at step 20, the condition must have been met at steps 15 and 20. However, step 15 is the final step of the warmup period. The phrasing "After a warmup period... the trigger fires when..." implies the condition evaluation begins *after* the warmup, which would make a step 20 trigger impossible under the stated logic. This indicates a conflict between the method description and the reported results.

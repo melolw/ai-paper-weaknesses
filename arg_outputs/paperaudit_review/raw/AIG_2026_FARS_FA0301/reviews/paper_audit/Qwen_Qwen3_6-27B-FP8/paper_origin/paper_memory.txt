@@ -1,0 +1,94 @@
+# Global Summary
+
+The paper addresses the problem of Large Language Models (LLMs) failing to adhere to explicitly provided definitions or glossaries, often defaulting to conventions memorized during pretraining. This is particularly problematic in mathematical reasoning where multiple valid conventions exist (e.g., different types of convolution).
+
+The authors propose Definition Unit Tests (DUT), a training-free prompt wrapper that prepends discriminative verification questions (checks) to the prompt. These checks force the model to demonstrate correct interpretation of the specific convention before solving the main problem.
+
+Evaluation is conducted on ErdosConventionsBench, a synthetic benchmark of 300 mathematical problems across three convention families (asymptotics, completeness, convolution). The study uses Qwen2.5-Math-7B-Instruct and Llama-3.1-8B-Instruct.
+
+Key findings include:
+- DUT improves accuracy by +5.0 percentage points on Qwen2.5-Math-7B-Instruct and +22.7 percentage points on Llama-3.1-8B-Instruct compared to engagement-matched baselines (neutral checks).
+- DUT reduces the rate of alternate-convention answers by approximately 80%.
+- Single-sample DUT outperforms majority voting over five samples.
+- The method isolates the effect of discriminative content from generic benefits of additional computation via an engagement-matched control.
+
+Caveats include evaluation on a single synthetic benchmark and the current requirement for manual design of discriminative checks.
+
+# Abstract
+
+- **Problem:** LLMs often default to memorized conventions rather than following specific required conventions, leading to internally consistent but incorrect solutions.
+- **Method:** Definition Unit Tests (DUT) prepend discriminative checks (verification questions) to the prompt to test convention interpretation before the main problem.
+- **Dataset:** ErdosConventionsBench (300 mathematical problems, 3 convention families).
+- **Results:**
+    - Qwen2.5-Math-7B-Instruct: +5.0 percentage points accuracy improvement over engagement-matched baselines.
+    - Llama-3.1-8B-Instruct: +22.7 percentage points accuracy improvement over engagement-matched baselines.
+    - DUT outperforms majority voting over five samples while using only a single generation.
+    - Reduces alternate-convention answer rates by approximately 80%.
+- **Claim:** Discriminative definition binding effectively anchors models to specified conventions.
+
+# Related Work
+
+- **Instruction Following Evaluation:** Cites IFEval (verifiable instructions), HREF (human-written references), and Offscript (automated auditing). Notes these focus on general compliance, not convention disambiguation.
+- **Prompt Engineering for Reasoning:** Cites Chain-of-thought, Self-consistency (majority voting), ReAct, and Reflexion. Notes these improve reasoning quality but do not address binding to specific conventions.
+- **Definition and Convention Adherence:** Cites Mohammadi et al. (models default to internal representations) and Chain-of-Dictionary (explicit definitions help). DUT extends this by using discriminative checks to verify binding.
+- **Code Contracts and Specifications:** Cites ContractEval, PromptPex, and FASTRIC. Notes DUT shares the philosophy of using tests to verify behavior but applies it to mathematical reasoning rather than code generation.
+
+# Method
+
+- **Problem Formulation:** Settings where a prompt includes an explicit glossary. The task is convention adherence: selecting the correct interpretation when multiple valid conventions exist.
+- **Definition Unit Tests (DUT):** A prompt wrapper that precedes the main question with auto-gradable, discriminative definition checks derived from the glossary.
+- **Experimental Conditions:**
+    - **Condition A (Glossary-Only):** Baseline. Glossary snippet followed by the main question.
+    - **Condition B (Neutral Checks):** Engagement-matched control. Adds $k=3$ verified facts before the main question. These facts have the same answer under both the glossary convention and alternate conventions (e.g., counting index pairs).
+    - **Condition C (Discriminative DUT):** Proposed method. Adds $k=3$ discriminative verified facts whose answers differ under the glossary convention versus alternate conventions (e.g., computing a specific convolution value).
+- **Design Rationale:** Condition B is essential to isolate the effect of discriminative content from generic benefits of additional computation or tokens.
+- **Implementation:** Uses a "verified facts" format where check question-answer pairs are provided as demonstrations. Default number of checks is $k=3$.
+
+# Experiments
+
+- **Setup:**
+    - **Benchmark:** ErdosConventionsBench (300 items). Families: Asymptotics (100 items), Completeness (100 items), Convolution (100 items).
+    - **Models:** Qwen2.5-Math-7B-Instruct, Llama-3.1-8B-Instruct.
+    - **Configuration:** Greedy decoding (temperature=0), max 2048 tokens.
+    - **Metrics:** Overall accuracy, per-family accuracy, alternate-convention match rate.
+- **Main Results (Table 1):**
+    - **Qwen2.5-Math-7B-Instruct:**
+        - Condition C (DUT): 95.0% accuracy.
+        - Condition B (Neutral): 90.0% accuracy.
+        - Condition A (Glossary): 90.3% accuracy.
+        - Improvement: +5.0pp over Neutral (95% CI [+2.0%, +8.3%]).
+        - Majority Vote (A@5): 41.3%; (B@5): 50.7%. DUT outperforms both.
+    - **Llama-3.1-8B-Instruct:**
+        - Condition C (DUT): 81.3% accuracy.
+        - Condition B (Neutral): 58.7% accuracy.
+        - Condition A (Glossary): 56.7% accuracy.
+        - Improvement: +22.7pp over Neutral (95% CI [+16.0%, +29.3%]).
+        - Majority Vote (A@5): 58.7%; (B@5): 60.7%. DUT outperforms both.
+    - **Alternate Convention Match Rate:** Reduced from 7.0% to 1.3% on Qwen (81% relative reduction) and from 9.3% to 2.0% on Llama (78% relative reduction).
+- **Per-Family Analysis (Figure 2):**
+    - **Completeness:** Largest gains. Qwen +12pp (91% vs 79%). Llama +61pp (82% vs 21%).
+    - **Asymptotics:** Near ceiling for Qwen (99% across conditions). Llama +4pp (96% vs 92%).
+    - **Convolution:** Minimal improvement on Llama (66% for both A and C). Error analysis shows 29% of Llama's errors here are arithmetic/reasoning errors, not convention errors.
+- **Effect of Number of Checks (Table 2):**
+    - **Qwen:** $k=1$ (92.3%) vs $k=3$ (95.0%) difference is not statistically significant (+2.7pp).
+    - **Llama:** $k=3$ (81.3%) is significantly better than $k=1$ (63.0%), with a +18.3pp difference (95% CI [+12.0%, +24.7%]).
+- **Error Analysis:** Under DUT, remaining errors are primarily computational or parsing failures, not convention confusion.
+
+# References
+
+- **Benchmark Source:** Feng et al. (2026) for ErdosProblems.com.
+- **Models:** Yang et al. (2024) for Qwen2.5-Math; Dubey et al. (2024) for Llama 3.
+- **Baselines/Methods:**
+    - Zhou et al. (2023) for IFEval.
+    - Lyu et al. (2024) for HREF.
+    - Clark et al. (2025) for Offscript.
+    - Wei et al. (2022) for Chain-of-thought.
+    - Wang et al. (2022) for Self-consistency.
+    - Yao et al. (2022) for ReAct.
+    - Shinn et al. (2023) for Reflexion.
+    - Mohammadi et al. (2025) for label definition adherence.
+    - Lu et al. (2023) for Chain-of-Dictionary.
+    - Lim et al. (2025) for ContractEval.
+    - Sharma et al. (2025) for PromptPex.
+    - Jin (2025) for FASTRIC.
+    - Wu et al. (2023) for reasoning vs. reciting.

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_WANG_rupbench_benchmarking_reasoning_under",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "RUPBench: Benchmarking Reasoning Under Perturbations for Robustness Evaluation in Large Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces RUPBench, a comprehensive benchmark for evaluating the robustness of large language models across diverse reasoning tasks. RUPBench includes 15 reasoning datasets spanning commonsense, arithmetic, logical, and knowledge-intensive reasoning, with each dataset subjected to 9 types of textual perturbations at lexical, syntactic, and semantic levels. Experiments are conducted with several state-of-the-art language models like GPT-4o, Llama3, Phi-3, and Gemma on both original and perturbed datasets to assess their robustness. The results show that larger models tend to exhibit greater robustness to perturbations, and common error types are identified through manual inspection, highlighting challenges faced by language models in different reasoning contexts. This work provides insights into areas where language models need further improvement to handle diverse and noisy inputs effectively, contributing a rigorous evaluation framework for assessing language model robustness.",
+      "strengths": "1. The paper explores a wide variety of perturbation types that are of lexical, syntactic, and semantic categories.\n2. The paper includes several results on several LLMs.\n3. The manual error analysis was very informative.\n\nOverall I feel the paper is very well written and comprehensive.",
+      "weaknesses": "1. The descriptions of some perturbation types in Section 3.2 could be more detailed and provide clearer examples to better understand how they modify the inputs.\n2. More details could be provided on the prompting approaches, decoding strategies, and the rationale behind sampling choices for different datasets.\n3. The experiments do not delve into analysing the internal representations or decision-making processes of the models under perturbations.\n4. Evaluating the models in few-shot and zero-shot settings could better reflect real-world scenarios.\n5. By visualizing and analyzing the attention patterns of the models on perturbed inputs, the authors could gain insights into how perturbations affect the models' focus and potentially inform architectural or training improvements.\n6. Please submit your original and perturbed dataset for a better understanding.",
+      "questions": "These are some of the points I feel that could make the paper better. \n\n1. The authors could collect a subset of human-generated adversarial examples or perturbations to better simulate real-world scenarios.\n2. The authors could investigate the impact of combining different perturbations (e.g., lexical and semantic, syntactic and lexical) to assess the models' resilience.\n3. Testing the models on completely out-of-distribution data could provide insights into their generalisation capabilities and robustness to domain shifts.\n4. Authors could fine-tune the models on the perturbed data and evaluate their performance. \n5. The authors could introduce perturbations that shift the underlying data distributions (e.g., domain shifts, style changes) and evaluate the models' robustness to such distributional shifts",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "95a0f01b1004b15fbb2175aaf11556587ecace856c1f8cd4d2c368d0dadc1f0b74d4c9dad0cecf39a6ebea8a6d480bd1f7f2166dc33591fab10b53791cc6a2e1"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+1) Summary
+The paper addresses the high computational cost of memory agents processing long-context documents by proposing RC-MemStop, a training-free calibration method for early stopping. The approach uses an answer-stability rule (terminating when $k$ consecutive draft answers match) and applies conformal risk control via the Waudby-Smith-Ramdas betting bound to select a threshold $k$ that satisfies a user-defined broken-success risk budget $\epsilon$. Evaluated on MemAgent with 448K–896K token contexts, the method successfully maintains risk guarantees with zero violations across configurations. However, it yields negligible speedups (1.02×–1.14×) because draft answers only stabilize near the end of processing, requiring large $k$ values (60–120). The authors conclude that calibration-only strategies are insufficient and advocate for training-based stopping policies.2) Strengths
+- **Rigorous Risk Control Framework**
+  - Formalizes broken-success risk (Eq. 2) and applies WSR betting bounds for finite-sample guarantees (Section 3.3), which matters because it provides mathematically sound safety assurances without requiring model retraining.
+  - Empirically validates zero risk violations across all 8 configurations in Table 1, demonstrating that the theoretical bounds translate to reliable deployment safety in practice.
+  - Provides clear monotonicity diagnostics in Figure 2, verifying the non-increasing risk assumption required for UCB selection and ensuring the calibration procedure remains technically valid.
+- **Clear and Reproducible Experimental Setup**
+  - Uses standardized long-context benchmarks (HotpotQA-based RULER synthesis) with explicit context lengths (448K/896K tokens) and chunk counts (Section 4.1), which matters because it enables direct comparison with prior long-context agent literature.
+  - Reports comprehensive metrics including selected $k$, test risk, violations, accuracy, average chunks, and speedup in Table 1, ensuring experimental rigor and transparency.
+  - Includes a fixed calibration/test split (50/50) and seed 42, supporting reproducibility claims and allowing other researchers to verify the calibration pipeline.
+- **Insightful Diagnostic Analysis**
+  - Identifies the fundamental limitation of answer-stability signals through detailed risk decay curves (Figure 2), showing risk remains >50% until $k=30-50$, which matters because it clarifies why calibration-only methods fail to yield practical speedups.
+  - Compares calibration-only results against learned stopping baselines (InfMem) in Section 4.5, contextualizing the negligible speedup findings and highlighting the gap between post-hoc calibration and end-to-end optimization.
+  - Explicitly acknowledges the gap between theoretical guarantees and practical utility, guiding future research toward training-based policies and improving the paper's conceptual impact.3) Weaknesses
+- **Limited Practical Utility and Speedup**
+  - Achieves only 1.02×–1.14× speedup (Table 1), falling well below the stated 1.5× target and 1.2× practical threshold (Section 4.2), which matters because it severely limits real-world deployment viability.
+  - Requires extremely high stability thresholds ($k=60-120$) to control risk, meaning early stopping triggers only after processing ~90-95% of chunks (Section 4.4), undermining the core efficiency motivation.
+  - The negligible compute reduction fails to justify the added calibration overhead, reducing the method's impact compared to existing learned stopping approaches.
+- **Small and Potentially Biased Evaluation Scale**
+  - Uses only 128 total instances (64 for calibration, 64 for testing), which matters because small sample sizes increase variance in risk estimates and weaken the reliability of conformal bounds.
+  - The UCB bound exceeds $\epsilon$ for the 896K/$\epsilon=0.05$ configuration (Table 2), indicating the formal guarantee fails due to insufficient calibration samples, raising concerns about technical robustness.
+  - Relies on a single backbone (MemAgent-7B) and synthetic long-context construction, limiting generalizability to diverse architectures and real-world documents where answer stability dynamics may differ.
+- **Overreliance on a Single Stopping Signal**
+  - Exclusively evaluates answer-stability (Eq. 1) without exploring alternative signals like confidence scores, entropy, or memory state changes (Section 3.2), which matters because it restricts the method's adaptability to different agent behaviors.
+  - Does not investigate hybrid approaches combining stability with lightweight classifiers or retrieval relevance scores, missing an opportunity to improve early triggering without full retraining.
+  - The conclusion that training-based policies are necessary is drawn without testing any learned stopping variants within the same framework, leaving the comparative claim somewhat speculative within the paper's scope.4) Suggestions for Improvement
+- **Enhance Practical Speedup and Efficiency**
+  - Incorporate adaptive chunk-skipping or variable-length processing to reduce the overhead of near-complete scanning, directly addressing the 1.02×–1.14× speedup limitation documented in Table 1.
+  - Introduce a dynamic risk budget that relaxes $\epsilon$ for easier queries or shorter contexts, potentially lowering the required $k$ threshold and improving the risk decay profile shown in Section 4.4.
+  - Report latency and memory footprint metrics alongside speedup to better quantify practical deployment benefits beyond chunk counts, strengthening the impact assessment.
+- **Expand Evaluation Scale and Robustness**
+  - Increase the calibration and test set sizes to at least 500–1000 instances to stabilize UCB bounds and prevent guarantee failures like those observed in Table 2.
+  - Evaluate across multiple memory agent architectures (e.g., InfMem, RULER-native models) and real-world long documents to assess generalizability beyond synthetic HotpotQA splits and improve experimental rigor.
+  - Include variance estimates or confidence intervals for speedup and risk metrics to account for the small sample size effects noted in Section 4.1, ensuring clearer statistical reporting.
+- **Diversify and Validate Stopping Signals**
+  - Benchmark alternative stopping criteria such as prediction entropy, memory state divergence, or retrieval relevance scores alongside answer-stability to address the single-signal limitation in Section 3.2.
+  - Implement a lightweight learned stopping head trained on the calibration set to directly compare training-free vs. training-based approaches within the same framework, grounding the conclusion in empirical evidence.
+  - Provide ablation studies on how different normalization functions or matching thresholds in Eq. 1 affect the risk decay curve shown in Figure 2, improving technical completeness and clarity.5) Score
+- Overall (10): 5 — The paper presents a theoretically sound risk-control framework (Section 3.3) but yields negligible practical speedups (Table 1), limiting its immediate impact.
+- Novelty (10): 6 — Applying conformal risk control to memory agent early stopping is a fresh direction (Section 1), though the reliance on standard answer-stability limits conceptual novelty.
+- Technical Quality (10): 6 — The UCB calibration and risk formulation are mathematically rigorous (Eq. 2–3), but the small evaluation scale and failed guarantee in one configuration (Table 2) reduce robustness.
+- Clarity (10): 8 — The manuscript is well-structured with clear diagrams (Figure 1) and explicit experimental setups (Section 4.1), making the method and limitations easy to follow.
+- Confidence (5): 4 — High confidence due to clear methodological descriptions and reproducible setup, though limited by the small dataset size and single-architecture evaluation.

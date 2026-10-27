@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0231",
+    "title": "Draft-and-Continue Self-Consistency: An Empirical Study of Two-Stage Branch Budgeting for LLM Reasoning",
+    "abstract": "Self-consistency improves large language model reasoning by sampling multiple chain-of-thought paths and aggregating via majority vote, but incurs substantial token costs from generating complete solutions. We investigate whether adaptive compute allocation can improve efficiency by identifying promising reasoning paths early and focusing continuation budget on them. We propose Draft-and-Continue Self-Consistency (DCS), a two-stage approach that samples short drafts, computes vote histograms over interim answers, and continues high-vote branches with additional tokens. Experiments on MATH-500 with Qwen2.5-Math-7B-Instruct reveal a negative result: DCS achieves 76.8\\% accuracy, matching baselines, but uses 19.6\\% more tokens than standard self-consistency and 109\\% more than confidence-guided early stopping (CGES-LNS), which Pareto-dominates DCS. Analysis shows that approximately 96\\% of drafts complete within the token limit, causing the continuation mechanism to rarely activate. Our findings demonstrate that simpler early-stopping methods outperform two-stage branch budgeting when draft lengths are sufficient for most problems.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "hypothesis: self-consistency can be more token-efficient by splitting reasoning into two stages: first generate short draft solutions, then vote on these intermediate answers to identify promising branches and continue spending token budget only on those voted branches, instead of fully generating every sample.\n\nempirical evaluation: the author proposes Draft-and-Continue Self-Consistency (DCS) and compares it against 3 baselines: Greedy CoT,  standard uniform self-consistency, and confidence-guided early stopping with length-normalized scoring.  The experiments are conducted on MATH-500 using Qwen2.5-Math-7B-Instruct. measure exact-match accuracy, token usage, and API calls.\n\nnegative result: DCS reaches similar accuracy as the baselines, but using more tokens and more calls. The key finding is that approximately 96.3% of drafts already contain complete solutions. So the continuation stage provides no additional benefit while still incurring the overhead of the two-stage process.\n",
+        "strengths": "A clear hypothesis. The idea is interesting and has potential.\nThe writing is clear and easy to follow. \n",
+        "weaknesses": "The experiment setting is too narrow to support the paper’s claim. The experiments use only one dataset (MATH-500), one model (Qwen2.5-Math-7B-Instruct), and one DCS configuration. Maybe the negative result is because the problem is too easy, of T_draft is too high. No ablation study.  also the model is too small. \n\nKey details are under-specified. Not sure how they extract intermediate answers from draft generation. \n",
+        "suggestions": "",
+        "llmDisclosure": "technical fact checks + grammar polishing. \nchatgpt. turned down  “improve model for everyone”\nThe final judgment and scores are independently verified by the reviewer.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-08T07:03:46.689Z",
+      "updatedAt": "2026-04-08T07:08:09.903Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper proposes Draft-and-Continue Self-Consistency (DCS), a two-stage reasoning method designed to improve token efficiency by sampling short drafts, voting on interim answers, and allocating continuation budget only to promising branches. Evaluated on the MATH-500 benchmark using Qwen2.5-Math-7B-Instruct, the study reports a negative result: DCS matches baseline accuracy (76.8%) but incurs 19.6% higher token costs than standard self-consistency and is Pareto-dominated by simpler early-stopping methods (CGES-LNS). Diagnostic analysis reveals that approximately 96% of drafts complete naturally within the initial token limit, rendering the continuation mechanism largely inactive and inefficient.",
+        "strengths": "- The paper transparently reports failure cases rather than cherry-picking positive outcomes, providing valuable \"fail-fast\" insights for the community on adaptive compute allocation.\n\n- The analysis pinpointingly identifies the core issue (high draft completion rate undermines the two-stage budgeting), offering specific guidance for future research on when branch budgeting might be viable.",
+        "weaknesses": "-  Evaluation is confined to a single dataset (MATH-500) and a single model (Qwen2.5-Math-7B), limiting the generalizability of the conclusions to other reasoning tasks or model architectures.\n\n- The finding that \"two-stage budgeting fails when drafts are sufficiently long\" is somewhat obvious; the paper lacks deeper mechanistic analysis on why early voting signals fail to correlate with final answer quality beyond token counts.\n\n- The core \"draft-and-verify\" concept overlaps significantly with existing adaptive consistency and early-stopping works (e.g., Adaptive-Consistency, Path-Consistency) without substantial conceptual advancement.\n\n- Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv.",
+        "suggestions": "",
+        "llmDisclosure": "Used Claude 4.6 opus to polish the completed draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv."
+      },
+      "submittedAt": "2026-03-29T22:07:30.400Z",
+      "updatedAt": "2026-03-29T22:07:30.400Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates a simple idea: instead of generating full reasoning chains for all samples (as in self-consistency), would it be better to first generate short \"drafts\", identify promising answers early,\nand then spend more tokens continuing only those promising paths. This method is proposed as Draft-and-Continue Self-Consistency (DCS). The intuition is quite reasonable, i.e., avoid wasting tokens on bad reasoning paths.\nHowever, the main result is negative: DCS reaches the same accuracy (~76.8%) as baselines, but uses more tokens than both standard self-consistency and early-stopping methods, especially worse than CGES-LNS, which achieves the same accuracy with far fewer tokens.\n\nThe key explanation is that ~96% of drafts already finish within the draft budget, so the \"continue\" stage almost never helps.",
+        "strengths": "1. I find the idea very straightforward, clear, and the intuition behind it is quite strong.\n2. The results are negative but the paper reports in an honest way and explains why.\n3. The experimental design is clean; the comparisons are straightforward and easy to interpret.",
+        "weaknesses": "1. The method fails for a trivial reason: the failure is not deep, draft length = 1024 tokens, so continuation is unnecessary by design; and that said, the method fails because the setup already solves the problem before the method matters. So this weakens the contribution.\n2. The whole study investigates \"does draft length leave room for continuation\", but only one value is tested. Also, the experimental scope is limited with only one dataset, one model, and one task type. The generalization ability is certainly a concern.\n3. Ablation is missing, as several key components are not tested, e.g., B = 7, k = 3, Why hedge allocation (k−1, 1), etc.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-30T20:56:33.763Z",
+      "updatedAt": "2026-03-30T20:56:33.763Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0231"
+}

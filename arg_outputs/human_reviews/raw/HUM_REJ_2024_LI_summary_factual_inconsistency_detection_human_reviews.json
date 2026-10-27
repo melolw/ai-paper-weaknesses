@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LI_summary_factual_inconsistency_detection",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Summary Factual Inconsistency Detection Based on LLMs Enhanced by Universal Information Extraction",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This research tackles factual inconsistency detection in the document summary domain. The authors propose a pipeline method consisting of three stages, “subject alignment,” “key-value analysis,” and “facuality evaluation.” As the proposed method uses structured information, it can be viewed to have high explanability and further, it can be used to correct the corrupted summary in some sense. The proposed method has been evaluated with the AGGREFACT benchmark showing significantly better performance compared to the previous approaches.",
+      "strengths": "- Extracting structured information, generating universal information extraction (UIE) schema and applying it to original document to extract key information looks novel and also quite efficient. \n\n- It’d be hard to say the explanability is the unique/first contribution of this method; however, thanks to employing the structured shema, it is more visual friendly.\n\n- The proposed method shows significantly better performance in the benchmark dataset.",
+      "weaknesses": "- [L438] It is not clear the way LLM trained/finetuned for this research. Do you use the one from the previous research, or, further finetuened it. If you finetuned the model, it’d be necessary to include the details.\n\n- Lack of deep analysis of the proposed method. I’d suggest the author include a deeper analysis of the model. It can be substituted for Section 4.5, which seems to mainly describe the contribution of the paper. I’d say the comparison of inference cost in Figure 5 misleads since it only compares the doc length; however, the proposed method has multiple components, which are not counted in this figure. It’d be better if the author could show the performance of the proposed methods versus other methods when the length of data varies (original document, summary). Wonder if the proposed method shows better effectiveness in lengthy data input.",
+      "questions": "[L333] Figure 5 → Figure 4",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "baebb97e9f13f3508a1cb34e63980abb0ee55a99c268f948ec17c3236cf990f7b0e47dcac12ecf92547a493c4ff94c7c8630d8a1826b5ab34693f9d8af53b60e"
+    }
+  ]
+}

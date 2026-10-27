@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0069",
+    "title": "Timeout Bootstrapping for Long-CoT RLVR: Promise and Pitfalls",
+    "abstract": "Reinforcement learning with verifiable rewards (RLVR) enables language models to develop long chain-of-thought reasoning, but training rollouts must be truncated at a maximum token length due to computational constraints. The standard approach treats truncation as failure, conflating unfinished reasoning with incorrect reasoning. We propose \\emph{timeout bootstrapping}, drawing from classical RL theory: truncation is a timeout, not a terminal state, so the agent should bootstrap from the critic's value estimate rather than assigning a failure reward. We conduct a pre-registered comparison of three truncation strategies on mathematical reasoning with DeepSeek-R1-Distill-Qwen-1.5B. Timeout bootstrapping fails our pre-registered criteria on average (52.50\\% vs 53.80\\% baseline on long problems) but shows promise on stable runs (+2.20pp over baseline). We identify the primary failure mode: the critic's value estimates collapse to $-1.0$ within 15--20 training steps, rendering bootstrapping equivalent to truncate-as-failure. Mechanistic analysis reveals the critic exhibits negative correlation with correctness (Pearson $r = -0.211$, AUROC $= 0.314$), indicating fundamental miscalibration that must be addressed before value bootstrapping can succeed in long-horizon reasoning.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper propose to use a critic model to solve the problem of tooo long rollout by asign a score on it,\n\nEmpirical\n\nnegative",
+        "strengths": "Clear and well-motivated hypothesis\nSound experimental design\nReproducibility",
+        "weaknesses": "I think the idea is interesting, but the implementation is too simple. The critic network is not reasonable, some experiments with a larger model/more detailed designed model shoule be added.\n\nAlso the results is not informative enough, since a larger model may solve some problems.\n\nA larger model is important, since it is related to the performance of the critic model.\n\n",
+        "suggestions": "None",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T16:43:49.861Z",
+      "updatedAt": "2026-04-12T16:43:49.861Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates the problem of truncated rollouts in RLVR. The authors propose timeout bootstrapping, a method to provide value estimates based on a critic model for incomplete rollouts. However, the performance with timeout bootstrapping is even worse than the baseline. The authors provide a detailed analysis and find that the failure is caused by a collapsed critic model.\n",
+        "strengths": "Practical relevance: this paper focuses on how to solve the problem of incomplete rollouts in RLVR, which is of practical importance.\n\nDetailed analysis: although the method does not perform well, the authors provide a detailed analysis of why it is not effective from the perspective of the critic model.",
+        "weaknesses": "Unreliable critic model: using a critic model mainly trained on completed rollouts to predict the advantage for incomplete rollouts may lead to biased estimation. The performance shows this.\n\nPerformance degradation: the performance even degrades when applying timeout bootstrapping, showing that the method is not effective.\n\nLack of solution to the failure: this paper provides a detailed analysis of why the method is not effective; however, it does not provide a solution to the proposed problem.\n",
+        "suggestions": "Try decoupling the critic and policy models: first use an oracle critic (e.g., by continuing incomplete rollouts to obtain the final outcome with a factor, or a pretrained critic model) to estimate the advantage and verify whether the problem stems from the critic model or from the method itself.",
+        "llmDisclosure": "I use grammarly for phrasing and grammar polishing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-04T13:48:24.856Z",
+      "updatedAt": "2026-04-04T13:48:24.856Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 4,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper addresses truncation caused by long texts in RL for LLMs, proposing a timeout-guided strategy that uses a critic network to estimate intermediate values of incomplete reasoning. However, experiments show it underperforms baselines on average due to value collapse in early stages: the critic produces inaccurate scores negatively correlated with accuracy. The key insight is that resolving severe evaluation misalignment is a prerequisite for applying this method to long-sequence reasoning. ",
+        "strengths": "1. The concept of timeout under classical RL theory is proposed to address the truncation problem. The core strength is that it identifies why value estimation is difficult in long CoT RLVR—a previously overlooked research direction.\n2. Although the experimental results did not work, the author provides a detailed analysis.\n3. A clear comparison is made among three truncation handling strategies: truncation-as-failure, DAPO length shaping, and timeout guidance.",
+        "weaknesses": "1. The results are sensitive to seed values (seed 42 succeeds, while seed 137 diverges). However, the authors only used two random seeds, which lacks sufficient generalization validity.\n2. Experiments were only conducted on a 1.5B model, without testing on larger-scale (e.g., 7B, 14B) or stronger base models. Yet truncation issues are of greater concern in real industrial scenarios.\n3. Comparisons with more related methods are missing [1][2]. I also encourage the authors to add a comparison with simple dynamic length adjustment approaches.\n[1] Wu X, Yan Y, Lyu S, et al. Lapo: Internalizing reasoning efficiency via length-adaptive policy optimization[J]. arXiv preprint arXiv:2507.15758, 2025.\n[2] LEARNING M. APRIL: ACTIVE PARTIAL ROLLOUTS IN REINFORCE[J].\n4. Can the authors further analyze the causal relationship between value collapse and training instability?\n5. Excluding truncated samples from critic training may lead to insufficient supervision signals.",
+        "suggestions": "1. Include more baselines for comparison.\n2. Provide attempts and discussions on solving the truncation issue under a wider range of parameter settings.\n3. Additional experimental results of RLVR in other domains (e.g., reasoning) can be supplemented.",
+        "llmDisclosure": "I utilize Google Translate for English language refinement. ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-07T07:10:50.650Z",
+      "updatedAt": "2026-04-07T07:13:36.017Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0069"
+}

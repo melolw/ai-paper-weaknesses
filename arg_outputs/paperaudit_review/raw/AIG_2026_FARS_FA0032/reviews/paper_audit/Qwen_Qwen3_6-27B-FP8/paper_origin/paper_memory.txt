@@ -1,0 +1,64 @@
+# Global Summary
+
+The paper addresses the high computational cost of memory agents processing long-context documents (hundreds of thousands of tokens) via sequential chunk scanning. The authors propose RC-MemStop, a training-free calibration wrapper that applies conformal risk control to early stopping. The method uses an answer-stability stopping rule (terminating when $k$ consecutive draft answers match) and the Waudby-Smith-Ramdas betting bound to select a threshold $k$ that satisfies a user-specified broken-success risk budget $\epsilon$.
+
+Experiments on MemAgent with 448K–896K token contexts show that while risk control is successfully achieved (zero violations across configurations), the resulting speedup is negligible ($1.02\times–1.14\times$). The authors attribute this to a weak stopping signal: draft answers do not stabilize until processing is nearly complete, requiring $k = 60–120$ consecutive matches to control risk. The paper concludes that calibration-only early stopping is insufficient for memory agents and that training-based stopping policies are necessary for meaningful compute reduction.
+
+# Abstract
+
+- **Problem:** Memory agents incur high computational costs processing long documents sequentially. Early stopping reduces cost but risks degrading performance.
+- **Method:** RC-MemStop applies conformal risk control to calibrate early stopping thresholds. It uses an answer-stability rule (terminate when $k$ consecutive draft answers match) and the Waudby-Smith-Ramdas betting bound to select the least conservative $k$ satisfying a risk budget $\epsilon$.
+- **Results:** Experiments on MemAgent with 448K–896K token contexts show risk control is achieved (zero violations). However, speedup is negligible ($1.02\times–1.14\times$).
+- **Root Cause:** Draft answers do not stabilize until processing is nearly complete, requiring $k = 60–120$ consecutive matches.
+- **Conclusion:** Calibration-only early stopping is insufficient; training-based stopping policies are necessary.
+
+# Introduction
+
+- **Context:** Large language models face inputs exceeding context windows. Memory agents process documents chunk-by-chunk, enabling inference on extremely long contexts but at high cost.
+- **Gap:** Learned stopping policies require training-time supervision. There is a need for post-hoc, training-free calibration with explicit safety guarantees.
+- **Proposal:** RC-MemStop applies conformal risk control to calibrate early stopping thresholds. It uses an answer-stability stopping rule and the Waudby-Smith-Ramdas betting bound to select $k$ satisfying a broken-success risk budget $\epsilon$.
+- **Key Findings:**
+    - Risk control is achieved ($R_{test} \le \epsilon$).
+    - Speedup is negligible (best $1.14\times$, far below the $1.5\times$ target).
+    - The answer-stability signal is too weak; broken-success risk remains above 50% until $k = 30–50$.
+- **Contributions:**
+    - First application of conformal risk control to memory agent early stopping.
+    - Empirical evidence that calibration-only early stopping with answer stability is insufficient for meaningful compute reduction.
+    - Diagnosis of the root cause: weak stopping signal necessitates training-based policies.
+
+# Method
+
+- **Problem Setup:** Memory agents (e.g., MemAgent) process a document $D$ split into $T$ chunks. At each step $t$, a draft answer $a_t$ is generated from the current memory state.
+- **Answer-Stability Stopping Rule:** Processing terminates when $k$ consecutive normalized draft answers match. The stopping time is defined as $\tau(k) = \min \{t : \text{Normalize}(a_{t-k+1}) = \dots = \text{Normalize}(a_t)\}$.
+- **Risk Definition:** The method controls "broken-success risk" $R(k)$, defined as the fraction of full-read successes that early stopping breaks.
+- **UCB Calibration:** The Waudby-Smith-Ramdas (WSR) betting bound is used to construct an upper confidence bound $\hat{R}^+(k)$. The method selects $k^* = \min \{ k \in \mathcal{K} : \hat{R}^+(k') \leq \epsilon \text{ for all } k' \geq k \}$.
+- **Assumptions:** The approach assumes risk is non-increasing with respect to $k$ (monotonicity).
+- **Deployment:** At test time, the agent runs with calibrated threshold $k^*$. The formal guarantee is that with probability $\geq 1 - \delta$, the broken-success risk satisfies $R(k^*) \leq \epsilon$.
+
+# Experiments
+
+- **Setup:**
+    - **Model:** MemAgent (RL-MemoryAgent-7B checkpoint).
+    - **Dataset:** 128 HotpotQA instances. Context lengths: 448K tokens (~90 chunks) and 896K tokens (~181 chunks).
+    - **Split:** 50/50 calibration/test (64 instances each). Seed 42.
+    - **Settings:** Risk budgets $\epsilon \in \{0.05, 0.10\}$, confidence $\delta = 0.1$. Candidate thresholds $\mathcal{K} = \{1, \dots, 120\}$.
+    - **Baselines:** Full-Read, Naive (empirical calibration), UCB (risk-controlled calibration).
+- **Main Results (Table 1):**
+    - **Risk Control:** Zero risk violations across all 8 configurations ($R_{test} \le \epsilon$).
+    - **Speedup:** Negligible. Best speedup is $1.14\times$ (Naive, 896K, $\epsilon=0.10$). UCB achieves at most $1.08\times$.
+    - **Thresholds:** Selected $k$ values range from 60 to 120.
+    - **Conservatism:** UCB selects larger $k$ than Naive in 3 out of 4 settings (e.g., $k=80$ vs 70 at 448K/$\epsilon=0.05$).
+- **Calibration Analysis (Table 2):**
+    - The UCB bound exceeds $\epsilon$ at 896K/$\epsilon=0.05$ (bound = 0.0816 > 0.05), meaning the formal guarantee does not hold for this configuration.
+- **Diagnostic Analysis (Figure 2):**
+    - Broken-success risk $R(k)$ remains above 50% until $k = 30–50$.
+    - Risk drops below 10% only at $k \ge 60$.
+    - At $k=1$, risk is 0.776 (448K) and 0.783 (896K).
+- **Comparison to Learned Stopping:**
+    - InfMem (learned policy) reports $3.3\times–5.1\times$ speedup.
+    - RC-MemStop achieves only $1.02\times–1.14\times$, suggesting training-based policies are necessary for meaningful efficiency gains.
+
+# References
+
+- The paper cites foundational works in Conformal Prediction (Angelopoulos & Bates, 2021; Angelopoulos et al., 2025), Early Exiting in Neural Networks (Teerapittayanon et al., 2016; Schuster et al., 2022), and Long-Context LLMs/Memory Agents (Yu et al., 2025; Wang et al., 2026b).
+- Specific citations include RULER (Hsieh et al., 2024) for evaluation methodology and InfMem (Wang et al., 2026b) for comparison with learned stopping policies.

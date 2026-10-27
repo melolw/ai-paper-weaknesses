@@ -1,0 +1,37 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Memory agents processing long-context documents (hundreds of thousands of tokens) incur prohibitive computational costs due to sequential chunk scanning. Early stopping can reduce cost but risks degrading answer quality.
+- **Claimed Gap**: *"Learned stopping policies require training-time supervision. There is a need for post-hoc, training-free calibration with explicit safety guarantees."* (Introduction)
+- **Proposed Solution**: RC-MemStop, a training-free calibration wrapper that applies conformal risk control to an answer-stability stopping rule. It uses the Waudby-Smith-Ramdas betting bound to select the least conservative threshold $k$ that satisfies a user-specified broken-success risk budget $\epsilon$, providing finite-sample probabilistic guarantees without model retraining.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Conformal Risk Control (Angelopoulos et al.)
+- **Identified Overlap**: Direct methodological transplant. The manuscript adopts the exact split-conformal risk control architecture, WSR betting bounds, monotonicity assumptions, and post-hoc calibration pipeline to bound a monotone loss function.
+- **Manuscript's Defense**: The authors explicitly cite this work as foundational and differentiate by framing their contribution as the *"First application of conformal risk control to memory agent early stopping"* (Introduction). They map the general framework to a domain-specific monotone loss ("broken-success risk") and a novel stopping signal (answer stability).
+- **Reviewer's Assessment**: The defense is factually accurate but reveals an **Application-Oriented** novelty. The mathematical machinery is unmodified. While domain adaptation is valid, the manuscript does not claim theoretical innovation, which is acceptable. However, the practical significance of this application is severely undermined by the empirical results, as the conformal wrapper's inherent conservatism directly causes the negligible speedup.
+
+### vs. CALIBURN (Youssef)
+- **Identified Overlap**: Both apply streaming Conformal Risk Control to calibrate decision thresholds under strict operational budgets in sequential settings. Both empirically demonstrate that calibration-only wrappers are overly conservative, nullifying efficiency gains, and conclude that training-based or regime-aware adaptations are necessary.
+- **Manuscript's Defense**: The manuscript does not cite CALIBURN. It presents its conclusion (*"calibration-only early stopping is insufficient... training-based stopping policies are necessary"*) as a novel diagnostic finding specific to memory agents.
+- **Reviewer's Assessment**: This is a critical oversight. CALIBURN already established the theoretical and empirical ceiling of CRC wrappers in streaming regimes, explicitly identifying conservatism and budget overshoot as inherent limitations. The manuscript's conclusion essentially replicates CALIBURN's findings without acknowledging the prior work. This weakens the claimed novelty of the diagnostic contribution and suggests the authors did not fully contextualize their negative results within the broader CRC literature.
+
+### vs. Conformal inference is (almost) free for neural networks trained with early stopping (Liang et al.)
+- **Identified Overlap**: Both combine early stopping with conformal calibration to provide statistical guarantees without retraining. Both use a held-out calibration split to derive a stopping criterion that satisfies formal bounds.
+- **Manuscript's Defense**: Differentiates by targeting *inference-time compute reduction* in sequential document processing rather than *training-time regularization* for neural networks. Replaces validation-loss monitoring with an answer-stability rule.
+- **Reviewer's Assessment**: The distinction is valid and clearly articulated. The shift from training regularization to inference-time sequential stopping represents a meaningful problem-space translation. However, the core paradigm of "conformalized early stopping" is not new. The manuscript's novelty rests entirely on the specific stopping signal and domain, which, as the results show, is poorly suited for the task.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented (with Incremental methodological adaptation)
+- **Assessment**: 
+  The paper successfully transplants conformal risk control to a new domain but fails to deliver on its practical promise due to inherent limitations of the chosen stopping signal. The existence of similar works (particularly CALIBURN and Liang et al.) significantly weakens the motivation, as the "calibration-only ceiling" and the necessity of learned policies were already anticipated in adjacent fields. The manuscript's strongest contribution is actually its honest diagnostic analysis, which correctly identifies that answer-stability is too weak for early stopping in long-context memory agents. However, framing this negative result as a primary contribution rather than a fundamental limitation of the proposed method reduces its overall impact. The paper survives the comparison as a rigorous baseline study, but its novelty is constrained to domain adaptation and empirical diagnosis rather than methodological or theoretical advancement.
+  - **Strength**: Rigorous, training-free application of conformal risk control; transparent and well-supported diagnostic analysis identifying the root cause of failure (weak stability signal); provides a formal, safety-guaranteed baseline for future research.
+  - **Weakness**: Minimal methodological novelty (direct framework transplant); failure to cite key parallel work (CALIBURN) that already established the conservatism ceiling of CRC wrappers; the negligible speedup ($1.02\times–1.14\times$) undermines the practical significance of the proposed solution, making the paper more of a cautionary study than a viable system contribution.
+
+## 4. Key Evidence Anchors
+- **Introduction**: *"Learned stopping policies require training-time supervision. There is a need for post-hoc, training-free calibration with explicit safety guarantees."* (Establishes claimed gap)
+- **Method Section**: Definition of broken-success risk $R(k)$ and UCB calibration via WSR bound: $k^* = \min \{ k \in \mathcal{K} : \hat{R}^+(k') \leq \epsilon \text{ for all } k' \geq k \}$. (Core methodological transplant)
+- **Experiments (Table 1 & Figure 2)**: Speedup limited to $1.02\times–1.14\times$; broken-success risk remains $>50\%$ until $k=30–50$; calibrated thresholds require $k=60–120$. (Empirical evidence of signal weakness)
+- **Conclusion**: *"Calibration-only early stopping is insufficient for memory agents and that training-based stopping policies are necessary for meaningful compute reduction."* (Diagnostic conclusion that mirrors prior CRC literature)
+- **References**: Cites Angelopoulos & Bates (2021) for conformal prediction and InfMem for learned stopping comparison, but omits CALIBURN and Liang et al. despite strong methodological and diagnostic parallels.

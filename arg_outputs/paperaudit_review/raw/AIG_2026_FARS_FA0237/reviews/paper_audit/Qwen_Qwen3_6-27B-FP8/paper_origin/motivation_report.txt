@@ -1,0 +1,37 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Knowledge-conflict failure mode in Retrieval-Augmented Generation (RAG), where LLMs ignore retrieved context and revert to memorized parametric knowledge when the two contradict.
+- **Claimed Gap**: "Entity surface forms in the context act as triggers for parametric recall." The authors argue that existing solutions either require costly fine-tuning (e.g., Context-DPO) or rely on complex activation manipulation, leaving a gap for a simple, training-free prompt-level intervention that severs these lexical triggers.
+- **Proposed Solution**: Entity-Anonymized Context Prompts (EACP), a 4-step training-free pipeline that extracts named entities, replaces them with bijective placeholders (e.g., `ENT_1`), constructs a type-only inventory, and prompts the model to generate placeholder-based answers that are inverse-mapped for evaluation.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. ParamMute: Suppressing Knowledge-Critical FFNs for Faithful RAG
+- **Identified Overlap**: Both works target the identical failure mode where parametric knowledge dominance overrides retrieved context. Both advocate for an "inhibition-over-reinforcement" strategy to suppress internal priors during generation.
+- **Manuscript's Defense**: The manuscript explicitly cites `ParamMute (Huang et al., 2025)` in its references and states in the Abstract/Experiments that EACP "complements activation steering techniques." It differentiates itself by operating at the *prompt/lexical interface* rather than manipulating internal model activations, positioning EACP as a deployment-friendly alternative that requires no weight or activation access.
+- **Reviewer's Assessment**: The defense is valid and technically sound. ParamMute requires architectural access to suppress FFNs, whereas EACP works as a drop-in prompt modification. This is a meaningful distinction in practical deployment constraints. However, both share the same underlying theoretical premise (parametric signals must be actively muted), meaning EACP does not introduce a new theoretical paradigm but rather a different implementation layer.
+
+### vs. FaithfulRAG: Fact-Level Conflict Modeling for Context-Faithful RAG
+- **Identified Overlap**: Both address fact-level/knowledge conflicts and aim to maximize context faithfulness. Both reject naive prompting in favor of explicit pre-generation conflict management.
+- **Manuscript's Defense**: While FaithfulRAG is not explicitly cited in the provided reference list, the manuscript differentiates its approach by contrasting with training-based baselines and emphasizing that EACP avoids complex reasoning loops. In the Method section, authors note the inventory "deliberately omit[s] original names to prevent parametric recovery," framing their approach as *trigger masking* rather than *reasoning integration*.
+- **Reviewer's Assessment**: The distinction is methodologically clear but philosophically divergent. FaithfulRAG attempts to resolve conflicts through explicit self-thinking/reasoning, whereas EACP bypasses reasoning entirely by removing the trigger. The manuscript successfully defends EACP as a simpler, training-free alternative, though the claim that it avoids "forcibly suppressing" parametric knowledge is slightly contradictory to its own mechanism (anonymization inherently suppresses parametric activation). The defense holds on practical grounds (efficiency, no fine-tuning) but not on theoretical novelty.
+
+### vs. Identity-Decoupled Anonymization for Visual Evidence in MRAG
+- **Identified Overlap**: Both employ anonymization/decoupling of high-salience identifiers to prevent unwanted model behavior. The visual paper uses generative replacement for privacy; EACP uses placeholder substitution for knowledge conflict. Both interpose a dedicated anonymization module between retrieval and generation.
+- **Manuscript's Defense**: The manuscript acknowledges prior anonymization work, citing `Sheikhi et al. (2023/2025) on improving knowledge attachment in dialogue generation` in the References. It positions EACP as a targeted adaptation for textual RAG conflict, leveraging lightweight string replacement rather than complex generative synthesis.
+- **Reviewer's Assessment**: This is the strongest challenge to EACP's novelty. The core concept of "decoupling identifiers to control model behavior via anonymization" is not new; it has precedents in privacy-focused MRAG and dialogue systems. EACP's contribution is primarily *application-oriented*: adapting a known decoupling strategy to a new domain (RAG knowledge conflict) with a simplified, training-free implementation. The manuscript successfully defends its empirical utility but cannot claim fundamental conceptual novelty.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental (with strong empirical validation)
+- **Assessment**: 
+  The manuscript successfully defends its position against similar works by clearly delineating its intervention level (prompt/lexical vs. activation/reasoning) and deployment constraints (training-free vs. fine-tuning/activation access). The rigorous experimental design, particularly the isolation of anonymization as the active ingredient via Condition B vs. C, strongly supports the claimed mechanism. However, the existence of prior anonymization/decoupling frameworks in other domains frames EACP as a clever, highly effective engineering adaptation rather than a theoretical breakthrough. The similar works do not fatally weaken the motivation, but they do contextualize EACP as a domain-specific instantiation of a broader "identifier decoupling" paradigm.
+  - **Strength**: Rigorous ablation proving anonymization is the active ingredient (+42.28 Pc gain); training-free, model-agnostic deployment; clear complementarity with activation steering methods; strong generalization across Llama and Qwen architectures.
+  - **Weakness**: Core anonymization concept is adapted from privacy/dialogue literature rather than invented; relies on external NER preprocessing (introduces latency and error propagation risks); evaluation restricted to English QA; the note that the manuscript was auto-generated may raise concerns about depth of analysis or reproducibility rigor.
+
+## 4. Key Evidence Anchors
+- **Abstract**: "Entity surface forms in the context act as triggers for parametric recall."
+- **Method**: "Inventory Construction: Lists placeholders with entity types only... deliberately omitting original names to prevent parametric recovery."
+- **Experiments**: "Critical Comparison: C vs B yields +42.28 Pc and -25.23 MR, proving anonymization is the active ingredient."
+- **Experiments**: "EACP+ContextFocus (E): Pc=76.47%... Claim: The combination achieves the best results, indicating EACP and activation steering address distinct failure modes."
+- **References**: Explicit citation of `ParamMute (Huang et al., 2025)` and `Sheikhi et al. (2023/2025) on improving knowledge attachment in dialogue generation`, grounding the differentiation and prior-art acknowledgment.

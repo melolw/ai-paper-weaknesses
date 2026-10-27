@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_WADHWA_towards_multimodal_question_answering",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Towards Multimodal Question Answering in Educational Domain",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper addresses the problem of developing a multimodal question answering (QA) system for online educational videos. Specifically, the authors introduce the EDUVIDQA dataset, which consists of 3,158 videos and 18,474 QA pairs. This dataset is derived by filtering an existing dataset, LearningQ. Additionally, the authors benchmark results on EDUVIDQA by evaluating large language models (LLMs) such as Vicuna, LLaMA-3, and GPT-4, as well as vision-language models (VLMs) like LLaVA-v1.5 and GPT-4V. The evaluation is based on metrics including BLEU, ROUGE, BERTScore, BARTScore, and BLEURT. GPT-4V is reported to have the best performance among the models tested.",
+      "strengths": "1. The paper introduces an intriguing dataset, EDUVIDQA, specifically designed for multimodal question answering (QA) systems tailored to online educational videos. This dataset holds potential for advancing NLP applications within the education domain.\n\n2. In addition to presenting the dataset, the authors benchmark the performance of state-of-the-art large language models (LLMs) and vision-language models (VLMs). This benchmarking provides valuable insights and serves as a foundation for future research in this area.",
+      "weaknesses": "1. The paper lacks focus and is somewhat difficult to appreciate due to its brevity. Given the extensive content, a longer and more detailed paper would be expected.\n\n2. The writing of the paper appears somewhat careless. For example, in line 79, the authors mention that the dataset is available at a given URL, but no data is actually there. Instead, the dataset has been uploaded as supplementary material.\n\n3. In line 128, the authors state that scraping Khan Academy is prohibited. Consequently, they should clarify whether using and filtering the LearningQ dataset is appropriate. Additionally, since human subjects are involved in the experiment, the paper should clearly state whether the study has received the necessary ethical approvals.\n\n4. The justification for the metrics used in the experiments, particularly in the educational domain, should be provided to ensure their appropriateness.\n\n5. I am confused by the statements in lines 247-253 regarding the use of LoRA to fine-tune a GPT-4 model. Is this even possible? Furthermore, in Table 1, the authors claim that \"GPT-4 is ours.\" This statement requires clarification.\n\n6. The authors have uploaded the code and dataset for review, but unfortunately, they have not provided any accompanying documentation, which makes it challenging to comprehend and assess the code and data.",
+      "questions": "Overall, I think the authors should consider expanding their paper to a longer format rather than keeping it short. The current version contains numerous elements, but the description lacks clarity and focus. Moreover, the paper needs to provide justification for design choices, such as evaluation metrics, datasets, and selected baselines. Additionally, thorough proofreading is necessary. To enhance clarity and context, I suggest beginning with an example of multimodal question answering in online education to better illustrate the problem.",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "6dff39b13b2d58035aebe5634d89307595209f3332be35996dddbad017fa5aab5df5e52775a4c678c6da2f0c463859432831787b107434b7616db0065903b892"
+    }
+  ]
+}

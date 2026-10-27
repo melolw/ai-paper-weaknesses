@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0161",
+    "title": "Speaker-Attested Grounding for False Memory Resistance in Agent Memory Systems",
+    "abstract": "Agent memory systems enable long-term personalization by extracting and storing user information from conversations. However, these systems are susceptible to false memory storage, where assistant-generated content that was never confirmed by the user enters persistent memory. We identify a key failure mode: when the full dialogue serves as evidence for memory verification, assistant-originated statements can ``self-verify,'' passing filtering despite lacking user attestation. We propose Speaker-Attested Grounding (SAG), a minimal intervention that restricts the evidence corpus to user turns only during memory filtering while maintaining full-dialogue extraction. On the HaluMem benchmark, SAG improves False Memory Resistance by +11.94 percentage points (58.76\\% $\\rightarrow$ 70.70\\%) with a moderate recall tradeoff ($-$7.20pp). Per-source analysis reveals that 100\\% of SAG's gains come from assistant-only interference memories, confirming the targeted mechanism. Ablation studies show that 47.5\\% of the improvement stems from the speaker restriction itself, with the remainder from reduced evidence length.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper points out a sneaky failure mode in agent memory systems: when the full dialogue is used as evidence for memory verification, assistant-generated statements can essentially verify themselves—even if the user never confirmed them. The proposed fix, SAG (Speaker-Attested Grounding), is dead simple: restrict the evidence to user turns only during the filtering stage, while still extracting candidates from the full dialogue. Tested on HaluMem-Medium with GPT-4o-mini, SAG bumps False Memory Resistance by +11.94pp (58.76% → 70.70%) at the cost of −7.20pp recall. The per-source breakdown confirms that 100% of the FMR gains come from assistant-only interference memories—exactly what you'd expect from this mechanism.",
+        "strengths": "1. \"The assistant's own words verify the assistant's own claims\" is immediately intuitive. The examples make it concrete, and the circular reasoning issue is easy to grasp.\n2. SAG is a one-line change—swap the evidence corpus from full dialogue to user turns only. Any two-stage memory pipeline can adopt this with essentially zero effort.\n3. 100% of FMR gains from assistant-only interference, zero change on user-repeated interference—that's exactly the pattern SAG should produce. It's doing what it says on the tin.",
+        "weaknesses": "1. The evaluation is really small. 5 users, 343 dialogue sessions—that's not a lot. Real-world memory systems deal with way more diverse scenarios. Hard to know if these numbers hold up at scale.\n2. Exps runs on GPT-4o-mini. Different LLMs hallucinate differently and extract memories differently, so SAG's effectiveness could vary a lot across models.\n3. The recall hit is non-trivial -- 7.20pp means you're losing memories that users implied but didn't spell out. For applications where completeness matters, that's a real cost.\n4. Only HaluMem's predefined interference memories are tested. Real-world false memories could be way more subtle.\n5. F1 actually gets worse. It drops from 66.63 to 60.66 (relaxed) and 58.69 (strict). FMR goes up, sure, but the overall precision-recall balance deteriorates.",
+        "suggestions": "",
+        "llmDisclosure": "1. Used Opus 4.5 to help polish the language and organize the structure of this review.\n2. All academic judgments and scores were made independently by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-07T16:23:06.468Z",
+      "updatedAt": "2026-04-07T16:23:06.468Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper primarily aims to examine a root cause of false memory storage in agent memory systems. Specifically, when the full dialogue (containing both user and LLM utterances) is used as evidence for memory verification, LLM-generated content can self-verify its own fabricated statements, causing them to be incorrectly stored as persistent memories. To address this, the paper proposes Speaker-Attested Grounding (SAG), an approach that restricts the evidence corpus to user utterances only. Experiments are conducted empirically on the HaluMem-Medium benchmark, demonstrating that SAG can improve False Memory Resistance.\n\nHypothesis: Current agent memory systems suffer from LLM-generated content being stored as memories, and this problem can be addressed by distinguishing between user and LLM-generated content.\nValidation: Empirical\nMain outcome: Positive confirmation",
+        "strengths": "The paper has a clear motivation and validates its hypothesis through a single-variable experimental design. The proposed method is simple and can be applied to virtually any agent memory system.",
+        "weaknesses": "1. The proposed method is essentially a simple engineering implementation. It offers no novelty, requires no technical difficulty, and makes no meaningful technical contribution.\n\n2. The proposed method may not be entirely sound. LLM-generated content is not necessarily false memory, as it can also be important inferences derived from user-provided information. Indiscriminately removing all assistant-generated content from the evidence corpus is unreasonable. For example, if a user states \"I spent 10 dollars on 5 apples yesterday,\" a natural inference is that the price of apples was 2 dollars each. Storing this as a memory would be highly useful for future conversations (e.g., evaluating today's apple prices). If such inferred memories are not retained, the system would need to re-derive them each time, diminishing the practical value of the memory system.\n\n3. The Recall metric reported in the paper may partially reflect the issue described above, as the overall degradation in memory system quality. This further suggests that the proposed method is not well-justified.",
+        "suggestions": "",
+        "llmDisclosure": "Which parts used LLM assistance: Phrasing and grammar polishing.\n\nWhich tool/model/service: Claude Opus 4.6.\n\nWhat information was shared: The original review draft.\n\nFinal judgment and scores independently verified by the reviewer: Yes.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-24T00:53:04.055Z",
+      "updatedAt": "2026-03-24T00:53:04.055Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper addresses the problem of false memory storage in agent memory systems, where assistant-generated content enters persistent memory without user confirmation. The authors identify assistant-originated self-verification (using full dialogue as evidence) as a root cause and propose Speaker-Attested Grounding (SAG), a minimal intervention that restricts the evidence corpus for memory filtering to user turns only. \n",
+        "strengths": "- The paper pinpointly identifies \"assistant-originated self-verification\" as a specific failure mode in memory systems, providing a clear mechanistic hypothesis for false memory formation.\n\n- This paper transparently reports the recall degradation (−7.20pp) alongside FMR gains, avoiding overclaiming and providing a realistic view of the precision-recall frontier.\n\n",
+        "weaknesses": "- Evaluation is confined to a small 5-user subset of a single benchmark (HaluMem-Medium) and a single model (GPT-4o-mini). There is no validation on larger-scale datasets, open-source models, or diverse agent architectures, severely limiting generalizability claims\n\n- The core contribution is a heuristic filtering rule (ignore assistant turns for evidence) rather than a novel learning algorithm, representation, or architectural innovation\n\n- While the empirical results are clear, the paper lacks theoretical grounding on why user-only evidence is sufficient or how this interacts with implicit user intent (which often requires assistant context to interpret).\n\n- Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv.",
+        "suggestions": "",
+        "llmDisclosure": "Used Claude 4.6 opus to polish the completed draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv."
+      },
+      "submittedAt": "2026-03-29T22:15:13.902Z",
+      "updatedAt": "2026-03-29T22:15:13.902Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0161"
+}

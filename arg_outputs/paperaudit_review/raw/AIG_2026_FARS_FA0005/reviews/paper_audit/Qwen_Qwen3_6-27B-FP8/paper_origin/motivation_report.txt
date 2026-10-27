@@ -1,0 +1,37 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Structured-output LLM APIs utilizing constrained decoding are vulnerable to control-plane jailbreaks (specifically "EnumAttack"), where adversaries embed malicious instructions directly into JSON schema `enum` or `const` values to force harmful generation.
+- **Claimed Gap**: As stated in the Abstract and Experiments, existing safeguards are inadequate: "Input Guard... fails to eliminate attacks entirely," while the "Reject-Only baseline... incurs 4.4% benign false positive rate." The authors claim a lack of training-free, low-overhead defenses that can sanitize control-plane artifacts without breaking schema validity or degrading utility.
+- **Proposed Solution**: Selective DeLex-JSON, a training-free inference-time defense that intercepts JSON schemas, applies a conjunction-based heuristic to flag suspicious literals (length >20, whitespace, imperative verbs), and replaces them with opaque placeholders (`OPTION_i`), preserving structural constraints while neutralizing adversarial priming.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Schema Key Wording as an Instruction Channel in Structured Generation under Constrained Decoding (Le)
+- **Identified Overlap**: Both works operate on the foundational premise that JSON schema components function as active instruction channels that enter the autoregressive context and steer model generation. Le analyzes schema *keys*; this manuscript targets schema *values* (`enum`/`const`).
+- **Manuscript's Defense**: The manuscript implicitly differentiates by shifting from analytical observation to defensive engineering. It frames the schema value channel as a control-plane attack vector and proposes a pre-decoding sanitization pipeline rather than a theoretical or empirical study of instruction leakage.
+- **Reviewer's Assessment**: The defense is valid but reveals an **application-oriented** novelty. The manuscript does not introduce a new understanding of how constrained decoding processes schema tokens; it directly operationalizes Le's finding that "schema design is not merely output formatting, but part of instruction specification." The contribution lies in security application, not in advancing the underlying theory of schema-mediated generation.
+
+### vs. Steering Multimodal Large Language Models Decoding for Context-Aware Safety (Liu et al. / SafeCoDe)
+- **Identified Overlap**: Both propose lightweight, training-free, inference-time safety interventions that dynamically filter risks while preserving utility. Both employ a two-stage architecture: (1) risk isolation/detection, followed by (2) targeted modulation/replacement to maintain structural or probabilistic validity.
+- **Manuscript's Defense**: The manuscript positions DeLex-JSON as a static, pre-decoding schema parser, contrasting with SafeCoDe's dynamic, in-decoding token probability modulation. It emphasizes lower computational overhead and immediate deployability in production inference pipelines without altering the decoding loop.
+- **Reviewer's Assessment**: The architectural distinction is clear, but the methodological novelty is **incremental**. Both reject heavy fine-tuning in favor of inference-time steering. DeLex-JSON's heuristic (lexical length/whitespace/verbs) is significantly more brittle than SafeCoDe's contrastive mechanism. The manuscript successfully defends its niche (schema-level vs. token-level), but the core paradigm of "lightweight inference-time safety steering" is well-established, making this a domain-specific adaptation rather than a methodological breakthrough.
+
+### vs. Synthesizing JSON Schema Transformers (Stanek & Killough)
+- **Identified Overlap**: Both treat JSON Schema as a declarative blueprint amenable to rule-based, programmatic transformation to preserve structural integrity while modifying content. Both rely on deterministic, node-level transformations rather than learned representations.
+- **Manuscript's Defense**: The manuscript differentiates by prioritizing security sanitization over data interoperability. It replaces exhaustive type-directed rewrite searches with a lightweight heuristic suspicion function optimized for low-latency inference pipeline integration.
+- **Reviewer's Assessment**: This highlights the **engineering-focused** nature of the contribution. Schema transformation is a mature field in data engineering. The manuscript's heuristic approach sacrifices the formal correctness guarantees of Stanek & Killough's type-directed system for speed and simplicity. This trade-off is justified for production deployment but confirms that the novelty resides in pragmatic system integration rather than algorithmic or theoretical innovation.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Application-Oriented / Incremental
+- **Assessment**: 
+  The paper successfully identifies a concrete, high-impact threat vector (control-plane schema injection) and delivers a highly practical, immediately deployable defense. However, its core mechanisms (heuristic filtering, placeholder substitution, inference-time intervention) are direct adaptations of established paradigms in schema engineering and LLM safety steering. The existence of similar works significantly contextualizes the contribution: the manuscript applies known principles of schema-as-instruction-channel and inference-time safety to a new security domain. The heuristic's documented failure against chunked attacks (≤20 characters) further underscores its reliance on surface-level lexical patterns rather than robust semantic understanding.
+  - **Strength**: Strong empirical validation (0% ASR on HarmBench, 1.1% benign modification rate); addresses a specific, under-explored attack surface; highly practical for production deployment without model retraining; clear ablation confirming forced literals as the primary attack vector.
+  - **Weakness**: Novelty is largely domain-specific rather than methodological; relies on brittle lexical heuristics that are easily evaded (chunking); lacks formal guarantees or semantic depth; does not fundamentally advance the theory of constrained decoding safety or schema transformation.
+
+## 4. Key Evidence Anchors
+- **Abstract/Experiments**: Claims Pareto dominance over baselines: "Pareto-dominates the Reject-Only baseline, which has a 4.4% rejection rate" vs. DeLex-JSON's "1.1% benign schema modification rate."
+- **Method Section**: Defines the suspicion function as a "conjunction-based heuristic" flagging literals if they satisfy "at least two of the following criteria: Length exceeds 20 characters, Contains whitespace, Matches instruction-like patterns."
+- **Experiments (Table 1 & Ablation)**: Confirms attack vector isolation: "Strip-Only... achieves 22.0% ASR (no safety benefit). Confirms forced literals are the key attack vector."
+- **Limitations (Figure 3)**: Explicitly acknowledges heuristic brittleness: "Chunked Attacks: Attacks distributing harmful content across short enum values (≤20 characters) evade the suspicion function... ASR remains 8–14% for defended models."
+- **References**: Cites Zhang et al. (2026) for EnumAttack but does not directly engage with foundational works on schema instruction channels (Le) or inference-time safety steering (Liu et al.), indicating the differentiation is implicit rather than explicitly argued.

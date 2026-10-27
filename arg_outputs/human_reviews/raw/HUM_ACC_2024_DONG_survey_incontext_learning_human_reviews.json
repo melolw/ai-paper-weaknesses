@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_DONG_survey_incontext_learning",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "A Survey on In-context Learning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "Authors present a survey on in-context learning approaches. \nIn the paper, authors first define what in-context learning (ICL) is, then discuss relationships between training and ICL, the various strategies to construct the prompt, with demonstrations (sampled in various ways), prompt formatting etc.. and finally they present studies that analyse what influence ICL performance.",
+      "strengths": "- paper is very well written and organized\n- the survey opportunely covers in-context learning from different perspectives, with a scrupulous literature review",
+      "weaknesses": "none",
+      "questions": "I do not see a reference of Figure 2 within the paper",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4.5,
+      "raw_note_id": "f57b4b76043261c50b9ee7e21120b63f022e2adcd3dadbd3222106c2005dc0a5384b998ae99b6cb98f965e80837accb2a128617baa8dca19b28d64e8465c29ee"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_ZHOU_interactioncentered_approach_measuring_humanlm",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "An Interaction-Centered Approach To Measuring Human-LM Reliance",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper is a study of how various factors related to communication between a language model and a human can affect the way that a human perceives the text provided by the language model.",
+      "strengths": "- The findings suggest that the increase in the warmth of models can increase the reliance on systems, and this might be undesirable: if the content of the output is unchanged, its reliability should not be a function of the warmth of the response.",
+      "weaknesses": "### Bigger issues:\n- The paper does not say which models they used for the evaluation. So, on Table 2, we don't know what models were employed.\n- 456-458: \"With this increase in warmth, we also see increases in competence, humanlikeness, and willingness to work with the system again.\" This contradicts the analysis on Table 3, which says that the values for competence and humanlikeness are statistically indistinguishable across the three agents.\n- Table 4: you can't do a normal statistical test between S_{2C} and S_{2Chappy} because they are partially the same dataset.\n\n### Smaller methodological issues:\n- Figure 3 is very difficult to interpret. The text (383-390) reads \"Reliance on S1Aconf and the reliance difference between S1Aconf and S1Bunconf is negatively correlated with Pearson’s ρ = −0.38\". But this is not visible on Figure 3, at least not easily. And, furthermore, it is not clear if this is the reliance on moderate strengtheners or all statements together.\n- Table 4: the boldface here is misleading because it's not explained anywhere. The same applies to Table 5.",
+      "questions": "### Writing issues:\n- I believe authors are concerned with large language models, so they should use the acronym LLM instead of LM in most of the article\n- Table 2 caption: there is a mismatch in the parentheses in the last sentence.",
+      "rating": 2,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "eaa9f6ea161ef68efbc1061738ce07191b97bafcf79cd3348e10408efe213b9864ece2159007713cf77c15e1890e0a26a6d28f180614518fe246b137a8bebb4a"
+    }
+  ]
+}

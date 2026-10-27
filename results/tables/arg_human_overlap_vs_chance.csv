@@ -1,0 +1,5 @@
+arg,f1_actual,f1_random_weighted,f1_difference,difference_ci_low,difference_ci_high
+cspaper,0.8301,0.8051,0.025,0.0136,0.0361
+deepreviewer,0.7847,0.7736,0.011,-0.009,0.0308
+paperaudit,0.7896,0.7501,0.0395,0.0191,0.0595
+paperreview.ai,0.8455,0.8273,0.0182,0.0069,0.0298

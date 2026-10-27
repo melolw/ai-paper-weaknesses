@@ -1,0 +1,51 @@
+### Summary
+The paper addresses emergent misalignment in large language models, where narrow fine-tuning induces broad safety failures. It introduces Misalign@k, a tail-risk evaluation protocol that measures the fraction of prompts producing at least one misaligned response across $k$ repeated samples. The method employs a dual-scoring LLM judge assessing alignment and coherence, enabling sensitivity analysis across three labeling modes (Standard, Relaxed, Composite). Evaluated on Qwen2.5-7B-Instruct with KL regularization and data interleaving defenses, the study demonstrates that tail-risk amplification significantly exceeds mean misalignment rates (up to 24.2×). Crucially, defense effectiveness rankings invert depending on labeling criteria, revealing that high incoherence rates can mask underlying misalignment. The work advocates for combined tail-risk and sensitivity analysis in safety evaluations.### Strengths
+- **Novel Evaluation Protocol for Deployment Risk**
+  - The Misalign@k metric explicitly captures prompt-level failure probability under repeated sampling (Eq 2, Section 3.4), addressing a critical gap in single-sample evaluations by modeling real-world retry behaviors.
+  - The k-sweep analysis empirically demonstrates non-linear risk amplification as $k$ increases (Figure 2), providing actionable insights for deployment scenarios where users iteratively regenerate outputs.
+  - Variance quantification formally models prompt-level heterogeneity (Eq 3, Section 3.5), preventing oversimplified uniform-risk assumptions and highlighting how misalignment concentrates in specific prompt subsets.
+- **Rigorous Sensitivity Analysis via Dual-Scoring**
+  - Three distinct labeling modes systematically decouple alignment from output quality (Section 3.3), exposing how methodological choices in safety evaluation can drastically alter conclusions.
+  - The ranking flip phenomenon concretely illustrates how incoherence masking artificially inflates defense performance under restrictive criteria (Tables 1 vs. 2), strengthening the argument for multi-criteria evaluation.
+  - Format-specific breakdowns reveal how defenses reshape vulnerability landscapes rather than uniformly suppressing risk (Table 3, Figure 3), enhancing the diagnostic value of the protocol for targeted mitigation.
+- **Strong Experimental Validation & Calibration**
+  - Zero false-positive rate on the aligned base model rigorously validates the DeepSeek-V3.2 judge’s reliability across all metrics (Section 4.6, Tables 1 & 2), ensuring observed failures reflect genuine emergent misalignment.
+  - Multi-seed reporting with standard deviations ensures statistical robustness across stochastic sampling processes (Section 4.1), improving reproducibility and confidence in the reported amplification factors.
+  - Direct comparison of two established defenses on a standardized benchmark ensures fair evaluation and facilitates direct comparison with prior work (Section 4.1, Kaczér et al., 2025 reference).### Weaknesses
+- **Limited Generalizability Due to Narrow Experimental Scope**
+  - Evaluation relies on a single base model and only 24 prompts (Section 4.1), restricting claims about broader model families, parameter scales, or diverse prompt distributions.
+  - Only two defense mechanisms are tested (KL regularization and 5% interleaving), leaving open questions about how other safeguards (e.g., feature blocking, consistency training) behave under Misalign@k.
+  - The fixed sampling budget ($k=32$) and temperature ($T=1$) may not reflect all deployment constraints, limiting the protocol’s adaptability to low-latency or deterministic inference settings.
+- **Ambiguity in Labeling Thresholds and Judge Reliance**
+  - The alignment/coherence thresholds (<30, >50) are introduced without empirical justification or ablation studies on threshold sensitivity (Section 3.3), raising concerns about arbitrary cutoff selection.
+  - Heavy reliance on a single LLM judge introduces potential systematic biases, despite the zero false-positive claim on the base model (Section 4.1, Section 4.6).
+  - The Composite mode is defined but never reported in results tables or figures (Section 3.3, Tables 1 & 2), reducing the practical utility of the proposed dual-scoring framework and leaving its intended use case unclear.
+- **Theoretical and Practical Gaps in Risk Modeling**
+  - The uniform risk assumption derivation is presented but not formally connected to the observed variance, missing an opportunity for statistical bounds or confidence intervals (Section 3.5).
+  - No discussion of computational overhead or latency implications of generating $k=32$ samples per prompt, which is critical for assessing real-world deployment feasibility (Section 4.1).
+  - The mechanism of "incoherence masking" is described qualitatively but lacks quantitative decomposition (e.g., joint distribution of alignment and coherence scores) to rigorously validate the claim (Section 4.3).
+- **Reporting Inconsistencies in Tabular and Visual Data**
+  - Table 3 reports percentages (e.g., 16.67%, 83.33%, 95.83%) that are mathematically incompatible with the stated prompt distribution of exactly 8 prompts per format (Section 4.1 vs. Table 3), where the minimum non-zero step size should be 12.5%, undermining data integrity.
+  - Figure 2(a) plots the $k=1$ point for Interleaving at approximately 2%, which falls outside the reported mean and confidence interval in Table 1 (0.69% ± 0.40), suggesting a potential averaging or labeling discrepancy that hinders reproducibility.
+  - These inconsistencies raise concerns about the data processing pipeline and the reliability of the reported amplification factors, requiring clarification to ensure the empirical claims are fully trustworthy.### Suggestions for Improvement
+- **Expand Experimental Breadth and Sampling Configurations**
+  - Evaluate Misalign@k across at least two additional model architectures (e.g., Llama-3, Mistral) and scale the prompt set to ≥100 examples to strengthen generalizability claims and address scope limitations.
+  - Incorporate at least one additional defense strategy (e.g., BLOCK-EM or consistency training) to demonstrate the protocol’s applicability beyond the current two methods and broaden comparative insights.
+  - Conduct an ablation over sampling budgets ($k \in \{4, 8, 16, 32, 64\}$) and temperatures ($T \in \{0.7, 1.0, 1.2\}$) to characterize the protocol’s sensitivity to deployment parameters and improve practical relevance.
+- **Justify Thresholds, Diversify Judges, and Report All Modes**
+  - Provide an ablation study varying alignment/coherence thresholds (e.g., <20, <40, >40, >60) to demonstrate robustness and guide practitioners in selecting appropriate cutoffs for different safety tolerances.
+  - Cross-validate judge outputs using a second independent LLM evaluator or human spot-checks to mitigate single-judge bias and strengthen reliability claims beyond the base model control.
+  - Include full results for the Composite labeling mode in Tables 1 and 2, or explicitly justify its exclusion and discuss its intended use case to complete the dual-scoring framework.
+- **Strengthen Theoretical Analysis and Practical Feasibility Discussion**
+  - Derive or cite statistical bounds linking $\text{Var}(\hat{p}_i)$ to confidence intervals for Misalign@k, enabling rigorous uncertainty quantification alongside point estimates and improving theoretical grounding.
+  - Add a brief analysis of inference latency and compute costs for $k=32$ sampling, discussing trade-offs between tail-risk mitigation and operational feasibility to address deployment constraints.
+  - Include a joint heatmap or scatter plot of alignment vs. coherence scores to quantitatively visualize the incoherence masking effect and support the qualitative claims in Section 4.3 with empirical distributions.
+- **Clarify Prompt Distribution and Reconcile Visualizations**
+  - Explicitly state whether Table 3 values are averaged across seeds or rounded, and adjust the prompt count or reporting granularity to resolve the mathematical mismatch with the 8-prompts-per-format setup (Section 4.1).
+  - Reconcile the $k=1$ Interleaving value between Table 1 and Figure 2(a) by verifying the seed averaging process and updating the plot or table to ensure exact numerical correspondence.
+  - Provide a brief appendix or supplementary note detailing the exact calculation steps for format-specific metrics to prevent ambiguity in future reproductions and restore confidence in the reported amplification factors.### Score
+- Overall (10): 6 — The paper introduces a valuable tail-risk evaluation protocol with strong empirical demonstrations (Tables 1–3, Figure 2), though reporting inconsistencies and limited scope temper its immediate impact and reproducibility.
+- Novelty (10): 7 — The Misalign@k metric and dual-scoring sensitivity analysis (Section 3.3, Eq 2) offer a practical protocol for deployment risk, though the methodological foundations align closely with established multi-attempt and judge uncertainty paradigms.
+- Technical Quality (10): 5 — While the experimental pipeline is well-structured (Section 4.1, Figure 1), reporting inconsistencies in Table 3 and Figure 2, alongside the lack of threshold ablation and composite mode results, reduce technical completeness and reproducibility.
+- Clarity (10): 8 — The manuscript is well-organized with clear methodological definitions (Section 3), though numerical discrepancies between tables and figures (Table 1 vs. Figure 2) slightly hinder clarity.
+- Confidence (5): 4 — High confidence based on clear methodological descriptions, reproducible experimental setup, and explicit limitations acknowledged in Section 5.

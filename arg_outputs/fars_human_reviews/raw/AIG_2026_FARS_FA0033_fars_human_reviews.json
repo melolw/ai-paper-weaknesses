@@ -1,0 +1,60 @@
+{
+  "paper": {
+    "code": "FA0033",
+    "title": "Interface-Aware Smoke Tests and Deterministic Import Autofix for Feature-Level Coding Agents: A Negative Result",
+    "abstract": "LLM-based coding agents frequently encounter import and name resolution errors during feature development, which appear amenable to automated repair. We propose interface-aware smoke tests with deterministic import autofix: after each code edit, the system runs a lightweight smoke test and automatically inserts missing imports when exactly one unambiguous candidate exists. We evaluate three conditions on FeatureBench Lite (30 tasks): baseline, diagnose-only (diagnostic reports without code changes), and full autofix. Our experiments reveal a negative result: the autofix mechanism achieves the same 10.0\\% resolved rate as the baseline, providing no benefit. However, the diagnose-only variant achieves 16.67\\%, a 66.7\\% relative improvement. Analysis shows the target error class accounts for only 4--5\\% of agent workflow, explaining the null effect. We conclude that diagnostic feedback helps agents understand errors, while automated fixes may interfere with their problem-solving process.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 5,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper hypothesizes that automatically fixing import for LLM coding agents during feature development will improve task completion rates. The authors propose interface-aware smoke tests with deterministic import autofix, evaluated empirically in a three-condition experiment (30 tasks). The main outcome is a negative result: autofix provides no benefit (10.0%, same as baseline), while a diagnose-only variant achieves 16.67%. However, the integrity audit reveals serious mismatches between the described method and the actual implementation.",
+        "strengths": "I was unable to identify any genuine strengths in this paper. Among all papers I reviewed here, this paper exhibits the most severe AI integrity failures: the title-level method was never executed in the experiments, the claimed baseline system is not the system that was run, and the archived source code cannot reproduce the archived logs. Please see 2.7 AI Integrity Audit.",
+        "weaknesses": "Please see 2.7 AI Integrity Audit.",
+        "suggestions": "",
+        "llmDisclosure": "I used Claude to help me polish my grammar of the drafted responses. I used Claude Code to help me analyze the codes. The final judgment and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "The paper tells this story: a carefully designed interface-aware smoke test system, evaluated with the standard OpenHands CodeAct agent in a rigorous three-condition experiment, reveals that diagnostic feedback helps coding agents while automated fixes do not.\nWhat actually happened: the experiments used a custom non-Docker ReAct script, not the standard OpenHands agent. The \"smoke test\" is just a truncated pytest run on the fail-to-pass test files — the interface-parsing modules exist in the repo but are never called by any runner. After the original Condition B scored only 6.67% (worse than baseline), the authors simultaneously changed the diagnostic format, system prompt, context budget (60K→100K), and output token limit (4096→8192), producing B v2 at 16.67% — then reported only B v2, attributing the gain to \"diagnostic feedback\" as an isolated variable. The source code was modified after the experiment, so the archived code cannot reproduce the archived logs.\n\nThe paper's title-level contribution (Section 3.2) describes a three-step smoke test derived from task interface specifications. The implementation modules exist (interface_parser.py, smoke_test_generator.py) but are never imported by any runner script. Both Condition B and C runners instead execute python -m pytest {FAIL_TO_PASS files} -x --tb=short -q 2>&1 | head -200 (standalone_agent_condition_b.py:210-217, standalone_agent_condition_c.py:211). The paper's core method was never evaluated.\n\nCondition A uses \"the standard OpenHands CodeAct agent\" (Section 3.4, 4.1). But please check standalone_agent.py:1-2, then one can find the baseline is not the standard OpenHands CodeAct agent.\n\nTable 3 reports 7 test-file skips. The logs contain [AUTOFIX] Skipped ...: skipped_test_file entries, and RESULTS.json records \"skipped_test_file\": 7. But in the archived autofix.py, _is_test_or_config_file() is defined (line 30) yet never called — apply_fix() only checks config files (line 115). The status skipped_test_file cannot be returned by the current code. The source was modified after the experiment without updating results.\n\nNearly 80% of archived trajectory.json files are malformed JSON. The shipped evaluation pipeline cannot process the shipped data."
+      },
+      "submittedAt": "2026-04-03T02:52:32.559Z",
+      "updatedAt": "2026-04-03T02:52:32.559Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper hypothesizes that automating deterministic import/name-resolution fixes for LLM-based coding agents during feature development will improve task completion rates. The authors propose interface-aware smoke tests with deterministic import autofix and evaluate three conditions on FeatureBench Lite (30 tasks): baseline, diagnose-only (diagnostic reports without code changes), and full autofix (diagnostics plus automated fixes). The main outcome is a negative result: the autofix mechanism achieves the same 10.0% resolved rate as the baseline (3/30 tasks), while the diagnose-only variant achieves 16.67% (5/30 tasks). Analysis shows the target error class accounts for only 4–5% of agent workflow, explaining the null effect. Two additional optimization iterations of the autofix condition further degraded performance to 6.67% (2/30).",
+        "strengths": "- The three-condition design (baseline / diagnose-only / full autofix) with a pre-defined stopping rule cleanly isolates each component's contribution. Good experimental discipline.\n- Honest reporting of a negative result, with a convincing mechanistic explanation — the target error class is only 4–5% of agent workflow, far too small to move the needle.\n- The finding that diagnostics alone help (16.67% vs 10.0%) while autofix hurts is a useful takeaway for the coding agent community.",
+        "weaknesses": "- Multiple serious discrepancies between the paper and the code. The paper claims to use \"the OpenHands CodeAct agent\" (Sections 3.4, 4.1), but `standalone_agent.py` is a custom ReAct agent (the file itself says \"without Docker\"); OpenHands is never imported and the `wrapper.py` \"integration\" is a 3-line empty stub. On top of that, the title-level contribution — \"interface-aware smoke tests\" — is never executed: `interface_parser.py` and `smoke_test_generator.py` exist in the repo but no runner imports them; the actual \"smoke test\" is just `python -m pytest`. There's also a code-log inconsistency: Table 3 reports 7 \"skipped_test_file\" events, but `_is_test_or_config_file()` in the archived `autofix.py` is defined and never called by `apply_fix()`, suggesting post-experiment code modification.\n- The scale is too small to draw meaningful conclusions. Only 30 tasks, and the key differences are 1–2 tasks — the paper itself admits this is \"within the range of LLM nondeterministic variation.\" No significance tests (Fisher's exact, bootstrap CI) are reported. Moreover, the autofix mechanism only triggers once across all 30 tasks (Table 3), so the \"negative result\" is really \"the method barely activates\" rather than \"it activates but doesn't help.\"\n- Limited analysis depth. The paper speculates that autofix \"may interfere with the agent's mental model\" to explain why diagnose-only (16.67%) outperforms full autofix (10.0%), but provides no trajectory-level evidence — no examples of how agents use diagnostic information differently across conditions. Single model (Qwen3-Coder-480B) on a single benchmark also limits generalizability.",
+        "suggestions": "- Accurately describe the agent architecture: either use the actual OpenHands CodeAct agent or clearly state that a custom standalone ReAct agent was used.\n- Provide statistical tests (Fisher's exact or bootstrap CI) to quantify whether the 5/30 vs 3/30 difference is statistically significant.\n- Include trajectory-level analysis for tasks where diagnose-only succeeded but baseline/autofix failed, to illustrate the mechanism by which diagnostics help.\n- Expand to additional benchmarks and models to strengthen generalizability.",
+        "llmDisclosure": "Claude Code (Opus 4.6) was used to assist with summarizing the paper, checking log/code consistency, and polishing phrasing. The paper PDF and experiment logs were shared with the tool for analysis. Final judgments and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "### Citation Verification\nAll 11 bibliography entries checked. All resolve to valid arXiv or published venue records (OpenHands, ReAct, SWE-agent, FeatureBench, etc.). No fabricated citations.\n\n### Result-Code Consistency\nSpot-checked all Table 1 and Table 2 numbers against the experiment JSONs. Condition A: 3/30 resolved (10.0%), Condition B v2: 5/30 (16.67%), Condition C: 3/30 (10.0%), C v2/v3: 2/30 (6.67%) — all match. Crash analysis percentages (4.76% recovery steps, 6.27% recovery tokens) also match. Numbers are consistent.\n\n### Method-Implementation Mismatch\nThree material mismatches found:\n\n1. **Agent identity:** Paper says \"OpenHands CodeAct agent\" but the code is a custom standalone ReAct agent. OpenHands is never imported; the \"integration wrapper\" is an empty stub. These are fundamentally different architectures (CodeAct uses Docker-sandboxed execution with a different action space).\n\n2. **Core method never runs:** The \"interface-aware smoke test\" modules (`interface_parser.py`, `smoke_test_generator.py`) exist in the repo but are never imported by any runner. The actual \"smoke test\" is just `python -m pytest`.\n\n3. **Post-experiment code edit:** RESULTS.json records 7 \"skipped_test_file\" events, but in the archived `autofix.py`, the function `_is_test_or_config_file()` is defined but never called. The current code can't produce that status — the source was apparently modified after the experiment ran.\n\n### Integrity Verdict: YES\n\nThree material mismatches: wrong agent, title method never executed, and post-experiment code modification. These fall under FARS guidelines Sections 5.2 and 5.4."
+      },
+      "submittedAt": "2026-04-11T07:50:25.461Z",
+      "updatedAt": "2026-04-11T12:19:51.785Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0033"
+}

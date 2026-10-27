@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0162",
+    "title": "Training-Free Linear Routing for Sparse Attention via Attention-Mass Prediction",
+    "abstract": "Sparse attention enables efficient long-context inference by routing each query to a subset of key-value buckets, but learned routers require per-head training while training-free alternatives like symmetric k-means achieve limited quality. We investigate whether training-free routing can approach learned router quality. Surprisingly, we find that geometric moment matching---aligning query-key distributions via dot-product-preserving gauge transforms---provides no improvement over symmetric k-means. This reveals that routing quality depends on predicting \\emph{which buckets contain high attention mass}, not on distribution alignment. Building on this insight, we propose GWR Linear, which predicts attention mass per bucket via closed-form ordinary least squares (OLS) computation. On Qwen2.5-7B, GWR Linear achieves 72.6\\% attention-mass recall@32, closing 63.6\\% of the gap between symmetric k-means (51.3\\%) and a learned MLP router (84.8\\%) without any iterative training. Gap closure increases with routing budget (44\\%--80\\%) and generalizes across attention heads (mean 69.8\\% across 6 heads spanning layers 2--26).",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper tackles inference-time sparse attention by replacing trained per-head MLP routers with a training-free linear predictor that directly estimates bucket-wise attention mass. After showing that dot‑product–preserving, gauge-coupled whiteningbrings no benefit over symmetric k-means, the authors propose GWR Linear: a per-head ridge-regularized OLS solution W mapping queries to bucket scores using a small calibration set. On Qwen2.5‑7B t lifts recall from 51.3% (k-means) to 72.6%, closing 63.6% of the gap to a trained MLP (84.8%).",
+        "strengths": "1. The paper is well-written and easy to follow.\n2. The paper shows some negative but insightful results: geometric second-moment alignment is not the right target for routing quality, which is very inspiring.\n3. The proposed method is intuitive and efficient.",
+        "weaknesses": "1. My principal concern is the scope of the technical advance. The paper adapts an existing framework by substituting the MLP with linear regression; this yields efficiency gains but leaves a performance gap. The outcome appears somewhat predictable and may be less impactful than suggested.\n2. The linear approach prioritizes efficiency over performance. Yet here, efficiency may matter less, as the MLP needs to be trained only once and completes in minutes. This is totally insignificant compared to LLM training and reasonable for real-world use.\n3. The authors only perform evaluation on Qwen2.5-7B. It is unclear whether the idea is generalizable to other model families.\n4. It would be interesting if the authors can test with some non-linear models whose complexity is between linear moel and MLP, such as tree-based model and kernel-based model.",
+        "suggestions": "",
+        "llmDisclosure": "I used GPT-5 to polish the wording.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-04T14:07:03.104Z",
+      "updatedAt": "2026-04-04T14:07:03.104Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper tests the hypothesis that whether training-free routing methods for sparse attention can approach the performance of learned routers. The authors first align query and key distributions via dot-product-preserving geometric transformations (gauge-coupled whitening) but empirically falsify this hypothesis, showing no improvement over symmetric k-means. Based on this negative result, they propose an alternative perspective: routing quality depends on predicting attention mass rather than aligning distributions. They introduce GWR Linear, a training-free method that uses a closed-form ordinary least squares (OLS) solution to predict per-bucket attention mass. Experiments on Qwen2.5-7B show that GWR Linear significantly outperforms symmetric k-means and closes 63.6% of the gap to a learned MLP router.",
+        "strengths": "- Clear motivation/hypothesis\nThe paper tests a well-defined hypothesis (distribution alignment improves routing), and convincingly falsifies it.\n- Simple and effective method\nGWR Linear requiring only a closed-form OLS solution without iterative optimization, yet achieves good performance.\n",
+        "weaknesses": "- Training-free claim is somewhat misleading\nAlthough no training is directly used, the method still relies on calibration data and supervised regression (via OLS), which is effectively offline training.\n- Missing comparisons with alternative routing strategies\nThe paper only compares against symmetric k-means and a learned MLP router. Important baselines are missing, such as hash-based routing (e.g., LSH / Reformer-style).",
+        "suggestions": "",
+        "llmDisclosure": "I use ChatGPT for phrasing/grammar polishing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T06:32:56.326Z",
+      "updatedAt": "2026-03-26T06:32:56.326Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0162"
+}

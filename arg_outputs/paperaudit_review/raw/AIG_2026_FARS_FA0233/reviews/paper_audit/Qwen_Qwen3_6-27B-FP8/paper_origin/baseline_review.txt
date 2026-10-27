@@ -1,0 +1,51 @@
+1) Summary
+The paper addresses the challenge of emergent misalignment during fine-tuning, where narrow task optimization can induce broad safety degradation. The authors propose PhaseGuard-KL, a method that monitors Jensen-Shannon divergence on a fixed set of canary prompts to trigger KL regularization only when output distributions shift significantly. The core hypothesis is that this monitoring enables selective defense against malicious fine-tuning while preserving benign learning. Experiments on the Security EM (malicious) and OpSwap (benign) benchmarks demonstrate that the trigger fires identically for both tasks. Consequently, while PhaseGuard-KL reduces misalignment, it also severely degrades benign task performance. The authors conclude that output-dissimilarity monitoring cannot selectively distinguish between malicious and benign fine-tuning, refuting their initial hypothesis.2) Strengths
+- **Rigorous Hypothesis Testing**
+    - The paper establishes pre-registered success criteria for both safety and utility (Section 3.3), providing clear benchmarks for evaluation.
+    - The authors explicitly accept the negative result when the method fails to meet these criteria, demonstrating scientific integrity (Section 4.2, Section 5).
+    - The comparison against multiple baselines, including always-on KL and inference-time interventions, contextualizes the results effectively (Table 1).
+- **Clear Methodological Design**
+    - The PhaseGuard-KL architecture is well-defined with specific components: canary prompt set, dissimilarity monitor, and threshold-based trigger (Section 3.2).
+    - Figure 1 provides a clear visual overview of the training loop and data flow, aiding reproducibility.
+    - The mathematical formulation of the loss function and divergence metric (Equations 1 and 2) ensures technical precision.
+- **Comprehensive Experimental Analysis**
+    - The lambda sweep (Table 2) and trade-off visualization (Figure 2) demonstrate that the failure is fundamental to the approach, not a hyperparameter tuning issue.
+    - The root cause analysis (Section 4.4) identifies the non-discriminative nature of the trigger, explaining why the hypothesis fails.
+    - The use of multiple seeds for Security EM experiments (Section 4.1) adds statistical robustness to the safety evaluation.3) Weaknesses
+- **Limited Scope of Benign Evaluation**
+    - Only one benign task (OpSwap) is used to evaluate utility (Section 4.1), which limits the generalizability of the findings.
+    - OpSwap involves permuted operator semantics, which might be an outlier in how it affects output distributions compared to other benign tasks like summarization or coding.
+    - The lack of diverse benign benchmarks makes it difficult to conclude that the "identical trigger" behavior is universal across all benign fine-tuning scenarios.
+- **Single Model and Scale**
+    - Experiments are restricted to a single model, Qwen2.5-7B-Instruct (Section 4.1), which is relatively small for studying emergent phenomena.
+    - Emergent misalignment behaviors might manifest differently in larger models (e.g., 70B+) or different architectures (e.g., Llama, Mistral).
+    - The absence of multi-model validation limits the robustness of the conclusion that output-dissimilarity monitoring is inherently non-selective.
+- **Sensitivity of Canary Prompts**
+    - The fixed set of 24 safety-relevant prompts (Section 3.2) appears overly sensitive, triggering on any fine-tuning regardless of intent.
+    - The paper does not explore whether task-specific canary prompts might offer better selectivity by being less sensitive to benign shifts.
+    - The fixed threshold $\tau=0.15$ is not adaptive, potentially failing to account for the varying magnitude of distribution shifts across different tasks.
+- **Lack of Theoretical Depth on Failure**
+    - While the root cause is identified empirically (Section 4.4), the paper lacks a deeper theoretical discussion on *why* output distribution shifts are inherently non-discriminative.
+    - There is no analysis of the geometry of the loss landscape or representation space to explain the fundamental trade-off observed.
+    - The conclusion suggests future work on representation-level monitoring but does not provide preliminary insights or theoretical justification for why this might succeed where output monitoring fails.4) Suggestions for Improvement
+- **Expand Benign Task Diversity**
+    - Evaluate PhaseGuard-KL on a broader range of benign tasks, such as summarization, instruction following, and coding, to verify if the "identical trigger" finding generalizes.
+    - Compare the trigger behavior across different task types to identify if certain benign tasks are more distinguishable from malicious ones.
+    - Include a discussion on how the nature of the benign task (e.g., semantic vs. syntactic changes) might influence the output distribution shift.
+- **Validate Across Model Scales**
+    - Test the method on larger models (e.g., 70B+) and different model families to determine if the observed behavior is universal or specific to the 7B scale.
+    - Investigate whether the sensitivity of the trigger changes with model size, as larger models might exhibit different fine-tuning dynamics.
+    - Provide a sensitivity analysis on model architecture to strengthen the generalizability of the negative result.
+- **Investigate Adaptive Monitoring**
+    - Explore task-aware canary sets that are less sensitive to benign shifts, potentially by including task-specific prompts in the monitoring set.
+    - Test representation-level monitoring as suggested in the conclusion (Section 5), providing preliminary experiments to show if selectivity is possible at a deeper level.
+    - Consider adaptive thresholds that adjust based on the expected magnitude of distribution shift for the specific fine-tuning task.
+- **Deepen Theoretical Analysis**
+    - Provide a more detailed theoretical discussion on the geometry of the loss landscape or representation space to explain why output distribution shifts cannot distinguish between malicious and benign fine-tuning.
+    - Analyze the correlation between JS divergence on canary prompts and the actual safety/utility metrics to understand the disconnect.
+    - Discuss the implications of these findings for the broader field of alignment, particularly regarding the limitations of output-based monitoring for safety.5) Score
+- Overall (10): 5 — The paper presents a rigorous negative result that refutes a plausible hypothesis, but the limited scope of evaluation restricts its broader impact.
+- Novelty (10): 6 — The method is straightforward, but the systematic refutation of output-dissimilarity as a selective defense mechanism offers a valuable negative contribution.
+- Technical Quality (10): 7 — The experimental setup is clean and well-executed, though the single-model evaluation limits robustness.
+- Clarity (10): 8 — The writing is clear, the structure is logical, and the figures effectively communicate the results.
+- Confidence (5): 4 — I am confident in the assessment based on the provided text and standard ML evaluation criteria.

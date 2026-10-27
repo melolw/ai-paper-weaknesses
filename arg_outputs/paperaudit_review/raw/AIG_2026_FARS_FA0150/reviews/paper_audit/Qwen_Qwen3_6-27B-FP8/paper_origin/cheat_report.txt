@@ -1,0 +1,41 @@
+Based on a critical review of the manuscript, the following substantive inconsistencies and integrity risks were identified. The primary issues concern **data mismatches between tables and figures** and **potential mislabeling of configurations in visualizations**.
+
+### 1. Critical Inconsistency: Figure 2(b) Data Integrity and Configuration Mismatch
+Figure 2(b) ("Long Code Completion: Quality-Speed Tradeoff") contains data points that contradict the primary results presented in Tables 1 and 3, suggesting either data entry errors or the plotting of a different configuration than intended.
+
+*   **Baseline Speedup Error:**
+    *   **Figure 2(b)** lists the speedup for Exit Layer $L=28$ (Baseline) as **0.9**.
+    *   **Table 1** and **Table 3** consistently list the Baseline (Full AMI, $L=28$) speedup as **1.00$\times$**.
+    *   *Impact:* A baseline speedup of 0.9 is logically inconsistent with the definition of speedup relative to itself.
+
+*   **Configuration Mismatch at $L=20$:**
+    *   **Table 1** and **Table 3 (Config A)** report the main result, **ShallowPPL Hybrid ($L=20$)**, with an Edit Similarity (ES) of **54.76**.
+    *   **Figure 2(b)** plots the data point for $L=20$ at an ES of **47.50**.
+    *   **Table 3 (Config B)** reports the **Original (shallow/shallow)** configuration at $L=20$ with an ES of **47.60**.
+    *   *Impact:* Figure 2(b) appears to plot the "Original" configuration (which performs significantly worse) rather than the "Hybrid" configuration highlighted as the best-performing variant in the main results (Table 1). This misrepresents the quality-speed tradeoff for the primary method proposed.
+
+*   **Suspicious Data Match at $L=24$:**
+    *   **Figure 2(b)** lists the ES for $L=24$ as **52.56**.
+    *   **Table 1** lists the **RAG Baseline** ES as **52.56**.
+    *   *Impact:* It is highly improbable that ShallowPPL at $L=24$ would achieve the exact same score as the RAG Baseline. This suggests a copy-paste error in the figure data generation, where the RAG baseline value was incorrectly assigned to the $L=24$ ShallowPPL point.
+
+### 2. Inconsistency: Figure 2(a) vs. Table 4 (RepoQA Results)
+There are discrepancies between the RepoQA ablation data presented in Table 4 and Figure 2(a).
+
+*   **Missing Data in Table:**
+    *   **Figure 2(a)** includes a data point for Exit Layer **$L=20$** (AvgAcc 55.00%, Speedup 1.4$\times$).
+    *   **Table 4** does not list any results for $L=20$. It jumps from $L=14$ to $L=24$.
+    *   *Impact:* The figure presents experimental results that are not documented in the corresponding results table, violating reproducibility standards.
+
+*   **Numerical Mismatches:**
+    *   **$L=14$ Accuracy:** Table 4 reports **21.67%**, while Figure 2(a) reports **22.00%**.
+    *   **$L=24$ Accuracy:** Table 4 reports **79.67%**, while Figure 2(a) reports **80.00%**.
+    *   **$L=26$ Speedup:** Table 4 reports **1.05$\times$**, while Figure 2(a) reports **1.1**.
+    *   *Impact:* While some rounding is expected, the discrepancies in accuracy (0.33 percentage points) and speedup (0.05$\times$) are notable and suggest inconsistent data processing between the table and figure generation.
+
+### 3. Summary of Findings
+The manuscript's textual claims and tabular results (Tables 1–4) are internally consistent. However, **Figure 2 contains significant errors**:
+1.  **Figure 2(b)** plots the wrong configuration (Original instead of Hybrid) for the main result and contains a likely data entry error at $L=24$ (matching the RAG baseline).
+2.  **Figure 2(a)** includes data points ($L=20$) not present in the text/tables and shows numerical deviations from Table 4.
+
+These issues materially affect the trustworthiness of the visual evidence supporting the paper's conclusions. The authors should correct the figures to match the tabular data and clarify which configuration is being plotted in Figure 2(b).

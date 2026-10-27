@@ -1,0 +1,33 @@
+# Integrity and Consistency Risk Report
+
+**Manuscript:** LABEL-FREE HYPERPARAMETER CALIBRATION FOR PARALLEL CONTEXT ENCODING VIA KL DIVERGENCE MATCHING
+
+## 1. Critical Internal Inconsistencies
+
+### 1.1 Contradiction Between Figure 2 Data and Caption
+*   **Issue:** The caption for Figure 2 states that the KL divergence surface has its "minimum at $T = 1.0, S = 0.9$". However, the data table within Figure 2 explicitly shows that the configuration $(T=1.0, S=0.8)$ has a KL value of **0.060**, which is lower than the value at $(T=1.0, S=0.9)$, which is **0.065**.
+*   **Evidence:** Figure 2 table (Block #7) vs. Figure 2 caption (Block #7).
+*   **Impact:** This factual error undermines the reliability of the reported landscape analysis and the justification for hyperparameter selection.
+
+### 1.2 Mismatch Between Table 1 Selection and Figure 2 Landscape
+*   **Issue:** Table 1 reports that the single-token KL method selects hyperparameters $T^*=1.0, S^*=0.9$. However, Figure 2 shows that $S=0.8$ yields a lower KL divergence (0.060) than $S=0.9$ (0.065) at $T=1.0$. Section 3.4 confirms that $S=0.8$ is included in the single-token grid $\{0.6, 0.7, 0.8, 0.9, 1.0\}$. Therefore, the selection reported in Table 1 is inconsistent with the minimum shown in Figure 2.
+*   **Evidence:** Table 1 (Block #6), Figure 2 (Block #7), Section 3.4 (Block #4).
+*   **Impact:** This suggests either a discrepancy between the experimental run and the reported figures, or an error in the selection logic description.
+
+### 1.3 Sensitivity Analysis Based on Incorrect Objective
+*   **Issue:** Section 4.3 analyzes the KL landscape to claim that temperature dominates scale, citing a KL range of $0.065\text{--}0.171$ for $T$ and $0.082\text{--}0.100$ for $S$. These ranges correspond exactly to the **single-token** KL surface in Figure 2. However, the paper's proposed method uses **multi-token** KL averaging (Equation 3) to break degeneracy. The manuscript provides no sensitivity analysis for the multi-token KL objective, nor does it justify why single-token landscape properties apply to the multi-token method.
+*   **Evidence:** Section 4.3 (Block #6), Figure 2 (Block #7), Equation 3 (Block #3).
+*   **Impact:** The justification for the method's behavior (temperature dominance) is based on the single-token objective, not the actual proposed method. This is a methodological gap.
+
+### 1.4 Stability Analysis Does Not Cover the Proposed Method
+*   **Issue:** Table 3 presents a bootstrap stability analysis showing that temperature selection is perfectly stable with a mode of $T^*=1.0$. This matches the behavior of the **single-token** KL method (which always selects $T=1.0$). However, the proposed **multi-token** method selects $T^*=0.95$ (Table 1). The manuscript does not provide a stability analysis for the multi-token selection ($T=0.95$). The claim that "temperature selection is perfectly stable" is only supported for the single-token variant, not the main contribution.
+*   **Evidence:** Table 3 (Block #7), Table 1 (Block #6), Section 4.4 (Block #6).
+*   **Impact:** The stability claim for the proposed method is unsubstantiated.
+
+### 1.5 Unexplained Magnitude Discrepancy in KL Values
+*   **Issue:** Table 1 reports the "Mean KL" for the single-token method as **0.065**, but for the multi-token method ($K=8$) as **2.54**. This represents an approximate 40-fold increase. While multi-token KL averages over 8 steps, such a drastic increase suggests significant distributional divergence over time, which is not discussed or explained. The paper treats these values as comparable metrics without addressing the scale difference.
+*   **Evidence:** Table 1 (Block #6).
+*   **Impact:** The lack of explanation for this magnitude difference raises questions about the consistency of the KL metric across the two methods.
+
+## 2. Summary of Risks
+The manuscript contains clear numerical contradictions between tables and figures (Figure 2 caption vs. data, Table 1 vs. Figure 2). Furthermore, the analysis of the KL landscape and stability is primarily based on the single-token objective, while the proposed method relies on multi-token KL. This misalignment between the analysis and the method weakens the validity of the claims regarding temperature dominance and selection stability.

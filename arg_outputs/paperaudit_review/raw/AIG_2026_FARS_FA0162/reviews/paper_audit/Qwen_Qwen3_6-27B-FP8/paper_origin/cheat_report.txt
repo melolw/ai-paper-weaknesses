@@ -1,0 +1,23 @@
+**Integrity Risk and Consistency Report**
+
+**1. Critical Internal Inconsistency: Random Baseline Contradiction**
+There is a major contradiction regarding the "Random" baseline performance between Table 1 and Figure 2, as well as a mathematical impossibility in Figure 2.
+*   **Evidence:**
+    *   **Table 1 (Section 4.2):** Reports Random Recall@32 as **0.030** (3.0%). This is consistent with uniform random selection over 1024 buckets ($32/1024 \approx 0.031$).
+    *   **Figure 2 Table (Section 4.4):** Reports Random Recall@32 as **0.25** (25.0%). This contradicts Table 1 by a factor of ~8.
+    *   **Mathematical Impossibility:** In the Figure 2 table, Random Recall@128 is reported as **0.88** (88%). For uniform random selection of 128 buckets out of 1024, the expected recall is $128/1024 = 0.125$ (12.5%). A recall of 88% implies that a random selection of 12.5% of buckets captures 88% of the attention mass, which is statistically impossible for a uniform random baseline unless the attention distribution is extremely pathological (and even then, the expectation would not be 0.88).
+    *   **Impact:** This suggests the data in Figure 2 may be fabricated, hallucinated, or mislabeled (e.g., the "Random" row in Figure 2 might erroneously contain data from another method or a different experiment).
+
+**2. Numerical Mismatch: Gap Closure Calculation in Figure 2**
+The gap closure percentages in the Figure 2 table do not match the recall values provided in the same table.
+*   **Evidence:**
+    *   **Figure 2 Table (Budget $\ell=32$):** Saap-MLP = 0.85, GWR Linear = 0.72, Symmetric k-means = 0.52.
+    *   **Calculated Gap Closure:** $(0.72 - 0.52) / (0.85 - 0.52) = 0.20 / 0.33 \approx 60.6\%$.
+    *   **Reported Gap Closure:** The table lists **63.7%**.
+    *   **Discrepancy:** The reported value (63.7%) matches the calculation using Table 1 values ($(0.726 - 0.513) / (0.848 - 0.513) \approx 63.6\%$), but it is inconsistent with the rounded values presented in the Figure 2 table itself. This indicates a lack of internal consistency in the reported numbers.
+
+**3. Factual Error: Complexity Analysis Formula**
+The complexity analysis in Section 3.5 contains a formula error regarding the calibration phase.
+*   **Evidence:**
+    *   **Text (Section 3.5):** Claims complexity is "$O(nd_h^2 + d_h^2C)$ for computing $Q^\top Q$ and $Q^\top Y$".
+    *   **Correction

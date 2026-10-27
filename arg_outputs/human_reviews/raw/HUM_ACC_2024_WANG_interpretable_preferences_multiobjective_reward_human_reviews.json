@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_WANG_interpretable_preferences_multiobjective_reward",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Interpretable Preferences via Multi-Objective Reward Modeling and Mixture-of-Experts",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents a multi-objective reward model with a MoE architecture. The multi-objective aims to provide finer-grained signals for reward modeling, compared to the standard binary preference used in Bradley-Terry model, and the MoE architecture with a gating network adaptively aggregate the outputs of the multi-heads. The proposed reward model ArmoRM achieved state-of-the-art performance among 8B models, evaluated on RewardBench.",
+      "strengths": "1. The multi-objective regression keeps finer-grained information of high-quality preference data, which is typically discarded by the standard Bradley-Terry model.\n2. Using a gating network to aggregate multiple reward objectives based on the prompt is appropriate for the multiple regression heads. \n3. The performance on RewardBench is impressive.",
+      "weaknesses": "1. The design of ArmoRM is similar to SteerLM (Dong et al., 2023), but the SteerLM is not directly mentioned in this paper. In my understanding,  the primary differences lie in the number of heads (19 vs. 9) and the gating network, with ArmoRM using adaptive head weights compared to SteerLM's fixed weights.\n\n2. The implementation of a verbosity penalty in Equations 2 and 3 raises some confusion. As noted in line 818, verbosity is an explicit objective of ArmoRM, suggesting that this penalty could be managed by a negative coefficient during inference. Why do we need to penalize verbosity for other objectives during training, and how does it compares to the inference-stage down weighting or negative weighting? Meanwhile, as discussed in lines 857-870, those correlated objectives are still kept as separate objectives, why verbosity is treated differently by such a penalty training?\n\n3. The evaluation only covers the rewarding tasks, but ultimate goal of a reward model is to align policy models. I understand the scope of experiments could be limited for a short paper, but it would be more compelling to demonstrate how the reward model might effectively enhance LLM alignment.\n\n4. The value of $\\lambda_i$ in Eq.2 is unclear. With a large number of objectives, determining these values seems complex and needs further clarification.\n\n5. I am curious about the extent of improvement offered by the gating network over fixed weights. How significant is the difference in performance between these two approaches?",
+      "questions": "1. Lines 160 -161: \"(please check out our previous blog for background and more details)\". I'm concerned that referring to a previous blog post can may pose a conflict with the blind review policy.\n\n2. I recommend comparing the proposed methodology with the design of SteerLM to better contextualize this paper.\n\n3. It would convince the readers better by including a simple evaluation of alignment using ArmoRM.\n\n4. There could be an ablation study to demonstrate the effectiveness of the gating network for multi-objective aggregation.",
+      "rating": 2.5,
+      "confidence": 5,
+      "soundness": 3.5,
+      "raw_note_id": "96c4cbbe9edade97a51f588a6872fa3a2e94d869048c70fc1bb8c69933615e699bfe1c1e95de069fe1dda4ce97ccb384ce6cc6e7c0530e26ea16cdd34112b60d"
+    }
+  ]
+}

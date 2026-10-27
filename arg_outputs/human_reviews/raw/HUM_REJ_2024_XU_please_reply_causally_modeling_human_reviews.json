@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_XU_please_reply_causally_modeling",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Please Reply: Causally Modeling the Linguistic and Social Factors that Predict Email Response",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper explores email communication, focusing on understanding the intentions, expectations, and responsiveness in email exchanges. The authors introduce SIZZLER, a dataset comprised of 1800 emails meticulously annotated for nuanced intents and expectations. They benchmark various models, from traditional logistic regression to large language models, to predict and analyze these elements.\n\nThe authors apply their predictive model to categorize intents, expectations, and 14 additional pragmatic features across 11.3 million emails from the GMANE corpus. Their causal analysis reveals that factors such as social status, argumentation quality, and, to a lesser extent, the strength of social connections significantly influence email response rates. This study contributes to the field by providing a new dataset, a structured framework for modeling the mechanisms affecting email responses, and insights into the social and linguistic factors that drive engagement in email conversations.",
+      "strengths": "The creation of SIZZLER offers a resource for future research in understanding human communication through email. \n\nThe use of a large-scale dataset (11.3 million emails) combined with a detailed causal analysis provides evidence for the influence of social and linguistic factors on email responsiveness.",
+      "weaknesses": "While the paper employs causal analysis through propensity score matching, it might not fully capture all confounding variables that could influence email response rates. The complexity of human behavior in communication can be challenging to model accurately.\n\nThe proposed task of identifying the intention behind email seems to be trivial. For example, whether an email sender wishes to get responses or not can be easily determined.",
+      "questions": "N/A",
+      "rating": 2,
+      "confidence": 3,
+      "soundness": 2.5,
+      "raw_note_id": "00729893bf144c45d24c6ce48043d0d6a7b906eecdb723c2dac20cda704d4dd447558cc7761ed97324269ac7a327d69d93349923c52932aaffc6bc0f0de4e755"
+    }
+  ]
+}

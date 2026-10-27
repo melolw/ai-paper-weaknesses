@@ -1,0 +1,82 @@
+# Global Summary
+
+This paper addresses the vulnerability of structured-output Large Language Model (LLM) APIs to control-plane jailbreaks, specifically the "EnumAttack," where malicious instructions are embedded within JSON schema enum or const values. The authors propose Selective DeLex-JSON, a training-free defense that sanitizes JSON schemas before constrained decoding by replacing suspicious forced literals with opaque placeholders.
+
+The core approach utilizes a conjunction-based heuristic to identify malicious payloads (flagging values that are long, contain whitespace, or include imperative verbs) while preserving benign schema structure. Evaluation on Llama-3.1-8B and Qwen2.5-7B models demonstrates that DeLex-JSON achieves a 0% Attack Success Rate (ASR) on the HarmBench benchmark, completely neutralizing the EnumAttack which otherwise achieves 22% ASR. The defense incurs a low benign schema modification rate of 1.1%, Pareto-dominating the Reject-Only baseline (4.4% rejection rate). A key limitation identified is the defense's inability to detect chunked-payload attacks where harmful content is distributed across short literals (≤20 characters).
+
+# Abstract
+
+- **Problem:** Structured-output APIs using constrained decoding are vulnerable to control-plane jailbreaks where attackers embed harmful instructions in JSON schema enum/const values.
+- **Method:** Selective DeLex-JSON, a training-free defense that sanitizes schemas by replacing suspicious literals with placeholders.
+- **Key Results:**
+  - Achieves 0% Attack Success Rate (ASR) on HarmBench for both Llama-3.1-8B and Qwen2.5-7B.
+  - Neutralizes EnumAttack, which achieves 22% ASR without defense.
+  - Incurs only 1.1% benign schema modification rate.
+  - Pareto-dominates the Reject-Only baseline, which has a 4.4% rejection rate.
+- **Deployment:** Immediately deployable in production inference pipelines without model retraining.
+
+# Method
+
+- **Threat Model:** The attacker controls the JSON schema specification but not the system prompt or model weights. The goal is to force the model to generate harmful content via constrained decoding of forced literals (enum/const values).
+- **Defense Pipeline:**
+  1. Intercept JSON schema before constrained decoding.
+  2. Extract forced string literals from enum and const fields.
+  3. Apply a suspicion function to identify malicious literals.
+  4. Replace suspicious literals with opaque placeholders (e.g., "OPTION_0").
+- **Suspicion Function:** A conjunction-based heuristic flags a literal as suspicious if it satisfies at least two of the following criteria:
+  - Length exceeds 20 characters.
+  - Contains whitespace (spaces, newlines, tabs).
+  - Matches instruction-like patterns (imperative verbs, affirmative prefixes like "Sure," or "Step 1").
+- **Placeholder Replacement:** Suspicious literals are replaced with "OPTION_i" strings. This preserves schema structural validity while removing natural-language priming. A mapping table is maintained for optional post-processing restoration.
+- **Performance Metric:** The heuristic achieves a 1.1% benign schema modification rate across 8,825 JSON-SchemaBench schemas while detecting 100% of EnumAttack payloads.
+
+# Experiments
+
+- **Experimental Setup:**
+  - **Models:** Llama-3.1-8B-Instruct and Qwen2.5-7B-Instruct.
+  - **Framework:** vLLM with XGrammar for constrained decoding.
+  - **Parameters:** Temperature 0.6, maximum 1024 tokens.
+  - **Datasets:**
+    - HarmBench (159 standard behaviors).
+    - StrongREJECT (313 harmful prompts across 6 categories).
+    - JSON-SchemaBench (8,825 real-world JSON schemas).
+  - **Baselines:** No Defense, Input Guard (Llama Guard 3), Reject-Only, Escape-Hatch.
+
+- **Safety Results (Table 1):**
+  - **DeLex-JSON:** 0% HarmBench ASR on both Llama-3.1-8B and Qwen2.5-7B. 2.6% StrongREJECT ASR.
+  - **No Defense:** 22.0% HarmBench ASR (Llama-3.1-8B), 10.7% (Qwen2.5-7B).
+  - **Input Guard:** 3.8% HarmBench ASR (Llama-3.1-8B); fails to eliminate attacks entirely.
+  - **Reject-Only:** 0% ASR but incurs 4.4% benign false positive rate.
+  - **Escape-Hatch:** 22.0% ASR (identical to No Defense); ineffective against control-plane attacks.
+  - **Pareto Dominance:** DeLex-JSON reduces benign cost by 3.3 percentage points compared to Reject-Only (1.1% vs 4.4%) while maintaining 0% ASR.
+
+- **Utility Preservation (Table 2):**
+  - **Overall Modification Rate:** 1.1% on JSON-SchemaBench.
+  - **Validity Delta:** -0.38 percentage points.
+  - **Compliance Delta:** -0.70 percentage points.
+  - **Subset Analysis:** GlaiveAI-2K and Kubernetes subsets had 0% modification rate. Github_hard subset had 3.0% modification rate.
+
+- **Ablation Study (Table 3):**
+  - **Strip-Only:** Removes metadata but keeps literals; achieves 22.0% ASR (no safety benefit). Confirms forced literals are the key attack vector.
+  - **Delex-All:** Delexicalizes all literals; achieves 0% ASR but incurs 35.5% benign modification rate (32x higher than selective approach).
+
+- **Limitations (Figure 3):**
+  - **Chunked Attacks:** Attacks distributing harmful content across short enum values (≤20 characters) evade the suspicion function.
+  - **Detection Failure:** 0% of chunks are flagged in chunked attacks.
+  - **Residual Risk:** ASR remains 8–14% for defended models under chunked attack conditions.
+
+# Conclusion
+
+- **Summary:** Selective DeLex-JSON is a training-free defense that achieves 0% HarmBench ASR against control-plane jailbreaks while incurring only 1.1% benign schema modification rate.
+- **Comparison:** The method Pareto-dominates existing approaches, specifically reducing benign cost by 3.3 percentage points compared to the Reject-Only baseline.
+- **Key Findings:** Ablation confirms that forced enum/const literals are the primary attack vector and that selective filtering preserves utility better than blanket delexicalization.
+- **Deployment:** The defense is immediately deployable in production inference pipelines without model retraining.
+- **Future Work:** Chunked-payload attacks remain an open challenge, motivating the development of semantic-level detection methods.
+
+# References
+
+- **Safety and Jailbreaks:** Cites works on RLHF, Constitutional AI (Bai et al., 2022), white-box attacks like GCG (Zou et al., 2023), black-box methods like PAIR (Chao et al., 2023) and TAP (Mehrotra et al., 2023), and input-output safeguards like Llama Guard (Inan et al., 2023).
+- **Structured Output:** References constrained decoding frameworks including Outlines (Willard & Louf, 2023), XGrammar (Dong et al., 2024), and SynCode (Ugare et al., 2024), as well as the JSONSchemaBench benchmark (Geng et al., 2025).
+- **Control-Plane Attacks:** Cites Zhang et al. (2026) for Constrained Decoding Attack (CDA) and EnumAttack, and Li et al. (2025) for AttackPrefixTree (APT).
+- **Evaluation Frameworks:** References HarmBench (Mazeika et al., 2024) and StrongREJECT (Souly et al., 2024).
+- **Other Defenses:** Mentions StruQ (Sitawarin et al.) for prompt injection defense via structured queries.

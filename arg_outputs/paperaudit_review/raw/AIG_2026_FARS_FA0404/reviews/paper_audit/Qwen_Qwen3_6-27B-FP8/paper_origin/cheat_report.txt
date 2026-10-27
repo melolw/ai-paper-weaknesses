@@ -1,0 +1,33 @@
+### Integrity and Consistency Risk Report
+
+**Manuscript Title:** HAZARD-SIGNATURE TOMBSTONES: COMMIT-TIME FORGET LOCKOUT FOR LLM AGENT MEMORY
+
+**Overall Assessment:**
+The manuscript presents a coherent methodology for preventing paraphrase re-injection in LLM agent memory. However, there are **clear internal inconsistencies** between the text, figures, and experimental descriptions that affect reproducibility and the clarity of the evaluation protocol.
+
+#### 1. Inconsistent Hazard Signature Definition (Figure 1 vs. Section 3.2)
+*   **Issue:** There is a direct mismatch between the textual definition of the hazard signature and its depiction in the system diagram.
+*   **Evidence:**
+    *   **Section 3.2 (Hazard Signature Extraction):** Defines the hazard signature $\text{HS}(m)$ strictly as a "structured set of labels capturing the safety-relevant behavioral patterns" based on a fixed taxonomy of hazards (e.g., `skip_validation`, `remote_exec`). It states the LLM outputs "a JSON object containing the applicable hazard labels."
+    *   **Figure 1 & Caption:** The diagram explicitly shows the extraction of `{task_type, target_artifact, hazards}`. The caption states: "hazard signatures {task_type, target_artifact, hazards} are extracted using DeepSeek-V3.2."
+*   **Impact:** It is unclear if `task_type` and `target_artifact` are part of the signature used for matching in Equation (3). If they are, the method description in Section 3.2 is incomplete. If they are not, the figure is misleading. This ambiguity affects the reproducibility of the fuzzy set-containment matching logic.
+
+#### 2. Contradictory Evaluation Query Description (Section 4.1 vs. Section 4.3)
+*   **Issue:** The description of the evaluation queries contradicts the definition of the Benign Recall metric.
+*   **Evidence:**
+    *   **Section 4.1 (Experimental Setup):** States, "We use 12 evaluation queries from the MemoryGraft benchmark that **probe the same intents as the poisoned seeds**."
+    *   **Section 4.3 (Metrics):** Defines **Benign Recall@$k$** as: "For **each benign record's request**, whether the record appears in its own top-$k$ retrieval results."
+*   **Impact:** Queries designed to probe poisoned intents cannot logically serve as the requests for benign records to calculate benign recall. This suggests either the evaluation setup is poorly described (e.g., two separate query sets were used but only one is mentioned) or the metric definition is misapplied. This materially affects the trustworthiness of the Benign Recall results reported in Table 1.
+
+#### 3. Ambiguous Baseline Labeling in Ablation Study (Figure 2 vs. Table 1)
+*   **Issue:** Figure 2 uses ambiguous labels that do not align with the baselines defined in Table 1 and Section 4.2, making it difficult to verify the claims in Section 4.5.
+*   **Evidence:**
+    *   **Table 1 & Section 4.2:** Define two distinct retrieval-time baselines: **Retrieval-Time Exact (B-exact)** and **Retrieval-Time Fuzzy (B-fuzzy)**.
+    *   **Figure 2:** Labels the bars simply as **"B ($\delta$=0)"** and **"B ($\delta$=6)"**.
+    *   **Section 4.5:** Discusses "Retrieval-time filtering with backfill (B, $\delta$=6)" and attributes the low result count (1.00) to "index pollution" and filtering.
+*   **Impact:** It is unclear whether Figure 2 depicts B-exact, B-fuzzy, or an aggregate. Given that B-exact has a high PRP@3 (0.92) in Table 1, it is unlikely to be the subject of a "slot wasting" analysis focused on filtering effectiveness. If Figure 2 refers to B-fuzzy, the label should be explicit. This ambiguity obscures the comparison between retrieval-time and commit-time filtering.
+
+#### 4. Minor Numerical Consistency Check
+*   **Observation:** The calculation in Section 4.4 regarding index pollution is consistent.
+    *   **Text:** "50/150 = 33% poisoned vs 9% originally."
+    *   **Verification:** Original index = 100 benign + 10 poisoned = 110 records (10/110 $\approx$

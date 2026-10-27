@@ -1,0 +1,51 @@
+1) Summary
+The paper addresses efficient long-context inference via sparse attention routing, aiming to bridge the performance gap between training-free baselines and learned routers without iterative optimization. The authors first test geometric moment matching via gauge-coupled whitening to align query-key distributions, finding it yields no improvement over symmetric k-means routing. Building on this negative result, they propose GWR Linear, a training-free method that predicts per-bucket attention mass using closed-form ordinary least squares (OLS) on calibration data. Evaluated on Qwen2.5-7B with 32K context, GWR Linear achieves 72.6% attention-mass recall@32, closing 63.6% of the gap to a learned MLP router. The method generalizes across routing budgets and multiple attention heads while maintaining the same inference complexity as symmetric k-means.2) Strengths
+- **Clear Problem Formulation and Objective Shift**
+  - Explicitly defines routing quality via attention-mass recall@ℓ (Eq. 1, Section 3.1), providing a precise, measurable target that directly aligns with downstream attention computation rather than proxy metrics.
+  - Identifies the limitation of symmetric k-means routing due to query-key distribution mismatch in pretrained models (Section 1, Section 3.1), grounding the motivation in established transformer properties and clarifying the core challenge.
+  - Shifts the objective from geometric distribution alignment to direct attention-mass prediction (Section 3.3, Section 3.4), which directly optimizes the routing metric and reveals a more effective design principle for training-free methods.
+- **Rigorous Experimental Validation and Ablation**
+  - Includes a comprehensive budget sweep (Figure 2, Section 4.4) showing monotonic gap closure from 44.3% to 80.3% as ℓ increases, demonstrating robust scaling behavior and validating the method's adaptability to different sparsity constraints.
+  - Evaluates across 6 diverse attention heads spanning layers 2–26 (Table 2, Figure 3, Section 4.5), confirming generalization beyond a single head and revealing head-specific non-linear patterns that inform future extensions.
+  - Provides a critical ablation on dot-product preservation (Table 1, Section 4.3), proving that breaking gauge symmetry degrades performance to 25.0% recall, which validates the theoretical constraint and clarifies the role of geometric invariance.
+- **Practical Efficiency and Deployment Readiness**
+  - Achieves closed-form OLS computation (Eq. 5, Section 3.4) requiring only a single matrix solve, eliminating hyperparameter tuning and iterative optimization, which significantly lowers the barrier for deployment on new models.
+  - Matches the inference-time complexity of symmetric k-means routing at $O(d_hC + C \log \ell)$ (Section 3.5), ensuring zero additional latency overhead during generation and making it directly compatible with existing sparse attention pipelines.
+  - Calibration phase completes in seconds on a single CPU for typical dimensions (Section 3.5), making the method highly accessible for rapid prototyping and reducing computational costs compared to learned routers.3) Weaknesses
+- **Limited Evaluation Scope and Dataset Diversity**
+  - Experiments rely solely on Qwen2.5-7B and the PG19 dataset (Section 4.1), lacking validation on other model families or domain-specific corpora, which limits confidence in the method's cross-architecture generalizability.
+  - Only 6 attention heads are evaluated out of 784 total heads (Table 2, Section 4.5), raising concerns about representativeness and potential selection bias, as routing dynamics may vary significantly across untested heads.
+  - Context length is fixed at 32K tokens (Section 4.1), with no analysis of performance degradation or calibration stability at longer contexts, leaving open questions about scalability to modern long-context workloads.
+- **Theoretical Justification and Calibration Sensitivity**
+  - The OLS predictor assumes a linear relationship between queries and bucket attention masses (Eq. 4, Section 3.4), but no theoretical bound or convergence guarantee is provided, making it unclear when or why linearity suffices.
+  - Calibration data size ($n \approx 10^5$) is mentioned (Section 3.5), but sensitivity to calibration set composition, size, or distribution shift is not analyzed, which is critical for practical deployment across diverse domains.
+  - The regularization constant $\epsilon$ in Eq. 5 is noted as the only hyperparameter (Section 3.4), yet no ablation or guideline for selecting $\epsilon$ across different heads or models is provided, potentially affecting robustness in ill-conditioned scenarios.
+- **Incomplete Baseline Comparison and Metric Limitations**
+  - The learned baseline (Saap-MLP) is trained for 50 epochs (Section 4.1), but no comparison to other training-free or lightweight learned methods is included, limiting the ability to fully contextualize the proposed gap closure.
+  - Evaluation relies exclusively on attention-mass recall (Eq. 1, Section 3.1), without measuring downstream task performance, which leaves unverified whether improved recall actually translates to preserved model quality or generation accuracy.
+  - The "Whitening-Only" ablation (Table 1, Section 4.3) shows poor performance, but the paper does not explore alternative geometric transforms or non-linear training-free predictors, missing an opportunity to address the remaining performance gap.
+- **Internal Inconsistencies and Data Reporting Issues**
+  - Table 1 (Section 4.2) reports Random Recall@32 as 0.030, consistent with uniform selection ($32/1024 \approx 0.031$), but the table in Figure 2 (Section 4.4) reports it as 0.25, a major contradiction that undermines result reliability.
+  - Figure 2 reports Random Recall@128 as 0.88, which is mathematically impossible for uniform random selection over 1024 buckets (expected 0.125), suggesting potential data mislabeling or fabrication in the budget sweep experiment.
+  - The gap closure percentages in the Figure 2 table do not align with the rounded recall values presented in the same table, indicating a lack of internal numerical consistency in the reported results.4) Suggestions for Improvement
+- **Expand Evaluation Scope and Dataset Diversity**
+  - Include experiments on at least two additional model families (e.g., Llama-3, Mistral) and diverse datasets to demonstrate cross-architecture and cross-domain robustness, directly addressing the single-model limitation in Section 4.1.
+  - Evaluate a statistically representative sample of attention heads or report full-head statistics to mitigate selection bias, ensuring the findings in Table 2 and Section 4.5 generalize across the entire model.
+  - Conduct a context-length scaling study (e.g., 8K, 32K, 128K) to analyze how calibration stability and recall performance evolve, providing necessary insights for deployment on longer sequences beyond the 32K setting in Section 4.1.
+- **Strengthen Theoretical Justification and Calibration Analysis**
+  - Provide a theoretical analysis or empirical bound on the approximation error of the linear OLS predictor relative to the true attention distribution, clarifying the conditions under which the linear assumption in Eq. 4 holds.
+  - Perform a calibration sensitivity study varying dataset size and composition to establish practical guidelines for calibration data collection, addressing the unexamined dependency on $n \approx 10^5$ samples in Section 3.5.
+  - Include an ablation study on the regularization parameter $\epsilon$ across different heads and models, providing a principled selection strategy or adaptive tuning rule to ensure robustness in ill-conditioned scenarios noted in Eq. 5.
+- **Broaden Baseline Comparisons and Downstream Validation**
+  - Compare against additional training-free baselines and lightweight learned methods to better position GWR Linear within the routing landscape, addressing the limited baseline set in Section 4.1 and Table 1.
+  - Report downstream task metrics (e.g., perplexity, benchmark accuracy) to empirically verify that attention-mass recall correlates with preserved model performance, directly addressing the metric limitation in Eq. 1 and Section 3.1.
+  - Explore simple non-linear training-free extensions or hybrid approaches to address the remaining performance gap, building on the observation in Section 4.2 that non-linear patterns exist beyond linear projection.
+- **Verify Data Integrity and Resolve Reporting Inconsistencies**
+  - Reconcile the conflicting Random baseline values between Table 1 and Figure 2, ensuring all reported metrics are consistent across the manuscript.
+  - Investigate and correct the mathematically impossible Random Recall@128 value in Figure 2, providing a clear explanation or corrected data to restore confidence in the experimental pipeline.
+  - Cross-check all derived metrics (e.g., gap closure percentages) against the raw recall values in tables and figures to ensure numerical consistency throughout Section 4.5) Score
+- Overall (10): 6 — The paper presents a practical, training-free routing method with strong empirical results on Qwen2.5-7B (Table 1, Section 4.2), but internal data inconsistencies and limited evaluation scope temper its broader impact.
+- Novelty (10): 6 — The shift from geometric alignment to direct attention-mass prediction via closed-form OLS (Section 3.4, Eq. 5) offers a clear conceptual advance, though linear probing for routing has precedents in related literature.
+- Technical Quality (10): 6 — The method is mathematically sound and efficiently implemented (Section 3.5), yet the absence of theoretical bounds, calibration sensitivity analysis, and internal numerical contradictions in Figure 2 limit technical rigor.
+- Clarity (10): 8 — The manuscript is well-structured with clear problem formulation (Section 3.1), explicit equations (Eq. 1–5), and informative figures (Figure 1–3), making the methodology and results easy to follow.
+- Confidence (5): 3 — Moderate confidence due to clear experimental setup and reproducible closed-form method (Section 3.4, Section 4.1), though significant reporting inconsistencies in Figure 2 and limited model/dataset coverage reduce certainty about generalizability and data integrity.

@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_TANG_cmd_framework_contextaware_model",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "CMD: a framework for Context-aware Model self-Detoxification",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper is about the method for the detoxification to achieve a balance between detoxification effectiveness and text quality. The authors present Context-aware Model self-Detoxification (CMD) framework, that detoxifies the context and allows to generate a less toxic continuation. According to the preliminary studies, existing detoxification models tend to generate safe content, but the text quality is significantly worse than that of the LLMs (that tend to be more toxic).",
+      "strengths": "The paper is very well written, easy to follow, the ideas and the contribution is clear. The authors provided a decent number of experiments and even performed a preliminary study to better understand the context of the their research. Another strength is ablation study with ChatGPT, that replaced the parts of the pipeline demonstrating the obvious advantage of the authors method.\n\nI will also list the advantages and quickly describe them:\n\n* new dataset for the model training for the detoxified context-following generation\n* CMD framework (and the fine-tuned model) that is capable to (detoxify) and continue the detoxified text\n* preliminary experiments with understanding the compromise between toxicity/text quality\n* ablation studies demonstrating the real performance of the model\n* strong results",
+      "weaknesses": "As it is the second round of reviewing, I did not find additional weaknesses, and previous weaknesses were address during the previous round. I might have suggestions though.",
+      "questions": "1) I have seen that many authors asked about Paradetox benchmark and you do mention it in the latest version of the paper, however, main results are in the Appendix only. Probably you might want to put it to the main part of the paper given an additional page.\n2) Same concern for the Fluency metric\n\nQuestion: which component do you think to be the most efficient in the pipeline you suggest? I have read the paper again, while the idea of the synthesised dataset, the span identification and replacement is not new - you do achieve main results. What do you think is the most important/interesting trick of your approach?",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "6ab6c64f170ca8232cf77f057798dec2628c43ca01aa67c0ca9062ca34cc7dab71d306c299065080b3bd05263595a92b5c68a854a23ad4d127aeecfe7007b23a"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper discusses the imbalance between detoxification effectiveness and the generation quality. This paper introduces the Context-Aware Model Self-Detoxification (CMD) framework that pays attention to both the context and the detoxification process. This framework has two phases for text detoxification: (1) Utilizing language models to synthesize data, and (2) applying these data for training. The authors also propose a toxic contrastive loss that guides the model to generate text away from the negative toxic samples. Their experimental evaluation shows the effectiveness of the framework.",
+      "strengths": "1. The main idea behind this paper is interesting; i.e., detoxifying the context, then making the language model generate along the safe content.\n2. Section 2 includes preliminary experiments covering this idea's main argument. To my knowledge, nobody has done such empirical analysis in the community.\n3. Comprehensive experiments and discussion.\n    * Comparing both Closed LLMs (ChatGPT) and Open LLMs for synthesizing dataset strengthened their experiments",
+      "weaknesses": "* Authors addressed my comments from the previous round. Thanks.\n* Link to my previous review: https://openreview.net/forum?id=gqSO4gnSiDP&noteId=jQFMufmvbzA",
+      "questions": "* Authors addressed my comments from the previous round. Thanks.\n* Link to my previous review: https://openreview.net/forum?id=gqSO4gnSiDP&noteId=jQFMufmvbzA",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "ab4155dab85f38fb2b0bac6d2a49a9ddcad9b3477b6e56846c45a068ef8fd6da87cb6335509ec426a1608baf570d330c630d8c995fb9e8553c4949126c85d1e4"
+    }
+  ]
+}

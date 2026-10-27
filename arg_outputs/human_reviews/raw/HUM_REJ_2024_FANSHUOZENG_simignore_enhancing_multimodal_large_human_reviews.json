@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_FANSHUOZENG_simignore_enhancing_multimodal_large",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Simignore: Enhancing Multimodal Large Language Models Complex Reason via Similarity Computation",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces the Simignore algorithm, which aims to improve the efficiency and reasoning capabilities of multimodal large language models (MLLM) by computing and leveraging the similarity between image and text embeddings. Simignore selectively ignores irrelevant image tokens, thereby enhancing model performance in complex reasoning tasks. The effectiveness of the algorithm is demonstrated through experiments on the ScienceQA dataset.",
+      "strengths": "The paper identifies that selectively ignoring certain image tokens can lead to improved performance on the ScienceQA benchmark, indicating a potential reduction in computational load while maintaining or enhancing accuracy in complex reasoning tasks.",
+      "weaknesses": "The primary concern is the limited experimental validation, as the study relies solely on the ScienceQA benchmark. This raises questions about the generalizability of the findings and whether they can be substantiated across diverse datasets or real-world applications.",
+      "questions": "**Typo Corrections:**\n- Line 167: Change \"output.Wei\" to \"output. Wei\".\n- Line 171: Change \"Kojima et al. Kojima (Kojima et al., 2022)\" to \"Kojima et al. (Kojima et al., 2022)\".\n- Line 221: Change \"1,\" to \"1.\".\n- Line 503: Change \"’spy’\" to \"`spy'\".\n- Additionally, there are frequent spacing errors throughout the paper that need to be corrected to meet publication standards.",
+      "rating": 1,
+      "confidence": 4,
+      "soundness": 1.5,
+      "raw_note_id": "05448b74ebb7576062578482149a06d3cef4ccf47ca9489b4a2362092456c915809b4a58fdae5ac500f7d9b17733c1772830dbe17cdc2b5a4238156e58e4d6a7"
+    }
+  ]
+}

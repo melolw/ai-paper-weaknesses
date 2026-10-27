@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0301",
+    "title": "Definition Unit Tests Improve LLM Convention Adherence",
+    "abstract": "Large language models often know multiple valid conventions for mathematical notation but default to the wrong one when a specific convention is required. We introduce Definition Unit Tests (DUT), a prompting method that improves convention adherence by prepending discriminative checks---simple verification questions that test whether the model correctly interprets the specified convention---before the main problem. On ErdosConventionsBench, a benchmark of 300 mathematical problems spanning three convention families, DUT improves accuracy by +5.0 percentage points on Qwen2.5-Math-7B-Instruct and +22.7 percentage points on Llama-3.1-8B-Instruct compared to engagement-matched baselines that control for additional computation. DUT also outperforms majority voting over five samples while using only a single generation, and reduces the rate of alternate-convention answers by approximately 80\\%. Our results demonstrate that discriminative definition binding effectively anchors models to specified conventions, addressing a key challenge in deploying LLMs for tasks requiring precise adherence to domain-specific terminology.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 6,
+        "confidence": 2,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper hypothesizes that while large language models (LLMs) often ignore explicit prompt definitions in favor of memorized pre-trained conventions, prepending discriminative \"Definition Unit Tests\" (DUT)—questions that verify the model's understanding of the specified convention before it solves the main problem—will successfully bind the model to the provided definitions. The authors validate this hypothesis empirically using the ErdosConventionsBench, comparing the DUT method against glossary-only and engagement-matched \"neutral checks\" baselines to ensure improvements are due to discriminative content rather than just extra computation. The main outcome is a positive confirmation: DUT significantly improves convention adherence, increasing accuracy by 5.0 percentage points on Qwen2.5-Math-7B-Instruct and 22.7 percentage points on Llama-3.1-8B-Instruct over the engagement-matched baselines, while reducing the rate of alternate-convention answers by approximately 80%.",
+        "strengths": "Clear and well-motivated hypothesis: The authors clearly identify a practical failure mode in large language models (LLMs)—the tendency to ignore explicitly provided definitions in favor of memorized pretraining conventions. They propose a highly logical and testable solution: using discriminative definition checks to force the model to bind to the specified semantics.\nSound experimental design: The methodology is rigorous, particularly due to the clever inclusion of an \"engagement-matched\" baseline featuring neutral checks (Condition B). This isolates the causal effect of the discriminative content, proving the performance gains are not simply due to the model performing additional computation or generating more tokens. The authors also robustly compare their method against inference-time scaling (majority voting).\nInformative failure/error analysis: The paper includes a dedicated error analysis section that clarifies the boundaries of the method's effectiveness. It demonstrates that while Definition Unit Tests (DUT) successfully eliminate most convention-based confusion, the remaining errors naturally shift to inherent model limitations, such as computational mistakes or parsing failures.\n",
+        "weaknesses": "In Section 4.4, the paper points out that Qwen and Llama react differently to the number of discriminative checks (k). Qwen gets most of the benefit with just k=1, while Llama needs k=3. Based on this, the authors jump straight to the conclusion that \"weaker models require more repeated definition binding to internalize the convention.\" Honestly, this is a massive leap and highly speculative. They only tested two completely different models: one is a math-specialized model (Qwen2.5-Math-7B-Instruct), and the other is a general-purpose model (Llama-3.1-8B-Instruct). With a sample size of exactly two, along with completely different underlying architectures and pre-training data, chalking up the performance difference simply to a model being \"weaker\" just isn't scientifically rigorous.\nAdditionally, while the experimental design is definitely clever, the validation is restricted to a single synthetic benchmark (ErdosConventionsBench). Furthermore, this dataset only has 300 questions and just covers three specific mathematical conventions (asymptotics, completeness, and convolution). As the authors themselves admit in the limitations section, this narrow scope makes it really hard to prove if this method would actually work in broader scenarios, like general natural language reasoning, API tool calling, or everyday instruction-following tasks.",
+        "suggestions": "",
+        "llmDisclosure": "I use Gemini to refine my writing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T11:33:00.686Z",
+      "updatedAt": "2026-03-26T11:33:00.686Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The hypothesis is that LLM follows prompt's conventions better when prompt provides some simple questions and answers related to the conventions (called Definition Unit Tests, DUT).\nThe methodology is empirical, testing LLMs on three different conditions: A. With convention definition only. B. Adding questions with same answers under both conventions. C. Adding discriminative questions that have different answers under both conventions (DUTs). There are also tests on majority vote.\nThe main outcome is positive. Adding DUTs can improve LLM's convention following.",
+        "strengths": "Neutral Checks as baseline is a clever design to exclude the effect of more input tokens.",
+        "weaknesses": "The figure has serious defect. For example, the Q2 block in the center column in Fig.1 has unpaired parenthesis and unfinished text. \nThe scale of benchmark seems too small, as there are only three convention pairs (O(·) vs o(·), definition of \"complete\" and additive vs Dirichlet convolution).\nThe results of Qwen model under majority vote do not seem plausible. Generally, majority vote improves performance, especially when the baseline is high. However as shown in Table 1, Asymp. column shows its performance drops from 99% to 43%, and Compl. Column shows a drop from 80% to 6%. There are no details on how the majority vote is done.\nThe text under table 1 says \"All conditions use greedy decoding (temperature=0). The checks and main question are formatted in a chat template appropriate for each model.\" However, it is meaningless to do majority vote with greedy decoding and same prompt, as the output would be the same. There is probably an execution failure.\nThe idea is not that different from in context learning and few-shot learning, but these works are not included in related works.\nMinor:\nTable 1: Under Asymp. column, the \"99\" in the first row should also be bold.",
+        "suggestions": "",
+        "llmDisclosure": "I use Gemini 3 Flash to check if my comments are factually correct. I shared my comments and the paper. The final judgment and scores are independently verified by me.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T03:54:03.220Z",
+      "updatedAt": "2026-04-12T03:54:03.220Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that prepending discriminative definition checks (derived from the same glossary provided to the model) before a main task can effectively anchor large language models to user-specified conventions, reducing the tendency of models to default to memorized alternative conventions even when explicit definitions are provided. The validation is primarily empirical: the authors introduce Definition Unit Tests (DUT), a training-free prompting method, and evaluate it against engagement-matched neutral-check baselines (to control for the confounding effect of additional computation) on ErdosConventionsBench, a 300-item benchmark covering three families of mathematical conventions. The main outcome is strong positive confirmation of the hypothesis: DUT improves overall accuracy by 5.0 percentage points on Qwen2.5-Math-7B-Instruct and 22.7 percentage points on Llama-3.1-8B-Instruct, reduces the rate of answers matching alternate conventions by ~80%, and outperforms 5-sample majority voting while only requiring a single generation.",
+        "strengths": "1. The paper addresses a common, practically important failure mode of LLMs in technical domains—defaulting to pre-trained conventions even when explicit, binding definitions are provided in prompts—and frames the problem with concrete, relatable examples of mathematical convention ambiguity.\n2. The introduction of an engagement-matched neutral-check baseline is a particularly strong design choice, which effectively isolates the effect of the discriminative content of DUT checks from generic performance gains associated with longer prompts or additional reasoning steps.\n3. The reported gains are consistent across two very different models (a math-specialized model and a general-purpose model), and the alternate-convention match rate metric directly validates the proposed mechanism, confirming that DUT specifically reduces convention confusion rather than just improving general reasoning.",
+        "weaknesses": "1.  The method is only tested on three mathematical convention families on a single benchmark, so it remains unclear whether DUT generalizes to other types of convention disambiguation tasks (e.g., API specification adherence, rubric alignment for evaluation, or domain-specific terminology in non-mathematical fields like law or medicine).\n2. The current DUT implementation requires manually designing convention-specific discriminative checks for each new glossary, which adds overhead for users and may limit scalability for use cases with large numbers of dynamic or frequently updated conventions.\n3. The evaluation only covers two small, open-source instruction-tuned models (7B and 8B parameters); it is unknown whether DUT provides similar benefits for larger models (which may have stronger initial convention adherence) or non-instruction-tuned models.",
+        "suggestions": "1. Add a brief discussion of potential automated methods for generating discriminative checks directly from glossary definitions, to address the current manual overhead barrier and improve the scalability of DUT for real-world use cases.\n2. Include a small set of exploratory experiments or a discussion of how DUT might perform on non-mathematical convention adherence tasks, to help readers understand the broader applicability of the method.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T12:46:17.183Z",
+      "updatedAt": "2026-04-12T12:46:17.183Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0301"
+}

@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0005",
+    "title": "Selective Delexicalization to Defend Structured-Output LLM APIs from Control-Plane Jailbreaks",
+    "abstract": "Structured-output APIs enable reliable LLM integration through constrained decoding, but recent work reveals that JSON schema specifications create a new attack surface for control-plane jailbreaks. Attackers can embed harmful instructions in forced enum or const values, bypassing safety alignment by forcing models to output malicious content verbatim. We propose Selective DeLex-JSON, a training-free defense that sanitizes JSON schemas before constrained decoding. Our approach identifies suspicious forced literals using a conjunction-based heuristic (flagging values that are long, contain whitespace, or include imperative verbs) and replaces them with opaque placeholders that preserve schema structure while removing attack payloads. On HarmBench, DeLex-JSON achieves 0\\% attack success rate on both Llama-3.1-8B and Qwen2.5-7B, completely neutralizing the EnumAttack that achieves 22\\% ASR without defense. The defense incurs only 1.1\\% benign schema modification rate, Pareto-dominating the Reject-Only baseline which has 4.4\\% rejection rate. The defense is immediately deployable in production inference pipelines without model retraining.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 4,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper aims to address the problem of control-plane jailbreak attacks in structured JSON output. Its proposed solution is to block EnumAttack-style attacks by selectively delexicalizing enum and const values in JSON schemas before constrained decoding. The proposed method is evaluated for safety on HarmBench and StrongREJECT. Results show that the proposed DeLex-JSON achieves 0% ASR on both models on HarmBench. The ablation study also demonstrates the effectiveness of all proposed components.\n\nHypothesis: A conjunction-based heuristic suspicion function can identify suspicious forced literals by requiring at least two of three conditions: (1) length exceeds 20 characters, (2) contains whitespace, (3) matches instruction-like patterns.\nValidation: Empirical.\nMain outcome: The proposed method demonstrates better performance on two safety benchmarks.",
+        "strengths": "The proposed DeLex-JSON is a heuristic-based method that can be deployed very straightforwardly. The paper also provides a Pareto analysis, clearly showing the tradeoff between safety and utility, which aligns with intuition. The presented figures are also very clear; in particular, Figure 2 effectively illustrates the Pareto frontier and the advantages of the proposed method.",
+        "weaknesses": "1. The citation for Qwen2.5-7B-Instruct actually refers to the Qwen3 technical report. This is an inaccuracy, though not a critical issue.\n\n2. Insufficient justification and robustness of the heuristic function. Although the heuristic is simple and easy to deploy, its robustness is likely insufficient in many scenarios. Moreover, the design rationale behind the conditions is not clearly presented. For instance, the reason for choosing \"(1) length exceeds 20 characters\" is unclear. While the paper includes experiments comparing different length thresholds, this choice appears to be purely empirical and may not generalize to other scenarios or other attack types.\n\n3. Following the above point, if an attacker is aware of the designed heuristic, the conditions can be trivially bypassed. For example, the whitespace condition \"(2) contains whitespace (spaces, newlines, or tabs)\" can be easily circumvented by using underscores or other non-whitespace separators to construct readable harmful instructions.\n\n4. Following the above point, such heuristic rules could potentially be inferred by an LLM given a sufficient number of attack attempts, making heuristic-based defense mechanisms more susceptible to being defeated.\n\n5. Significant incompleteness in experimental results. Tables 1 and 2 contain a large number of missing entries (\"–\"), leaving substantial gaps in the evaluation evidence.",
+        "suggestions": "",
+        "llmDisclosure": "Which parts used LLM assistance: Phrasing and grammar polishing.\n\nWhich tool/model/service: Claude Opus 4.6.\n\nWhat information was shared: The original review draft.\n\nFinal judgment and scores independently verified by the reviewer: Yes.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-23T23:29:29.535Z",
+      "updatedAt": "2026-03-23T23:29:29.535Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that control-plane jailbreaks—where attackers bypass safety alignments by embedding malicious instructions into forced enum or const literals within JSON schemas—can be effectively neutralized by selectively sanitizing these schemas before constrained decoding, all without degrading the utility of benign requests. To validate this, the authors introduce an empirically tested, training-free preprocessing defense called Selective DeLex-JSON. This approach uses a conjunction-based heuristic (flagging strings that exceed 20 characters, contain whitespace, or use instruction-like patterns) to identify suspicious literals and replaces them with opaque placeholders that maintain the schema's structural validity. The main outcome is a strong positive confirmation of the defense's efficacy: empirical evaluations on Llama-3.1-8B and Qwen2.5-7B demonstrate that Selective DeLex-JSON achieves a 0% Attack Success Rate (ASR) on HarmBench, completely neutralizing the baseline 22% ASR. Furthermore, it preserves system utility by incurring only a 1.1% benign schema modification rate. However, the authors also report a negative limitation, noting that the heuristic can be entirely bypassed by \"chunked-payload attacks\" that divide malicious instructions into discrete strings shorter than the 20-character detection threshold.",
+        "strengths": "Clear and Well-Motivated Problem Formulation: The paper identifies and addresses a critical, highly specific, and novel threat model: control-plane jailbreaks via structured-output APIs . It clearly distinguishes this attack vector (malicious intent embedded in schema enum/const values) from traditional data-plane prompt injection, establishing a strong motivation for a targeted defense .\n\n    Sound and Rigorous Experimental Design: The evaluation methodology is highly structured, measuring both security and utility .\n\n        Safety Evaluation: Utilizes standard, rigorous benchmarks (HarmBench and StrongREJECT) to measure attack success rates.\n\n        Utility Evaluation: Leverages JSONSchemaBench with over 8,800 real-world schemas to precisely measure benign schema modification rates, ensuring the defense is practical .\n\n        Baselines and Generalization: The defense is tested against four well-defined baselines (No Defense, Input Guard, Reject-Only, Escape-Hatch) and evaluated on multiple models (Llama-3.1-8B and Qwen2.5-7B) to demonstrate cross-model applicability .\n\n    Informative and Rigorous Ablation Study: Section 4.4 features a well-designed ablation study that isolates the core mechanisms of the defense . By comparing \"Strip-Only\" (metadata removal) with \"Delex-All\" (blanket delexicalization), the authors empirically prove their hypothesis that forced literals, not descriptive metadata, are the primary attack vector .\n\n    Transparent Failure Analysis: A major strength of this paper is its honest and informative limitation analysis in Section 4.6. The authors rigorously analyze a negative result, showing that their heuristic entirely fails against \"chunked-payload attacks\" (where payloads are broken into pieces under 20 characters), leaving the attack success rate at 8-14% . This transparency greatly benefits future research.\n\n    High Practicality and Deployment Readiness: The proposed Selective DeLex-JSON is a lightweight, training-free preprocessing step that intercepts schemas before the decoding engine, requiring no model modification . It achieves a Pareto-optimal tradeoff by neutralizing the attack (0% ASR) while keeping the benign modification cost extremely low (1.1%) .",
+        "weaknesses": "Overclaiming \"Complete Neutralization\" and Robustness: The abstract claims the defense is capable of \"completely neutralizing\" the EnumAttack. However, the authors' own limitation analysis in Section 4.6 contradicts this absolute claim. The defense is trivially bypassed by \"chunked-payload attacks\" that divide the payload into chunks of 20 characters or less, which completely evade the suspicion function (0% flagged) and retain an 8-14% Attack Success Rate (ASR). This reveals that the defense is highly vulnerable to adaptive attacks.\nUnsubstantiated \"Production-Ready\" Claims: The authors state that Selective DeLex-JSON is \"immediately deployable in production inference pipelines\". However, the paper completely omits any empirical evaluation of the computational overhead. Intercepting schemas, extracting literals, applying heuristic rules, and managing placeholder mappings will introduce some latency or impact throughput, which must be quantified before claiming production readiness.",
+        "suggestions": "",
+        "llmDisclosure": "NONE",
+        "ethicsReproducibility": "I used gemi to polish my language."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T05:37:34.422Z",
+      "updatedAt": "2026-03-28T05:37:34.422Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper proposes selective delexicalization to defend against control-plane jailbreaks on structured-output LLM APIs. The method parses JSON schemas, flags enum/const values that look like injected instructions, and replaces them with opaque tokens before the schema reaches the model. The paper claims Pareto dominance over baselines and reports 0% attack success rate on HarmBench.",
+        "strengths": "1. The threat model, payload injection via schema enum/const fields, is real, timely, and well-scoped to structured-output APIs that are increasingly showing up in production.\n2. The token-mapping approach preserves output structure without retraining or inference-time overhead, which is practical.",
+        "weaknesses": "1. There's an unexplained baseline discrepancy that I struggled with. Table 1 reports 22% EnumAttack ASR on Llama-3.1-8B without defense, but Section 2.3 cites \"96.2%\" for the same attack class from Zhang et al. (2026). The gap is never reconciled, it's likely a HarmBench vs. AdvBench difference, but the paper doesn't say that. A reader can't tell whether the defense is neutralizing a 22% or a 96% attack, and that matters a lot.\n\n2. The Pareto-dominance language is overbroad. On StrongREJECT, DeLex-JSON has 2.6% ASR while Reject-Only sits at 0.0%, so the claim simply doesn't hold across all safety metrics. The abstract's omission of the StrongREJECT residual makes this worse.\n\n4. Qwen2.5-7B shows dashes for all baselines in Table 1 with no explanation. Table 2 drops results for 5 of 7 JSONSchemaBench subsets without saying why. The reference list also contains \"Synthesized BibTeX entry\" in the StruQ citation. That's an AI-generation artifact left in the bibliography.",
+        "suggestions": "",
+        "llmDisclosure": "The language of this review was polished with AI assistance. The core technical assessments, scores, and final judgments are the reviewer's own.\n",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": " The paper cites 96.2% ASR for EnumAttack in Section 2.3 but reports 22% in Table 1, without reconciling the two figures. The abstract reports 0% ASR on HarmBench but doesn't mention the 2.6% residual on StrongREJECT, which could mislead readers about the defense's completeness.\n\nIn addition, StruQ BibTeX is AI-synthesized with garbled author names"
+      },
+      "submittedAt": "2026-04-11T15:26:20.307Z",
+      "updatedAt": "2026-04-11T16:07:21.254Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0005"
+}

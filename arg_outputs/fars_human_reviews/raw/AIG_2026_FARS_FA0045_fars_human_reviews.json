@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0045",
+    "title": "Hard Examples Beat Easy Examples in Repetition-Heavy Long-CoT Fine-Tuning",
+    "abstract": "Recent work shows that repetition-heavy training---fine-tuning on small datasets for many epochs---can match data scaling for long chain-of-thought (CoT) supervised fine-tuning. This raises the question: which examples should be repeated? We investigate NLL-based data selection, comparing easy-to-fit (low-NLL) and hard-to-fit (high-NLL) examples under identical repetition-heavy training conditions. Contrary to intuition, high-NLL examples significantly outperform low-NLL examples (33.0\\% vs. 23.6\\% aggregate accuracy on AIME and GPQA benchmarks), with the advantage consistent across mathematical and scientific reasoning tasks. Analysis reveals that low-NLL examples are confounded with textual repetition (trigram rate 0.457 vs. 0.206), producing poor termination behavior and unstable training dynamics. Optimization attempts including hyperparameter tuning and trigram filtering fail to recover low-NLL performance, indicating the limitation is fundamental to the selection strategy. Our findings provide practical guidance: when using many-epoch repetition on small datasets, select hard-to-fit examples rather than easy-to-fit ones.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 1,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper studies a concrete data-selection question for repetition-heavy long-CoT supervised fine-tuning: if a model will be trained for many updates on a small subset of examples, is it better to repeat “easy-to-fit” examples or “hard-to-fit” ones? The authors operationalize ease and difficulty using per-token negative log-likelihood under the base model, construct length-matched low-NLL and high-NLL subsets from a 6,400-example Dolci-Think pool, fine-tune OLMo3-7B on 800 selected examples, and evaluate empirically on AIME 2024, AIME 2025, and GPQA. The work is entirely empirical rather than theoretical, and its main methodological strength is that it keeps the base model, subset size, and training recipe fixed while varying only the selection rule.\n\nThe main outcome is a negative result for the paper’s original hypothesis. High-NLL selection substantially outperforms low-NLL selection on aggregate accuracy (33.0 vs. 23.57), and low-NLL also has much worse termination behavior (36.73% vs. 65.77% for high-NLL), with random selection in between (28.66). The paper therefore provides evidence that, in this specific setup, repeating high-NLL examples is more effective than repeating low-NLL ones. However, the causal explanation is less secure than the headline result: the paper argues that low-NLL is confounded with textual repetition and poor termination, but the evidence for that mechanism remains correlational and somewhat under-analyzed.",
+        "strengths": "- The paper asks a clear, practically meaningful, and falsifiable question. “Which examples should be repeated under a fixed update budget?” is a real post-training decision, and the study gives a concrete answer for one setting rather than drifting into vague claims.\n- The experimental comparison is cleaner than average for a short empirical paper. The released selection code enforces equal subset size, equal per-decile quotas, and zero overlap between low- and high-NLL subsets, which makes the negative result more informative and reduces the chance that a trivial length confound explains the effect.\n- Reproducibility is better than average. The repository includes training code, evaluation code, subset-characterization outputs, result JSONs, and logs, so an informed reader can actually inspect how the claims were produced rather than trusting polished tables alone.\n- The paper usefully reports termination and subset statistics, not just accuracy. Even though the mechanism is not fully pinned down, measuring trigram repetition, output length, and termination gives the reader more diagnostic information than a bare benchmark table.",
+        "weaknesses": "- The introduction overstates the “contrary to intuition” framing. It is not obvious common sense that low-NLL examples should be better to repeat. Low NLL can mean many different things: pretraining familiarity, stylistic predictability, repeated phrase structure, or model-specific bias. The paper never justifies why “easy-to-fit” should be interpreted as pedagogically better rather than simply more familiar or more repetitive.\n- The strongest empirical weakness is that the paper presents the setup as 32-epoch repetition-heavy training, but the released evaluation scripts actually evaluate the validation-selected best checkpoint rather than the final checkpoint. The scripts call ckpts/.../best, not epoch_32, and the training code defines best by lowest validation loss. And the actual used checkpoints are epoch_4, which substantially weakens the paper’s framing of the result as evidence about a genuinely many-epoch regime; the evaluated models are early-stopped models trained in a repetition-heavy schedule. References: run_low_nll_eval.sh, run_high_nll_eval.sh, train.py, low_nll_main/REPORT.md, high_nll_baseline/REPORT.md, 02_low_nll_seed0.log, 03_high-nll-train-seed0.log.\n- The mechanism claim is stronger than the evidence. The paper argues that low-NLL fails because it is confounded with textual repetition and therefore teaches poor termination. The descriptive correlation is real: low-NLL has trigram repetition 0.457 while high-NLL has 0.206. But the follow-up trigram-filtering experiment improves termination while reducing accuracy further, so the paper has not shown that repetition is the main cause of the accuracy gap.\n- The evaluation setup partly entangles reasoning quality with formatting and completion behavior. The evaluator extracts the last boxed answer and separately records termination, so a model that reasons somewhat correctly but fails to close the trace or emit the final boxed answer before the token budget is exhausted will still be scored as wrong. The paper relies heavily on this setup but does not sufficiently separate “better reasoning” from “better answer-finalization under this evaluator.” The paper lacks of enough discussions in the evaluation details although from the code we could see that the default max tokens is 30k, which should be decent enough. References: eval.py.\n- The evidence base is narrow. The main treatment comparison uses one model family, one main training corpus, and only 3 seeds per NLL condition, while AIME 2024 and AIME 2025 each contain only 30 problems. That is enough for a suggestive result, but not enough to support a strong general rule for repetition-heavy long-CoT SFT.\n- The paper lacks qualitative analysis. Given that the central interpretation is mechanistic, the reader should see actual examples of low-NLL versus high-NLL selected traces and a few representative generations showing what “poor termination” or “formulaic repetition” looks like. Without such examples, the narrative remains abstract.\n- The related-work discussion is incomplete. The paper cites Select2Reason, D3, and RICo, but it omits Reinforcement Learning for Reasoning in Large Language Models with One Training Example [1]. That work is not an exact apples-to-apples baseline for SFT, but it is directly relevant to the broader question of what makes a single example valuable under repeated optimization, and it uses a historical variance score over training dynamics rather than NLL alone.\n\n[1] Wang, Yiping, et al. \"Reinforcement Learning for Reasoning in Large Language Models with One Training Example.\" The Thirty-ninth Annual Conference on Neural Information Processing Systems.",
+        "suggestions": "",
+        "llmDisclosure": "I am only using the codex (gpt-5.4, extreme high) to help me locate the code and the logs while reading the paper. The final judgement and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "- The most important reproducibility concern is checkpoint transparency. Because the reported results come from validation-selected best checkpoints rather than final-epoch checkpoints, the paper should say this very clearly in the main text. That is not a minor implementation detail; it changes how the reader interprets the claim about many-epoch repetition."
+      },
+      "audit": {
+        "findings": "Please see the concerns and weaknesses."
+      },
+      "submittedAt": "2026-04-11T04:58:30.230Z",
+      "updatedAt": "2026-04-11T04:58:30.230Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates an interesting and concrete problem in repetition-heavy long-CoT supervised fine-tuning: when training on a small subset for many epochs, whether repeating examples that are easy for the base model to fit, or hard for it to fit, can lead to better training results. The paper tests this using per-token NLL under the base model, constructs length-matched low-NLL and high-NLL subsets from Dolci-Think, fine-tunes OLMo3-7B for 32 epochs on 800 examples, and evaluates on AIME 2024, AIME 2025, and GPQA Diamond.\nThe main finding reported in the paper is that high-NLL examples substantially outperform low-NLL examples under this regime, and also achieve much higher termination rates.\nThis paper further argues that (1) low-NLL examples are confounded with textual repetition and (2) simple attempts do not recover their performance.",
+        "strengths": "1. The paper raises a highly relevant, clear, and verifiable question. Given the recent claim that \"heavy repetition on small long-CoT subsets can outperform larger-scale single-epoch training\", the follow-up question of \"which examples should be repeated\" is quite well motivated. The hypothesis is explicit and falsifiable.\n2. The NLL-based selection rule is simple, the subsets are length-matched by response-length deciles, and the comparison between low-NLL, random, and high-NLL is clean at a high level.\n3. In Table 1, high-NLL beats low-NLL by 9.43 aggregate points and also beats the random baseline by about 4.3 points. That makes the result potentially useful for the audiences using small repeated subsets.\n3. Tables and figures are readable and well integrated.",
+        "weaknesses": "1. My main concern regarding the method is that the empirical basis is too narrow for the strength of the conclusion. The paper evaluates exactly one base model, one training corpus, one subset size, and one repetition regime. Although the paper itself acknowledges this in its limitations, the framing and conclusion still read broader than the evidence supports. That said, the claim is not statistically supported.\n2. The seed allocation is unbalanced: random uses 6 seeds, while low-NLL and high-NLL each use 3. Are the results robust to equalizing the number of seeds across all conditions and increasing the seed count?\n3. The benchmark sample sizes are small for two of the three tasks.\n4. It is not clear whether the high-NLL advantage persists across other repetition budgets, such as 8, 16, 64, or 128 epochs, or across different subset sizes.",
+        "suggestions": "1. Issues raised in 2.3.\n2. The experimental design should be improved. The paper should separate these factors: NLL difficulty, textual repetition, and termination behavior.",
+        "llmDisclosure": "GPT3.5, for phrasing and improving clarity. The final judgment and scores were independently verified by the reviewer.",
+        "ethicsReproducibility": "None."
+      },
+      "audit": {},
+      "submittedAt": "2026-03-29T22:47:03.156Z",
+      "updatedAt": "2026-03-29T22:47:03.156Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates data selection strategies for repetition-heavy Long-Chain-of-Thought (Long-CoT) SFT. It tests a plausible but counterintuitive hypothesis: in data-constrained, high-epoch regimes, \"easy\" examples (low NLL) might be superior for teaching formatting and termination. Through a controlled empirical study using OLMo3-7B and Dolci-Think, the authors rigorously falsify this hypothesis. Their findings reveal that high-NLL (hard) examples significantly outperform low-NLL ones (33.0% vs. 23.6% accuracy), expanding our understanding of data quality in reasoning models by demonstrating that ease of fitting correlates with poor termination and repetitive behaviors.",
+        "strengths": "1. Experimental design is relatively clean, controlling for subset size, training budget, and response-length distribution to isolate the effect of NLL-based selection.\n2. Failure analysis is useful and detailed, covering termination rates, seed variance, trigram repetition, and attempted recovery via hyperparameter tuning and filtering.\n3. The practical takeaway is actionable: hard-to-fit examples are preferable under constrained data budgets in repetition-heavy long-CoT SFT.",
+        "weaknesses": "1. External validity is limited: a single model, corpus, and training regime make it unclear how broadly the conclusion generalizes.\n2. The mechanistic explanation remains correlational. The paper identifies associations between low NLL, repetition, and termination failures without establishing why hard examples are intrinsically better.\n3. The comparison set is incomplete, lacking stronger baselines such as diversity-aware or representation-based selection methods.\n4. High NLL may conflate genuine difficulty with noise or annotation artifacts, and the paper does not sufficiently characterize the selected hard examples to distinguish these possibilities.",
+        "suggestions": "",
+        "llmDisclosure": "I used Gemini for wording/grammar polishing and technical checks. I shared technical words and experimental settings. I have verified the result independently.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T05:59:57.938Z",
+      "updatedAt": "2026-03-25T05:59:57.938Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0045"
+}

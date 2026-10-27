@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_QIN_beyond_persuasion_towards_conversational",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Beyond Persuasion: Towards Conversational Recommender System with Credible Explanations",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper addresses the issue of conversational recommender systems (CRS) misleading users with incredible information in their explanations, which can damage long-term trust. The authors propose a method called PC-CRS that enhances credibility by guiding explanation generation with credibility-aware strategies and refining explanations through post-hoc self-reflection. Experiments show that PC-CRS improves the persuasiveness and credibility of explanations, and further analysis explains why current methods fail and how credible explanations can boost recommendation accuracy.",
+      "strengths": "1. Specific credibility-aware persuasive strategies are proposed.\n\n2. Corresponding metrics are also well-defined.",
+      "weaknesses": "1. The authors might consider providing more explanations about how the Critic in eq. 3 is implemented, especially regarding the self-reflective strategy,\n\n2. Might the authors provide the prompt design for Critic, StrategySelector, Refiner, for reproducibility?",
+      "questions": "N/A",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "83e5fa08484fe049378bd6a63e4d16e66cad0cc0007a0c07171bdfc2a7cff903a69bf2172990b8593ac248a3bea59b3b98334833340ae99e3fc4c37dc4b58791"
+    }
+  ]
+}

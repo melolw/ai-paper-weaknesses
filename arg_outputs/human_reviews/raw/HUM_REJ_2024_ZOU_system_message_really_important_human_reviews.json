@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_ZOU_system_message_really_important",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Is the System Message Really Important for Jailbreaks in Large Language Models?",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper aims to address the importance of system messages in the context of jailbreaks within Large Language Models (LLMs), as well as the impact of system messages with varying lengths and contents on jailbreak resistance. The authors found that different system messages exhibit significantly different levels of resistance to jailbreak attempts. They proposed the System Messages Evolutionary Algorithm (SMEA), and through SMEA, generated system message groups that possess a certain degree of jailbreak defense capability with minimal changes in length.",
+      "strengths": "1. The system message, as an experimental variable in LLM jailbreaks, has indeed been overlooked in many studies. The authors conduct an in-depth analysis of this aspect, which may be beneficial for future research.\n\n2. The SMEA algorithm defends against jailbreaks by modifying the system message, potentially offering a simple and effective solution.",
+      "weaknesses": "1. Minimal contribution. Even though the system message may affect LLM jailbreaks, the analysis in this paper resembles an experimental report and lacks substantial guidance. This is because most of the work tends to set the system message to empty or use the default prompt.\n\n2. What distinguishes using an evolutionary algorithm on system messages from adding safety reminder information within the context of the jailbreak prompt? The paper does not explore this, and I believe SMEA is unnecessary because in some cases, we cannot directly modify the system message of LLMs, as is often the case with GPT-4 or Claude.\n\n3. Formatting issues. The paper's formatting requires significant optimization. For instance, Algorithm 1 on page 7 occupies the bottom right corner alone, and there is a large amount of blank space below the Conclusion on page 8.",
+      "questions": "See Weaknesses above.",
+      "rating": 2,
+      "confidence": 5,
+      "soundness": 2,
+      "raw_note_id": "5b05caa43ac135b5539cdb190759a8a3268466c9a55abd14a64148c7960ecb5034b6bebfc664feab325e47b86465ec56560f4d6c7bee8381d8f73c25cbb96622"
+    }
+  ]
+}

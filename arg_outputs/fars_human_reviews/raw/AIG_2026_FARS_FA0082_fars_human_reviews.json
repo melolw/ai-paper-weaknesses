@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0082",
+    "title": "Context Bagging: Inference-Time Ensembling for Robust Long-Context QA Under Hard Distractors",
+    "abstract": "Long-context language models struggle with hard distractors---semantically similar but misleading passages that cause systematic errors. Self-consistency, which samples multiple decoding trajectories from the same context, fails because errors are context-driven: all samples converge to the same wrong answer. We propose Context Bagging (CoBag), an inference-time ensembling method that allocates test-time compute to \\textit{context diversity} rather than decoding diversity. CoBag samples $K$ diverse context subsets using relevance-weighted selection, randomly permutes paragraph order within each subset, generates answers via greedy decoding, and aggregates via majority voting. On MuSiQue with hard distractors, CoBag significantly outperforms self-consistency (+3.12 EM, $p$<0.001). Surprisingly, ablation reveals that order diversity is the dominant mechanism (+1.44 EM), while subset diversity provides marginal additional benefit (+0.40 EM), suggesting that simple order shuffling may suffice for many applications.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "\"The paper proposes a test-time scaling method for long-context multi-hop QA via relevance-based chunk sampling and reordering. Experiments on MuSiQue with Qwen2.5-7B show gains, with ablation studies identifying chunk shuffling as the key driver of improvement.\"\n\n",
+        "strengths": "The paper proposes an effective and well-motivated method for multi-hop retrieval-augmented generation (RAG) settings, addressing a challenging and increasingly relevant problem in information-seeking systems.\n\nThe writing is clear, logical, and well-structured, with a coherent narrative that effectively guides the reader through the motivation, methodology, and experimental results.\n\nThe ablation studies are thorough and insightful, clearly demonstrating the contribution of each component and providing strong evidence for why the proposed method works. These analyses enhance the paper’s credibility and offer valuable guidance for future work in this area.",
+        "weaknesses": "Experimental Validation is Insufficient\nThe current experiments lack the breadth and depth required to fully support the claimed contributions. Specifically, the evaluation is limited by: (i) a lack of strong baselines, especially recent state-of-the-art methods in the same domain; (ii) only one or few datasets, which raises concerns about generalization; and (iii) limited model diversity, making it difficult to assess whether the improvements are model-agnostic or specific to a particular architecture. A more comprehensive evaluation across multiple models, datasets, and baselines is necessary to establish the robustness and significance of the proposed method.\n\nPerformance Gains Come at a Computational Cost\nWhile the paper reports performance improvements, it fails to adequately address the associated computational overhead. The increased inference or training cost—such as longer processing time, higher memory usage, or additional API calls—should be explicitly quantified and discussed. A clear analysis of the performance-efficiency trade-off is essential for assessing the method’s practicality, especially in real-world applications where resource constraints are critical.\nLack of Deeper Insights and Novel Contributions\n\nBeyond empirical gains, the paper offers limited analytical or conceptual insights into why the method works or how it advances the field. The contributions remain largely incremental, with little discussion of broader implications, limitations, or connections to related areas (e.g., efficiency, interpretability, generalization). To strengthen the paper, the authors should provide deeper analysis—such as case studies, failure modes, or theoretical justification—to elevate the work from a technical improvement to a meaningful contribution.",
+        "suggestions": "p¡0.001 is a typo",
+        "llmDisclosure": "polish",
+        "ethicsReproducibility": "NA"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T08:03:21.802Z",
+      "updatedAt": "2026-04-01T08:03:21.802Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper investigates the hypothesis that errors in long-context QA under hard distractors are primarily driven by context bias rather than decoding stochasticity, and therefore can be mitigated by introducing context-level diversity instead of decoding-level diversity. To test this, the authors propose Context Bagging (CoBag), an inference-time ensembling method that samples diverse context subsets, permutes their order, performs greedy decoding, and aggregates answers via majority voting. Empirical evaluation on a noisy version of MuSiQue demonstrates that CoBag significantly outperforms self-consistency (+3.12 EM, p<0.001), while ablation studies reveal that order shuffling is the dominant contributing factor, with subset diversity providing only marginal gains. The results partially support the hypothesis, suggesting that context perturbation—especially order diversity—is effective, but also indicating that the full method may be unnecessarily complex. ",
+        "strengths": "1. Clear and testable hypothesis: The paper sharply distinguishes context-driven vs. decoding-driven errors, which is well-motivated and falsifiable. \n\n2. Simple yet insightful method: CoBag is conceptually clean, easy to implement, and requires no training—strong practical appeal. \n\n3. Strong empirical validation: \n\nControlled comparison against relevant baselines (Filtered-Single, Self-Consistency, Permute-Vote). \n\nStatistical significance testing (McNemar’s test). \n\n4. Non-trivial negative/partial finding: \n\nDemonstrates that most gains come from a simpler mechanism than proposed. \n\n5. Good diagnostic analysis: \n\nShows reduced error correlation (Table 3), supporting the core claim about decorrelation. \n\n6. Reproducibility: Code is publicly available; hyperparameters and setup are clearly specified. ",
+        "weaknesses": "1. Marginal novelty relative to existing work: \n\nThe main effective component (order shuffling + voting) is very close to prior permutation-based methods. \n\nThe added complexity of subset sampling appears unjustified given weak gains (+0.40 EM). \n\n2. Overclaiming of method contribution: \n\nThe paper frames CoBag as a unified method, but experiments suggest a simpler baseline (Permute-Vote) achieves comparable performance. \n\n3. Limited experimental scope: \n\nOnly one dataset (MuSiQue noisy split) is used. \n\nNo validation on other long-context QA benchmarks (e.g., HotpotQA, RULER, etc.). \n\n4. Synthetic setting may bias conclusions: \n\nHard distractors are constructed and placed at the end, which may exaggerate positional bias effects. \n\n5. Lack of deeper theoretical justification: \n\nThe claim that context diversity decorrelates errors is empirically supported but not theoretically grounded. \n\n6. Compute trade-off not fully analyzed: \n\nInference-time ensembling increases cost; comparison with self-consistency is not normalized for compute. \n\n7. Limited analysis of failure cases: \n\nThe paper does not deeply analyze when CoBag fails or when subset diversity might matter more. ",
+        "suggestions": "Compare directly against pure permutation-based baselines more thoroughly and position CoBag accordingly (possibly reframe contribution). \n\nEvaluate on multiple datasets and tasks (multi-hop QA, RAG benchmarks, tool-use settings). \n\nInclude compute-normalized comparisons (e.g., same token budget as self-consistency). \n\nProvide theoretical or probabilistic analysis of error decorrelation under context perturbations. \n\nExplore adaptive strategies: when to use subset diversity vs. only order shuffling. \n\nAdd failure case analysis to understand limitations of context diversity. ",
+        "llmDisclosure": "LLM usage: Yes \n\nUsed for: \n\nDrafting and structuring the summary, strengths, weaknesses, and suggestions \n\nLanguage polishing and clarity improvements \n\nTool/model: ChatGPT (GPT-5.3) \n\nData sharing: Only user-provided manuscript content was used; no confidential or external data was shared \n\nFinal judgment: All evaluations were independently verified and determined by the reviewer ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T06:32:58.856Z",
+      "updatedAt": "2026-03-28T06:32:58.856Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper propose  Context Bagging, a test-time method to improve long context problem by change the order to introduce diversity to improve the self-consistency.\n\nEmpirical\n\npositive confirmation",
+        "strengths": "Clear and well-motivated hypothesis\nSound experimental design or rigorous theoretical analysis\nReproducibility (code, data, clear methodology)\nEfficient communication ",
+        "weaknesses": "Missing baselines or controls\nalso ignore lots of related work like which share similar idea\n\nDivide, Reweight, and Conquer: A Logit Arithmetic Approach for In-Context Learning https://aclanthology.org/2026.eacl-long.11/\n\nImproving In-Context Learning with Small Language Model Ensembles https://arxiv.org/abs/2410.21868\n\nExploring Demonstration Ensembling for In-context Learning.” Khalifa, Muhammad et al. ArXiv abs/2308.08780 (2023)",
+        "suggestions": "The main problem is the idea itself is not very novel, lots of previous work propose similar idea in ICL.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T03:50:55.125Z",
+      "updatedAt": "2026-04-12T04:04:39.876Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0082"
+}

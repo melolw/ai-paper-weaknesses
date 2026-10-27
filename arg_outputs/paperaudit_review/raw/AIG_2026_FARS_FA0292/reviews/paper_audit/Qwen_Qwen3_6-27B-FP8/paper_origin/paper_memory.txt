@@ -1,0 +1,64 @@
+# Global Summary
+
+This paper investigates whether using tiny learning rates (Tiny-LR) during proxy model fine-tuning improves the transfer of dataset rankings to larger target models in Supervised Fine-Tuning (SFT). The authors hypothesize that reduced learning rates keep the proxy in a near-linear optimization regime, preserving transferable signals.
+
+The study compares Standard-LR Proxy ($5 \times 10^{-5}$) against Tiny-LR Proxy ($1 \times 10^{-5}$) using Qwen2.5-1.5B as the proxy and Qwen2.5-7B as the target across 12 math-oriented datasets. The experiments refute the hypothesis: Tiny-LR Proxy achieves random-level ranking agreement (PDA = 0.500), while Standard-LR Proxy achieves significantly above-random performance (PDA = 0.712).
+
+A key finding is benchmark-specific behavior: Tiny-LR Proxy performs well on MATH-500 (PDA = 0.818) but fails on GSM8K (PDA = 0.515). The authors conclude that reduced learning rates amplify sensitivity to surface-level features (like response length) rather than preserving quality signals, and recommend standard learning rates for proxy-based dataset ranking.
+
+# Abstract
+
+- **Problem:** Evaluating dataset value for SFT via full fine-tuning is expensive; proxy models are an alternative but may not transfer rankings reliably.
+- **Hypothesis:** Training proxies with tiny learning rates improves ranking transfer to larger models (based on pretraining literature).
+- **Method:** Comparison of Standard-LR Proxy ($5 \times 10^{-5}$) and Tiny-LR Proxy ($1 \times 10^{-5}$) on 12 math datasets.
+- **Models:** Qwen2.5-1.5B (proxy) and Qwen2.5-7B (target).
+- **Key Results:**
+    - Tiny-LR Proxy achieves random-level Pairwise Direction Accuracy (PDA = 0.500).
+    - Standard-LR Proxy achieves significantly above-random performance (PDA = 0.712, $p = 0.042$).
+    - Tiny-LR Proxy shows benchmark-specific behavior: excellent agreement on MATH-500 (PDA = 0.818) but failure on GSM8K.
+- **Claim:** Reduced learning rates amplify sensitivity to surface-level features rather than preserving transferable quality signals.
+
+# Experiments
+
+- **Experimental Conditions:**
+    - **Standard-LR Proxy:** Qwen2.5-1.5B, LR $5 \times 10^{-5}$, 500 steps.
+    - **Tiny-LR Proxy:** Qwen2.5-1.5B, LR $1 \times 10^{-5}$, 1000 steps.
+    - **Training-Free NLL:** Base model perplexity (no training).
+    - **Target Ground Truth:** Qwen2.5-7B, LR $5 \times 10^{-5}$, 2000 steps.
+    - **Configuration:** All fine-tuning uses LoRA (rank 16, $\alpha = 32$, dropout 0.05) with cosine schedule and warmup ratio 0.1.
+
+- **Datasets and Benchmarks:**
+    - **Datasets:** 12 math-oriented SFT datasets from OpenDataArena (50K examples each), including dart-math-hard, openmathinstruct-2, and QwQ-LongCoT-130K-math.
+    - **Benchmarks:** GSM8K (exact-match scoring) and MATH-500 (math_verify evaluation).
+    - **Seeds:** 3 random seeds (42, 123, 456).
+
+- **Metrics:**
+    - **Pairwise Direction Accuracy (PDA):** Fraction of dataset pairs with matching orderings (chance level 0.5).
+    - **Spearman Rank Correlation ($\rho$):** Monotonic relationship between rankings.
+    - **Top-1 Match:** Correct identification of the best dataset.
+
+- **Main Results (Table 1):**
+    - **Standard-LR Proxy:** PDA = 0.712 (95% CI: [0.606, 0.818]), Spearman $\rho$ = 0.594 ($p = 0.042$). Correctly identifies top-1 dataset (dart-math-hard).
+    - **Tiny-LR Proxy:** PDA = 0.500 (95% CI: [0.379, 0.621]), Spearman $\rho$ = -0.091 ($p = 0.779$). Incorrectly identifies top-1 dataset (QwQ-LongCoT-130K-math, which is 8th in target ranking).
+    - **Training-Free NLL:** PDA = 0.636 ($p = 0.236$), fails to identify top-1.
+
+- **Per-Benchmark Analysis (Table 2):**
+    - **Tiny-LR on MATH-500:** PDA = 0.818, Spearman $\rho$ = 0.846 ($p < 0.001$).
+    - **Tiny-LR on GSM8K:** PDA = 0.515, Spearman $\rho$ = 0.063 ($p = 0.846$).
+    - **Interpretation:** Tiny-LR fails on GSM8K due to sensitivity to verbose reasoning chains (e.g., QwQ-LongCoT) which inflate scores on exact-match benchmarks but do not transfer to the target model.
+
+# Conclusion
+
+- **Primary Finding:** The hypothesis that tiny learning rates improve proxy-to-target ranking transfer for SFT is refuted.
+- **Performance Comparison:** Tiny-LR Proxy performs at random chance (PDA = 0.500), while Standard-LR Proxy provides reliable signals (PDA = 0.712, $p = 0.042$).
+- **Benchmark Specificity:** Tiny-LR Proxy exhibits divergent behavior, achieving high agreement on MATH-500 (PDA = 0.818) but failing on GSM8K.
+- **Recommendation:** Practitioners should use standard learning rates for proxy-based dataset ranking to ensure reliable signals across diverse evaluation settings.
+- **Limitations:** Study limited to Qwen2.5 model family and math domain; hyperparameter search limited to two learning rate settings.
+
+# References
+
+- **Data Selection:** Cites works on quality-based (LIMA, Zhou et al. 2023), diversity-based (Self-Instruct, Wang et al. 2022; FLAN, Chung et al. 2022), and influence-based (TracIn, Pruthi et al. 2020; LESS, Xia et al. 2024) approaches.
+- **Proxy Evaluation:** References scaling laws (Kaplan et al. 2020) and proxy reliability studies (Wang et al. 2025; DSIR, Xie et al. 2023).
+- **Learning Rate/Transfer:** Cites parameter-efficient fine-tuning methods (LoRA, Hu et al. 2021; LLaMA-Adapter, Zhang et al. 2023) and recent work on tiny learning rates in pretraining (Wang et al. 2025).
+- **Datasets/Benchmarks:** GSM8K (Cobbe et al. 2021), MATH (Hendrycks et al. 2021), OpenDataArena (Cai et al. 2025).
+- **Models:** Qwen2.5 (Yang et al. 2024).

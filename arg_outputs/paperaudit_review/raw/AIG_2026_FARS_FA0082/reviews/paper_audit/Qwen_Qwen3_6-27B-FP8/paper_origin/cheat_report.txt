@@ -1,0 +1,22 @@
+**Integrity Risk and Consistency Report**
+
+**1. Numerical Mismatch in Sensitivity Analysis (Section 4.4)**
+*   **Claim:** The text states, "Ensemble size shows diminishing returns: $K=3 \rightarrow 5$ yields +2.42 EM, while $K=5 \rightarrow 7$ yields only +0.17 EM."
+*   **Evidence:** Table 4.4(b) and Figure 2(b) report Exact Match (EM) scores of 0.285 for $K=5$ and 0.287 for $K=7$.
+*   **Inconsistency:** The calculated difference is $0.287 - 0.285 = 0.002$ EM. The text claims a gain of +0.17 EM, which is inconsistent with the provided data by an order of magnitude. The visual trend in Figure 2(b) also shows a very flat slope between $K=5$ and $K=7$, contradicting a +0.17 EM jump.
+
+**2. Citation Year Inconsistency (Lee et al.)**
+*   **Claim:** The Introduction and Related Work sections cite "Lee et al., 2026" regarding catastrophic performance drops from distractors.
+*   **Evidence:** The Reference list contains the entry: "Seongyun Lee, Yongrae Jo, Minju Seo, Moontae Lee, and Minjoon Seo. Lost in the noise: How reasoning models fail with contextual distractors. 2024."
+*   **Inconsistency:** The in-text citation year (2026) does not match the bibliography year (2024).
+
+**3. Ambiguity in CoBag-Vote Performance Across Tables**
+*   **Observation:** Table 1 (Main Results) reports CoBag-Vote EM as **0.2939** (using $r=6$). Table 2 (Ablation) reports CoBag-Vote (full) EM as **0.2810** (using $r=4$).
+*   **Issue:** While the table captions specify the different $r$ values, the text in Section 4.3 analyzes the ablation results (derived from Table 2) and presents deltas like "+1.44 EM" without explicitly contextualizing that these gains are relative to the $r=4$ configuration, which underperforms the main result ($r=6$) by ~1.3 EM. This may lead readers to conflate the two performance levels.
+
+**4. Minor Variance in Baseline Scores**
+*   **Observation:** Permute-Vote EM is reported as **0.2900** in Table 1 and **0.2910** in Table 2.
+*   **Issue:** Since Permute-Vote uses a fixed top-$m$ selection and does not depend on the $r$ parameter (which differs between the tables), the slight variance suggests potential differences in random seeds or experimental setup not fully detailed, though this is a minor issue compared to the others.
+
+**Conclusion**
+The manuscript contains a significant numerical error in the sensitivity analysis (Section 4.4) and a citation year mismatch. The variation in CoBag-Vote scores between the main results and ablation tables, while explained by hyperparameters, reduces clarity.

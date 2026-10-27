@@ -1,0 +1,26 @@
+**Integrity Risk and Consistency Report**
+
+**1. Critical Numerical Inconsistency: K=5 Performance Reporting**
+There is a direct numerical contradiction regarding the performance of the proposed method (Citation-Consistent Voting, CCV) at $K=5$ permutations between the main scaling analysis and the ablation study.
+*   **Evidence:**
+    *   **Table 2 (K-Scaling Analysis):** Reports "Citation SubEM" at $K=5$ as **45.81%**.
+    *   **Table 3 (Ablation Study):** Reports "Citation Vote (no quote)" at $K=5$ as **46.37%**.
+    *   **Text (Section 4.4):** States, "Table 3 compares citation-consistent voting with and without the verbatim quote constraint at $K = 5$... resulting in a substantial improvement from 45.73% to **46.37%**."
+*   **Analysis:** The value **46.37%** in Table 3 is identical to the main result reported for $K=20$ in Table 1 and Table 2. It is highly improbable that the method achieves the exact same score at $K=5$ (in the ablation) as it does at $K=20$ (in the main results), especially given that Table 2 explicitly reports a lower score (45.81%) for $K=5$. This suggests a copy-paste error where the $K=20$ result was erroneously inserted into the $K=5$ ablation table, or the ablation was actually conducted at $K=20$ but mislabeled. This materially affects the interpretation of the ablation study's magnitude of improvement.
+
+**2. Inconsistent Baseline Reporting**
+The baseline performance for "MoA Majority Vote" at $K=5$ varies across different tables without explanation.
+*   **Evidence:**
+    *   **Table 1 & Table 2:** Report MoA Majority Vote at $K=5$ as **45.82%** (Table 1 includes $\pm 0.28$).
+    *   **Table 3:** Reports MoA Majority Vote at $K=5$ as **45.71%**.
+*   **Analysis:** While 45.71% falls within the standard deviation of the Table 1 result, the lack of consistency in reporting the exact baseline value across tables suggests potential inconsistencies in the experimental runs or careless reporting.
+
+**3. Factual Anomaly: Future Citation Date**
+The paper cites a reference with a publication year in the future.
+*   **Evidence:**
+    *   **Section 1 & 2.4:** Cites "Zhang et al., 2026" for Stable-RAG.
+    *   **References:** Lists "Qianchi Zhang... Stable-rag... 2026."
+*   **Analysis:** Unless the current date is late 2026 or later, citing a 2026 publication is factually impossible. This is a common artifact of automated generation systems hallucinating reference metadata, which undermines the credibility of the literature review.
+
+**Conclusion**
+The manuscript contains a **high-impact internal inconsistency** regarding the $K=5$ performance metrics (Table 2 vs. Table 3), where the ablation result suspiciously matches the $K=20$ main result. Combined with the future citation date, these issues suggest significant carelessness in data reporting or potential automated generation artifacts that compromise the trustworthiness of the experimental results.

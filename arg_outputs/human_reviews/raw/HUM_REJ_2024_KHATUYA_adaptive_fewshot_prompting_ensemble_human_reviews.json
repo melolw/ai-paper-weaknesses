@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_KHATUYA_adaptive_fewshot_prompting_ensemble",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Adaptive Few-Shot Prompting with Ensemble Retrieval for Financial Numerical Reasoning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper extends the two-step retrieval-and-predict framework of financial numerical reasoning, specifically, with generative style & model ensembling for fact retrieval, LLMs with program-of-thoughts and a strategy for selecting in-context examples. Experiments on two datasets show improvement beyond previous smaller models' SOTA.",
+      "strengths": "1. SOTA results on two challenging datasets\n2. new (and better) measurement of using cos similarity for retrieval performance. previous studies limits to numerical coverage which neglects noise, where cosine similarity seems to show better matching with final exe acc\n3. reasonable and good performance strategy for prompting & in-context example selection",
+      "weaknesses": "1. The methodology is very difficult to read. Details are missing, such as the model used for the policy gradient in-context example selection, what the chosen 50 examples were used for, and what the POT style prompting looks like. I can understand whats going on as an expert in the field, but too many missing details make the paper very difficult for a wider range of audience to read. The ensembling pipeline is not clearly described, and the part contains too many new technical terms and makes it very confusing.\n2. Many figures are completely unreadable, Figure 1,2 uses so tiny words and has limited guidance for how we should understand them. There is not much info the audience can get from the figs. Figs in the appendices are even more horrible, I can barely read Figs 8&9.\n3. The motivation of the paper is not clearly stated, which harms the novelty. Why is generation better than scoring? given the fact that models output incomplete sentences that need extra matching treatment makes this part even weaker. The previous APOLLO model used small-size models for retrieval, would a 7B size generator still be better than a 7B size scorer? The current paper only talks about precision, but the method loses in numerical coverage. more analysis and a better motivation could be stated for the method. The in-context learning selection part seems to be left out of other components, it does improve the performance but no statement has been given for why the paper does it. Is the current method better than some simple strategies such as K-nearest neighbor? Why is a diverse example set better? \n4. Many tables are too small. \n5. Section 9 should give some simple statistics of the error type to give the audience an impression an error analysis if it remains in the main paper. Otherwise, move it to the appendices.",
+      "questions": "see weaknesses",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "b104df6b4441259f580630662e3a0e52eb433503b6fdbe2e70be75f3c098d52f8fe12ee5038f3b8a3089f28fe6b095600f6974d3bb8927c7863e1b87b9f82055"
+    }
+  ]
+}

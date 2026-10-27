@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_HEINEMAN_improving_minimum_bayes_risk",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Improving Minimum Bayes Risk Decoding with Multi-Prompt",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes an alternative way of constructing the candidate pool for MBR decoding: instead of using multiple samples with the same prompt, this paper proposes to use one sample from a set of prompts. Two heuristics are proposed to select the set of prompts for sampling the candidates: (1) prompt sampling, weighted sampling from the top-p percent best performing prompts, and (2) prompt selection, selecting the that are the most similar/dissimilar to other prompts. Experiment results show that the proposed approach improves over the single prompt MBR strategy on three unique generation tasks.",
+      "strengths": "Strengths:\n1. The proposed approach is well-motivated, simple, and achieves good empirical performance. It addresses an intuitive limitation of the traditional MBR decoding - overdependence on a single prompt. \n2. The authors provide exhaustive empirical results to support the effectiveness of the proposed approach. I especially appreciate the wide coverage of tasks and metrics including lexical, neural, and execution-based ones. \n3. The paper writing is clear. Figure 3 provides a good motivation of the proposal, and all the illustrations are well-polished.",
+      "weaknesses": "Major weaknesses and questions:\n1. Since the prompt sampling strategy requires a train set, it is important to discuss how well the proposed approach can work without labelled data. Specifically, I would like to see a more head-to-head comparison between prompt sampling and prompt selection. For instance, what about prompt sampling with p=0.1 for |H| = 10? For |H| = 100, you may also sample 10 times per prompt with the 10 prompts given by your prompt selection strategy. \n2. The comparison with the single prompt baseline is unfair. Table 2 states that the scores for simplification and translation are taken from previous work. However, considering the multi-prompt method uses an auxiliary training set to select from a set of prompts, the single prompt baseline should be also measured with the best prompt selected from the same set of prompts using the same train set. \n3. The experiments are executed on a mixture of zero-shot (code generation, simplification) and few-shot settings (translation), which is a bit confusing to read. It may be helpful to separately report both the zero-shot and the few-shot results for each of the tasks.\n4. The interpretation of Table 1 bottom (line 361-364) needs to be improved. Random selection is better than 4 strategies on COMET and two strategies on Lens, which contradicts with line 361. In addition, statistical significance testing should be conducted to claim a significant improvement (line 361). \n5. Why are the results for |H|= 100 omitted for code generation (Table 1)? \n\nMinor comments and questions:\n1. Which multi-prompt strategy is used for Table 2?\n2. Are the seed prompts included in the prompt candidate pool? If so, is there a performance gap between the human-written prompts and machine-paraphrased ones?\n3. The order of the tables/figures should be consistent with the order they are mentioned in the paper. For instance, Table 2 is discussed before Table 1 in the paper. Also, the order of the tasks should be consistent throughout all the figures, but currently the orders are different in e.g., Table 2 and Figure 5.",
+      "questions": "See the minor comments above.",
+      "rating": 3.5,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "30462cd29b922f02effc1b99d0c6a91141e4e225bbe33de436a80750cdc5df6a14f8dc12e12b2e3180b7e0a68778ca0a73a7659ea6865fee74cd79e2611c3ddc"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper addresses the challenge of improving text generation in large language models (LLMs) by proposing a novel method called Multi-Prompt Minimum Bayes Risk (MBR) decoding. The core idea is the use of a bank of prompts, either human-written or model-generated, during inference to cultivate diverse and high-quality candidate outputs. This approach deviates from the conventional single-prompt MBR and makes a substantial difference in the quality of the generated text.\nExperiments across three distinct tasks - text simplification, machine translation, and code generation show the effectiveness and versatility of the Multi-Prompt MBR method, showcasing its superiority over Single-Prompt MBR across multiple tasks, models, and metrics.",
+      "strengths": "- The idea of introducing multi-prompt for MBR is simple yet effective.\n- The paper writing is easy to follow.",
+      "weaknesses": "- The essence of the usefulness of introducing multiple prompts is that nowadays LLMs still do not have enough ability to fully understand prompts. From this perspective, multiple prompt strategies may be temporarily useful but not long-term.",
+      "questions": "- Table 3. How should we understand that traditional MBR evaluation settings do not show optimal results?",
+      "rating": 2.5,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "d0d810702638e7ef00a893f01308b5797efd13db47804f6b9542820f1cd87109ecfe866a1fbe78ba6d64299f822c81b6ced5c6f57d6aa6f4ed3d8c4066815601"
+    }
+  ]
+}

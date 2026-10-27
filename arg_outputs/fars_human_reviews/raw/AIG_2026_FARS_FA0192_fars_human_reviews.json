@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0192",
+    "title": "AR-Order RL Post-Training Reduces Order Robustness in Diffusion Language Models",
+    "abstract": "Diffusion language models (dLLMs) offer a unique advantage over autoregressive models: order robustness---the ability to solve reasoning problems regardless of whether reasoning precedes or follows the answer. However, the dominant approach to improving dLLM performance is reinforcement learning with autoregressive-order (AR-order) reward signals, such as JustGRPO. We investigate whether this training paradigm compromises order robustness. Comparing LLaDA-8B-Instruct (diffusion base), LLaDA-Instruct-JustGRPO (AR-order RL trained), and Qwen2.5-7B-Instruct (AR anchor) on ReasonOrderQA and GSM8K, we find that JustGRPO significantly reduces order robustness: the robustness ratio drops by 0.192 on ReasonOrderQA and 0.138 on GSM8K. JustGRPO's robustness profile sits between the diffusion base and AR anchor, covering approximately 53\\% of the gap. The degradation is concentrated at medium difficulty levels requiring multi-step reasoning. While AR-order RL improves CoT-First accuracy by up to 19.6 percentage points, this reveals a fundamental accuracy-robustness trade-off in dLLM post-training.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests whether AR-order RL post-training (JustGRPO) degrades the order robustness of diffusion language models. Using LLaDA-8B-Instruct, LLaDA-Instruct-JustGRPO, and Qwen2.5-7B-Instruct as a three-point comparison on ReasonOrderQA and GSM8K, the authors measure robustness ratios under CoT-First vs. Answer-First prompts. They report that JustGRPO reduces the robustness ratio by 0.192 and 0.138 respectively, with degradation concentrated at medium difficulty levels, and frame this as an accuracy-robustness trade-off. The result is a positive confirmation of the hypothesis, but the hypothesis is near-tautological given JustGRPO's design.",
+        "strengths": "- The experimental design is clean and fully deterministic; the three-model comparison isolates the effect of AR-order training.\n- The per-difficulty breakdown (D1–D4) provides granular insight into where robustness degrades.",
+        "weaknesses": "\n**W1 (Major): The core finding is circular.**\n\nJustGRPO is explicitly designed to impose AR-order reward signals on a diffusion model — left-to-right token-level rewards that train sequential dependencies by construction. Finding that this reduces order robustness does not constitute a discovery; it validates the design intent. The paper frames this as revealing \"a fundamental accuracy-robustness trade-off,\" but the trade-off is not emergent — it is a direct consequence of the method's objective. The hypothesis is therefore trivially true and unfalsifiable as posed.\n\n**W2 (Major): Missing critical related work.**\n\nThe paper cites no work on trajectory-aware or order-agnostic RL for diffusion LMs — most notably TraceRL and DiRL, which are the directly relevant prior art for this exact design tension. Mengdi Wang's line of dLLM RL work is also entirely absent. The related work section is consequently incomplete in a way that misrepresents the state of the field and sidesteps the most relevant comparisons.\n\n**W3 (Major): Outdated base model and no trajectory-aware baseline.**\n\nLLaDA-8B is an old base model. The paper compares JustGRPO only against the raw diffusion base and an AR anchor — there is no comparison against any trajectory-aware or order-agnostic RL method (e.g., TraceRL). Without such a baseline, the paper cannot distinguish \"AR-order RL degrades robustness\" from \"RL post-training in general degrades robustness.\" The conclusion is therefore under-supported by the experimental evidence.",
+        "suggestions": "- Include at least one order-agnostic or trajectory-aware RL baseline (e.g., TraceRL) to decouple the effect of RL post-training from the AR-order constraint specifically.\n- Cite and discuss DiRL, TraceRL, and Mengdi Wang's dLLM RL line of work; the related work section is incomplete without them.\n- Reframe the hypothesis to be non-trivial: instead of \"does AR-order RL reduce order robustness,\" ask whether the robustness degradation is avoidable under alternative RL formulations.",
+        "llmDisclosure": "Reviewer identifies the most core novelty issue; \n\nUsing cursor sonnet 4.6 for the expansion and completion of the review comments. \nPrompt: \n```Write the review comments based on @review_page.md; the comments for the article @FA0115_OCR-Anchor_Reranking.pdf should be written in English and placed in @fa0115.md. The file already contains the proposed comments; please follow my original intent.```",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-06T15:37:57.253Z",
+      "updatedAt": "2026-04-06T15:37:57.253Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies whether autoregressive-order RL post-training reduces the order robustness of diffusion language models. The hypothesis is tested empirically by comparing the base diffusion checkpoint GSAI-ML/LLaDA-8B-Instruct, the RL-post-trained diffusion checkpoint nzl-thu/LLaDA-Instruct-JustGRPO, and an autoregressive anchor Qwen2.5-7B-Instruct under CoT-first and answer-first prompting on ReasonOrderQA and GSM8K. The main metric is the robustness ratio r = Acc(AF) / Acc(CF), with supporting analyses for format compliance, per-difficulty behavior, canvas length, and deterministic decoding. The experiments do show a consistent empirical pattern: after JustGRPO, the robustness ratio is lower on both benchmarks, while CoT-first accuracy rises substantially.",
+        "strengths": "- The paper asks a focused and worthwhile question. It connects two active lines of work that genuinely pull in different directions: diffusion models are often advertised as more flexible with respect to output order, while JustGRPO explicitly trains diffusion models with AR-order rollouts and rewards. That makes the central question practically meaningful for anyone deciding whether to apply this style of post-training to a diffusion LM for structured reasoning tasks.\n- The auxiliary analyses add genuine value. The authors did not stop at a single headline ratio: they identified and fixed a truncation confound, verified determinism, examined per-difficulty behavior, and studied a shorter-canvas setting. Those analyses make the paper more informative because they show that the effect is concentrated at medium difficulty and changes in magnitude with decoding length, which is more useful than a bare “wins/losses” table.",
+        "weaknesses": "- The paper does not cleanly separate the effect of AR-order RL from pre-existing order bias in the base model and its training data, which is the most important issue for me and aligns closely with the concern that the LLaDA-instruct model already saw standard prompt-response data in a CoT-first assistant format. The LLaDA documentation explicitly says its pre-training and SFT data were designed for autoregressive models (i.e., the training data is CF-like data.), and even the base model already performs much better in CoT-first than answer-first mode before any JustGRPO training is applied. That means the comparison starts from a model that is already biased toward conventional response order, so JustGRPO may simply be sharpening an existing preference rather than newly “reducing order robustness” in a clean causal sense. In other words, since CF > AF already holds strongly for the base checkpoint, it is hard to argue that the paper has ruled out the data issue well enough to attribute the effect specifically to AR RL post-training.\n- The causal evidence is incomplete because the paper omits the controls that would make its preferred interpretation convincing. JustGRPO is not merely “the same model plus AR-order RL” in some abstract sense; it is trained on GSM8K with AR rollouts (block_length=1) and answer-based reward, but the paper offers no matched control such as non-AR RL, extra supervised tuning with the same task exposure, or order-balanced training data. Without those controls, one cannot tell whether the observed change comes from AR-order training specifically, from additional math-task adaptation, or from generally making the model more optimized for conventional CoT-first outputs. This is especially important because the reported ratio drop is driven mostly by much larger CoT-first gains than answer-first losses, which supports a “behavior sharpening” interpretation at least as well as the headline causal claim.\n- The paper overclaims relative to the scope of its evidence. The result is interesting, but the claim of a “fundamental accuracy-robustness trade-off” feels too broad for an experiment built on one arithmetic benchmark, GSM8K, and one post-training recipe. The paper’s own analyses show that the effect size changes with decoding length and is concentrated mostly in D2-D3 medium-difficulty cases rather than uniformly across tasks or settings. That is enough for a useful empirical observation, but not enough to support sweeping claims about what AR-order RL fundamentally does to diffusion LMs in general. A more careful framing would present this as evidence of a benchmark- and decoding-sensitive trade-off under the tested setup, rather than a general property of dLLM post-training.",
+        "suggestions": "",
+        "llmDisclosure": "I have used gpt-5.4 to frame my reviews to make it clearer.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T17:39:32.938Z",
+      "updatedAt": "2026-04-11T17:39:32.938Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0192"
+}

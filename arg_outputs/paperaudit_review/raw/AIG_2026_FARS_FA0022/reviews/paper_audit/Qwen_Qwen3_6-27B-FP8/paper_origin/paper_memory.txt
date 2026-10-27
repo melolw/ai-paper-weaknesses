@@ -1,0 +1,53 @@
+# Global Summary
+
+- Problem: Investigates the "repetition advantage" in long chain-of-thought (CoT) supervised fine-tuning (SFT), where training for many epochs on a small dataset outperforms single-epoch training on a larger dataset.
+- Core Approach: Proposes a diagnostic framework decomposing accuracy into ParseRate (fraction of parseable outputs) and Acc|Parse (accuracy conditional on parsing). Conducts mediation analysis to quantify the termination effect. Introduces Termination-Aware SFT, which increases loss weight on termination tokens.
+- Evaluation Scope: Evaluates on AIME'24, AIME'25, and GPQA benchmarks using the OLMo-3-7B base model and DOLCI-think dataset. Fixed gradient-update budget of 51,200 steps.
+- Key Findings: The repetition advantage is primarily a termination effect. On AIME benchmarks, the accuracy gap between repetition and data-scaling conditions reverses when conditioning on successful parsing, with mediation fractions exceeding 1.0. Termination-Aware SFT improves accuracy by 2.0 percentage points over standard SFT but recovers only 14% of the repetition advantage.
+- Caveats: Benchmark-dependent effects are observed, with strong improvements on AIME and minimal benefits on GPQA. Termination learning through repetition involves mechanisms beyond simple loss reweighting.
+
+# Abstract
+
+- Problem: Recent work shows a counterintuitive "repetition advantage" in long-CoT SFT, where multi-epoch training on small data beats single-epoch training on large data.
+- Method: Diagnostic framework decomposing accuracy into ParseRate and Acc|Parse. Mediation analysis to quantify the termination effect. Termination-Aware SFT intervention.
+- Results: Accuracy gap between repetition and data-scaling conditions reverses on AIME benchmarks when conditioning on successful parsing. Mediation fractions exceed 1.0, indicating data scaling produces better reasoning when both models terminate properly. Termination-Aware SFT improves accuracy by 2.0 percentage points and recovers 14% of the repetition advantage.
+- Claims: The repetition advantage reflects improved output termination behavior rather than enhanced reasoning capabilities.
+
+# Method
+
+- Problem Setup: Long-CoT SFT examples contain reasoning traces and final answers. The repetition advantage correlates strongly with termination rate. The central question is whether the advantage reflects genuine reasoning improvements or termination artifacts.
+- Experimental Conditions: Fixed update budget of 51,200 gradient steps.
+  - Condition A (Data Scaling): 1 epoch on 51,200 unique long-CoT samples from DOLCI-think.
+  - Condition B (Data Repetition): 32 epochs on 1,600 samples.
+  - Condition C (Termination-Aware SFT): 1 epoch on 51,200 samples with token-level loss reweighting on structure and termination tokens.
+- Diagnostic Framework: Decomposes accuracy into ParseRate (fraction of generations with extractable final answers) and Acc|Parse (accuracy conditioned on successful parsing). Relationship: Acc@n approx ParseRate * Acc|Parse.
+- Mediation Analysis: Computes unconditional gap (B-A Acc@n), conditional gap (B-A Acc|Parse), and mediation fraction M = 1 - (Delta_cond / Delta_uncond). M = 1.0 indicates parseability fully explains the gap. M > 1.0 indicates parseability over-explains the gap (Condition A is better conditional on parsing).
+- Termination-Aware SFT: Increases loss weight on structure tokens (end of reasoning block) and EOS. Uses a warmup schedule where alpha increases linearly from 1 to 10 over the first 50% of training steps. Applies a loss cap of 50 to prevent extreme gradients.
+
+# Experiments
+
+- Experimental Setup: Uses OLMo-3-7B base model. Training data from DOLCI-think dataset. Batch size 1, learning rate 2e-5 with cosine schedule and 10% warmup, bfloat16 precision, PagedAdamW 8-bit optimizer.
+- Benchmarks: AIME'24 and AIME'25 (30 competition mathematics problems each), GPQA (198 graduate-level multiple-choice science questions). Primary metric: Acc@n (n=16 for AIME, n=4 for GPQA). Temperature 0.6, top-p 0.95.
+- Main Results:
+  - Condition B (Data Repetition) achieves aggregate Acc@n of 42.8% compared to 25.2% for Condition A (Data Scaling), a +17.6 percentage point advantage.
+  - Condition B ParseRate is 83.8% compared to 43.2% for Condition A, a +40.6 percentage point gap.
+  - Condition A Acc|Parse is 57.7% compared to 51.0% for Condition B, indicating Condition A is a better reasoner when both produce parseable answers.
+  - Condition C (Termination-Aware SFT) achieves aggregate Acc@n of 27.2%, improving over Condition A by 2.0 percentage points. ParseRate increases to 48.8% (+5.6pp). Recovers 14% of the repetition advantage.
+- Mediation Analysis:
+  - AIME'24: Unconditional gap +19.2pp, conditional gap -6.3pp, mediation fraction 1.33.
+  - AIME'25: Unconditional gap +13.1pp, conditional gap -7.3pp, mediation fraction 1.56.
+  - GPQA: Unconditional gap +20.4pp, conditional gap +6.2pp, mediation fraction 0.69.
+  - Aggregate: Unconditional gap +17.6pp, conditional gap -2.4pp, mediation fraction 1.14.
+- Termination-Aware SFT Results:
+  - AIME'24: Acc@n improves from 31.9% to 35.6% (+3.7pp). ParseRate increases from 47.3% to 56.0% (+8.7pp).
+  - AIME'25: Accuracy gain +2.1pp, ParseRate improvement +8.1pp.
+  - GPQA: Minimal benefit, Acc@n increases from 17.2% to 17.3%.
+- Ablation Study:
+  - C-EOS-only (upweight only EOS): 24.2% Acc@n (below baseline).
+  - C-think-only (upweight only reasoning boundary tokens): 25.6% Acc@n, 58.2% Acc|Parse (highest Acc|Parse).
+  - C-no-cap (remove alpha cap): 24.2% Acc@n.
+  - Full method uses both token types with alpha=10 and cap=50.
+
+# References
+
+- Contains citations for related work on long chain-of-thought reasoning, data efficiency in SFT, termination and output format, and benchmarks/datasets used in the study. Specific references include works by Kopiczko et al. (2026), Ettinger et al. (2025), Rein et al. (2023), and others.

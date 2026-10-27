@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LIU_extractiveabstractive_unified_model_related",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Extractive-Abstractive Unified Model for Related Work Generation",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes a new approach of citation text generation of extraction-then-abstraction. The supervision of the extractor training comes from the cross attention of the decoder model of the abstractive model.",
+      "strengths": "It's an interesting approach of using  the cross attention of the decoder model of the abstractive model for the supervision of the extractor.",
+      "weaknesses": "* This work is actually about citation text generation, the sentence-level related work generation. Many well-known citation text generation works are neglected, such as Ge et al. (2021) https://aclanthology.org/2021.acl-long.116/. The author should conduct a thorough literature review and respect the prior works instead of selecting them based on their own preference. I even doubt if the introduction and related work section are machine-generated given the missing literature and the wording. Please refer to https://arxiv.org/abs/2404.11588 to make sure at least all published relevant works are cited.\n* This the proposed approach is not novel in general. Extract-then-abstract approach is known to be effective, such as Ge et al. (2021) which was entirely neglected in this paper.\n* The choice of using ChatGLM3 8B seems to be very arbitrary, simply because they want to use an open sourced model that their 3080Ti can host, even though there are multiple API-hosted LLMs available. The proposed datasets such as Delve-aug are generated based on ChatGLM3 but the quality of the created dataset is not evaluated, making the entire Table 2 skeptical.\n* The performance difference between the proposed approach and the baseline approaches is small. No human evaluation is conducted.\n* The selling point of extractive approach due to faster training doesn't make much sense, given the fact that modern LLMs are capable of zero-shot predictions.\n* The analyses in Section 4.5 & 4.6 seem to be trivial since they do not provide much insights.",
+      "questions": "Please proofread your manuscript before submission. There are many punctuation errors. The proposed model by Chen et al. (2021) is called RRG, not RGG.",
+      "rating": 1,
+      "confidence": 5,
+      "soundness": 1.5,
+      "raw_note_id": "b7339b50fca82c47617b3a2b5e49c19c2a14e5fc64a5feabaa51288e285cb5b873c6599f293f28a8b114259c8cee8408766a371ad41d137c049ed9458051a577"
+    }
+  ]
+}

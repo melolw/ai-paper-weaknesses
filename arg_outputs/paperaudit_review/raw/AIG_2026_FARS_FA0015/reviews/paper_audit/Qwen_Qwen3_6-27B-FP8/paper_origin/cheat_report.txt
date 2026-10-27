@@ -1,0 +1,17 @@
+### Academic Integrity & Consistency Risk Report
+
+**1. Critical Logical Inconsistency: Contradiction Between Repetition Trend and Performance Claims**
+* **Claim:** The manuscript repeatedly asserts that data repetition is the primary driver of reasoning performance and that reducing repetition monotonically improves ARC-Challenge scores. Specifically, Section 3.4 states: *"ARC improves monotonically as repetition decreases (15.36% → 23.21%), confirming that data repetition was the primary cause of reasoning degradation."* The title of Figure 2 similarly claims: *"Reducing repetition improves ARC but not RULER."* The Abstract concludes that *"repetition rate affecting reasoning more than selection quality."*
+* **Evidence:** Table 3 and Figure 2 present three optimization variants with the following metrics:
+  * **v1 (top-10%):** Repetition = 9.57×, ARC = 15.36%
+  * **v2 (weighted all):** Repetition = 1.58×, ARC = 18.77%
+  * **v3 (pool 50%):** Repetition = 2.31×, ARC = 23.21%
+* **Analysis:** The data directly contradicts the monotonic claim. While repetition decreases from v1 to v2 (9.57× → 1.58×), it **increases** from v2 to v3 (1.58× → 2.31×). Despite this increase in repetition, ARC performance continues to improve from v2 to v3 (18.77% → 23.21%). This demonstrates that ARC does not improve monotonically as repetition decreases; rather, performance improves even when repetition increases. Furthermore, the fact that v3 (higher repetition, higher selection quality) outperforms v2 (lower repetition, lower selection quality) directly contradicts the Abstract's claim that *"repetition rate affects reasoning more than selection quality."* If repetition were the dominant confound, v2 should have yielded higher ARC scores than v3.
+
+**2. Oversimplification in Conclusions**
+* **Claim:** The Conclusion (Section 5) states: *"reducing repetition from 9.57× to 2.31× improved ARC from 15.36% to 23.21%... These findings suggest that gradient orthogonality computed at the LM head may not capture the full dynamics of capability preservation."*
+* **Evidence:** This statement compares only the endpoints (v1 and v3) while omitting the intermediate v2 result presented in Table 3.
+* **Analysis:** By ignoring v2, the conclusion constructs a simplified narrative that masks the non-monotonic relationship between repetition and performance. This omission materially affects the interpretation of the results, as it incorrectly attributes the performance gain solely to reduced repetition, whereas the data suggests that the balance between selection quality and diversity (as implemented in v3) is also critical.
+
+**3. Summary**
+The manuscript contains a significant internal inconsistency regarding the relationship between data repetition and reasoning performance. The empirical data in Table 3 and Figure 2 contradicts the explicit textual claims of monotonic improvement with reduced repetition and the assertion that repetition dominates selection quality. This inconsistency undermines the paper's primary analytical finding and suggests that the conclusion overstates the role of repetition while underestimating the impact of selection quality. No other major integrity or consistency issues were identified.

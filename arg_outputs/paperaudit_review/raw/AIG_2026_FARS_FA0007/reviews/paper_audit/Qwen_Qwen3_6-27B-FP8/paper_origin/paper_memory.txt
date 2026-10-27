@@ -1,0 +1,34 @@
+# Global Summary
+
+The paper addresses the vulnerability of holistic LLM safety judges to "benign-padding attacks," where harmless text is prepended and appended to harmful content, causing catastrophic detection failure. The authors propose WindowScan-Judge (WSJ), a post-hoc wrapper that uses multi-scale windowed scanning (128, 256, 512 tokens) and Length-Aware FPR Control (LA-FPR) to isolate harmful signals. Evaluated on the JailbreakBench dataset using WildGuard and Llama Guard 3, WSJ reduces WildGuard's False Negative Rate (FNR) from 1.0 to 0.0091 on prepend+append padding, while maintaining False Positive Rate (FPR) within budget. The authors note that LA-FPR effectively degenerates to a Max-OR rule in their experiments and that evaluation is limited to a single dataset.
+
+# Abstract
+
+- Identifies benign-padding attacks as a severe vulnerability in safety judges, causing WildGuard's FNR to increase from 0.0455 to 1.0.
+- Proposes WindowScan-Judge (WSJ), a post-hoc defense using windowed scanning (128, 256, 512 tokens) and Length-Aware FPR Control (LA-FPR).
+- WSJ reduces WildGuard's FNR from 1.0 to 0.0091 on prepend+append padding, achieving F1 of 0.9237 compared to 0.0 for the baseline.
+- Generalizes to Llama Guard 3, reducing FNR from 0.2636 to 0.0455.
+
+# Method
+
+- Defines benign-padding attack as $r' = p_{pre} \oplus r \oplus p_{post}$, aiming to minimize FNR while keeping FPR within budget $\delta$.
+- Windowed Scanning: Splits responses into overlapping windows at multiple scales ($W \in \{128, 256, 512\}$) with stride $S = W/2$. Each window is judged independently.
+- Length-Aware FPR Control (LA-FPR): Calibrates a decision threshold $k$ based on the number of windows $m$ to control FPR. Uses marginal calibration on safe data.
+- Aggregation: Uses OR fusion across scales; response is unsafe if any scale detects sufficient evidence ($C_m \geq k$).
+- Operates as a black-box wrapper requiring no retraining.
+
+# Experiments
+
+- Dataset: JailbreakBench judge-comparison dataset (300 pairs: 110 unsafe, 190 safe). Split: 95 safe dev, 95 safe test, 110 unsafe test.
+- Baselines: WildGuard (7B), Llama Guard 3 (8B), HarmBench classifier (13B). All run with temperature = 0.
+- Conditions: Original, Append Long, Prepend+Append, Interleaved.
+- Vulnerability: WildGuard FNR rises from 0.0455 to 1.0 on prepend+append padding. Llama Guard 3 FNR rises from 0.0273 to 0.2636.
+- Main Results: WSJ-WildGuard reduces FNR from 1.0 to 0.0091 on prepend+append padding (99.1% absolute reduction). F1 improves from 0.0 to 0.9237. FPR remains within budget ($\delta = \text{FPR}_{\text{holistic}} + 0.05$).
+- WSJ-LlamaGuard3 reduces FNR from 0.2636 to 0.0455 on prepend+append padding.
+- Ablations: Window size W=128 achieves FNR=0.0091; W=512 fails with FNR=0.9636. Marginal LA-FPR calibration yields identical results to Max-OR (k=1 suffices). Conditional LA-FPR is overly conservative (FNR=0.8727).
+
+# References
+
+- Cites Llama Guard (Inan et al., 2023), WildGuard (Han et al., 2024), ShieldGemma (Zeng et al., 2024), AEGIS (Ghosh et al., 2024), Qwen3Guard (Zhao et al., 2025).
+- Cites JailbreakBench (Chao et al., 2024) and HarmBench (Mazeika et al., 2024) as evaluation datasets.
+- Cites GCG attack (Zou et al., 2023) and various works on LLM-as-a-Judge robustness (Maloyan et al., 2025; Shi et al., 2025; Raina et al., 2024).

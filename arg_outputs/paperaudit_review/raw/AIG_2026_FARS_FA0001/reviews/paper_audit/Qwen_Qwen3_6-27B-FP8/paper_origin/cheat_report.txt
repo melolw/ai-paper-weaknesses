@@ -1,0 +1,47 @@
+# Integrity Risk and Consistency Report
+
+**Manuscript Title:** CANARY-CONTROLLED SAFE-DATA INTERLEAVING FOR REDUCING EMERGENT MISALIGNMENT
+**Authors:** FARS (Analemma)
+
+## Executive Summary
+This review identifies **critical internal inconsistencies** between the textual descriptions, the algorithmic logic, and the data presented in Figure 2. Specifically, the text claims that all experimental seeds reached the maximum interleaving ratio ($p_{max} = 0.20$) and maintained high average ratios, while the provided data shows near-zero ratios for two seeds and a failure to follow the described control logic. Additionally, the reference list contains future-dated citations, which is a strong indicator of automated generation or fabrication.
+
+## Detailed Findings
+
+### 1. Critical Contradiction: Figure 2 Data vs. Textual Claims
+**Location:** Section 4.4 (Controller Behavior Analysis), Figure 2 (Table and Plot).
+
+*   **Textual Claim:** The text states: *"All seeds show active controller engagement, with average interleaving ratios ranging from 0.11 to 0.15 and all seeds reaching $p_{max} = 0.20$ by training completion."*
+*   **Evidence in Figure 2:**
+    *   **Table Data:** For seeds 123 and 456, the interleaving ratio $p_t$ is **0.00** for all listed training steps (50 through 300). For seed 42, $p_t$ maxes out at **0.04**.
+    *   **Plot Data:** The line chart in Figure 2(a) visually confirms that seeds 123 and 456 remain at 0.00, and seed 42 plateaus near 0.04.
+*   **Inconsistency:** The data directly contradicts the text. The seeds do not reach $p_{max} = 0.20$, nor do they exhibit average ratios between 0.11 and 0.15. The average ratio for seeds 123 and 456 based on the table would be near zero, not 0.11–0.15.
+
+### 2. Algorithmic Violation: Figure 2 Data vs. Controller Logic
+**Location:** Section 3.3 (Threshold-Based Controller), Section 4.1 (Controller Parameters), Figure 2.
+
+*   **Algorithm Logic:** According to Equation 3 and the parameters in Section 4.1 ($r_{high} = 0.08$, $\delta_{\uparrow} = 0.04$), if the smoothed risk $\hat{r}_t > 0.08$, the interleaving ratio $p_t$ must increase by at least 0.04.
+*   **Evidence in Figure 2 (Table):**
+    *   **Seed 123:** At step 150, $\hat{r}_t = 0.09$ (which is $> 0.08$). The table shows $p_t$ remains **0.00**. At step 250, $\hat{r}_t = 0.12$ ($> 0.08$), yet $p_t$ remains **0.00**.
+    *   **Seed 456:** At step 200, $\hat{r}_t = 0.09$ ($> 0.08$). The table shows $p_t$ remains **0.00**. At step 250, $\hat{r}_t = 0.11$ ($> 0.08$), yet $p_t$ remains **0.00**.
+    *   **Seed 42:** At step 100, $\hat{r}_t = 0.16$ ($> 0.08$). $p_t$ is 0.04. At step 150, $\hat{r}_t = 0.15$ ($> 0.08$). $p_t$ remains 0.04. It should have increased to 0.08 or higher.
+*   **Inconsistency:** The data in Figure 2 does not follow the algorithm described in the method section. The controller fails to trigger the prescribed increases in $p_t$ when risk thresholds are exceeded.
+
+### 3. Discrepancy in Average Interleaving Ratios
+**Location:** Table 1, Table 2, Section 4.4.
+
+*   **Table 1 (Main Results):** Reports Avg $p_t$ for Canary-Controlled as **0.13**.
+*   **Table 2 (Ablation):** Reports Avg $p_t$ for Full Canary-Controlled as **0.155**.
+*   **Section 4.4 Text:** Claims *"average interleaving ratios ranging from 0.11 to 0.15"*.
+*   **Inconsistency:** While the text's range (0.11–0.15) loosely aligns with the tables, it is completely inconsistent with the data in Figure 2 (which implies averages near 0 for two seeds). This suggests the text description of Figure 2 was likely hallucinated or mismatched with the actual experimental data presented.
+
+### 4. Integrity Risk: Future-Dated References
+**Location:** References Section.
+
+*   **Evidence:** The reference list includes citations with publication years in the future relative to the current date (assuming current date is 2024 or early 2025):
+    *   *Betley et al., 2026* ("Emergent misalignment: Narrow finetuning can produce broadly misaligned llms")
+    *   *Ustaomeroglu & Qu, 2026* ("Block-em: Preventing emergent misalignment by blocking causal features")
+*   **Risk:** Future-dated references are a hallmark of AI-generated manuscripts or fabricated bibliographies. This significantly undermines the trustworthiness of the related work and the validity of the claims built upon these citations.
+
+## Conclusion
+The manuscript contains **clear, evidence-based internal inconsistencies** that materially affect its scientific validity. The data in Figure 2 contradicts both the textual claims and the algorithmic logic described in the method. Combined with future-dated references, these issues strongly suggest that the experimental results and descriptions may be fabricated or hallucinated by an automated system. The paper cannot be trusted as a valid scientific report in its current form.

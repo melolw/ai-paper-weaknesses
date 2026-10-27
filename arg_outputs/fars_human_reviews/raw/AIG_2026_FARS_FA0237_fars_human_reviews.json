@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0237",
+    "title": "Entity-Anonymized Context Prompts for Improving Context Faithfulness in Knowledge-Conflict QA",
+    "abstract": "Large language models in retrieval-augmented generation (RAG) systems often fail to follow provided context when it conflicts with their parametric knowledge, instead generating answers based on memorized facts. We hypothesize that entity surface forms in the context trigger parametric recall, causing this unfaithful behavior. To test this, we propose Entity-Anonymized Context Prompts (EACP), a training-free method that replaces entity names with anonymous placeholders before prompting. On the ConFiQA-MC knowledge-conflict benchmark, EACP improves context-faithful answer rate from 32.47\\% to 74.75\\% (+42.28 points) compared to a control condition with identical output format but no anonymization, demonstrating that entity anonymization is the active ingredient. EACP generalizes across model families (Llama-3.1-8B, Qwen2.5-7B), complements activation steering methods, and outperforms training-based approaches like Context-DPO without requiring any fine-tuning.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes Entity-Anonymized Context Prompts (EACP), which replaces entity names in the context and question with anonymous placeholders (e.g., ENT_1, ENT_2) to improve LLM context faithfulness under knowledge-conflict scenarios. The paper designs a three-condition controlled experiment and validates the hypothesis on the ConFiQA-MC benchmark. The results demonstrate that EACP improves context-faithful answer rate from 52.43% to 74.75%, and the paper includes ablation experiments comprising a structured-but-not-anonymized control condition as well as comparisons across different LLMs.\n\nHypothesis: Entity surface forms trigger parametric knowledge recall in the model, causing it to ignore the provided context. Anonymization can mitigate this phenomenon.\nValidation: Empirical\nMain outcome: Positive confirmation",
+        "strengths": "A very interesting paper on using anonymization to address the knowledge conflict problem. The control group comparison is particularly well-designed: the structured-but-not-anonymized control condition (Condition B) convincingly demonstrates the validity of the proposed method. This finding is both interesting and meaningful.",
+        "weaknesses": "1. The proposed method is not practical, as entity extraction is a very difficult problem in itself. The example of \"Albert Einstein\" used in the paper is overly simplistic, as it can be identified by traditional NER systems because it is an obvious person name. However, in other scenarios, particularly where NER cannot recognize entities, the proposed method becomes inapplicable. For instance, consider \"Banana\", distinguishing it as a fruit in the LLM's parametric knowledge versus the name of an emerging tech company in a RAG-retrieved document is something traditional NER systems are unlikely to handle. The paper does not address this fundamental challenge.\n\n2. In scenarios involving multiple entities, the proposed method may also fail if only a subset of entities are identified and anonymized. For example, if \"Albert Einstein\" and \"Newton\" both appear in the context but only one is recognized as an entity and anonymized, the remaining un-anonymized entity could still trigger parametric recall and mislead the LLM's understanding. Partial anonymization may even be worse than no anonymization, as it creates an inconsistent context.\n\n3. Entity category is also a critical factor that the paper does not analyze. Different types of entities, objects, person names, organizations, locations, well-known versus obscure, likely respond differently to anonymization. The paper lacks fine-grained analysis across entity types, which limits our understanding of when and why the method works.\n\n4. The experiments are conducted only on 8B scale LLMs. Since LLMs of different sizes may exhibit different degrees of sensitivity to knowledge conflicts, the absence of experiments across varying LLM scales limits the generalizability of the conclusions.",
+        "suggestions": "",
+        "llmDisclosure": "Which parts used LLM assistance: Phrasing and grammar polishing.\n\nWhich tool/model/service: Claude Opus 4.6.\n\nWhat information was shared: The original review draft.\n\nFinal judgment and scores independently verified by the reviewer: Yes.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-24T00:06:48.700Z",
+      "updatedAt": "2026-03-24T00:06:48.700Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper addresses the critical knowledge-conflict problem in RAG systems by proposing Entity-Anonymized Context Prompts (EACP), a training-free method that replaces entity surface forms with anonymous placeholders to prevent parametric knowledge from overriding provided context. The core hypothesis—that entity names act as triggers for memorized recall—is plausible and well-motivated, and the three-condition experimental design (baseline vs. format-control vs. full anonymization) effectively isolates the causal effect of anonymization, yielding impressive gains.\n",
+        "strengths": "- Knowledge conflict is a core pain point in RAG systems, with clear research value and practical application scenarios.",
+        "weaknesses": "- The core insight (entity-triggered recall) is plausible, but lacks formal modeling or theoretical grounding.\n\n- Missing systematic comparisons with mainstream prompting methods (e.g., Chain-of-Thought, self-reflection, contrastive decoding).\n\n- Relies on NER preprocessing, but does not quantify the impact of NER error propagation on final performance.\n\n- Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv.\n",
+        "suggestions": "",
+        "llmDisclosure": "Used Claude 4.6 opus to polish the completed draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Many references lack complete information. For example, missing venue, or claiming that work accepted at a top venue is from arXiv."
+      },
+      "submittedAt": "2026-03-29T21:35:21.328Z",
+      "updatedAt": "2026-03-29T21:35:21.328Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes Entity-Anonymized Context Prompts, a test-time method that replaces named entities in retrieved context with placeholders to reduce conflicts between parametric knowledge and the provided context. Evaluated on ConFiQA-MC across two model families, the method achieves a 42-point gain in context faithfulness over the non-anonymous baseline with no retraining required.\n\n",
+        "strengths": "1. The research question is well-motivated. Anonymization is dead simple to bolt on at inference time with no retraining, which is exactly what practitioners want.\n2. The three-condition setup (A: baseline / B: format-only control / C: full EACP) is a reasonable ablation skeleton, at least it tries to tease apart what's doing the work.",
+        "weaknesses": "1. EACP uses self-consistency decoding (k=8), but I couldn't tell whether Condition B gets the same treatment. If B uses greedy decoding, the +42.28 Pc gain is confounded. Self-consistency alone is a well-known accuracy booster. The paper needs a 2x2 factorial crossing {anonymous, non-anonymous} x {greedy, self-consistency}. Without it I can't apportion the headline number, and that's a dealbreaker.\n\n2. Condition B might just be a confusing prompt. It hands the model an entity inventory with real names (\"ENT_1 = Albert Einstein\") while the context still uses the original names. I'm not sure the lower performance reflects parametric interference; mapping real names to arbitrary IDs mid-task is awkward by itself.\n\n3. No variance or significance anywhere. Tables 2 and 4 are point estimates only.\n\n4. The abstract claims the proposed method outperforms Context-DPO, but it actually compares EACP (Llama-3.1-8B) against Context-DPO (Qwen2-7B) without noting the different base models.\n\n\n\n",
+        "suggestions": "The 2x2 ablation (anonymization x decoding strategy) is the single most important fix. Run it and present a proper factorial table. ",
+        "llmDisclosure": "The language of this review was polished with AI assistance. The core technical assessments, scores, and final judgments are the reviewer's own.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T15:47:29.481Z",
+      "updatedAt": "2026-04-11T15:56:19.558Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0237"
+}

@@ -1,0 +1,72 @@
+# Global Summary
+
+This paper addresses the challenge of calibrating hyperparameters for Adaptive Parallel Encoding (APE) without labeled validation data. APE improves long-context processing efficiency but relies on two hyperparameters—attention temperature ($T$) and scaling factor ($S$)—that typically require grid search on labeled data. The authors propose a label-free calibration method that minimizes the KL divergence between the next-token distributions of a sequential-teacher model and the parallel-encoded APE model.
+
+Key findings include:
+- KL-tuned APE (multi-token) achieves an F1 score of 48.09 on LongBench 2WikiMultihopQA, outperforming a label-tuned oracle (F1=46.23) by +1.86 points.
+- The label-tuned oracle underperforms the default configuration (F1=48.99) due to overfitting on the small 32-sample calibration set.
+- Temperature ($T$) dominates the KL landscape with 2.6× higher sensitivity than scale ($S$).
+- Temperature selection is perfectly stable under bootstrap resampling (CI width=0.0), whereas scale selection is unstable (CI width=0.38).
+- There is a weak correlation between KL divergence and downstream F1 performance ($\rho=0.295$), explaining why KL calibration does not match the default performance but remains a robust label-free alternative.
+
+# Abstract
+
+- **Problem:** APE performance depends on hyperparameters ($T, S$) that usually require labeled validation data for tuning.
+- **Method:** Label-free calibration by minimizing KL divergence between sequential-teacher and parallel-encoded next-token distributions.
+- **Key Results:**
+  - KL-tuned APE achieves F1=48.09 on LongBench 2WikiMultihopQA.
+  - Outperforms label-tuned oracle (F1=46.23) by +1.86 points.
+  - Temperature dominates the KL landscape with 2.6× higher sensitivity than scale.
+  - Temperature selection is perfectly stable under bootstrap resampling; scale selection is not.
+- **Caveats:** Weak KL-F1 correlation ($\rho=0.295$) explains the gap to default performance.
+
+# Method
+
+- **Objective:** Select hyperparameters $\theta = (T, S)$ by minimizing the average KL divergence between sequential encoding ($p_{seq}$) and APE encoding ($p_{APE}$) over an unlabeled calibration set $\mathcal{C}$.
+- **Multi-Token Averaging:**
+  - Single-token KL exhibits degeneracy, always selecting $T=1.0$.
+  - Multi-token KL averaging over $K=8$ tokens breaks this degeneracy, selecting $T^*=0.95$ and improving downstream F1 by 0.25 points.
+- **Practical Setup:**
+  - Uses $|\mathcal{C}| = 32$ unlabeled samples.
+  - Hyperparameter grid $\Theta$ includes values for $T, S \in \{0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0\}$ (49 configurations for multi-token).
+  - Computational cost: Approximately 50 minutes on a single GPU for multi-token KL calibration.
+
+# Experiments
+
+- **Setup:**
+  - **Dataset:** LongBench 2WikiMultihopQA (200 samples total).
+  - **Split:** 32 calibration samples, 168 test samples.
+  - **Model:** Llama-3.1-8B-Instruct with bfloat16 precision and FlashAttention-2.
+  - **Context:** Top-20 chunks of 4000 tokens each (C4000×20).
+  - **Metric:** Token-level F1.
+
+- **Main Results (Table 1):**
+  - **APE-Default:** F1=48.99 (Baseline).
+  - **APE-Label-Tuned (oracle):** F1=46.23 (Overfits 32-sample set; underperforms default by 2.76 points).
+  - **APE-KL-Tuned (single-token):** F1=47.84 (Outperforms label-tuned by +1.61 points).
+  - **APE-KL-Tuned (multi-token, K=8):** F1=48.09 (Outperforms label-tuned by +1.86 points).
+
+- **Ablation Study (Table 2):**
+  - **T-only vs S-only:** Temperature is the dominant hyperparameter.
+  - **KL Sensitivity:** $T$ dimension spans KL range 0.065–0.171 (2.6× ratio); $S$ dimension spans 0.082–0.100 (1.2× ratio).
+  - **Performance:** T-only calibration matches full single-token grid search (F1=47.84); S-only achieves F1=46.26.
+
+- **Stability Analysis (Table 3):**
+  - **Bootstrap Resampling:** 10 resamples with different random seeds.
+  - **Temperature ($T^*$):** Perfectly stable. Mode=1.0, 95% CI width=0.0.
+  - **Scale ($S^*$):** Unstable. Mode=0.7, 95% CI width=0.38 (ranges from 0.6 to 1.0).
+
+- **KL-F1 Correlation (Figure 4):**
+  - Weak positive correlation between KL divergence and F1 score.
+  - Spearman $\rho = 0.295$, $p = 0.15$ (not statistically significant).
+  - KL-optimal configuration ($T=1.0, S=0.9$) is misaligned with F1-optimal configuration on the calibration set ($T=0.7, S=0.8$).
+
+# References
+
+- Bai et al. (2023): LongBench benchmark.
+- Yang et al. (2025): APE (Adaptive Parallel Encoding).
+- Dao et al. (2022): FlashAttention.
+- Dubey et al. (2024): Llama 3 models.
+- Ratner et al. (2022): Parallel Context Windows.
+- Guo et al. (2017): Temperature scaling for calibration.
+- Wu et al. (2024): KL divergence in knowledge distillation.

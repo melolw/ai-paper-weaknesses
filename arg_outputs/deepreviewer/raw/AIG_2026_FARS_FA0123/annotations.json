@@ -1,0 +1,125 @@
+{
+  "annotations": [
+    {
+      "id": "4f8a27ca-3aa3-4ea4-aba2-640d4e2423f7",
+      "page": 1,
+      "start_line": 4,
+      "end_line": 4,
+      "text": "Recent work shows that repeating a small curated dataset outperforms training on 32× more unique data in long chain-of-thought (CoT) supervised fine-tuning (SFT). However, step-matched comparisons contain a compute confound: the repetition condition processes more total tokens due to longer average responses. We introduce token-budget matching—early-stopping the repetition condition when cumulative tokens match the baseline—to isolate the true repetition effect. Under token-matched conditions, the repetition advantage is not only preserved but amplified 6.33× (∆<sub>tok</sub>/∆<sub>step</sub> ratio on aggregate Pass@k), definitively refuting the compute confound hypothesis. Analysis reveals the mechanism: repetition training dramatically improves termination rates (87–91% vs. 29–48%) rather than conditional accuracy, teaching models to produce complete, decisive reasoning chains. Our results establish that data curation and repetition genuinely outperform data scaling for long-CoT SFT, independent of compute effects.",
+      "comment": "Diagnosis: The final sentence of the abstract makes a strong, universal claim: \"Our results establish that data curation and repetition genuinely outperform data scaling for long-CoT SFT, independent of compute effects.\" However, the experiments are conducted on a single model (Qwen2.5-1.5B) and a single domain (competition mathematics). Scaling behaviors in ML are highly model-size dependent; claims that hold for 1.5B models may invert or diminish for 7B+ models.\n\nWhy it matters: This scope overreach makes the conclusion scientifically vulnerable. Reviewers may reject the claim as unsupported generalization.\n\nActionable Fix: Bound the claim to the specific setting tested.\n\nMentor Revised Version: \"Our results suggest that, for sub-2B models on competition mathematics, data curation and repetition outperform data scaling in long-CoT SFT under compute-matched conditions. Whether this advantage generalizes to larger models and diverse domains requires further investigation.\"",
+      "summary": "Abstract overclaims universal generalizability based on a single 1.5B model and math dataset; bound the conclusion to the tested scope.",
+      "object_type": "suggestion",
+      "severity": "major",
+      "created_at": "2026-08-05T16:19:05.104207Z"
+    },
+    {
+      "id": "b6a76a9c-f3e4-4e8e-81a9-9f4d0b85fab9",
+      "page": 1,
+      "start_line": 9,
+      "end_line": 9,
+      "text": "However, this comparison contains a potential confound. In long-CoT SFT, response lengths vary substantially—from hundreds to over 10,000 tokens. When matching training steps, the repetition condition processes approximately 2.85% more total tokens than the data-scaling baseline, because the curated subset contains longer average responses that are seen multiple times. Is the repetition advantage genuine, or merely an artifact of this compute disparity?",
+      "comment": "Diagnosis: This paragraph correctly identifies the \"compute confound\" in prior work (Kopiczko et al., 2026). The narrative flow (Big Picture -> Gap -> Confound) is strong. However, the quantification of the confound (\"approximately 2.85% more total tokens\") could be more precisely framed. Is this a 2.85% increase in *response* tokens, or total training tokens (prompt + response)? Since prompt tokens are constant, the relative difference in total tokens will be smaller than the difference in response tokens.\n\nWhy it matters: Precision here is critical because the entire paper hinges on the existence and magnitude of this confound. If the 2.85% figure is misinterpreted by readers as total-token surplus rather than response-token surplus, the stakes of the confound appear inflated.\n\nActionable Fix: Clarify whether the 2.85% surplus applies to response tokens only, and briefly mention the implied total-token difference for completeness.\n\nMentor Revised Version: \"However, this comparison contains a potential confound. In long-CoT SFT, response lengths vary substantially—from hundreds to over 10,000 tokens. When matching training steps, the repetition condition processes approximately 2.85% more total *response* tokens than the data-scaling baseline, because the curated subset contains longer average responses that are seen multiple times. Is the repetition advantage genuine, or merely an artifact of this compute disparity?\"",
+      "summary": "Clarify the 2.85% token surplus refers specifically to response tokens, not total tokens, to maintain precise confound quantification.",
+      "object_type": "suggestion",
+      "severity": "minor",
+      "created_at": "2026-08-05T16:19:23.726550Z"
+    },
+    {
+      "id": "80d9c5f9-def2-48c9-83bd-2f855e3d7ffc",
+      "page": 3,
+      "start_line": 1,
+      "end_line": 3,
+      "text": "Condition A (Data Scaling). The baseline condition trains on 51,200 unique long-CoT samples for 1 epoch, resulting in 51,200 optimizer steps with batch size 1. This represents the standard data-scaling approach where practitioners collect more unique demonstrations.\nCondition B (Step-Matched Repetition). Following Kopiczko et al. (2026), this condition trains on a curated subset of 1,600 samples for 32 epochs, matching the total number of optimizer steps (51,200) with Condition A. This replicates the step-matched comparison from prior work.\nCondition C (Token-Matched Repetition). Our novel condition trains on the same 1,600 samples as Condition B, but applies early stopping when the cumulative response tokens reach Condition A’s total token budget. This eliminates the compute confound where step-matching gives the repetition condition more training tokens due to repeated exposure to longer sequences.",
+      "comment": "Diagnosis: The three experimental conditions are clearly defined. Condition C (Token-Matched Repetition) is described as applying early stopping when cumulative response tokens reach Condition A's total token budget. This is the core methodological contribution.\n\nWhy it matters: The clarity of this definition is crucial for reproducibility. However, the description does not explicitly state whether the \"token budget\" for Condition A includes prompt tokens or only response tokens. Section 3.2 later clarifies that only response tokens are tracked. Making this explicit in the condition definition improves immediate readability.\n\nActionable Fix: Add a clarifying phrase to Condition C's definition indicating that the budget is measured in response tokens.\n\nMentor Revised Version: \"Condition C (Token-Matched Repetition). Our novel condition trains on the same 1,600 samples as Condition B, but applies early stopping when the cumulative *response* tokens reach Condition A's total response token budget. This eliminates the compute confound where step-matching gives the repetition condition more training tokens due to repeated exposure to longer sequences.\"",
+      "summary": "Clarify that Condition C's token budget matching is based on response tokens only, aligning with Section 3.2 definition.",
+      "object_type": "suggestion",
+      "severity": "minor",
+      "created_at": "2026-08-05T16:20:11.371225Z"
+    },
+    {
+      "id": "59b169aa-08a6-4ecd-8dcd-346a42c68fe9",
+      "page": 4,
+      "start_line": 5,
+      "end_line": 5,
+      "text": "Second, we compute a FLOPs proxy based on the quadratic scaling of self-attention with sequence length: $\\textstyle \\sum _ { t } L _ { t } ^ { 2 }$ , where $L _ { t }$ is the response length at training step t. This proxy captures the fact that longer sequences require disproportionately more compute due to attention’s $O ( L ^ { 2 } )$ complexity. If token budgets match but this proxy differs substantially, it would indicate that token matching does not fully control for attention compute. We find that Condition C’s FLOPs proxy deviates by only 0.56% from Condition A, confirming tight compute matching.",
+      "comment": "Diagnosis: The FLOPs proxy is defined as $\\sum_{t} L_{t}^{2}$, where $L_{t}$ is the response length. This only captures the auto-regressive self-attention compute on the generated tokens. It ignores the cross-attention compute between the generated tokens and the prompt tokens. In standard decoder-only attention, the complexity per step is proportional to $(P + L)^2 = P^2 + 2PL + L^2$, where $P$ is the prompt length. Since $P$ is constant, $P^2$ cancels out in relative comparisons, but the cross-term $2PL$ scales linearly with response length and represents a significant portion of total attention FLOPs. By ignoring this term, the FLOPs proxy is technically incomplete.\n\nWhy it matters: If Condition C has a different distribution of response lengths compared to Condition A (even if total tokens match), the unaccounted $2PL$ term could introduce a residual compute confound. This weakens the claim of \"tight compute control\" and is a potential validity risk for the core conclusion.\n\nActionable Fix: Update the FLOPs proxy to use $\\sum_{t} (P_{t} + L_{t})^{2}$ or explicitly argue why the $2PL$ term is negligible (e.g., if average $L$ is very large compared to $P$).\n\nMentor Revised Version: \"Second, we compute a comprehensive FLOPs proxy based on the full self-attention complexity: $\\sum_{t} (P_{t} + L_{t})^{2}$, where $P_{t}$ is the prompt length and $L_{t}$ is the response length at step $t$. This captures both auto-regressive attention on responses and cross-attention between prompts and responses, ensuring tight compute matching even when response length distributions differ.\"",
+      "summary": "FLOPs proxy ΣL² ignores prompt-response cross-attention term 2PL, potentially leaving a residual compute confound. Use full (P+L)² proxy.",
+      "object_type": "issue",
+      "severity": "major",
+      "created_at": "2026-08-05T16:20:46.267716Z"
+    },
+    {
+      "id": "5a26a767-c79a-48cf-84e8-f52eea11b389",
+      "page": 5,
+      "start_line": 3,
+      "end_line": 3,
+      "text": "On aggregate Pass@k, Condition C achieves 66.28% compared to 40.83% for Condition B and 36.05% for Condition A. The ordering $\\mathbf { C } \\gg \\mathbf { B } > \\mathbf { A }$ holds consistently across all three benchmarks and all three random seeds, indicating robust and reproducible results. The improvements are particularly pronounced on GPQA Diamond, where Condition C achieves 64.14% Pass@4 compared to only 32.66% for Condition B and 29.80% for Condition A—a gain of over 34 percentage points. The most striking pattern emerges in termination rates: Condition C achieves 87–91% termination across benchmarks, while Conditions A and B remain at 29–55%. This dramatic gap suggests that the repetition advantage operates through a behavioral mechanism—teaching models to produce complete, decisive reasoning chains.",
+      "comment": "Diagnosis: This paragraph reports the main results and highlights the dramatic gap in termination rates (87–91% for C vs. 29–55% for A/B). The authors interpret this as a \"behavioral mechanism—teaching models to produce complete, decisive reasoning chains.\"\n\nWhy it matters: This is a strong causal claim (\"teaching models\") based on correlational evidence. An alternative hypothesis is that the token-budget matching in Condition C inherently selects for samples that are easier to memorize or terminate, or that the early stopping aligns with the natural completion points of the curated data. Without an ablation (e.g., a random subset control), the causal attribution is not fully established.\n\nActionable Fix: Soften the causal language to \"is consistent with\" and explicitly request a random subset control experiment to validate the mechanism.\n\nMentor Revised Version: \"This dramatic gap suggests that the repetition advantage operates through improved termination behavior, consistent with models learning to produce complete reasoning chains. To causally isolate this mechanism, future work should compare against random subset controls under identical token budgets.\"",
+      "summary": "Causal claim 'teaching models' overreaches correlational evidence; soften language and propose random subset control to isolate mechanism.",
+      "object_type": "suggestion",
+      "severity": "major",
+      "created_at": "2026-08-05T16:21:19.540124Z"
+    },
+    {
+      "id": "faa557b3-2ca9-4104-bc01-5e918b502b8d",
+      "page": 6,
+      "start_line": 3,
+      "end_line": 3,
+      "text": "The FLOPs proxy $( \\Sigma L ^ { 2 } .$ , summing squared sequence lengths) provides a secondary verification of compute equivalence. Condition C achieves $\\dot { 7 } . 7 2 \\times 1 0 ^ { 1 1 }$ FLOPs proxy, only 0.56% higher than Condition A’s $7 . 6 8 \\times 1 0 ^ { 1 1 }$ , while Condition $\\mathbf { B } ^ { \\prime } \\mathbf { s } ~ 7 . 9 8 \\times 1 0 ^ { 1 1 }$ represents a 3.95% surplus. This tight matching confirms that the performance differences observed in Table 1 cannot be attributed to compute disparities.",
+      "comment": "Diagnosis: This paragraph repeats the FLOPs proxy claim using $\\Sigma L^2$. As noted in the method section, this metric is incomplete because it ignores the cross-attention compute between prompt and response tokens ($2PL$ term).\n\nWhy it matters: Repeating the incomplete metric here reinforces the claim of \"tight compute control\" without addressing the residual confound. It strengthens the methodological gap identified in Section 3.3.\n\nActionable Fix: Update the narrative here to reference the improved FLOPs proxy or explicitly state that the $\\Sigma L^2$ metric is a lower-bound estimate of attention compute.\n\nMentor Revised Version: \"The FLOPs proxy ($\\Sigma L^2$, summing squared sequence lengths) provides a lower-bound verification of attention compute equivalence. Condition C achieves $7.72 \\times 10^{11}$ FLOPs proxy, only 0.56% higher than Condition A's $7.68 \\times 10^{11}$. While this metric excludes prompt-response cross-attention, the tight matching confirms that the performance differences in Table 1 are not driven by gross compute disparities.\"",
+      "summary": "Reiterate that ΣL² is a lower-bound proxy; acknowledge the missing cross-attention term to maintain methodological honesty.",
+      "object_type": "suggestion",
+      "severity": "minor",
+      "created_at": "2026-08-05T16:21:53.126929Z"
+    },
+    {
+      "id": "76648fdb-7f82-4470-8449-15d35f5a46a6",
+      "page": 6,
+      "start_line": 6,
+      "end_line": 6,
+      "text": "Table 4 presents the full decomposition. Condition C achieves 87–91% termination across all benchmarks, compared to 29–48% for Condition A—an improvement of approximately 47 percentage points. Remarkably, Condition C’s conditional accuracy given termination is actually lower than Condition A’s by an average of 4.5 percentage points. This reveals that the repetition advantage operates entirely through improved termination behavior: models trained with repetition learn to produce complete, decisive reasoning chains rather than better individual answers.",
+      "comment": "Diagnosis: This paragraph presents the core mechanistic finding: Condition C's conditional accuracy given termination is *lower* than Condition A's, yet its overall accuracy is higher due to drastically improved termination rates. The authors conclude the advantage \"operates entirely through improved termination behavior.\"\n\nWhy it matters: This is a fascinating and counter-intuitive result. However, the word \"entirely\" is a strong causal claim. The lower conditional accuracy could be an artifact of how termination is defined or parsed. For example, if terminated responses are shorter, they may be easier to parse but contain less nuance. Alternatively, the early stopping at the token budget could inadvertently favor samples that terminate naturally, creating a selection bias.\n\nActionable Fix: Soften \"entirely\" to \"primarily\" and add a brief discussion of potential selection effects or parsing artifacts.\n\nMentor Revised Version: \"Remarkably, Condition C's conditional accuracy given termination is actually lower than Condition A's by an average of 4.5 percentage points. This suggests that the repetition advantage operates primarily through improved termination behavior: models trained with repetition learn to produce complete, decisive reasoning chains, even if the conditional quality of those chains is modestly lower.\"",
+      "summary": "The claim 'operates entirely' is too strong; lower conditional accuracy might reflect parsing/selection artifacts. Soften to 'primarily'.",
+      "object_type": "suggestion",
+      "severity": "major",
+      "created_at": "2026-08-05T16:22:12.479766Z"
+    },
+    {
+      "id": "85baf50d-58bc-4e58-9d4c-ec652b040c68",
+      "page": 7,
+      "start_line": 3,
+      "end_line": 3,
+      "text": "We introduced token-budget matching to evaluate whether the repetition advantage in long-CoT SFT is a compute artifact. Our results definitively refute this hypothesis: under token-matched conditions, the advantage is preserved and amplified 6.33×. The mechanism is behavioral—repetition training dramatically improves termination rates (87–91% vs. 29–48%) rather than conditional accuracy, teaching models to produce complete reasoning chains (see Appendix A for training dynamics analysis). These findings establish that data curation and repetition genuinely outperform data scaling for long-CoT SFT. Limitations include evaluation on a single model (Qwen2.5-1.5B) and specific reasoning benchmarks; future work should extend to larger models and diverse domains.",
+      "comment": "Diagnosis: The conclusion restates the main findings clearly. However, the sentence \"These findings establish that data curation and repetition genuinely outperform data scaling for long-CoT SFT\" is a universal claim that lacks the necessary scope qualifiers.\n\nWhy it matters: Repeating the unbounded claim in the conclusion reinforces the overreach identified in the abstract. Readers skimming the paper will take away an unjustified generalization.\n\nActionable Fix: Add the model-size and domain qualifiers explicitly in the conclusion to align with the limitations sentence that follows.\n\nMentor Revised Version: \"These findings suggest that, for sub-2B models on competition mathematics, data curation and repetition genuinely outperform data scaling under compute-matched long-CoT SFT. Future work should verify whether this advantage scales to larger models and generalizes to diverse domains.\"",
+      "summary": "Conclusion repeats unbounded universal claim; add model/domain qualifiers to prevent scope overreach.",
+      "object_type": "suggestion",
+      "severity": "major",
+      "created_at": "2026-08-05T16:22:47.405860Z"
+    },
+    {
+      "id": "69de05f8-8c1d-4f71-91f1-6209ee711c6a",
+      "page": 8,
+      "start_line": 11,
+      "end_line": 11,
+      "text": "Figure 3 shows the training loss and token accuracy curves for all three conditions. Conditions B and C (repetition training) achieve near-complete memorization with token accuracy exceeding 99.7%, while Condition A (data scaling) plateaus at approximately 73.7% due to the larger, more diverse dataset. Condition C reaches saturation in fewer steps due to early stopping at the token budget. This confirms that the repetition advantage is not explained by more training—Condition C achieves comparable memorization depth with 3.2% fewer training steps than Condition B.",
+      "comment": "Diagnosis: The appendix shows that repetition training (B, C) achieves near-complete memorization (>99.7% token accuracy) while data scaling (A) plateaus at ~73.7%. The authors conclude this confirms the advantage is \"not explained by more training.\"\n\nWhy it matters: While the observation is correct, the conclusion is slightly misleading. The advantage is indeed not explained by *more optimizer steps*, but it is explained by *deeper memorization* of the training set. High memorization is the mechanism; the appendix supports this well. The wording should explicitly connect memorization depth to the termination/accuracy gains.\n\nActionable Fix: Reframe the conclusion to explicitly link memorization depth to the performance gains.\n\nMentor Revised Version: \"Figure 3 shows that repetition training achieves near-complete memorization (>99.7% token accuracy), while data scaling plateaus at ~73.7%. This confirms that the repetition advantage is driven by deeper memorization of high-quality traces, not merely by additional optimizer steps. Condition C achieves this depth with 3.2% fewer steps than B, demonstrating the efficiency of token-budget matching.\"",
+      "summary": "Appendix correctly links memorization to repetition advantage; tighten wording to explicitly connect memorization depth to termination gains.",
+      "object_type": "suggestion",
+      "severity": "minor",
+      "created_at": "2026-08-05T16:23:39.217522Z"
+    },
+    {
+      "id": "1c6ecbbe-8d70-470f-9da8-88994b65549f",
+      "page": 2,
+      "start_line": 6,
+      "end_line": 6,
+      "text": "Compute-Optimal Training. Scaling laws for language models (Kaplan et al., 2020; Hoffmann et al., 2022) establish that model performance depends predictably on compute budget, model size, and training data. The Chinchilla scaling laws (Hoffmann et al., 2022) demonstrate that for computeoptimal training, model size and training tokens should be scaled equally, revealing that many large models were significantly undertrained. Most recently, Kopiczko et al. (2026) show that in long-CoT SFT, repeating a small curated dataset for multiple epochs outperforms training on 32× more unique data under step-matched conditions. However, their step-matched comparison gives the repetition condition approximately 3% more training tokens due to longer response sequences, leaving open the question of whether the advantage is genuine or a compute artifact. Our work addresses this gap by introducing token-budget matching, which controls for total training tokens rather than steps, providing the first rigorous isolation of the repetition effect in long-CoT SFT.",
+      "comment": "Diagnosis: This paragraph positions the paper against Kopiczko et al. (2026) and claims \"providing the first rigorous isolation of the repetition effect in long-CoT SFT.\" However, retrieval reveals related work on repetition scaling (Muennighoff et al., 2023; Xue et al., 2023) and data-constrained training (Lovelace et al., 2026) that discuss similar compute-matching principles, albeit in different regimes (pretraining vs. SFT).\n\nWhy it matters: The \"first\" claim is strong and could be challenged if prior work has already discussed token-level matching in other contexts. A more nuanced positioning would acknowledge the broader scaling literature while emphasizing the novelty of applying token-budget matching to long-CoT SFT specifically.\n\nActionable Fix: Soften the \"first\" claim or add a precise scope qualifier (e.g., \"first to apply token-budget matching to long-CoT SFT\").\n\nMentor Revised Version: \"Our work addresses this gap by introducing token-budget matching, which controls for total training tokens rather than steps. While token-level compute optimization has been explored in pretraining scaling laws (Hoffmann et al., 2022), we provide the first rigorous isolation of the repetition effect specifically in the long-CoT SFT regime.\"",
+      "summary": "The 'first rigorous isolation' claim is strong; scope-qualify to acknowledge related scaling work while emphasizing SFT-specific novelty.",
+      "object_type": "suggestion",
+      "severity": "minor",
+      "created_at": "2026-08-05T16:24:22.219865Z"
+    }
+  ],
+  "count": 10
+}

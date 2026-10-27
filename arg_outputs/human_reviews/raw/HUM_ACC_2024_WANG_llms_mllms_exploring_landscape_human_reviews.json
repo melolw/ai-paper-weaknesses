@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_WANG_llms_mllms_exploring_landscape",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "From LLMs to MLLMs: Exploring the Landscape of Multimodal Jailbreaking",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper offers a comprehensive review of jailbreaking research for both LLMs and MLLMs, detailing recent advancements in evaluation benchmarks, attack techniques, and defense strategies. Additionally, it highlights the limitations and potential research directions for MLLM jailbreaking by comparing it to the more developed state of LLM jailbreaking, with the goal of inspiring future research efforts.",
+      "strengths": "(1)  The paper provides a comprehensive overview of jailbreaking research targeting both Large Language Models (LLMs) and Multimodal Large Language Models (MLLMs).      \n(2) It identifies limitations and potential research directions in multimodal jailbreaking, aiming to inspire future research.    \n(3)  The detailed analysis of attack and defense mechanisms from both unimodal and multimodal perspectives enhances understanding.",
+      "weaknesses": "(1) Lack of In-depth Analysis on Attack Mechanisms: The paper lacks a thorough theoretical overview and in-depth analysis of why jailbreak attacks can occur, which could provide a deeper understanding of the underlying vulnerabilities and mechanisms.     \n(2) Survey Nature Without Novel Methods and Evaluations: The paper mainly serves as a survey and investigation of existing and future jailbreak research without proposing or experimenting with specific novel methods, which might limit its direct contributions to new advancements.     \n(3) Ethical Concerns of Content: Discussing jailbreak datasets and attack techniques can potentially induce or contain offensive and harmful content, posing ethical risks. This discussion are limited in this survey paper.",
+      "questions": "(1) Consider including a dedicated section on ethical implications and guidelines for conducting and publishing jailbreak research.   \n(2) Consider adding empirical results or experiments demonstrating the effectiveness of various attack and defense strategies. This would provide concrete evidence to support the discussions.",
+      "rating": 3.5,
+      "confidence": 2,
+      "soundness": 3.5,
+      "raw_note_id": "45cd4f02e605ef4b004f08cebd781dc8dfe87506bfdb95c7be3bcfac99287e5a7a82173bea72fae1d3f0377d3110551f654d258d221d9f6ddd2c9cfc00a1fb5e"
+    }
+  ]
+}

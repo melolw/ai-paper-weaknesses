@@ -1,0 +1,60 @@
+# Global Summary
+
+The paper investigates ShallowPPL, an early-exit approach using the logit lens technique to accelerate perplexity-based code context compression. The core problem is that state-of-the-art compression methods like LongCodeZip require computationally expensive full forward passes for Approximated Mutual Information (AMI) scoring. The authors hypothesize that intermediate transformer layers can approximate full-depth scoring to provide significant speedup. Evaluation on Long Code Completion (LCC) and RepoQA benchmarks using Qwen2.5-Coder-7B-Instruct demonstrates that the hypothesis fails: ShallowPPL achieves only 1.05x speedup while exceeding pre-registered quality degradation thresholds (target: <= 1.0 point drop). Ablation studies reveal that coarse function ranking is the primary quality bottleneck and that quality scales nonlinearly with depth, with the last two layers contributing 3.83 percentage points of accuracy. The limited speedup is attributed to per-forward-pass overhead dominating layer computation costs.
+
+# Abstract
+
+- **Problem:** Long code contexts in repository-level tasks require compression. LongCodeZip achieves state-of-the-art quality using AMI scoring but requires full forward passes for each candidate chunk, creating a computational bottleneck.
+- **Method:** ShallowPPL proposes truncating forward passes at layer L and projecting intermediate representations to vocabulary space (logit lens) for perplexity computation.
+- **Evaluation Criteria:** Pre-registered success criteria require >= 1.5x speedup and <= 1.0 point quality drop.
+- **Key Findings:** The hypothesis does not hold. ShallowPPL achieves only 1.05x speedup and exceeds quality thresholds on both LCC and RepoQA benchmarks.
+- **Ablation Insights:** Coarse function ranking is the primary bottleneck (hybrid configuration recovers 81% of quality gap). Quality scales nonlinearly with depth; the last 2 layers contribute 3.83 percentage points.
+- **Conclusion:** Final transformer layers encode critical information for code relevance scoring that cannot be approximated by intermediate representations.
+
+# Method
+
+- **LongCodeZip Background:** A two-stage compression framework. Coarse-grained stage ranks functions by AMI score ($PPL(q) - PPL(q|c)$). Fine-grained stage segments retained functions into blocks and selects optimal subsets via dynamic programming. The bottleneck is the full forward pass required for AMI scoring.
+- **ShallowPPL Approach:** Replaces full-depth AMI scoring with early-exit approximation.
+    - Execute layers 1 to L on input $[c; q]$ to obtain hidden states $h_L$.
+    - Apply final layer normalization to $h_L$.
+    - Project to vocabulary space using unembedding matrix: $\ell_L = W_U \cdot h_L$.
+    - Compute token-level negative log-likelihood to obtain $PPL_L(q|c)$.
+- **Configurations:**
+    - **Both-shallow:** Early-exit for coarse and fine stages.
+    - **Hybrid:** Full-depth for coarse ranking, early-exit for fine-grained scoring.
+    - **Coarse-only shallow:** Early-exit for coarse ranking, full-depth for fine-grained scoring.
+- **Hyperparameters:** Exit layer $L \in \{14, 20, 24, 26\}$ for a 28-layer model (50%, 71%, 86%, 93% depth).
+- **Success Criteria:** Compression-time speedup >= 1.5x relative to full-depth AMI; quality degradation <= 1.0 absolute point on primary metrics.
+
+# Experiments
+
+- **Setup:**
+    - **Model:** Qwen2.5-Coder-7B-Instruct (28 layers).
+    - **Hardware:** Single NVIDIA A100-80GB GPU.
+    - **Inference:** vLLM with greedy decoding. Timing averaged across 3 random seeds.
+- **Datasets:**
+    - **Long Code Completion (LCC):** Function-level completion with repository context. Metrics: Edit Similarity (ES), Exact Match (EM).
+    - **RepoQA:** Long-context code understanding via function retrieval across six languages (Python, C++, Java, TypeScript, Rust, Go). Metric: Retrieval accuracy.
+- **Baselines:** RAG Baseline (UniXcoder embeddings), ShallowPPL variants, Full AMI (LongCodeZip).
+- **Main Results (LCC):**
+    - **Full AMI:** 56.59 ES, 31.2 EM, 9.15s (1.00x speedup).
+    - **ShallowPPL Hybrid (L=20):** 54.76 ES, 30.4 EM, 8.74s (1.05x speedup).
+    - **ShallowPPL Original (L=14):** 46.81 ES, 17.8 EM, 7.66s (1.19x speedup).
+    - **RAG Baseline:** 52.56 ES, 26.2 EM, 0.358s (25.6x speedup).
+    - **Outcome:** ShallowPPL fails pre-registered criteria. Hybrid achieves only 1.05x speedup with 1.83 ES point drop.
+- **Main Results (RepoQA):**
+    - **Full AMI:** 89.83% AvgAcc, 3.33s (1.00x speedup).
+    - **ShallowPPL Hybrid (L=26):** 86.00% AvgAcc, 3.17s (1.05x speedup).
+    - **RAG Baseline:** 70.33% AvgAcc, 0.559s (5.96x speedup).
+    - **Outcome:** ShallowPPL Hybrid falls short of 1.5x speedup target with 3.83 percentage point accuracy drop.
+- **Ablation Studies:**
+    - **LCC:** Coarse function ranking is the primary bottleneck. Hybrid configuration (full coarse, shallow fine) recovers 81% of quality gap. Fine-grained exit layer has minimal impact when coarse ranking uses full depth.
+    - **RepoQA:** Nonlinear quality-depth relationship. L=14 yields 21.67% accuracy; L=26 yields 86.00%. The last two layers (L=26 to L=28) contribute 3.83 percentage points of accuracy.
+- **Speedup Analysis:** Limited speedup stems from per-forward-pass overhead (embedding lookup, attention setup, KV cache initialization) which dominates layer computation cost. Reducing layers from 28 to 20 yields only 5% speedup due to constant per-call overhead.
+
+# References
+
+- **Prompt Compression:** LLMLingua (Jiang et al., 2023a), LongLLMLingua (Jiang et al., 2023b), LLMLingua-2 (Pan et al., 2024), Selective Context (Li et al., 2023).
+- **Code Context Compression:** LongCodeZip (Shi et al., 2025), RepoCoder (Zhang et al., 2023), RLCoder (Wang et al., 2024), UniXcoder (Guo et al., 2022).
+- **Logit Lens and Early Exit:** Logit Lens (Belrose et al., 2023), ILRe (Liang et al., 2025), EHPC (Fei et al., 2025), Inter-layer communication (Merullo et al., 2024), Representation quality (Skean et al., 2024).
+- **Benchmarks and Models:** Long Code Arena (Bogomolov et al., 2024), RepoQA (Liu et al., 2024), Qwen2.5-Coder (Hui et al., 2024).

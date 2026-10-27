@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0087",
+    "title": "RazorSFT: On-Policy Supervised Fine-Tuning with KL-Minimal Target Selection for Continual Learning",
+    "abstract": "Continual fine-tuning of large language models (LLMs) on sequential tasks leads to catastrophic forgetting, where previously learned capabilities degrade. While reinforcement learning (RL) methods like GRPO mitigate forgetting, they introduce substantial complexity. We propose RazorSFT, a simple on-policy supervised fine-tuning method that achieves strong forgetting mitigation without RL's complexity. RazorSFT samples candidate responses from the current model, filters them through a task verifier, and selects the highest log-probability correct response as the training target. This KL-minimal selection ensures training targets remain close to the current policy distribution. On a 3-stage continual learning benchmark, RazorSFT reduces forgetting by 60.4 percentage points compared to offline SFT (FM $-0.039$ vs.\\ $-0.643$) while outperforming GRPO on average accuracy (0.616 vs.\\ 0.515) and task adaptation (Countdown: 0.628 vs.\\ 0.261). Ablation studies reveal that on-policy data accounts for 76\\% of the forgetting improvement, demonstrating that the benefits of on-policy learning can be obtained within a simple SFT framework.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 1,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "To address the issue of catastrophic forgetting, this paper proposes the RazorSFT method, which demonstrates significantly reduced catastrophic forgetting compared to offline SFT and GRPO. Specifically, RazorSFT mitigates catastrophic forgetting primarily through three techniques: on-policy training, selecting only correct responses, and KL-minimal selection.\n\nThe method presented in this paper is credible because the idea that on-policy training can mitigate catastrophic forgetting is already widely accepted in the research community. Therefore, this method  lack innovation and meaningful contribution.",
+        "strengths": "This manuscript reads very much like an experimental report, with unclear experimental design and questionable results. Aside from having a clear motivation, it is difficult to identify other strengths. Please refer to the detailed Weaknesses section.\n",
+        "weaknesses": "1. The experimental design of this article is extremely confusing, only a few baselines are mentioned, making it impossible to understand the reasoning behind the setup.\n2. Table 1 is highly confusing: although the caption states that bold font indicates the best result, the FM metric shows that GRPO is actually the best performer, not the bolded RazorSFT.\n3. In Table 1, Offline SFT causes MMLU to drop directly to 0%, raising suspicions about the experimental validity and suggesting a potential bias in lowering baseline performance.\n4. According to the ablation study and Table 2, the primary method for addressing catastrophic forgetting is on-policy training, which is already widely recognized in the field. The KL-minimal property approach proposed in this paper contributes only marginally.",
+        "suggestions": "The experimental design should be clearly explained, allowing readers to understand your experimental process.",
+        "llmDisclosure": "I used Doubao to polish my Chinese into English, but the Chinese content was originally written by myself after reading the paper.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-25T13:02:29.184Z",
+      "updatedAt": "2026-03-25T14:28:56.365Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper tests the hypothesis that catastrophic forgetting in continual LLM fine-tuning can be substantially reduced without reinforcement learning by using on-policy SFT with KL-minimal target selection. On a 3-stage curriculum (IFEval - MMLU - CountDown), the paper reports less forgetting than offline SFT and better performance than GRPO, with ablations attributing most of the gain to on-policy data.",
+        "strengths": "1. The hypothesis is clear and well-motivated (however, it is not something new).\n2. The empirical results support the conclusion. \n3. The paper is easy to follow.",
+        "weaknesses": "1. The main hypothesis is clearly stated, but it is not something new.\n2. The overall framework is not innovative; it pretty much just resembles RFT with an added KL-based selection.\n3. The results could be further strengthened. Right now, they are largely metric-driven, but since RazorSFT replies on on-policy sampling, the computational overhead should also be considered and reported.\n4. The experimental description does not fully align with the provided repository, which is a serious concern (see AI integrity audits below).\n\nOverall, I think this one is below the standard expected for a conference publication.",
+        "suggestions": "A straightforward improvement I can think of would be to incorporate deepresearch, as the related work section is currently quite thin.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "Reproducibility is an issue.\nSee AI integrity audit below."
+      },
+      "audit": {
+        "findings": "1.  CountdownSFTDataset only appends an assistant target when dataset_split == \"train\", so the stage-3 offline SFT eval loss becomes nan (shown in \"razorsft/outputs/offline_sft/seed_42/stage_3/log.txt\")\n2. \"core/training/sft.py\" passes the same \"data_path\" to both the train and eval loaders, meanwhile, MMLUSFTDataset and IFEvalSFTDataset do not actually separate train and eval splits but read the same \"data/sft/*.jsonl\" files (shown in core/data.py). This means the ckpt is not selected on an independent validation set.\n3. Section 4.1 says that \"all training method use learning rate 1e-5\", but the actual configs do not match this. I see 5e-5 / 5e-6 / 1e-5.\n4. OnPolicy-SFT and First-Accepted ablations only exist for seed_42, not averaged over 3 random seeds."
+      },
+      "submittedAt": "2026-04-02T19:20:36.737Z",
+      "updatedAt": "2026-04-02T19:20:36.737Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies the hypothesis that catastrophic forgetting in continual LLM fine-tuning can be mitigated largely through on-policy data selection within a simple supervised fine-tuning pipeline, without needing full RL-style optimization. The proposed method, RazorSFT, samples candidate outputs from the current model, filters them with a task verifier, and trains on the highest-probability correct sample, with the stated goal of minimizing distributional shift relative to the current policy. The paper validates this empirically on a 3-stage sequential benchmark consisting of IFEval, MMLU, and Countdown, using Qwen2.5-7B-Instruct and comparing against zero-shot, Best-of-8, offline SFT, and GRPO. The main finding is that RazorSFT substantially reduces forgetting relative to offline SFT and achieves better average accuracy and better final Countdown performance than GRPO, while an ablation attributes most of the forgetting benefit to the on-policy component. ",
+        "strengths": "The paper has a clear and falsifiable central hypothesis: that the main forgetting-mitigation benefit of RL-style continual learning comes from on-policy data rather than reward optimization, and that this can be captured in a simpler SFT procedure.  \n\nThe proposed method is simple, easy to understand, and operationally attractive. It only modifies target construction while keeping standard cross-entropy training, which makes the contribution practically accessible.  \n\nThe experimental setup is reasonably clean and directly aligned with the claim: the paper uses a sequential 3-task curriculum and compares against both a standard offline SFT baseline and an RL-based baseline.  \n\nThe main empirical result is meaningful: RazorSFT improves the forgetting measure substantially over offline SFT and is competitive with, or better than, GRPO on several headline metrics reported in the paper.  \n\nThe ablation is useful and directly tests the paper’s mechanism claim by separating on-policy sampling from KL-minimal selection. This is one of the strongest parts of the paper.  \n\nThe paper is concise and generally well organized. Figure 1 clearly communicates the method, and the reported tables are easy to interpret. The trajectory plots and replacement-rate figure also help support the intended mechanism. ",
+        "weaknesses": "The method is conceptually simple and closely related to rejection sampling / RFT and iterative filtering approaches. The novelty lies primarily in the KL-minimal selection rule and its interpretation, rather than a fundamentally new paradigm. \n\nThe empirical scope is narrow for the strength of the paper’s claims. The evaluation uses only a 3-stage curriculum over three benchmark types, so it is unclear how well the conclusions generalize to longer task sequences, different task orderings, or more heterogeneous continual-learning settings.  \n\nThe paper’s theoretical motivation is intuitive but not rigorous. The argument that selecting the highest-probability correct sample is “KL-minimal” is presented informally, and there is no formal derivation showing that the proposed objective optimizes the relevant continual-learning quantity under realistic assumptions.  \n\nThe comparison to GRPO may not be fully convincing because the paper does not provide enough detail to assess whether GRPO was equally well tuned or given a fair compute budget. With only 3 seeds and limited training details, it is difficult to know whether the gap reflects algorithmic advantage or setup sensitivity.  \n\nThe paper may overclaim slightly when it suggests that the benefits of on-policy learning can be obtained within a simple SFT framework in general; the evidence here supports this more narrowly for the tested benchmark, not yet as a broad conclusion. ",
+        "suggestions": "Evaluate on longer continual-learning curricula, multiple task orderings, and at least one setting with more than three stages. \n\nProvide a more rigorous fairness protocol for the GRPO comparison, including comparable sampling budgets, training compute, and hyperparameter search effort. \n\nAdd stronger reproducibility details: exact data sizes, verifier definitions, prompt templates, candidate-generation settings, and training/inference cost. \n\nClarify the theoretical claim around “KL-minimal” target selection, ideally with a proposition or a more precise derivation. ",
+        "llmDisclosure": "LLM usage: Yes \n\nUsed for: \n\n- Drafting and structuring the summary, strengths, weaknesses, and suggestions \n\n- Language polishing and clarity improvements \n\nTool/model: ChatGPT (GPT-5.3) \n\nData sharing: Only user-provided manuscript content was used; no confidential or external data was shared \n\nFinal judgment: All evaluations were independently verified and determined by the reviewer ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T00:37:39.063Z",
+      "updatedAt": "2026-03-28T00:37:39.063Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0087"
+}

@@ -1,0 +1,60 @@
+# Global Summary
+
+The paper addresses the vulnerability of Large Language Model (LLM) agent memory systems to "paraphrase re-injection" attacks, where adversaries re-inject harmful content using semantically equivalent but surface-level different text after the original content has been deleted. The authors propose **Hazard-Signature Tombstones (HST)**, a commit-time forget lockout policy. HST extracts discrete semantic fingerprints (hazard signatures) from deleted content and blocks future writes that exhibit fuzzy set-containment with these signatures.
+
+Key findings include:
+- HST reduces the poisoned retrieval proportion from 0.94 (under naive ID-delete) to 0.0.
+- HST maintains perfect benign recall (1.0) while blocking 100% of 50 paraphrase variants with only a 3% false positive rate.
+- Fuzzy matching achieves 92% hazard-signature stability compared to 30% for exact matching.
+- Retrieval-time filtering suffers from "slot wasting," whereas HST prevents index pollution entirely.
+
+Caveats noted by the authors include the 3% false positive rate, the latency/cost overhead of LLM calls for signature extraction, and the domain-specific nature of the current hazard taxonomy.
+
+# Abstract
+
+- **Problem:** LLM agent memory is vulnerable to poisoning. Naive deletion (ID-based removal) fails to prevent paraphrase re-injection, where semantically equivalent harmful content bypasses filters.
+- **Method:** Hazard-Signature Tombstones (HST) extracts discrete semantic fingerprints from deleted content. It blocks future writes exhibiting fuzzy set-containment with these signatures at commit-time.
+- **Results:** On a paraphrase re-injection benchmark, HST reduces poisoned retrieval proportion from 0.94 (ID-delete baseline) to 0.0. It maintains perfect benign recall, blocks all 50 paraphrase variants, and incurs only 3% false positives.
+- **Analysis:** Fuzzy matching achieves 92% hazard-signature stability compared to 30% for exact matching.
+
+# Method
+
+- **Problem Formulation:** The paper defines a memory store $\mathcal{M}$ and a forget request $\mathcal{F}$. An adversary generates paraphrases $\mathcal{P}(d)$ for deleted records $d \in \mathcal{F}$. The goal is to block $\mathcal{P}(d)$ while accepting benign writes.
+- **Hazard Signature Extraction:** Instead of continuous embeddings, records are mapped to discrete hazard signatures $\text{HS}(m)$ using a fixed taxonomy (e.g., `skip_validation`, `remote_exec`, `external_upload`, `force_success`, `disable_audit`). Signatures are extracted using an LLM (DeepSeek-V3.2) with deterministic decoding (temperature=0).
+- **Tombstone Creation:** When a forget request is issued, HST creates a tombstone set $\mathcal{T}$ containing the hazard signatures of all deleted records. This set persists indefinitely.
+- **Commit-Time Lockout:** Incoming writes $w$ are checked against $\mathcal{T}$ before entering the memory store. If a match is found, the write is blocked. This prevents index pollution.
+- **Fuzzy Set-Containment Matching:** A write $w$ is blocked if its hazard set $H_w$ overlaps substantially with any tombstoned signature $H_t$. Formally, blocking occurs if $H_w \subseteq H_t$ or $H_t \subseteq H_w$. This tolerates variance in individual hazard tags under paraphrase.
+
+# Experiments
+
+- **Setup:**
+    - **Dataset:** MemoryGraft corpus containing 100 benign and 10 poisoned experience records.
+    - **Attack Simulation:** 50 paraphrased variants generated (5 per poisoned seed) using DeepSeek-V3.2.
+    - **Retrieval:** BGE-M3 embeddings (1024-dim) with FAISS index. Top-$k=3$ retrieval.
+- **Baselines:**
+    - **No-Forget:** Original store (100 benign + 10 poisoned).
+    - **ID-Delete (A):** Naive deletion of 10 records; accepts all 50 paraphrases.
+    - **Retrieval-Time Exact (B-exact):** Filters results at query time using exact signature matching.
+    - **Retrieval-Time Fuzzy (B-fuzzy):** Filters results at query time using fuzzy matching.
+- **Metrics:**
+    - **PRP@3 (Poisoned Retrieval Proportion):** Fraction of retrieval slots containing poisoned content.
+    - **Benign Recall@3:** Whether benign records appear in their own top-3 results.
+    - **WriteBlockRate:** Fraction of poisoned writes blocked at commit time.
+    - **BenignFalseBlock:** Fraction of benign records triggering false blocks.
+    - **HS-Stability:** Fraction of paraphrases matching the original signature.
+- **Main Results:**
+    - **ID-Delete:** PRP@3 = 0.94 (worse than No-Forget baseline of 0.67). Index pollution increases from 9% to 33%.
+    - **Exact Matching:** PRP@3 = 0.92. Low stability (30%) renders it ineffective.
+    - **HST (Commit-Time):** PRP@3 = 0.0, Benign Recall@3 = 1.0, WriteBlockRate = 1.0, BenignFalseBlock = 0.03.
+    - **Stability:** Fuzzy matching achieves 92% stability vs 30% for exact matching.
+- **Ablation Studies:**
+    - **Backfill Depth:** Retrieval-time filtering without backfill returns only 0.17 results per query (94% slot waste). With backfill ($\delta=6$), it returns 1.0 results. HST returns 3.0 results (full capacity).
+    - **Embedding Backend:** Results hold with Qwen3-Embedding-4B (2560-dim), confirming retrieval-backend agnosticism.
+
+# References
+
+- **LLM Agent Memory Systems:** Cites MemGPT (virtual context management), Mem0 (scalable memory-centric architecture), Zep (temporally-aware knowledge graph), and TeleMem (structured semantic trajectories).
+- **Memory Poisoning Attacks:** References MemoryGraft (implanting malicious experiences), AgentPoison (backdoor attacks via embedding spaces), MINJA (query-only injection), and PoisonedRAG (RAG poisoning).
+- **Memory Defenses:** Mentions A-MemGuard (consensus-based validation) and VIGIL (verify-before-commit protocol).
+- **Distributed Systems:** Cites the Observed-Remove Set (OR-Set) as inspiration for the tombstone concept, noting the difference in using fuzzy semantic matching rather than exact-match identifiers.
+- **Machine Unlearning:** References surveys on machine unlearning techniques for LLMs.

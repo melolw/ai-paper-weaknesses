@@ -1,0 +1,36 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: LLM-based world models for web agents suffer from "rollout drift," where simulated trajectories progressively diverge from real environment behavior, undermining their utility for training and evaluation.
+- **Claimed Gap**: The authors claim that prior work overlooks the specific failure mode of search-result simulation. As stated in the Method/Motivation section: *"Search-result simulation is the primary failure mode. World models hallucinate product ASINs and descriptions... WebShop observations decompose into structured state updates (learnable) and high-entropy retrieval channels (search results, difficult to memorize)."* They further assert that *"compounding search errors drive drift,"* noting that anchoring only the first search yields negligible benefit.
+- **Proposed Solution**: "Search-anchored hybrid rollouts," a runtime interception mechanism that bypasses the world model's prediction for `search[query]` actions and substitutes real results from a cached BM25 index, while leaving all other observations (navigation, product details) simulated by the LLM.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Web World Models (Feng et al.)
+- **Identified Overlap**: Both address the trade-off between open-ended generative simulation and environmental fidelity. The similar work proposes a "middle ground" architecture that separates code-defined rules/deterministic state from LLM-driven imagination. The manuscript's hybrid rollout directly instantiates this by routing deterministic search results through a BM25 cache while keeping narrative/navigation states generative.
+- **Manuscript's Defense**: The manuscript does not cite this work. It frames its contribution as a novel diagnostic discovery ("100% of first divergences occur at search") rather than an architectural proposal.
+- **Reviewer's Assessment**: The methodological overlap is substantial. The manuscript's solution is a narrow, domain-specific implementation of the hybrid architecture principle already established in the similar work. The lack of citation suggests the authors are unaware of or are bypassing the broader architectural literature, weakening the claim of novelty.
+
+### vs. WebDreamer (Gu et al.)
+- **Identified Overlap**: Both operate in model-based planning for web agents using LLM world models. WebDreamer establishes the viability of pure LLM world models for simulating web outcomes. The manuscript identifies the exact simulation breakdown that limits WebDreamer's paradigm and proposes a targeted patch.
+- **Manuscript's Defense**: The manuscript cites WebDreamer in its references but does not explicitly contrast its hybrid grounding against WebDreamer's pure generative approach in the text. It positions its method as an empirical fix for "rollout drift" rather than a theoretical extension of model-based planning.
+- **Reviewer's Assessment**: This is a valid diagnostic refinement. The manuscript successfully isolates why pure LLM world models fail in high-entropy retrieval contexts. However, the proposed fix (runtime cache substitution) is an engineering workaround rather than a learning or planning algorithmic advance. It improves fidelity but does not advance the underlying world modeling paradigm.
+
+### vs. TSR / IGRPO / WAR (Rollout Engineering & Correction Paradigms)
+- **Identified Overlap**: Multiple similar works (TSR, IGRPO, WAR, Repair the Amplifier) treat rollouts as tunable pipelines that require conditional interception, hybrid generation, or targeted correction to prevent compounding errors or optimize compute. The manuscript's "intercept `search` → substitute real data" mechanism mirrors these conditional rollout architectures.
+- **Manuscript's Defense**: None of these works are cited. The manuscript compares against agent-side baselines (Best-of-N, ReAct) and a "Pure WM" baseline, but does not benchmark against existing rollout correction, hybrid grounding, or adaptive rollout methods.
+- **Reviewer's Assessment**: This represents a "Strawman" comparison. By only comparing against naive autoregressive rollouts and prompt-level baselines, the manuscript fails to position its method against the state-of-the-art in rollout engineering. The core idea of conditionally grounding high-divergence steps is already a recognized strategy in multi-turn RL and world model correction literature. The novelty is therefore limited to the specific application to web search drift.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental / Application-Oriented
+- **Assessment**:
+  The manuscript provides a clear, well-executed empirical diagnosis of rollout drift in web agent world models. Its finding that search-result hallucination is the primary catalyst for compounding divergence is valuable and practically useful. However, the proposed solution is a straightforward hybrid grounding technique that operationalizes established principles from world modeling and rollout engineering literature. The paper does not introduce new mathematical formulations, training objectives, or architectural paradigms; instead, it applies a known runtime interception strategy to a specific benchmark (WebShop). The existence of the similar works significantly weakens the motivation for claiming broad novelty, as the "hybrid simulation + targeted grounding" paradigm is already mature. The paper survives as a strong diagnostic study and practical engineering contribution, but it does not meet the threshold for substantive algorithmic or theoretical innovation.
+  - **Strength**: Rigorous error-source decomposition (99.8% search divergence rate); clean ablation proving compounding error dynamics (first-search vs. all-search anchoring); high practical utility for world model evaluation pipelines.
+  - **Weakness**: Solution is a known hybrid grounding pattern; limited evaluation scope (WebShop only); lacks comparison to existing rollout correction/grounding methods; omits citation to key hybrid architecture and rollout engineering literature, resulting in weak positioning.
+
+## 4. Key Evidence Anchors
+- **Method/Motivation**: *"Search-result simulation is the primary failure mode. World models hallucinate product ASINs and descriptions... WebShop observations decompose into structured state updates (learnable) and high-entropy retrieval channels (search results, difficult to memorize)."*
+- **Experiments (Table 1)**: *"First-search anchored CR: 0.598 ± 0.067 (Negligible improvement over Pure WM)... All-search anchored CR: 0.819 ± 0.130."* (Validates compounding error hypothesis but confirms the method is a continuous grounding patch, not a one-time fix.)
+- **References**: Cites *WebDreamer* and *WebShop*, but omits critical works on hybrid world models (*Web World Models*), rollout correction (*Repair the Amplifier*, *TSR*), and conditional rollout systems (*WAR*, *IGRPO*).
+- **Conclusion/Limitations**: *"Limitations: Evaluation limited to WebShop. Requires access to a search cache or real search API."* (Explicitly acknowledges the engineering/application-bound nature of the contribution.)

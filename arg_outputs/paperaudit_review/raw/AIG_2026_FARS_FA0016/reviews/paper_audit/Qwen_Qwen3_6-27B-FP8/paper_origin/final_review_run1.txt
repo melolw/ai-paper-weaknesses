@@ -1,0 +1,58 @@
+1) Summary
+The paper addresses the efficiency challenges of long-context inference in Large Language Models (LLMs) by proposing a modification to Optimal Transport (OT)-based context compression. Specifically, the authors introduce QCap-OT, an inference-time method that reweights the OT sender marginal based on query-anchor similarity to bias compression toward query-relevant tokens without retraining. The core contribution is the empirical evaluation of this query-conditioned mechanism against the baseline method, ComprExIT. However, the results are confounded by a significant reproducibility issue: the authors' re-implementation of the baseline achieves only ~2.5% F1 compared to the published ~68% F1. Consequently, QCap-OT shows no statistically significant improvement over the failing baseline. The paper documents this negative result and the reproducibility gap to inform the community.2) Strengths
+*   **Highlighting Reproducibility Challenges**
+    *   The paper explicitly documents a massive performance gap between published results and re-implementation, which is a critical contribution to the health of the research community.
+    *   *Evidence:* Section 4.4 details the debugging efforts and architectural discrepancies found (e.g., per-layer projections vs. shared), and Table 1 quantifies the ~65-point F1 gap.
+    *   *Why it matters:* This transparency prevents future researchers from wasting time on broken baselines and emphasizes the need for code release in the context compression field.
+*   **Methodological Simplicity and Efficiency**
+    *   The proposed QCap-OT method is lightweight and requires no additional training or parameters.
+    *   *Evidence:* Section 3.2 (Equation 6) and Section 3.3 describe the method as an inference-time modification using only cosine similarity and a temperature parameter $\beta$.
+    *   *Why it matters:* This makes the method easy to integrate into existing pipelines if it were proven effective, offering a low-cost potential improvement over query-agnostic methods.
+*   **Rigorous Statistical Validation**
+    *   Despite the negative results, the authors employ rigorous statistical testing to confirm the lack of difference between methods.
+    *   *Evidence:* Section 4.2 mentions paired bootstrap testing with 10,000 resamples to confirm that the 95% confidence intervals for the mean delta include zero.
+    *   *Why it matters:* This ensures that the "negative result" is not due to random variance, providing a statistically sound conclusion regarding the comparison between QCap-OT and the re-implemented baseline.
+*   **Ablation on OT vs. Hard Selection**
+    *   The paper includes an ablation study comparing the OT approach against a simple hard selection baseline (QueryTopK).
+    *   *Evidence:* Section 4.3 and Table 1 show that QueryTopK performs significantly worse (0.38% F1) than the OT-based methods (2.47% F1), even at low performance levels.
+    *   *Why it matters:* This suggests that the OT formulation provides some structural benefit over naive selection, isolating the value of the transport plan itself.3) Weaknesses
+*   **Invalidated Baseline Comparison**
+    *   The primary weakness is that the proposed method is evaluated against a broken baseline, making the results inconclusive.
+    *   *Evidence:* Table 1 shows ComprExIT (Re-impl) at 2.47% F1 vs. Published at 68.08% F1. Section 4.4 admits the gap persisted despite debugging.
+    *   *Why it matters:* If the baseline is not functioning correctly, we cannot determine if QCap-OT fails because the method is flawed or because the underlying compression mechanism is already broken. The "negative result" is confounded.
+*   **Questionable Baseline Provenance**
+    *   The reference list cites the core baseline (Ye et al.) and several related works with future publication years (2025, 2026), raising concerns about hallucinated or non-existent sources.
+    *   *Evidence:* References section lists "Ye et al., 2026", "Li et al., 2025", and "Louis et al., 2025".
+    *   *Why it matters:* If the cited baseline does not exist or is fabricated, the entire reproducibility investigation loses scientific grounding, as the authors may be attempting to reproduce a hallucinated result rather than a genuine prior work.
+*   **Lack of Mechanism Analysis**
+    *   The paper does not analyze *why* QCap-OT failed to improve performance, other than attributing it to the low-performance regime.
+    *   *Evidence:* Section 4.2 states that in the low-performance regime, reweighting has no measurable effect, but offers no deeper insight into the transport plan dynamics.
+    *   *Why it matters:* Without visualizing the transport plan $\Pi$ or analyzing the marginal distributions $\tilde{\rho}$, it is unclear if the query conditioning actually altered the compression behavior or if the similarity metric $s_t$ was uninformative.
+*   **Limited Hyperparameter Search**
+    *   The evaluation relies on a single fixed value for the temperature parameter $\beta$.
+    *   *Evidence:* Section 3.3 and Section 4.1 state $\beta = 1.0$ is used in all experiments.
+    *   *Why it matters:* Temperature parameters in exponential reweighting are often sensitive. A value of 1.0 might be too weak to influence the marginal or too strong to disrupt the learned structure. A sweep would be necessary to fairly evaluate the method.
+*   **Inconsistent Checkpoints in Ablation**
+    *   The ablation study compares methods trained with different checkpoints, introducing a confounding variable.
+    *   *Evidence:* Section 4.3 notes that QueryTopK uses checkpoint `sft_v6` while QCap-OT uses `sft_v11`.
+    *   *Why it matters:* Differences in checkpoint quality could account for the performance gap between QueryTopK and QCap-OT, rather than the algorithmic difference between hard selection and OT.4) Suggestions for Improvement
+*   **Validate Against a Working Baseline**
+    *   To salvage the evaluation of QCap-OT, the authors should compare it against a different, reproducible context compression method (e.g., LLMLingua or ICAE) or attempt to contact the authors of ComprExIT for their exact code/config.
+    *   *Action:* Add a comparison in Table 1 against a method that achieves reasonable F1 scores to demonstrate if QCap-OT provides gains in a functional setting.
+*   **Verify Reference Authenticity**
+    *   Clarify the status of the cited works with future dates to ensure the baseline comparison is grounded in real literature.
+    *   *Action:* Replace future-dated citations with actual published versions or arXiv preprints, and explicitly state the source of the "Published" metrics in Table 1 to rule out hallucination.
+*   **Analyze the Transport Plan**
+    *   Provide qualitative analysis to verify that QCap-OT actually changes the compression behavior.
+    *   *Action:* Include a figure visualizing the transport plan $\Pi$ or the marginal $\tilde{\rho}$ for a sample query, showing how mass is shifted toward query-relevant tokens compared to the vanilla baseline.
+*   **Perform Hyperparameter Sensitivity Analysis**
+    *   Evaluate the impact of the temperature parameter $\beta$ on performance.
+    *   *Action:* Report results for a range of $\beta$ values (e.g., 0.1, 0.5, 1.0, 2.0, 5.0) to determine if there is a regime where query conditioning is beneficial.
+*   **Standardize Ablation Checkpoints**
+    *   Ensure fair comparison in the ablation study.
+    *   *Action:* Re-run the QueryTopK baseline using the same `sft_v11` checkpoint used for QCap-OT to isolate the algorithmic contribution of OT coordination.5) Score
+- Overall (10): 3 — The paper is well-written and transparent about a reproducibility failure, but the proposed method is unvalidated due to the broken baseline, rendering the core contribution inconclusive.
+- Novelty (10): 5 — The idea of reweighting OT marginals based on query similarity is a logical and simple extension, though not highly novel in the broader context of query-aware retrieval.
+- Technical Quality (10): 3 — The experimental setup is fundamentally compromised by the inability to reproduce the baseline, and the hyperparameter search is insufficient.
+- Clarity (10): 8 — The manuscript is clearly structured, and the limitations and negative results are communicated with high transparency.
+- Confidence (5): 4 — The reviewer is confident in the assessment because the manuscript explicitly details the experimental failures and the specific metrics involved.

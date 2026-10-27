@@ -1,0 +1,43 @@
+1) Summary
+The paper investigates whether position bias is the primary bottleneck preventing single-pass attention sorting from matching iterative sorting in long-context language models. The authors propose "Debiased One-Pass Attention Sorting," which estimates a position-bias curve from distractor documents and subtracts it from raw attention scores to enable single-pass reordering. Experiments on LLaMA-2-7B-32K-Instruct and YaRN-Llama-2-7b-64k using the SynthWiki benchmark refute the hypothesis. On LLaMA-2, debiasing yields identical results to uncalibrated sorting, while on YaRN, it improves accuracy but remains significantly behind iterative sorting ($k=5$). The authors conclude that iterative sorting provides benefits beyond bias correction, likely due to attention context refinement.2) Strengths
+*   **Clear Hypothesis Testing and Refutation**
+    *   The paper establishes a precise hypothesis—that position bias is the main barrier to single-pass sorting—and rigorously tests it, providing a clear negative result that advances understanding (Abstract, Section 3.3).
+    *   The comparison between debiased and uncalibrated sorting on LLaMA-2-7B-32K-Instruct yields byte-identical results, offering strong empirical evidence that bias correction is unnecessary for well-tuned models (Section 4.2, Table 1).
+    *   The distinction between models with moderate bias (LLaMA-2) and severe recency bias (YaRN) allows for a nuanced conclusion about model dependency (Section 4.2, Table 2).
+*   **Insightful Analysis of Iterative Sorting Mechanisms**
+    *   The authors go beyond method comparison to analyze *why* iterative sorting works better, identifying "attention context refinement" as a key factor (Section 4.3).
+    *   Figure 2 demonstrates that accuracy improves even after the gold document is already near the optimal position, supporting the claim that reordering affects cross-document attention patterns (Section 4.3, Figure 2).
+    *   The observation that iterative sorting reduces error accumulation through averaging attention noise provides a plausible explanation for the residual performance gap (Section 4.3).
+*   **Methodological Clarity and Visualization**
+    *   The proposed debiasing method is clearly defined with specific steps for bias estimation, including trimming, binning, and interpolation (Section 3.3).
+    *   Figure 1 provides a clear visual comparison between standard iterative sorting and the proposed one-pass approach, highlighting the computational difference (6 vs. 2 prefill passes) (Section 3.3, Figure 1).
+    *   The mathematical formulation for raw attention mass and debiased scores is precise and easy to follow (Equation 1, Section 3.2).3) Weaknesses
+*   **Limited Evaluation Scope**
+    *   The evaluation is restricted to only two models (LLaMA-2-7B-32K-Instruct and YaRN-Llama-2-7b-64k), which limits the generalizability of the conclusions (Section 4.1).
+    *   Only one benchmark (SynthWiki) is used, which may not capture the complexity of real-world retrieval-augmented generation tasks (Section 4.1).
+    *   The paper acknowledges this limitation in the conclusion but does not provide broader validation to support the claim that position bias is generally not the primary bottleneck (Section 5).
+*   **Lack of Ablation on Debiasing Parameters**
+    *   The method relies on hyperparameters such as the trimming fraction $\alpha$ (default 0.05) and bin count $B$ (default 20), but no sensitivity analysis is provided (Section 3.3).
+    *   It is unclear how robust the debiasing performance is to changes in these parameters, especially on the YaRN model where debiasing had an effect (Section 3.3).
+    *   The choice of median attention for bias estimation is stated without justification or comparison to other statistics like mean or mode (Section 3.3).
+*   **Synthetic Benchmark Limitations**
+    *   SynthWiki is a synthetic benchmark with controlled distractors, which may not reflect the noise and complexity of real-world documents (Section 4.1).
+    *   The "lost-in-the-middle" phenomenon might manifest differently in real-world RAG scenarios where documents vary in length and relevance more significantly (Section 2.1).
+    *   The paper does not discuss how the method would perform on tasks requiring multi-hop reasoning or complex information synthesis (Section 4.1).4) Suggestions for Improvement
+*   **Expand Evaluation Scope**
+    *   Include additional models with varying context window sizes and training objectives (e.g., Mistral, Qwen, or newer LLaMA variants) to validate the model-dependency claim.
+    *   Evaluate on real-world RAG benchmarks such as Qasper, MuSiQue, or HotpotQA to assess generalizability beyond synthetic data.
+    *   Discuss how the findings might apply to models with different position encoding schemes (e.g., ALiBi vs. RoPE).
+*   **Add Ablation Studies for Debiasing Parameters**
+    *   Provide an ablation study varying $\alpha$ (e.g., 0.01 to 0.10) and $B$ (e.g., 10 to 50) to demonstrate the robustness of the debiasing method.
+    *   Compare the performance of median-based bias estimation against mean-based or robust regression approaches to justify the choice of median.
+    *   Analyze the impact of the bias estimation on the distribution of debiased scores to ensure they remain meaningful for ranking.
+*   **Incorporate Real-World Benchmarks**
+    *   Include at least one real-world dataset with diverse document lengths and relevance distributions to test the method's practical utility.
+    *   Evaluate on tasks that require synthesizing information from multiple documents to see if debiasing helps in complex reasoning scenarios.
+    *   Discuss potential failure cases of the debiasing method in real-world settings, such as when distractors are semantically similar to the query.5) Score
+- Overall (10): 5 — The paper provides a clear hypothesis test and insightful analysis of iterative sorting, but the limited evaluation scope and lack of ablation studies reduce its impact.
+- Novelty (10): 6 — The application of debiasing to attention sorting is a logical extension, and the negative result is valuable, but the method itself is not highly novel.
+- Technical Quality (10): 7 — The experiments are well-executed and the analysis is sound, but the lack of parameter ablation and broader evaluation limits technical rigor.
+- Clarity (10): 8 — The paper is well-written, with clear figures and precise mathematical formulations that make the method and results easy to understand.
+- Confidence (5): 4 — The reviewer is confident in the assessment of the paper's strengths and weaknesses, but the limited scope of the evaluation introduces some uncertainty regarding generalizability.

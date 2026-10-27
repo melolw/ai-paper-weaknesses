@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_CHEN_mitigating_language_bias_lmms",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Mitigating Language Bias of LMMs in Social Intelligence Understanding with Virtual Counterfactual Calibration",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes an output distribution correction module and a multimodal counterfactual data augmentation method to eliminate language bias in large multimodal models. Experimental results show that the proposed method has excellent effect.",
+      "strengths": "1. Utilize Structural Causal Models (SCM) to explain and quantify linguistic bias in Latent Meaning Models (LMM).\n2. Apply output distribution networks to eliminate linguistic bias.\n3. Propose an efficient and cost-effective method for multimodal virtual counterfactual data augmentation.",
+      "weaknesses": "1. Section 3.2 mentions the use of the do() operation to block the path X ← T → M, but several issues confuse me.\n2. (1) The example in Figure 4 seems only to block the path X → T.\n3. (2) From the context, it is known that the do() operation is a noise interference operation. There are paths between X and M and Y; will the interference with X affect M and Y?\n4. On line 292, I do not quite understand how the MSE loss eliminates the bias of primitive hq.\n5. In Table 1, the performance of CREMA after fine-tuning and using the DCVC method is not significantly different, and the authors do not explain the reason (such as comparing the number of trainable parameters between the two).\n6. Regarding point 3, the fine-tuning method in previous classification tasks is to use an encoder and a classification head for downstream tasks, usually training the parameters of the last few layers or only training the classification head's parameters. The DCVC method proposed in this paper seems similar, with LMM acting as the encoder and DC as the classification head.\n7. The generalization analysis in Section 5.4 seems to be simply a comparison experiment on the NExT-QA dataset with different LMM bases, which is no different from the experimental setup in Section 5.1. The purpose of describing it separately in a subsection is unclear.",
+      "questions": "N/A",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "39a2e179019c8124202aef5c54a4563aa8913f4bba4964b5812a538f1c5a7865868967273ffaa38b58fa164ce0fffe55b1c7c345019cb404483953e03915f0d0"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper proposes to mitigate the language bias of LLMs in social intelligence understanding. To this end, the proposed method combines output distribution calibration with virtual counterfactual data augmentation. Experiments show the proposed method outputs other baselines by a considerable margin.",
+      "strengths": "1. The topic and motivation of mitigating language bias for LLMs' commonsense reasoning are interesting and important. \n2. Experimental results show remarkable improvements on two datasets.",
+      "weaknesses": "1. For the motivation of the paper, the paper proposes to solve the language bias problem of multimodal LLMs in commonsense reasoning, while the cases in Figure 1 and Figure 2 also emphasize the bias partially comes from the LLMs ignoring the image/video signals. However, in the SCM, there is no node representing the image input or video input. Are the node X and node T both representing the multimodal context and knowledge? \n2. A similar question, the paper focuses on social intelligence, which is highly related to commonsense knowledge in LLMs. But for me, there is no evidence that the proposed method has a special design for the commonsense knowledge part, it seems the method also works well for the regular VQA task, which is irrelevant to social intelligence.",
+      "questions": "1. The paper should be further polished to better suit the motivation, what is the difference between mitigating the language bias in regular tasks and social intelligence-related tasks?\n2. There are some papers also dealing with language bias in VQA without citation. \n\n[1] Counterfactual VQA: A Cause-Effect Look at Language Bias\n\n[2] Contextual Debiasing for Visual Recognition with Causal Mechanisms\n\n[3] Show, Deconfound and Tell: Image Captioning with Causal Inference",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "e901673067e3e65955fdc7217549d1e9795e0433de12460bd187b9860920c4318891c32e3fb63e3051ff23a6f93f9676b2c1586f9d5e44178b1ce2332b9aca96"
+    }
+  ]
+}

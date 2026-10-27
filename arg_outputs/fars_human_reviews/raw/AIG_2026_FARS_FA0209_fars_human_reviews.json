@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0209",
+    "title": "GradRatio-Select: Gradient-Based Layer Selection for Fine-Tuning Model Editing",
+    "abstract": "Fine-tuning-based model editing updates specific factual associations by optimizing a single transformer layer, but selecting which layer to modify remains an open challenge. Current practice relies on model-specific heuristics determined through expensive layer sweeps. We propose GradRatio-Select, a gradient-based method that automatically identifies editable layers by computing the ratio of edit-to-retain gradient magnitudes: $S(\\ell) = \\|g_{\\text{edit}}\\|^2 / \\|g_{\\text{retain}}\\|^2$. An adaptive threshold excludes structurally critical early layers that would cause capability catastrophe. On Qwen2.5-7B, GradRatio-Select identifies the same optimal layer as manual heuristics, achieving equivalent performance (Capability 54.59 vs 54.61). On LLaMA-3-8B, it selects an adjacent layer but shows 5.26 percentage point capability degradation (39.52 vs 44.78), primarily due to mathematical reasoning tasks. Our findings suggest that gradient-based selection can automate layer identification but does not improve upon carefully-tuned heuristics.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper introduces gradratio-select,  which automatically identifies editable layers for fine-tuning based knowledge editing by computing the ratio of edit-to-retain gradient magnitudes. It also introduces adaptive threshold that excludes structurally critical early layers that would cause capability catastrophe. The results show that the model performs on par with manual selection on Qwen2.5-7B and slightly worse on LLaMA-3-8B.  ",
+        "strengths": "1. The paper is well-written and easy to follow.\n2. The proposed method is simple and intuitive. The experimental results are reasonable.",
+        "weaknesses": "1. My primary concern is that the current experimental results do not demonstrate the utility of the proposed method. The evaluation is limited to two models, and one of them exhibits degraded performance. As a result, it is difficult to determine whether the method generalizes across a broader range of models, which diminishes the paper’s overall impact.\n2. The  adaptive threshold lacks theoretical foundation or intuition. It looks like a hard fix to the failure cases of the method. Also it is unknown how the hyperparameters (3, 1.5) is determined and whether they apply to a broader range of models.\n3. The paper does not compare against other types of model-editing methods, such as ROME or MEMIT. It would strengthen the work to show that the proposed method outperforms alternative editing approaches, and that it is more efficient (even if slightly less accurate) than fine-tuning-based methods. However, no such comparisons are provided.",
+        "suggestions": "",
+        "llmDisclosure": "GPT-5 is used to polish the review",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T13:29:58.026Z",
+      "updatedAt": "2026-03-31T13:29:58.026Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper tests whether a gradient-based layer-selection rule can replace manual layer heuristics for fine-tuning-based model editing. The empirical results lead to a largely negative conclusion: automation does not outperform careful manual tuning.",
+        "strengths": "1. The hypothesis is clear and falsifiable.\n2. At least we see experiments on wo model families now.",
+        "weaknesses": "1. The code has issues (See AI Integrity Below).\n2. While negative results are fine, I do not find this to be insightful or meaningful.\n3. The adaptive threshold is doing a large amount of the practical work, especially on LLaMA. This means the paper is not showing that the gradient score alone identifies a good editing layer.",
+        "suggestions": "",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "See AI Integrity Audit below."
+      },
+      "audit": {
+        "findings": "1. The paper states that scoring all layers requires only two forward-backward passes in total, but the implementation in code/exp/gradorth_select/scoring/grad_scorer.py iterates over candidate_layers and computes both edit and retain gradients separately for each layer.\n2. code/exp/gradorth_select/scripts/run_gradratio_scoring.py does not apply the thresholded selector at all, and code/exp/gradorth_select/results/analysis/qwen2.5-7b_gradratio_scores.json records \"gradratio_best_layer\": 1, not 6. Yet the training runs in logs/004/12_gradratio-select-seed42.log, 013, and 014 were launched with manual layer 6 (which seems to be heuristic-selected layer?)."
+      },
+      "submittedAt": "2026-04-10T02:28:16.089Z",
+      "updatedAt": "2026-04-10T02:29:45.633Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper aims to address the challenge of automatic layer selection for fine-tuning-based model editing methods to avoid expensive layer sweeps. The authors hypothesize that an ideal editing layer should be responsive to the edit objective while having minimal impact on general capabilities, and thus propose GradRatio-Select, a gradient-based method that automatically identifies editable layers by computing the ratio of edit-to-retain gradient magnitudes. Experiments are conducted to validate GradRatio-Select's effectiveness against heuristic methods. The results indicate that GradRatio-Select can automate layer identification but does not improve upon carefully-tuned heuristics.",
+        "strengths": "1. The motivation is clear: the paper addresses a non-trivial limitation (heuristic layer selection) of existing model editing methods. Both the assumptions and the proposed approach are interesting and reasonable.\n2. The experimental comparisons are well-designed, providing meaningful empirical insights.\n3. The results show that GradRatio-Select can identify layers close to those found by heuristic approaches (via layer sweep). Although there is no clear performance gain—and some metrics even drop slightly—the automated method avoids the expensive cost of layer sweeping, which gives it practical value.\n4. The introduction of the adaptive threshold, along with the analysis of the role of early layers in model editing, provides additional useful insights.",
+        "weaknesses": "1. A significant weakness is that the experimental design does not align well with the key characteristics of GradRatio-Select stated in the hypothesis. In particular, the paper does not clearly demonstrate the advantages of the automated method over heuristic approaches in terms of generalization and reduced cost. On one hand, there is no explicit comparison of computational cost. On the other hand, the experiments are conducted only on models and datasets where prior work (LocFT-BF) has already performed layer sweeps. The method is not evaluated across more diverse settings, making it difficult to show its potential strength on generality. Correspondingly, the paper’s stated contributions also do not highlight these aspects.\n2. The experimental scale is limited. The study uses only a single dataset with 3,000 examples, whereas LocFT-BF used multiple datasets totaling around 100k samples. For a paper that investigates internal model structure, experiments are also restricted to two similarly sized models (Qwen-2.5-7B and LLaMA-3-8B). As a result, the conclusions feel somewhat under-supported, and it is hard to draw broader takeaways from the results.\n3. The adaptive threshold appears to be tailored specifically to the two models used in the experiments. The choice of 0.15·L seems somewhat ad hoc, without theoretical justification or a hyperparameter sensitivity analysis. This raises questions about the robustness and generalizability of the reported effectiveness.",
+        "suggestions": "- In the Related Work section, the categorization of AlphaEdit appears to be incorrect.\n- Equation 2 may not include the negative sign.\n- The authors could consider reproducing the LocFT-BF results to ensure reliability. It is possible that the numbers reported in the previous work are inaccurate, which might partially explain the negative results observed here.",
+        "llmDisclosure": "Only use ChatGPT for text refinement.",
+        "ethicsReproducibility": "None."
+      },
+      "audit": {},
+      "submittedAt": "2026-04-11T00:45:23.923Z",
+      "updatedAt": "2026-04-11T02:11:55.847Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0209"
+}

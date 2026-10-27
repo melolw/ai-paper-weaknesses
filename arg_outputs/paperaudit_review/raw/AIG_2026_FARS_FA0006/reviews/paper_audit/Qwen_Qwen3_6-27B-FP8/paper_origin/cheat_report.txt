@@ -1,0 +1,21 @@
+# Integrity & Consistency Risk Report
+
+## 1. Citation Year Inconsistencies (Text vs. Reference List)
+- **Khalifa et al.:** Cited as `(2026)` in the Abstract, Section 1, and the Reference list, but incorrectly cited as `(2024)` in Section 2 (Related Work, paragraph 2).
+- **Hong et al. (RULERS):** Cited as `(2024)` in Section 2 (Related Work, paragraph 2), but listed as `2026` in the Reference list.
+*Impact:* These mismatches indicate editorial oversights or automated generation artifacts. While they do not invalidate the experimental methodology or results, they reduce the manuscript's scholarly trustworthiness and must be corrected prior to publication.
+
+## 2. Author Name Typographical Inconsistency
+- **Lü et al.:** Section 4.1 cites `Lù et al., 2025` (using an acute accent), whereas the Abstract, Introduction, and Reference list correctly use `Lü et al., 2025` (umlaut).
+*Impact:* Minor typographical inconsistency that does not affect scientific validity but reflects inconsistent proofreading.
+
+## 3. Numerical & Logical Consistency Verification
+A thorough cross-check of claims, tables, and figures reveals **strong internal consistency**:
+- **F1 Score Calculations:** All reported F1 scores in Table 1 are mathematically consistent with the provided Precision and Recall values. *(Example: Ours → $2 \times \frac{67.35 \times 77.63}{67.35 + 77.63} \approx 72.13$)*.
+- **Attack Sensitivity ($\Delta$-FPR):** The $\Delta$-FPR values correctly equal `FPR_attacked − FPR_unmod`. The claimed 63% relative reduction is accurate: $(11.71 - 4.31) / 11.71 \approx 0.632$.
+- **Disagreement Enrichment:** The claimed 2.15× enrichment aligns with Figure 2/Table data: $16.4\% / 7.6\% \approx 2.158$.
+- **Recall Improvement Counts:** The text claims recovering "21 more true successes than View2-only" and "4 more than View1-only". Based on the 295 successful trajectories in the test set, these match the percentage differences: $295 \times (77.63\% - 70.51\%) \approx 21$ and $295 \times (77.63\% - 76.27\%) \approx 4$.
+- **Method-Result Alignment:** The escalation rate (~10.4% in Table 2) directly supports the stated inference cost limitation (2.1× calls: baseline 2 calls + 0.104 escalation calls $\approx$ 2.1). The mechanistic hypothesis (disagreement signals manipulation) is empirically validated by the enrichment data in Figure 2.
+
+## Conclusion
+**No clear logical contradictions, numerical fabrications, or methodological mismatches were identified.** The experimental claims are internally consistent, mathematically sound, and properly anchored to the provided tables and figures. The primary issues are **citation year mismatches** and a **minor author name typo**, which are characteristic of automated drafting or insufficient editorial review. These should be corrected to ensure academic rigor, but they do not constitute evidence of scientific misconduct or invalidate the paper's findings.

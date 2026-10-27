@@ -1,0 +1,17 @@
+category,human_mean,human_std,cspaper_mean,cspaper_std,std_ratio_cspaper_over_human,cspaper_lower_std
+Ablation,0.0257,0.0641,0.055,0.0429,0.67,True
+Analysis,0.0807,0.1275,0.092,0.0507,0.398,True
+Comparison,0.1311,0.1529,0.1758,0.0671,0.439,True
+Contribution,0.0555,0.1142,0.0193,0.0265,0.232,True
+Data/Task,0.1565,0.1647,0.1517,0.0955,0.58,True
+DDDDEI,0.2227,0.1992,0.3545,0.1003,0.504,True
+Evaluation,0.1661,0.1782,0.2817,0.0954,0.535,True
+Experiment,0.1438,0.1633,0.0942,0.0621,0.38,True
+IJMV,0.1405,0.168,0.0933,0.055,0.328,True
+Methodology,0.275,0.2225,0.2835,0.091,0.409,True
+Novelty,0.0595,0.1085,0.0077,0.0213,0.196,True
+Presentation,0.1847,0.2252,0.3208,0.0968,0.43,True
+Related Work,0.1174,0.181,0.2383,0.0715,0.395,True
+Result,0.1971,0.1912,0.2403,0.089,0.465,True
+Significance,0.0341,0.0823,0.0217,0.0254,0.309,True
+Theory,0.0346,0.0944,0.0203,0.035,0.371,True

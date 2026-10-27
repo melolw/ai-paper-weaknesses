@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_TEKIN_llmtopla_efficient_llm_ensemble",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "LLM-TOPLA: Efficient LLM Ensemble by Maximising Diversity",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "1. The paper addresses the research questions of 1) efficiently choosing a model ensemble from a larger collection of models and 2) combining potentially conflicting answers from multiple LLMs to arrive at the best generative output for a given task.\n2. The authors consider three different types of tasks in the paper to define the domain of their ensembling method - 1) Multiple Choice Questions (MCQ), where the ensemble output $y$ is the right answer represented as a number from 1 to $m$, 2) Open Ended Questions (OEQ), where the ensemble output is a real number or a short trivia answer out of a fixed size vocabulary, and 3) Generative Questions (GQ) such as summarization, machine translation or open QA.\n3. The paper presents two approaches for ensembling multiple LLMs - 1) TOPLA-Weighted - which addresses MCQ and OEQ tasks, and 2) TOPLA-Summary - which addresses GQ tasks. In TOPLA-Weighted, the ensemble model attends weights to each base model output based on their confidence. On the other hand, TOPLA-Summary performs a summarization on the concatenated LLM outputs to generate a final response.\n4. The authors also introduce a model selection method to select a diverse subset of models from a given model list and utilize a genetic algorithm to explore this search space.",
+      "strengths": "1. The authors introduce two methods - TOPLA-Weighted and TOPLA-Summary - to create ensembles from a set of underlying LLMs in an efficient manner (through subset selection).\n2. Through a set of well designed ablation experiments on 4 evaluation benchmarks (MMLU, GSM-8k, SearchQA and XSUM) and 8 different LLMs, the paper highlights the effectiveness of the LLM-TOPLA framework.\n3. The paper also proposes a systematic way of pruning a given ensemble of LLMs with equal/more performance compared to the overall ensemble using a genetic algorithm to explore the subset space in a computationally efficient manner.",
+      "weaknesses": "1. The performance of LLM-TOPLA-Summary model seems highly dependent on the encoder decoder trained model which the authors use for combining the information provided by each LLM and generating the correct token sequence. I’m curious why the authors decided to train an encoder-decode architecture from scratch instead of fine tuning a pre-existing LLM? Would that not improve the quality of the generated answers (assuming data constrains in $D_{train}$ due to which the encoder-decoder model might be undertrained?)\n2. Please fix the spacing issues on line 169 and 225 - these do not meet the standard spacing requirement for submissions to ARR. I am marking the paper as \"revision needed\" primarily because of this.",
+      "questions": "1. In Section 2 - line 131 - the line should probably be rephrased as “However, based on the Task $T$, the desired output $y$ …”",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3.5,
+      "raw_note_id": "61a02bf2d7b5ef82dd02dd5ba9b4adfcc53b4c638410d72193a2f8a5f52794623bc7c978d0899959db920749c8c48a06e581740769263a268fd6abf9ae901950"
+    }
+  ]
+}

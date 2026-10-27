@@ -1,0 +1,36 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: LLM-based judges evaluating web agent trajectories are highly vulnerable to manipulation via unfaithful chain-of-thought (CoT) reasoning, which can inflate false positive rates by up to 90%.
+- **Claimed Gap**: As stated in the Introduction: *"Existing mitigations face a trade-off: removing CoT eliminates vulnerability but loses context; always-on strict evaluation is costly and reduces recall."* The authors argue that current approaches fail to balance robustness, contextual fidelity, and computational efficiency.
+- **Proposed Solution**: A training-free "view-disagreement escalation" framework. It generates two counterfactual input views (CoT-inclusive vs. CoT-agnostic) and compares their judgments. Disagreement triggers a selective escalation to a strict, evidence-anchored rubric prompt, while agreement allows the base judgment to pass through.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Gaming the Judge: Unfaithful Chain-of-Thought Can Undermine Agent Evaluation (Khalifa et al., 2026)
+- **Identified Overlap**: Directly shares the threat model and empirical diagnosis. Khalifa et al. demonstrate that CoT manipulation inflates FPR by ~90% and conclude that judges must verify reasoning against observable evidence.
+- **Manuscript's Defense**: The manuscript explicitly cites Khalifa et al. (2026) as the foundational vulnerability report. It differentiates itself by moving beyond diagnostic analysis and basic prompting/scaling baselines to propose a structured, automated dual-view escalation pipeline. The authors frame their method as the architectural realization of Khalifa's recommended defense strategy.
+- **Reviewer's Assessment**: **Strong defense.** This is not a strawman or incremental tweak; it is a direct, targeted solution to a recently diagnosed critical failure mode. The novelty lies in operationalizing the "verify against observable evidence" principle into a lightweight, disagreement-triggered routing mechanism rather than a uniform strict rubric.
+
+### vs. Analyzing Uncertainty of LLM-as-a-Judge (Sheng et al.) & Scalable Reliable Automated Evaluation (Braun & Forell)
+- **Identified Overlap**: Both prior works use agreement thresholds, prediction intervals, or multi-model variance to detect uncertainty and conditionally trigger refinement/reprompting. The resemblance analysis notes that A's disagreement detection acts as a proxy for uncertainty/interval width.
+- **Manuscript's Defense**: The manuscript does not cite these specific works, but its methodological distinction is clear in the Method section: it uses *counterfactual input variation* (CoT vs. no-CoT) within a *single model* to detect *adversarial manipulation*, not statistical confidence or multi-model variance. The escalation is triggered by a mechanistic asymmetry hypothesis, not probabilistic coverage guarantees.
+- **Reviewer's Assessment**: **Partially successful defense.** The high-level paradigm of "detect instability → route to stricter evaluation" is well-established in uncertainty quantification and consensus routing literature. The manuscript's contribution is the specific *trigger design* (counterfactual view disagreement) tailored to CoT manipulation. While methodologically incremental relative to adaptive evaluation literature, it is a valid and non-trivial adaptation to a security-critical context.
+
+### vs. Evaluation Agent / Open Evaluation Agent (Zhang/Tian et al.)
+- **Identified Overlap**: Both employ dynamic, conditional computation to avoid uniform processing overhead. The resemblance analysis highlights that A's escalation mirrors B's multi-round, evidence-driven planning loops.
+- **Manuscript's Defense**: The manuscript positions its framework as training-free and prompt-driven, explicitly contrasting with agent-driven or fine-tuned evaluation backbones. It emphasizes that its routing signal is a binary disagreement check, not a learned policy or iterative planning loop.
+- **Reviewer's Assessment**: **Valid distinction, but shares philosophical lineage.** The manuscript successfully carves out a niche by focusing on *adversarial robustness* rather than general evaluation efficiency or explainability. However, the core idea of "adaptive compute allocation based on a heuristic signal" is not novel. The paper's strength is in the simplicity and training-free nature of the trigger, which avoids the complexity and data requirements of agent-based evaluators.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental (Targeted Robustness Engineering)
+- **Assessment**: 
+  The manuscript successfully defends its motivation against the identified similar works. It does not claim to invent conditional evaluation or uncertainty-aware routing; rather, it introduces a **mechanistically grounded, training-free trigger** specifically calibrated for CoT manipulation in LLM judges. The existence of similar works in adaptive evaluation and uncertainty quantification does not weaken the motivation, as those works address statistical variance or general efficiency, not adversarial reasoning fabrication. The paper's novelty is substantive in its domain-specific application but incremental in its broader methodological architecture.
+  - **Strength**: Clear mechanistic hypothesis (2.15× disagreement enrichment under attack) directly links the trigger to the threat model. The training-free, prompt-only design ensures immediate deployability. Empirical validation on AgentRewardBench demonstrates a favorable robustness-recall-cost trade-off.
+  - **Weakness**: The conditional escalation paradigm is well-trodden in evaluation literature; the paper's methodological contribution is largely an engineering adaptation. The 2.1× inference cost, while framed as a trade-off, remains a practical bottleneck for high-throughput judging pipelines. Generalizability to other manipulation vectors (e.g., observation spoofing, multi-turn interaction attacks) is untested.
+
+## 4. Key Evidence Anchors
+- **Introduction**: *"Existing mitigations face a trade-off: removing CoT eliminates vulnerability but loses context; always-on strict evaluation is costly and reduces recall."* (Establishes the precise gap the method targets)
+- **Method (Stage 2)**: *"If predictions $y_1$ and $y_2$ agree, output $y_1$. If they disagree ($y_1 \neq y_2$), escalate to a strict evidence-anchored rubric prompt $P_{\text{strict}}$ that excludes CoT and requires explicit evidence citation."* (Defines the core escalation logic)
+- **Experiments (Table 1 & Figure 2)**: $\Delta$-FPR reduction to 4.31% (vs 11.71% baseline), 77.63% recall, and 2.15× disagreement enrichment under attack conditions. (Validates the mechanistic hypothesis and performance claims)
+- **Ablation Study (Table 2)**: Random Escalation fails to reduce attack sensitivity ($\Delta$-FPR 11.34%), proving that the *disagreement signal* is necessary, not just the act of escalation. (Strengthens the defense against "arbitrary routing" critiques)

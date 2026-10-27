@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_CHURIN_long_input_benchmark_russian",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Long Input Benchmark for Russian Analysis",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper presents a novel benchmark for evaluating Long Input Large Language Models (LLMs) in Russian. The benchmark consists of 21 datasets, which include translations from existing resources, adaptations of existing texts, and newly generated datasets (some created automatically by combining existing texts and others annotated by humans). The datasets are organized into four groups based on increasing levels of difficulty. Additionally, the paper includes a test section to assess the performance of various state-of-the-art LLMs on this benchmark",
+      "strengths": "- The paper is well-written and easy to follow, with a clear and well-organized structure. \n- The problem is effectively contextualized and motivated. \n- The benchmark appears novel, particularly given the lack of similar evaluations for the Russian language. \n- The numerous tables help the reader's understanding of the baseline models' performance. \n- The Appendix provides extensive supplementary information.",
+      "weaknesses": "- Although the authors discuss the issue of data leakage in the Appendix, I believe this aspect should be explored more in-depth. The resource is invaluable, but it remains unclear whether the performance of the tested models is due to effective pre-training and fine-tuning or because these models have previously seen the data.\n- As a benchmark, I expected to see an online ranking and evaluation procedure for newly submitted models, potentially contributed by the community.",
+      "questions": "- Third contribution point (lines 64-65): is not clear what you mean, do you release some kind of software? Or the online leaderboard? \n- Lines 321-322: \"The dataset is balanced across answers\" do you mean across Yes/No? What about the Topics distribution?\n- Line 494: \"pretrain once\" -> \"pre-trained ones\"\n- Footnote number 38 in the Appendix: you repeated \"and are given and are\".. I guess you can remove \"and are given\".",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "cfd79e9e8cd2790bab1512319ba88cd91c04aa835f6ec26c7b15c6ce1a3653bd1c15424851510256a95d3d6be48e18b54b786fd9727aa86c8f4ffdc1c1445ef0"
+    }
+  ]
+}

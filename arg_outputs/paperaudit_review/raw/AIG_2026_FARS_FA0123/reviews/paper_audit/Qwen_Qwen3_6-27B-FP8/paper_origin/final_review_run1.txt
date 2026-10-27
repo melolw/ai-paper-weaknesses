@@ -1,0 +1,51 @@
+1) Summary
+The paper investigates the "repetition advantage" in long chain-of-thought (CoT) supervised fine-tuning (SFT), where repeating a small curated dataset outperforms training on a larger unique dataset. The authors identify a potential compute confound in prior step-matched comparisons, where the repetition condition processes more total tokens due to longer average response lengths. To address this, they propose "token-budget matching," which early-stops the repetition condition to match the cumulative token budget of the data-scaling baseline. Using Qwen2.5-1.5B-Instruct on NuminaMath-CoT, the authors demonstrate that under token-matched conditions, the repetition advantage is amplified (6.33× ratio on aggregate Pass@k). Mechanism analysis reveals this advantage stems from significantly improved termination rates (87–91% vs. 29–48%) rather than conditional accuracy, suggesting repetition teaches models to produce complete reasoning chains.2) Strengths
+*   **Rigorous Methodological Control for Compute Confounds**
+    *   [Section 3.2]: The introduction of token-budget matching directly addresses a critical flaw in prior step-matched comparisons by isolating the repetition effect from token volume disparities, enhancing experimental rigor.
+    *   [Table 3]: The authors provide robust verification of compute equivalence, reporting a token deviation of only -0.50% and a FLOPs proxy deviation of 0.56%, which strengthens the validity of the performance comparison.
+    *   [Section 3.4]: The decision rule offers a formal, quantitative threshold (ratio ≥ 0.8) for refuting the compute confound, adding statistical rigor to the qualitative claim and improving reproducibility.
+*   **Insightful Mechanism Analysis via Accuracy Decomposition**
+    *   [Section 4.4, Table 4]: The decomposition of accuracy into termination rate and conditional accuracy provides a novel explanation for the repetition advantage, shifting the focus from answer quality to reasoning completeness and offering new mechanistic insights.
+    *   [Figure 2]: The visualization clearly demonstrates the dramatic gap in termination rates between Condition C (87–91%) and Conditions A/B (29–55%), strongly supporting the claim that repetition induces a behavioral shift in generation dynamics.
+    *   [Table 4]: The finding that Condition C achieves higher overall accuracy despite lower conditional accuracy is a counter-intuitive and valuable insight into how SFT dynamics affect model behavior, highlighting the importance of completion over step-wise precision.
+*   **Clear Experimental Design and Reproducibility**
+    *   [Figure 1, Section 3.1]: The experimental setup is clearly defined with three distinct conditions (A, B, C) illustrated visually, making the comparison easy to follow and improving clarity.
+    *   [Section 3.5]: The authors report results across multiple benchmarks (AIME'24, AIME'25, GPQA Diamond) and use three random seeds, ensuring robustness and reducing variance-related concerns.
+    *   [Abstract, Footnote 1]: The code is publicly available, facilitating verification and extension of the work, which is crucial for methodological studies in SFT.3) Weaknesses
+*   **Limited Generalizability Due to Single Model Size**
+    *   [Section 3.1]: The experiments are conducted exclusively on Qwen2.5-1.5B-Instruct, raising questions about whether the token-budget matching effect and repetition advantage hold for larger models where scaling laws and context handling may differ.
+    *   [Section 5]: The authors acknowledge this limitation in the Conclusion but do not provide any ablation or discussion on how model capacity might interact with the repetition mechanism, limiting the broader impact of the findings.
+    *   [No direct evidence found in the manuscript]: Without testing on larger models, it is unclear if the "termination" mechanism is specific to smaller models that struggle with long-context generation or a general property of long-CoT SFT.
+*   **Ambiguity in the Value of "Termination" vs. Reasoning Quality**
+    *   [Table 4]: While the paper frames high termination rates as a benefit, Condition C has the lowest conditional accuracy (e.g., 41.71% on GPQA) compared to Condition A (45.63%) and B (55.46%), suggesting a potential trade-off.
+    *   [Section 4.4]: This indicates that the repetition advantage may be driven by the model learning to stop early rather than learning better reasoning, which could be a superficial improvement if the terminated answers are less accurate or less robust.
+    *   [No direct evidence found in the manuscript]: The paper does not analyze *why* conditional accuracy drops in Condition C, leaving open the question of whether the model is "giving up" or simply being more decisive, which affects the technical soundness of the mechanism claim.
+*   **Narrow Domain Scope**
+    *   [Section 3.1, Section 3.5]: The evaluation is restricted to mathematics and science benchmarks (AIME, GPQA) using the NuminaMath-CoT dataset, limiting the ability to assess cross-domain generalizability.
+    *   [No direct evidence found in the manuscript]: It is unclear if the repetition advantage and termination mechanism generalize to other domains such as coding, logical reasoning, or general instruction following, which constrains the practical impact.
+    *   [Section 5]: The lack of diversity in benchmarks limits the broader impact of the findings on general SFT practices, as the termination behavior may be highly task-specific.
+*   **Automated Generation Caveat and Minor Reporting Inconsistencies**
+    *   [Abstract]: The prominent disclaimer that the paper was generated by an automated research system raises concerns about potential hallucinated metrics or superficial analysis, necessitating careful verification of all claims.
+    *   [Section 4.1 vs. Table 1]: The text claims "Condition C achieves the highest performance on every metric" and "C >> B > A holds consistently," but Table 1 shows a tie between B and C (80.00%) on AIME'24 Pass@16, indicating a minor factual inconsistency that affects clarity.
+    *   [No direct evidence found in the manuscript]: The lack of human-in-the-loop verification details or error analysis for the automated pipeline leaves open questions about the reliability of the reported standard deviations and aggregation methods.4) Suggestions for Improvement
+*   **Expand Model Evaluation or Discuss Capacity Dependence**
+    *   Include experiments with at least one larger model (e.g., Qwen2.5-7B) to verify if the token-budget matching effect persists across scales.
+    *   If larger models are not feasible, add a discussion in Section 5 on how model capacity might influence the trade-off between termination and conditional accuracy.
+    *   Reference prior work on scaling laws to contextualize whether the 1.5B results are representative of compute-optimal training regimes.
+*   **Deepen Analysis of Conditional Accuracy Trade-offs**
+    *   Investigate the quality of the terminated responses in Condition C versus the non-terminated responses in Condition A to understand if the lower conditional accuracy is due to premature stopping or lower reasoning quality.
+    *   Add a qualitative analysis of failure cases in Condition C to see if the model is "hallucinating" answers to terminate early or simply being more concise.
+    *   Clarify in Section 4.4 whether the goal of SFT is to maximize termination or to maximize accuracy given termination, and discuss the implications of the observed trade-off.
+*   **Broaden Benchmark Diversity or Acknowledge Domain Limits**
+    *   Evaluate the method on at least one non-mathematical benchmark (e.g., GSM8K, MMLU, or a coding benchmark) to test the generalizability of the repetition advantage.
+    *   If additional benchmarks are not possible, explicitly state in the Limitations section that the findings are specific to long-CoT reasoning in mathematics and science.
+    *   Discuss whether the "termination" mechanism is specific to problems with a fixed token limit or if it applies to open-ended generation tasks.
+*   **Address Automated Generation Caveat and Correct Reporting Inconsistencies**
+    *   Provide a brief methodology note on the automated research pipeline, including verification steps taken to ensure metric accuracy and reproducibility.
+    *   Correct the claim in Section 4.1 to accurately reflect the tie on AIME'24 Pass@16 (e.g., "C ≥ B > A") to align with Table 1 and improve precision.
+    *   Include a short error analysis or confidence interval discussion for the aggregated metrics to bolster trust in the automated results.5) Score
+- Overall (10): 6 — The paper presents a rigorous methodological contribution (token-budget matching) and insightful mechanism analysis, but the limited model scope, narrow domain evaluation, and automated generation caveat constrain its broader impact.
+- Novelty (10): 7 — The token-budget matching approach and the decomposition of accuracy into termination vs. conditional accuracy offer novel perspectives on SFT dynamics, though the novelty is primarily methodological rather than algorithmic.
+- Technical Quality (10): 7 — The experiments are well-controlled with tight compute matching (Table 3), but the lack of larger model evaluation, deeper analysis of conditional accuracy trade-offs, and minor text-table inconsistencies reduce technical completeness.
+- Clarity (10): 8 — The paper is well-structured, with clear experimental design (Figure 1) and concise presentation of results and mechanisms, though minor reporting inaccuracies in Section 4.1 slightly detract from precision.
+- Confidence (5): 4 — I am confident in the evaluation of the methodology and results, but cannot fully verify the automated generation pipeline or the generalizability to larger models without further evidence.

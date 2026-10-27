@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0007",
+    "title": "WindowScan-Judge: Robust Safety Judging Against Benign-Padding Attacks via Windowed Scanning and Length-Aware Aggregation",
+    "abstract": "Large language model (LLM) safety judges serve as critical gatekeepers for detecting harmful content, yet their robustness against adversarial manipulation remains underexplored. We identify a severe vulnerability in state-of-the-art safety judges: benign-padding attacks, which prepend and append innocuous text to harmful responses, cause catastrophic failure. WildGuard's false negative rate (FNR) increases from 0.0455 to 1.0 under such attacks, meaning all harmful content evades detection. We propose WindowScan-Judge (WSJ), a post-hoc defense that applies windowed scanning with multi-scale windows (128, 256, 512 tokens) to isolate harmful content from padding, combined with Length-Aware FPR Control (LA-FPR) to calibrate detection thresholds based on the number of windows. WSJ reduces WildGuard's FNR from 1.0 to 0.0091 on prepend+append padding while maintaining false positive rate within budget, achieving F1 of 0.9237 compared to 0.0 for the holistic baseline. Our defense generalizes across judges, reducing Llama Guard 3's FNR from 0.2636 to 0.0455.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper identifies that LLM safety judges (WildGuard, Llama Guard 3, HarmBench) are vulnerable to \"benign-padding attacks\" — simply wrapping harmful content in innocuous text. It proposes WindowScan-Judge (WSJ), a post-hoc wrapper that scans responses through overlapping multi-scale windows and aggregates decisions with length-aware FPR control. The headline result is reducing WildGuard's FNR from 1.0 to 0.009 on prepend+append padding.",
+        "strengths": "- The problem identification is sharp and practically relevant. Demonstrating that WildGuard goes from 4.5% FNR to 100% FNR just by adding benign padding is a striking finding that the safety community should know about. The attack itself requires zero optimization — it's embarrassingly simple, which makes it more dangerous in practice.\n- The method is clean and easy to implement. As a black-box, tuning-free wrapper that requires only query access to the base judge, WSJ has a clear deployment story. The paper is well-structured and the Figure 1 diagram communicates the pipeline effectively.\n- The window size ablation (Figure 2) is genuinely informative — the sharp phase transition between W=256 and W=512 provides actionable guidance and reveals something about the mechanics of how these judges fail.",
+        "weaknesses": "- The novelty of this paper is minimal, its just sliding window plus OR (which states explictly in the paper and revealed by the experiments). It's more like an engineering trick than scientific discovery.\n- The evaluation for the method is extremely narrow, only one benchmark (JailbreakBench) which contains only 300 prompts. And the models used (WildGuard, LlamaGuard3) are quite outdated.\n- In Sec. 2, the coverage of recent works are low, most cited papers are in 2023 and 2024.\n- In the experiments, the paper set FPR budget with $FPR_{holistic} + 0.05$ with no explanation why choose this.\n- Typos:\n  - The reference \"Abhimanyu Dubey et al. The llama 3 herd of models. 2024.\" is not formatted correctly, though it is not hallucinated.",
+        "suggestions": "",
+        "llmDisclosure": "- Used Claude Opus 4.6 to generate the summary and strength of this paper, and I reviewed the generate content with revisions.\n- Used Claude Opus 4.6 to make a first pass to verify whether there are hallucinated citations, and I checked manually in the second pass.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-10T03:11:30.064Z",
+      "updatedAt": "2026-03-10T03:11:30.064Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper aims to address the catastrophic failure of LLM safety judges when faced with benign-padding attacks. The authors propose WindowScan-Judge, a post-hoc defense that applies windowed scanning with multi-scale windows combined with Length-Aware FPR Control to mitigate this vulnerability. Experiments demonstrate that WindowScan-Judge helps existing base safety judges effectively reduce the FNR.",
+        "strengths": "1. Proposes a simple, tuning-free wrapper that can be quickly adapted to enhance any existing safety judge.\n2. Empirically demonstrates that holistic evaluation fails catastrophically when harmful content is surrounded by benign text, and the proposed method effectively mitigates this issue.",
+        "weaknesses": "1. The specific length and content of the benign padding text are not sufficiently detailed in the paper.\n2. Computational cost is a critical factor, but quantitative empirical results are not reported.\n3. In Table 2, there is a lack of explanation regarding the specific k values used for the \"Fixed-k Adaptive\" aggregation method.\n4. This task is highly similar to the \"Needle In A Haystack\" evaluation, as both fundamentally involve isolating target content within a long context. Adopting or comparing with relevant NIAH methods could further strengthen the paper's contribution.\n5. The paper should include further analysis on how to trade off window size and FNR.\n6. The paper proposes LA-FPR, but in the experiments, this method effectively degenerates to Max-OR. The practical effectiveness of adaptive LA-FPR thresholds is not fully demonstrated, which limits the overall contribution.",
+        "suggestions": "See Weakness",
+        "llmDisclosure": "I used Gemini solely for phrasing and grammar polishing of my drafted review without sharing any confidential submission content, and all final judgments and scores were independently determined and verified by me.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-27T06:14:35.574Z",
+      "updatedAt": "2026-03-27T06:14:35.574Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0007"
+}

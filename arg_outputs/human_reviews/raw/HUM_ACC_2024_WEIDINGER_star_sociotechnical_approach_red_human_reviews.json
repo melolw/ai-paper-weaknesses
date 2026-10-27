@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_WEIDINGER_star_sociotechnical_approach_red",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "STAR: SocioTechnical Approach to Red Teaming Language Models",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes a novel SocioTechnical framework(STAR) to improve the Practice for red teaming safety of Large Language Model. STAR Improves steerability by providing procedurally generated instructions to human red team groups. It improves signal quality by matching demographics to assess harms for specific groups. To learn from annotator disagreements, STAR introduce an arbitrator step. The paper conducts experiments on multiple datasets and analyze the steerability and reliability of the approach.",
+      "strengths": "1.STAR improves on current best practices for red teaming safety of large language models.\n2.The framework proposed in this article offers better steerability and higher quality signal.\n3.The authors perform both quantitative and qualitative analyses to test the steerability  and  signal quality.",
+      "weaknesses": "1.The article needs to provide more specific explanations and illustrations on how to apply a sociological perspective.\n2.As mentioned in the paper “propose methods for direct comparison to current state-of-the-art red teaming methods(line 38)”.What does the specific direct comparison method refer to?\n3.For section 6.2.3, the two paragraphs of analysis are confusing, as the second paragraph seems very similar to the analysis in the first paragraph.",
+      "questions": "1.Line (167) “Our instructions encompass multiple parameters (see Figure 2 and Methods) to” .  Is the number of the graph correct here?",
+      "rating": 3.5,
+      "confidence": 2,
+      "soundness": 3.5,
+      "raw_note_id": "5bf392e63e1da8f951afab26ee442ba2fce01610b02cf7d38ed65f9d203b0b08761e21b8bef315e372d124bfcaecdc5f7babbb346683b806dcb280c43b8dcd76"
+    }
+  ]
+}

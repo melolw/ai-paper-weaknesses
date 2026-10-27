@@ -1,0 +1,54 @@
+1) Summary
+The paper addresses the challenge of merging multiple task-specific LoRA adapters into a single multi-task model, identifying a critical limitation in existing adaptive methods that rely on entropy minimization. The authors argue that entropy-based objectives are "reference-free" and can lead to "confidently wrong" predictions due to parameter interference. To resolve this, they propose SourceJS-LoRA, which learns merge coefficients by minimizing the Jensen-Shannon divergence between the merged model's predictions and the predictions of individual task experts. This source-referenced objective anchors the optimization to task-specific knowledge. Experiments on the GLUE benchmark using T5-base demonstrate that SourceJS-LoRA achieves an average accuracy of 83.10%, outperforming state-of-the-art baselines like DO-Merging (+2.29 points) and entropy-based coefficient learning (+5.55 points). The authors further provide analysis showing that their method yields more stable and balanced merge coefficients compared to entropy minimization.2) Strengths
+*   **Novel Source-Referenced Objective Function**
+    *   The proposal to use Jensen-Shannon divergence as a teacher-anchored objective is a conceptually strong contribution. Unlike entropy minimization, which only encourages confidence, the JS divergence explicitly constrains the merged model to align with expert predictions (Section 3.3, Equation 3).
+    *   This addresses a specific failure mode ("confidently wrong" predictions) identified in the literature, providing a principled theoretical improvement over AdaMerging (Section 3.2).
+    *   The method remains parameter-efficient, requiring only the optimization of merge coefficients while keeping the base model and adapters frozen (Section 3.5).
+*   **Strong Empirical Performance on GLUE**
+    *   The method achieves significant improvements over strong baselines. SourceJS-LoRA outperforms DO-Merging by +2.29 points and entropy-based learning by +5.55 points in average accuracy (Section 4.2, Table 1).
+    *   The performance gain is particularly notable on complex reasoning tasks like MNLI, where the method achieves +15.65 points over DO-Merging (Section 4.2).
+    *   The results demonstrate that the method effectively closes the gap to the single-task upper bound, with only a 2.69-point difference (Section 4.2).
+*   **Insightful Diagnostic Analysis of Coefficients**
+    *   The paper provides compelling evidence for *why* the proposed method works by analyzing the learned coefficients. Figure 2a shows that entropy minimization leads to extreme, unstable coefficients with negative values, whereas SourceJS-LoRA produces balanced, positive coefficients (Section 4.4, Figure 2).
+    *   The stability metrics in Figure 2b quantitatively support this, showing SourceJS-LoRA has the smallest range (0.44) and standard deviation (0.13) among compared methods (Section 4.4, Figure 2b).
+    *   This analysis directly links the objective function design to the stability of the merging process, enhancing the technical depth of the paper.
+*   **Practicality with Unlabeled Data**
+    *   The method requires only unlabeled data for coefficient learning, making it applicable in scenarios where labeled data is scarce (Section 3.5).
+    *   The optimization is efficient, converging in approximately 300 steps with a small sample size of 128 unlabeled examples per task (Section 3.5).3) Weaknesses
+*   **Limited Evaluation Scope (Model Size and Domain)**
+    *   The evaluation is restricted to T5-base (220M parameters) on the GLUE benchmark. There is no evidence of performance on larger language models (e.g., Llama-2/3, 7B+) or different domains such as vision or multimodal tasks (Section 4.1, Section 5 Limitations).
+    *   The behavior of LoRA interference and the effectiveness of JS divergence may differ significantly in larger models with more complex parameter spaces.
+    *   The lack of evaluation on instruction-tuned models limits the relevance to current LLM deployment practices.
+*   **Computational Overhead of Expert Inference**
+    *   The method requires inference from all $K$ task experts for every sample during coefficient optimization to compute the JS divergence (Section 3.3, Equation 3, Figure 1).
+    *   For a large number of tasks ($K$) or large models, this multiplies the computational cost during the merging phase compared to methods that do not require expert inference (e.g., DO-Merging).
+    *   The paper does not provide an analysis of the time complexity or wall-clock time required for the coefficient optimization phase relative to baselines.
+*   **Hyperparameter Sensitivity in Layer-wise Setting**
+    *   The ablation study reveals that layer-wise coefficients are sensitive to hyperparameters. Directly applying layer-wise coefficients with default settings decreased performance by 0.68 points compared to task-wise coefficients (Section 4.3).
+    *   This suggests that the method may require careful tuning of the learning rate and regularization weight ($\lambda$) when scaling to finer-grained coefficient structures.
+    *   The paper does not provide a sensitivity analysis for $\lambda$ or the learning rate to demonstrate robustness across different settings.
+*   **Internal Inconsistencies and Reproducibility Concerns**
+    *   The manuscript contains conflicting hyperparameter specifications that hinder reproducibility. Section 4.1 initially states LoRA adapters use "rank 4," but immediately lists "$r = 16$" in the subsequent hyperparameter list.
+    *   The calculation of layer-wise parameters in Section 3.4 claims T5-base has 72 layers ($72 \times 8 = 576$ parameters), whereas T5-base standardly has 24 layers (12 encoder + 12 decoder), making the parameter count and layer-wise formulation questionable.
+    *   The optimization steps are contradictory: Section 3.5 states convergence in "approximately 300 steps," while Appendix A specifies a "cosine schedule over 1000 steps."4) Suggestions for Improvement
+*   **Expand Evaluation to Larger Models and Domains**
+    *   Include experiments on larger language models (e.g., Llama-2-7B or Mistral-7B) to demonstrate scalability and relevance to current LLM trends.
+    *   Evaluate the method on a different domain, such as vision (e.g., merging CLIP adapters) or a different NLP benchmark (e.g., SuperGLUE or MMLU), to verify generalizability beyond GLUE.
+    *   Discuss how the method performs on instruction-tuned models, which are more common in practical deployments.
+*   **Analyze Computational Efficiency and Complexity**
+    *   Provide a detailed analysis of the computational cost of the coefficient optimization phase, including wall-clock time and FLOPs, compared to baselines like DO-Merging and AdaMerging.
+    *   Discuss potential optimizations to reduce the overhead of expert inference, such as caching expert predictions or using approximate divergence estimates.
+    *   Clarify the trade-off between the accuracy gains and the increased computational cost during the merging process.
+*   **Provide Hyperparameter Sensitivity Analysis**
+    *   Include a sensitivity analysis for the L2 regularization weight ($\lambda$) and the learning rate, showing how performance varies across a range of values.
+    *   Investigate whether the performance drop in the layer-wise setting (Section 4.3) is due to optimization difficulty or overfitting, and suggest guidelines for tuning these hyperparameters.
+    *   Clarify the exact LoRA rank used, as Section 4.1 mentions both rank 4 and $r=16$, which affects adapter capacity and reproducibility.
+*   **Resolve Internal Inconsistencies and Clarify Implementation Details**
+    *   Unify the LoRA rank specification throughout the manuscript (e.g., consistently use $r=16$ or $r=4$) and explicitly state which setting was used for the reported results.
+    *   Correct the layer count for T5-base in Section 3.4 and recalculate the number of layer-wise parameters accordingly to ensure the ablation study in Section 4.3 is grounded in accurate architecture details.
+    *   Align the optimization step counts between the main text (Section 3.5) and Appendix A, and explicitly state the final schedule used for the main experiments.5) Score
+- Overall (10): 5 — The paper proposes a novel and effective objective for LoRA merging with strong results on GLUE, but internal inconsistencies in hyperparameters and architecture details, alongside limited evaluation scope, prevent a higher score.
+- Novelty (10): 6 — The application of JS divergence as a source-referenced objective for merging coefficients is a meaningful contribution over entropy-based methods, though the overlap with divergence-based merging paradigms is not fully contextualized.
+- Technical Quality (10): 5 — The method is well-defined and the experiments are rigorous, but contradictory specifications for LoRA rank, layer counts, and optimization steps in Sections 3.4, 3.5, 4.1, and Appendix A significantly impact reproducibility and technical soundness.
+- Clarity (10): 6 — The paper is generally well-written, but conflicting statements regarding hyperparameters and model architecture details reduce clarity and require careful cross-referencing to resolve.
+- Confidence (5): 5 — I am highly confident in this assessment based on clear internal contradictions within the manuscript text and appendix, which materially affect reproducibility.

@@ -1,0 +1,82 @@
+{
+  "paper": {
+    "code": "FA0022",
+    "title": "The Repetition Advantage in Long-CoT SFT is a Termination Effect",
+    "abstract": "Recent work shows that in long chain-of-thought (CoT) supervised fine-tuning (SFT), training for many epochs on a small dataset substantially outperforms single-epoch training on a larger dataset---a counterintuitive ``repetition advantage.'' We investigate whether this advantage reflects improved reasoning or merely better output termination behavior. Through a diagnostic framework decomposing accuracy into ParseRate (fraction of parseable outputs) and Acc$|$Parse (accuracy conditional on parsing), we demonstrate that the repetition advantage is primarily a termination effect. On AIME benchmarks, the accuracy gap between repetition and data-scaling conditions \\emph{reverses} when conditioning on successful parsing, with mediation fractions exceeding 1.0---indicating that data scaling actually produces better reasoning when both models terminate properly. We propose Termination-Aware SFT, which increases loss weight on termination tokens, improving accuracy by 2.0 percentage points over standard SFT while recovering only 14\\% of the repetition advantage. Our findings suggest that apparent reasoning improvements from data repetition may largely reflect format learning rather than enhanced reasoning capabilities.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 1,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper studies a clear mechanistic hypothesis: the reported long-CoT “repetition advantage” in SFT may come less from improved reasoning and more from improved termination and answer formatting. The methodology is empirical. The paper compares three conditions on OLMo-3-7B: single-epoch data scaling (A), 32-epoch repetition on a 1.6k subset (B), and Termination-Aware SFT (C), then analyze performance with raw sampled accuracy, ParseRate, and accuracy conditional on successful parsing. The paper’s main result is that on AIME, the repetition advantage largely disappears or reverses after conditioning on parseable outputs, which supports the claim that termination behavior is an important confound; however, GPQA shows only partial mediation, and the proposed intervention improves over A only modestly, recovering a small fraction of B’s gain.",
+        "strengths": "- The paper asks an interesting and nontrivial question. Instead of taking the repetition advantage at face value, it asks whether the gain is really a reasoning gain or an evaluation-interface gain, which is exactly the kind of mechanistic clarification the long-CoT literature needs. Even if the final answer is partly negative, this is a better scientific question than simply reporting another benchmark improvement.\n- The diagnostic framework is the strongest part of the paper. The released evaluator does not just report a single score; it explicitly tracks per-generation termination, parseability, per-problem parseable counts, and correctness among parseable generations, which makes the paper’s decomposition concrete rather than rhetorical.\n- The artifact is relatively complete by workshop-paper standards. The repository includes the evaluator, the termination-aware trainer, alpha-computation code, training scripts, checkpoint-sweep scripts, logs, and aggregated result files, so an informed reader can reconstruct how the numbers were produced.\n- The paper communicates the AIME-side finding clearly. The mediation result on AIME is easy to understand and genuinely notable: the same data-scaling model that looks weaker under raw accuracy can look stronger once the analysis conditions on parseable outputs.",
+        "weaknesses": "- The largest problem is that the paper’s description of Condition C does not cleanly match the artifact that produced the final reported C numbers. The PDF describes C as a 1-epoch intervention on the same 51.2k samples as A, but the released final C artifact is explicitly a 2-epoch optimized variant with additional changes, including boxed-token structure handling and checkpoint selection on AIME24; see train_condition_C_v3.sh and condition_C/RESULTS.json. This is cheating and hallucination.\n- The paper does not define Acc@n precisely enough, and this is not a cosmetic issue. In the code, the metric reported as the main accuracy-like quantity is avg@n, which is computed as the average fraction of correct generations among the n samples for each problem, then averaged across problems; pass@k is separately computed as “any correct among the first k samples”; see eval_diagnostic.py and eval.py. A reader could easily misread Acc@n as majority vote, best-of-n, or some self-consistency score, so the paper needs to define it explicitly and defend why this is the right primary metric.\n- The paper states the relation Acc@n ≈ ParseRate × Acc|Parse, but in the implementation these quantities are not aggregated in the same way. avg@n is macro-averaged over problems, while parse_rate is micro-averaged over all generations and acc_given_parse is micro-averaged over only parsed generations; see eval_diagnostic.py and eval_diagnostic.py. So the factorization is only heuristic, not an exact accounting identity, and the paper does not explain this subtle but important point.\n- The checkpoint-selection procedure leaks evaluation information into model selection. The artifact shows that Condition B checkpoints are swept on AIME24 with n=2, and the optimized C checkpoints are likewise swept on AIME24 with n=2, then the best checkpoint is reported downstream; see eval_condB_ckpt_sweep.sh, eval_condC_v3_ckpt_sweep.sh, and condition_C/RESULTS.json. This means the reported gains are not as cleanly out-of-sample as the paper presentation suggests.\n- The headline mechanism claim is somewhat overstated relative to the paper’s own stronger analysis artifact. The paper often phrases the result as if the repetition advantage is broadly a termination effect, but the released mediation results show a much stronger AIME story than GPQA story: GPQA has only <1 mediation, with a positive conditional gap for B rather than a reversal. A more careful claim would be that the effect is strong on AIME and only partial on GPQA. One possible reason is that GPQA is a MCQ benchmark and the format issue is less severe than the math benchmarks.\n- The “long-CoT” setup is materially altered by implementation changes that the paper does not surface clearly. Both the baseline trainer and the termination-aware trainer load the model with max_seq_length=4096 and truncate sequences to a maximum training length of 4096 tokens. Because the paper’s core phenomenon concerns long reasoning traces and termination, the amount of truncation is not a minor detail; it could substantially change the effective task.\n- The alpha-choice story is also more tuned than the paper initially implies. The repository contains a script that computes formula-based alpha values from dataset statistics and caps them, but the final reported method does not use the raw formula-computed value; instead it uses a hand-tuned alpha of 10 after diagnosing that the formula-driven setting was too aggressive; see compute_alpha.py and condition_C/RESULTS.json. That weakens the impression that the method is a principled, almost parameter-free fix.",
+        "suggestions": "",
+        "llmDisclosure": "I am using cursor to help me locate the suspicious code problem while reading the paper.",
+        "ethicsReproducibility": "- The strongest concern in this section is reproducibility, not classical research ethics. The main issues are ambiguous metric definitions in the paper despite clear implementation details in eval_diagnostic.py, test-set-based checkpoint selection in eval_condB_ckpt_sweep.sh and eval_condC_v3_ckpt_sweep.sh, and paper/artifact inconsistency in condition_C/RESULTS.json. I would not call the work irreproducible, because the artifact is rich, but I would call the paper insufficiently faithful to the artifact.\n- Data provenance and licensing are not obviously problematic, but they are not discussed in enough detail for a polished publication artifact. Since the paper relies on DOLCI-think and benchmark datasets while making practical training claims, a cleaner statement about exact splits, dataset cards, and benchmark variants would improve the reproducibility story substantially."
+      },
+      "audit": {
+        "findings": "See weakness. The reported results in the paper do not align the actual training efforts. (2 epoch instead of 1 epoch)"
+      },
+      "submittedAt": "2026-04-10T01:36:42.034Z",
+      "updatedAt": "2026-04-10T01:38:06.338Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 6,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates the \"repetition advantage\" in long chain-of-thought supervised fine-tuning. Through comparing the performance conditioned on successful parsing, the authors find that the repetition advantage is actually caused by the improvement of parsing accuracy rather than the improvement of reasoning ability. They also propose a new method to improve the parsing accuracy by using an extra factor for the loss on special tokens.",
+        "strengths": "The findings are interesting since they reveal the underlying mechanism of the repetition advantage.\n\nThe paper is easy to follow and the experiment design is aligned with the motivation.",
+        "weaknesses": "Limited evaluation scope: for the evaluation datasets, AIME24 and AIME25 are both math reasoning with similar difficulty, and GPQA consists of general knowledge-related questions. However, both the main experiment (minor difference on GPQA) and the mediation analysis (positive conditional gap (B-A) on GPQA) show different conclusions between the two types of tasks, which may limit the soundness of the findings.\n\nMore details should be clarified, such as the reason for failed parsing (context length limit or other reasons), the data selection strategy for the data repetition experiment, and whether using another 1600 samples drawn by a different sampling procedure would affect the results.\n\n\nMore analysis should be provided: for the performance gap in the unconditioned setting, try to analyze the accuracy for data scaling with a parsing-free method such as LLM-as-a-judge. If the accuracy is comparable to data repetition, it will be strong evidence for the findings.\n\nMinor improvement: the main reason for the proposed method's overall improvement is improved parsing accuracy; however, it still shows a significant gap compared to the data repetition method.",
+        "suggestions": "See weaknesses.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-04T11:56:41.391Z",
+      "updatedAt": "2026-04-04T11:56:41.391Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "- Clear, well-motivated hypothesis: The paper explicitly poses a falsifiable hypothesis (repetition advantage is a termination effect, not reasoning improvement), naturally motivated by Kopiczko et al. (2026)'s counterintuitive finding.\n- Rigorous experimental design: Three conditions controlled at identical compute budget (51,200 steps); uses established OLMo-3-7B model and standard benchmarks.\n- Original diagnostic framework: The explicit decomposition of accuracy into ParseRate × Acc|Parse, and the mediation analysis quantifying the termination effect, constitute the core methodological contribution.\n- High informational value: This is a negative result with significant insight—exposing a community-wide misunderstanding of the repetition advantage, with important implications for subsequent research.\n- Clear, self-contained writing: The limited-length paper provides sufficient experimental details (hyperparameters, evaluation configs, ablation studies) for reproducibility.",
+        "strengths": "- Clear, well-motivated hypothesis: The paper explicitly poses a falsifiable hypothesis (repetition advantage is a termination effect, not reasoning improvement), naturally motivated by Kopiczko et al. (2026)'s counterintuitive finding.\n- Rigorous experimental design: Three conditions controlled at identical compute budget (51,200 steps); uses established OLMo-3-7B model and standard benchmarks.\n- Original diagnostic framework: The explicit decomposition of accuracy into ParseRate × Acc|Parse, and the mediation analysis quantifying the termination effect, constitute the core methodological contribution.\n- High informational value: This is a negative result with significant insight—exposing a community-wide misunderstanding of the repetition advantage, with important implications for subsequent research.\n- Clear, self-contained writing: The limited-length paper provides sufficient experimental details (hyperparameters, evaluation configs, ablation studies) for reproducibility.",
+        "weaknesses": "- Limited generalization evidence: Validated on only OLMo-3-7B (single model size); three benchmarks with GPQA showing near-zero response to the termination intervention (AIME shows strong effect, GPQA none), indicating benchmark-dependence.\n- Root cause of termination effect unexplored: The paper reveals what (termination behavior) but not why (why repetition training improves termination). Lacks theoretical explanation for the relationship between repetition and termination learning.\n- Incomplete ablation: TA-SFT's α (10) and cap (50) selection has limited justification; no exploration of different model sizes or dataset scales; the choice of 32 epochs is not systematically ablated.\n- No random seed or multiple-run reporting: The sampling strategy (n=16/n=4) introduces variance, but the paper discloses no run count or variance intervals.\n- TA-SFT only partially successful (14% recovery): While the hypothesis is validated, the proposed intervention has limited practical impact, recovering only a small fraction of the repetition advantage.",
+        "suggestions": "1. Increase model and dataset diversity: Validate across 2–3 different model scales and test on additional Long-CoT datasets.\n2. Investigate the mechanism of termination learning: Why does repeated training improve termination—is it because termination patterns are more memorizable than reasoning patterns? Is there a theoretical account?\n3. Systematic hyperparameter ablation: Full sweep over repetition epochs (1, 2, 4, 8, 16, 32) and dataset sizes (400, 800, 1600, 3200).\n4. Report variance: Standard deviations or confidence intervals across multiple runs would strengthen credibility.\n5. Deeper analysis of GPQA anomaly: Why does GPQA show no response to TA-SFT? Does task type (multiple-choice vs. generation) explain the difference?",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "Edward Y. Chang, Yuxuan Tong, Morry Niu, Graham Neubig, and Xiang Yue. Demystifying long\nchain-of-thought reasoning in llms. ArXiv, abs/2502.03373, 2025.\n\nEdward Y. Chang is wrong, should be Edward Yeo (not Chang)"
+      },
+      "submittedAt": "2026-04-03T03:06:09.645Z",
+      "updatedAt": "2026-04-03T03:06:09.645Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0022"
+}

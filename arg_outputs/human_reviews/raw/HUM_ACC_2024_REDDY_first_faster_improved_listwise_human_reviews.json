@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_REDDY_first_faster_improved_listwise",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "FIRST: Faster Improved Listwise Reranking with Single Token Decoding",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces FIRST, a new type of LLM-based re-ranking model that uses the logits of the first generated token to re-rank the list of candidates. Compared to LLM-based re-rankers, this substantially increases efficiency since only a single token needs to be generated. To fine-tune the model, the authors propose a new weighted RankNet loss function that improves the model's effectiveness.\n\nEmpirical analyses on the BEIR benchmark show that FIRST is more effective than previous LLM-based re-rankers and a baseline cross-encoder model. Further experiments on latency show that FIRST is substantially faster than the baseline LLM-based re-ranker. Finally, the model is evaluated for relevance feedback, showing that it can effectively improve a bi-encoder's recall.",
+      "strengths": "1. The paper is well-written and easy to follow.\n2. Using the first-token logit distribution to rank candidates is a novel idea that is likely to be of interest to the community.\n3. Extensive experiments on BEIR benchmark and latency show that the proposed model is effective and efficient.\n4. Weighted RankNet is a novel and clever solution for a weighted pairwise loss.",
+      "weaknesses": "1. The effectiveness results on the BEIR benchmark lack statistical tests to determine the significance of the improvements.\n2. The comparison to the cross-encoder is not entirely fair, since it is not fine-tuned on the same data. The cross-encoder may achieve similar effectiveness when also fine-tuned on the GPT-4 data.\n3. It is unclear how much the RankNet loss improves effectiveness. Ablation tests remove the weighting from the RankNet function, but the FIRST model is never evaluated when only fine-tuned using the LM training strategy.\n4. The latency experiments are missing the cross-encoder baseline. Adding the cross-encoder to the latency experiments would provide a more complete picture of the effectiveness and efficiency trade-offs.",
+      "questions": "Some further minor comments and questions.\n\nQuestions:\n1. Why can't the FIRST logit distribution be used for relevance feedback? (line 500)\n\nComments:\n- The word \"significantly\" is used to describe differences (e.g., line 522). I would exchange this for \"substantial\" to avoid confusing with statistical significance.\n- The word performance can mean both effectiveness and efficiency. I would exchange all occurences with either effectiveness or efficiency to avoid confusion. For example, in line (493), is effectiveness or efficiency meant, or both?",
+      "rating": 4,
+      "confidence": 5,
+      "soundness": 4,
+      "raw_note_id": "ce9232430bb0106c8c13f09e783c02a2ec24e570e59f804b2754a2c0ae93dc426e42dd719c966cb15316b331e1cc98526cba308f5a021cdace6e520b12129522"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "code": "FA0001",
+    "title": "Canary-Controlled Safe-Data Interleaving for Reducing Emergent Misalignment",
+    "abstract": "Fine-tuning large language models on narrow tasks can induce emergent misalignment---harmful behaviors on unrelated prompts---even when the training data appears benign. Safe-data interleaving, which mixes benign examples with target data, is a promising defense but typically uses fixed interleaving ratios throughout training. We propose canary-controlled adaptive safe-data interleaving, a closed-loop framework that monitors emergent misalignment risk via canary prompts and dynamically adjusts the interleaving ratio. The controller computes an EMA-smoothed risk estimate from canary evaluations and uses a threshold-based policy with hysteresis to increase intervention when risk is detected. On the Security EM benchmark with Qwen2.5-7B-Instruct, our method achieves 5.39\\% General \\%Misaligned compared to 7.15\\% for fixed 5\\% interleaving---a 25\\% relative improvement---with 4$\\times$ lower cross-seed variance. Ablation studies confirm that adaptive timing provides value beyond average interleaving ratio, with fixed-timing variants showing 36\\% worse performance despite identical safe-data volume.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper addresses emergent misalignment (EM) — the phenomenon where fine-tuning LLMs on narrow, benign-looking tasks causes harmful behaviors on unrelated prompts. Existing defenses like safe-data interleaving use a fixed ratio of benign examples mixed into training, but the authors argue this is suboptimal since EM risk varies dynamically during training, often emerging abruptly at phase transitions.\n\nThe proposed method, canary-controlled adaptive safe-data interleaving, introduces a closed-loop feedback mechanism. Every 30 training steps, the system evaluates the current checkpoint on 20 canary prompts using an LLM judge, computes a canary risk score, smooths it with an exponential moving average, and feeds it into a threshold controller with hysteresis that adjusts the interleaving ratio. When smoothed risk exceeds an upper bar, the controller increases safe-data injection; when it drops below a lower bar, it reduces intervention. \n\nEvaluated on the Security EM benchmark with Qwen2.5-7B-Instruct, the method achieves 5.39% General %Misaligned versus 7.15% for fixed 5% interleaving (25% relative improvement) with 4× lower cross-seed variance. Ablations show that fixed-timing variants with identical average safe-data volume perform 36% worse, and removing EMA smoothing degrades performance by 45%.",
+        "strengths": "- Clean problem formulation. The paper identifies a real gap — fixed interleaving ignores the temporal dynamics of emergent misalignment risk. The connection to phase-transition findings in prior work (Turner et al., 2025) provides solid motivation for why adaptive approaches should help (even though this evidence is not explicitly stated in the Introduction section).\n- Simple, reproducible method. The controller design is elegant in its simplicity: EMA smoothing, hysteresis thresholds, and bounded step sizes. There are no complex learned components, making it easy to implement and reason about. The algorithm pseudocode is clear and self-contained.\n- Thoughtful ablation design. The four ablation variants are well-chosen — each isolates a specific design decision (adaptive timing vs. fixed average, feedback delay, temporal ordering, EMA smoothing). \n- Variance reduction is notable. The 4× reduction in cross-seed variance (std 0.16 vs 0.63) is arguably more practically valuable than mean improvement. For deployment, consistency across runs matters a great deal, and this result suggests the adaptive controller stabilizes training dynamics.",
+        "weaknesses": "- The motivation of this work is not well explained. There is only one sentence for explanation in the third paragraph in Sec. 1, which is \"A fixed interleaving ratio may therefore be suboptimal: too little intervention when risk is high, or unnecessary overhead when the model is safe.\", but is more like an educational guess. The reason why too little or unnecessary intervention would hurt the performance of the model is not deeply discussed. I saw there is a more convincing reasoning in the second paragraph of Sec. 3.1 which gets inspirations from Turner et al., 2025, but this information should be in the Introduction section.\n- There are no descriptions of the sources of the Canary set prompts. In Sec. 4.1, it states that there are 20 prompts in the canary set, but it should explictly tell the source of these prompts, or put these prompts in the paper's appendix. As a result, it is not clear whether these prompts are effective on evaluating the canary risk of the trained model checkpoints.\n- For evaluation, the paper applies Qwen2.5-32B-Instruct for LLM-as-a-Judge which is not aligned with the judge model used in Kacźer et al. (2025) which used GPT-4o. It is not clear the reliability of this model for evaluation, and the paper doesn't report the prompt used for evaluation.\n- The paper didn't explain the metrics used in evaluation, especially the short formed ones in Tab. 1.\n- A major issue is that this work doesn't test whether the introduced method hurts the performance of downstream tasks. The previous work (Kacźer et al. (2025) did this on  Faroese QA to verify this.\n- The ablations study shows that, the results with shuffled $p_t$ is very close to the performnce of Full Canary-Controlled, this implies that the timing of intervention might not be the core contribution here. This work should run multiple times for this setting. If the average result is comparable with Full Canary-Controlled setting, this will directly refute the core hypothesis of this paper.\n- The experiments are only conducted on Security EM dataset and with only one model Qwen2.5-7B-Instruct.\n- In Algo. 1, it sets $T = |D_{T}|$, is it reasonable?\n- I checked the canary prompts used in the codebase and find critical issue: The prompts are not safety related, they are just normal prompts. Thus, the effectiveness of the risk probing during training is questionable.\n\n\n\n- Misuses of language/symbols:\n  - In previous work (Kacz ́er et al., 2025), they define emergent misalignment as EMA, but this paper defines it as EM. This shouldn't have been a big issue, but this paper defines uses another term EMA to stand for \"exponential moving average\", and the misuses of EM and EMA causes trouble for understanding.\n  - The metric name \"General %Misaligned\" is confusing. If previous work used a metric with the same meaning, it should be directly adapted here.\n  - There are two $\\alpha$ symbols used in this paper. One is in Eq. 2, and another is in Sec. 4.1, Model and Training, a hyper parameter in rs-LoRA. Should use a different symbol for Eq. 2.\n  - The paper uses the terms \"SafeLoRA\" and \"Safe LoRA\" interchangably, should consistently to use \"Safe LoRA\" according to the original paper  (Hsu et al., 2024).",
+        "suggestions": "- Improvement area for paper writing:\n  - At the beginning of the Introduction section, there should be more content describing the problem of emergent misalignment, on why this is important (with evidence from previous works), poential explanations on how it happens (also with evidence from previous works if possible). I see this is deeply discussed in Sec. 2.1, but it is better to be put in the Introduction section.\n  - In the Introduction section, there should be a paragraph summarizing the experiment result and findings in analysis.\n  - It is better to organize the finds of the analysis for the ease of reading.",
+        "llmDisclosure": "- Used Claude Opus 4.6 to generate the summary and strength of this paper, and I reviewed the generate content with revisions.\n- Used Claude Opus 4.6 to make a first pass to verify whether there are hallucinated citations, and I checked manually in the second pass.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-05T03:37:12.990Z",
+      "updatedAt": "2026-03-06T06:56:27.068Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "The paper tests the hypothesis that emergent misalignment risk during fine-tuning is dynamic rather than constant, so a closed-loop, adaptive safe-data interleaving strategy—guided by canary prompts—should outperform a fixed interleaving ratio at suppressing misalignment. The validation is primarily empirical: the authors fine-tune Qwen2.5-7B-Instruct on the Security EM benchmark, monitor canary-prompt misalignment during training, adapt the safe-data mixing ratio using an EMA-smoothed threshold controller with hysteresis, and compare against no-defense and fixed-5% interleaving baselines, along with ablations of controller components. The main outcome is positive but qualified support: adaptive interleaving reduces general misalignment to 5.39% versus 7.15% for fixed 5% interleaving (about a 25% relative improvement) and lowers cross-seed variance, while ablations show the gains come from adaptive timing and smoothing.",
+        "strengths": "1. The paper identifies a concrete limitation of fixed safe-data interleaving and argues that emergent misalignment risk may vary over training, which makes an adaptive controller a reasonable and intuitive intervention.\n2. The proposed canary-controlled framework is easy to understand and implement: it combines canary-based risk estimation, EMA smoothing, and a threshold controller with hysteresis. This gives the work a practical flavor.\n",
+        "weaknesses": "1. Limited evaluation scope. The experiments are conducted on only a single benchmark (Security EM), so it is unclear whether the approach generalizes to other emergent-misalignment settings or model families.\n2. The setup uses one base model, three random seeds, and relatively small canary/evaluation sets, which may limit confidence in the broader robustness of the conclusions. \n3. The number of baseline methods for comparison is insufficient. Although the paper discusses multiple related works, it does not compare these methods in the experimental section, and only selects two basic methods for comparison.\n4. In Tables 2 and 3, the experimental results of the main method are inconsistent, which may be because the main method was run twice.\n5. The selection criteria and specific characteristics of canary prompts are not introduced in the paper, and no clear justification is provided for the choice of their quantity.",
+        "suggestions": "",
+        "llmDisclosure": "1. Use an LLM to summarize the paper.\n2. Use an LLM to assist in comparing code, experimental records, and the paper to identify hallucination-related issues.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {
+        "findings": "1. In Tables 2 and 3, the experimental results of the main method are inconsistent, which may be because the main method was run twice.\n2. Some parameter settings in the figure, such as r_high and r_low, are inconsistent with the descriptions in the experimental setup.\n3. The code shows the number of general-domain prompts is 48, but the paper states it is 24."
+      },
+      "submittedAt": "2026-03-12T07:08:34.112Z",
+      "updatedAt": "2026-03-12T07:08:34.112Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes canary-controlled adaptive safe-data interleaving, a closed-loop framework for mitigating emergent misalignment (EM) during LLM fine-tuning. The method periodically evaluates a small set of canary prompts via an LLM judge, computes an EMA-smoothed risk estimate, and adjusts the safe-data interleaving ratio using a threshold-based controller with hysteresis. Evaluated on the Security EM benchmark with Qwen2.5-7B-Instruct, the method achieves 5.39% General %Misaligned versus 7.15% for fixed 5% interleaving, with lower cross-seed variance. Ablation studies decompose contributions of adaptive timing, EMA smoothing, and feedback timeliness.",
+        "strengths": "- The closed-loop feedback control idea is well-motivated by phase-transition dynamics of EM. The framework is clearly presented with a clean algorithm and system diagram. \n- Ablation studies are well-designed, systematically isolating each component's contribution. The 36% degradation of fixed-ratio matching the same average volume is a meaningful finding.",
+        "weaknesses": "- The main comparison is confounded by safe-data volume: adaptive uses 13% average vs. the 5% baseline. A Fixed 13% baseline is critically missing to isolate adaptivity from simply using more safe data. \n- Technical novelty is limited to combining well-known components (EMA, threshold control with hysteresis, LLM-as-judge). No engagement with control theory or adaptive regularization literature.\n- Evaluation on only one benchmark, one model, and one EM task type severely limits generalizability claims. \n- Weak canary-general correlation (r=0.31) is acknowledged but not analyzed. No sensitivity study on canary prompt design, set size, or false positive/negative rates.\n- No comparison with other EM defenses (SafeLoRA, KL regularization, representation engineering) despite discussing them in related work.\n- Table 1 reports 5.39% and Table 2 reports 5.26% for the full method without explanation.\n- Computational overhead of periodic LLM-judge evaluation (32B model scoring every 30 steps) is never quantified or discussed.",
+        "suggestions": "",
+        "llmDisclosure": "Claude is used to grammar check.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T23:34:53.896Z",
+      "updatedAt": "2026-04-01T23:34:53.896Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0001"
+}

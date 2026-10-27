@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_HAN_instinctive_bias_spurious_images",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "The Instinctive Bias: Spurious Images lead to Hallucination in MLLMs",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces CorrelationQA, a benchmark designed to assess hallucination levels in MLLMs when presented with spurious images, as MLLMs are vulnerable to images that are highly relevant but inconsistent with answers. This paper conducts an analysis of several mainstream MLLMs and the result shows that all MLLMs evaluated suffer from this instinctive bias to varying degrees, highlighting the need for improved robustness in MLLMs to handle such deceptive inputs effectively.",
+      "strengths": "1. The radar map (Fig. 2) is clear to show the relative performance of each MLLM on this benchmark.\n2. The analysis of various MLLMs, with both open and closed source models, over different categories, is comprehensive, with both qualitative and quantitative results provided.\n3. The visualization of image-text pairs with both accurate and inaccurate answers given in Fig. 6 is clear and straightforward.",
+      "weaknesses": "1. It would be helpful for the authors to quantitatively evaluate the relevance between the question and the spurious image. Since the factual and random images could be taken as two extremes of the relevance level, it would be better to get some insights into the relevance between spurious images and questions. In other words, how do we define the spurious images that are related but do not correspond to the correct answer?\n2. The authors need to clarify the mechanism they use to retrieve the spurious image, i.e. how to find such a spurious image that is inconsistent with the accurate answer but still relates to the questions? Given the instability in the output of diffusion models, is there any warranty mechanism to ensure that the generated spurious image is correct? Is the dataset created automatically, or the generated results have been gone through manually?",
+      "questions": "It's better to provide one or two examples of the image-question pairs with the synthetic image generated in the appendix to show the image generation results and MLLMs' performance in each category.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "b37175d464f35f4443de837e09d76ec35df825e2e592273a86de4315bf9f8e6b2c6c661a047edcfda48d4c8aefec304a933276d4cccc97e45202a7b61474c61a"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper proposes a CorrelationQA benchmark designed to assess the hallucination issues in MLLMs given spurious images. The authors synthesize 7,308 text-image pairs across 13 categories using a pipeline consisting of tools such as GPT-4 and Stable Diffusion. Using CorrelationQA, the authors evaluate multiple MLLMs and demonstrate these models are susceptible to producing hallucinations given spurious images.",
+      "strengths": "1. This paper first identifies the visual instinctive bias, i.e.  MLLMs are susceptible to producing hallucinations given spurious images.\n2. The paper provides ample comparative analysis and thorough descriptions and explanations of the experimental results.",
+      "weaknesses": "1. I am a bit confused about the definition of spurious images. I understand the spurious examples in Fig 6, where, for instance, there is a question about ice hockey given an image of lacrosse, which could mislead the model. However, in the example in Fig 1, the image of potato chips provides relevant visual information needed to answer the question, rather than misleading the model. Why is it also called a spurious image?\n2. I am also confused about the motivation mentioned in this paper and the proposed benchmark. The motivation refers to the slow reasoning ability of MLLMs, which should involve models reasoning complex questions by receiving questions and related images. However, the images constructed in the proposed CorrelationQA are either misleading or spurious, which seems more like an attempt to induce the model to generate incorrect answers, rather than being closely related to slow reasoning.\n3. Currently, the hallucination issue in MLLMs mainly refers to models possibly incorrectly identifying or generating objects or attributes that do not exist in the given images. However, the proposed benchmark seems to be a method to induce MLLMs to generate incorrect answers, which may not strictly fall under the category of hallucination issues, but rather tests the model's resilience to spurious images, focusing on its ability to resist interference rather than identifying or describing errors.",
+      "questions": "1. I hope the author can provide explanations based on the issues mentioned in the weaknesses.",
+      "rating": 3,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "fa37aec8945b19b72af5a1d63d78abf2c78047a5829b84a91180b8f1983ab9070f5eed6b1d18943c8234327bf703f3c539e4966a4b5bb0ca1844cd095683c01e"
+    }
+  ]
+}

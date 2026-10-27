@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_REJ_2024_SRIVASTAVA_improving_multimodal_large_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Improving Multimodal Large Language Models Using Continual Learning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper starts from the valid observation, that even though multimodal LLMs (MLLMs) are LLM backbones trained further to “understand” image tokens as well, they are not as capable as LLMs on linguistic understanding. The authors try to alleviate the “forgetting” of linguistic capabilities in MLLMs with continual learning strategies. A careful choice of strategies can reduce the performance degradation of language understanding in MLMs trained from LLMs. But language understanding is still less than the original LLMs and still takes a loss in vision & language understanding too compared to a standard MLM.\n\n**Comments after Author Discussion**: I have read and acknowledge the author's response, however I kept my score.",
+      "strengths": "1. The main strength of the paper is in its idea, namely to indentify the shortcomings of MLLMs: they are initialised with an LLM capable of NLU and NLG, but by further training on vision and language data, the MLLM gains vision and language capabilities, to the detriment of language-only capabilities. To alleviate the problem, the paper makes the nice contribution of thinking about this in the context of continual learning. \n\n1. The paper uses an extensive batch of MLLMs. \n\n1. It tries out quite an extensive number of continual learning strategies, namely 5, which prove to be somewhat effective.",
+      "weaknesses": "1. **Limited novelty**: While a great contribution of the paper is framing the problem described in S1 as a continual learning problem, the paper makes no novelties in the spectrum of continual learning, but just applies known and established continual learning strategies to the problem of vision and language. This limits the contributions and novelties of the paper quite a bit.  \n\n1. Interesting, but **maybe not the most useful framework**: It is a bit underwhelming that a fancy name of “continual learning” applies to strategies like careful fine-tuning with LoRA and giving the model some data from earlier tasks in later training stages, to not forget them – since the forgetting is largely a data problem: imo the forgetting happens because the VL data is  much less in numbers and much less linguistically diverse in comparison to text-only data. This is also found by this paper which in L389 shows that instruction tuning (which has more linguistic variance than bland images and captions) almost single-handedly circumvents the problem. This makes the whole (admittedly interesting) framework of continual learning, a bit obsolete. \n\n1. **Little experimental insight**: The paper does extensive engineering in experimenting to see what sequence of training VL tasks is the best, but unfortunately an empirical and engineering contribution is not an outstanding piece of research. Particularly, there is no gained insight, not even a hypothesis, into **why** the exact sequence of VL tasks training is the best, and not another one.",
+      "questions": "L185: what does “linear” in “linear alignment network” refer to? Does this mean that the network for the alignment is linear (but how could this be, because it has two layers, and we know that 2 linear layers are as good as a single one) or is there anything else meant by the word “linear”? \n\nWhy do you say in the introduction in the contributions (L062) you experimented with 7 MLLMs, when you experimented with 9?  \n\nL385: broken reference",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "7aaf84211e593edfe2dda72f698f7d5db59e5447bc878eaaff4df2be0e83325a5e64b9d9f6e90e18b30e72215bb48a2ddac3cf318c5708e72f521cd578bca946"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The authors present their work of adapting continual learning methods for dealing with the issue of linguistic forgetting when fine-tuning LLMs for vision-language tasks.",
+      "strengths": "Novel work of adapting continual learning methods for dealing with the issue of linguistic forgetting when fine-tuning LLMs for vision-language tasks",
+      "weaknesses": "- Experiment with only one NLG dataset can be biased towards the dataset.\n- Table 4 has the main results of CL for VL learning of LLMs, but the results are not consistent and do not support the claims well.\n- Lack of experiments about VL forgetting when fine-tuning LLMs with multiple VL datasets\n- The models used in the experiments of Tables/Figures keep changing without clear reason.",
+      "questions": "- Figure 1: Could not find description of how this experiment was performed. No discussion about this figure.\n- Figure 2: The linguistic forgetting of most of LLMs is not significant except one of Pythia models. Quite different from the linguistic forgetting of Figure 1.\n- Line 375: Table ??\n- Line 448: Disagree. There are many exceptions.\n- Line 450: Disagree. Not quite consistent results.",
+      "rating": 2,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "a177a07832bc109b13b41a159cc0a465dbab0cdfab69e415e46e3d7eaa883ebc8fb001f4d2cea4cf9f8d50c5ec9024ce09881232fc26e5372b20ab662634b642"
+    }
+  ]
+}

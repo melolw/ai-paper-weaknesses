@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0111",
+    "title": "Label-Free Hyperparameter Calibration for Parallel Context Encoding via KL Divergence Matching",
+    "abstract": "Adaptive Parallel Encoding (APE) enables efficient long-context processing by encoding document chunks independently, but its performance depends critically on hyperparameters---attention temperature and scaling factor---that typically require labeled validation data to tune. We propose a label-free calibration method that selects APE hyperparameters by minimizing KL divergence between sequential-teacher and parallel-encoded next-token distributions. Our approach requires no ground-truth labels, using only model-internal distributional signals. On LongBench 2WikiMultihopQA, KL-tuned APE achieves F1=48.09, outperforming label-tuned oracle (F1=46.23) by +1.86 points. We find that temperature dominates the KL landscape with 2.6$\\times$ higher sensitivity than scale, and temperature selection is perfectly stable under bootstrap resampling while scale selection is not. The weak KL-F1 correlation ($\\rho$=0.295) explains the gap to default performance, but KL calibration provides a robust label-free alternative for deployment scenarios where labeled calibration data is unavailable.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper asks whether Adaptive Parallel Encoding (APE) hyperparameters can be selected without labels by minimizing the forward KL divergence between the sequential-teacher next-token distribution and the corresponding APE distribution.\nThe authors evaluate the idea on LongBench 2WikiMultihopQA using Llama-3.1-8B-Instruct.\nThe reported multi-token KL selector achieves the best test F1, outperforming a small-set label-tuned baseline of 46.23 but still below the default APE setting.\nThe paper further argues that temperature is more informative than scale in the KL landscape and that scale selection can be unstable under bootstrap resampling.",
+        "strengths": "+ The motivation is very clear, making the paper easy to follow.\n+ The method section is clear enough to reproduce the high-level procedure, and the multi-token KL averaging is a reasonable fix for the single-token degeneracy the paper describes.\n+ The evaluation design is comprehensive.",
+        "weaknesses": "- The alignment between KL and model performance is so weak. While negative result could be appreciated, it usually requires more comprehensive evaluation as well as in-depth analysis. Simply reporting a negative result on a small, single-task study is not sufficient.\n- The study only uses one task, one base model, and a 200-example split. Without a broader validation, it is hard to know whether KL-based selection is generally reliable (or not a good choice at all) for APE.\n- It is strange to call the 32-example label-tuned grid search an \"oracle,\" and this overstates what is being beaten. In fact, it is a small-set label-tuned baseline that can overfit, not an upper bound or a large-validation oracle.\n\n\n\nMinor issue\n- In Fig. 1, the legend describes sequential encoding with a triangle marker that does not match the graphic. \n- In Fig. 1, The \"Grid \\Theta: T\\times S\" table also looks strange, as I believe for each cell there should be a pair  $\\langle T, S\\rangle $ rather than a single numerical value.\n- There is some repetitive experimental details in Sec. 3.4 and Sec. 4.1.\n- In Table 2, it is confusing why the first and third line is highlighted, rather than the fourth line.\n- Regarding the sentence \"The oracle selects T*=0.7, S*=0.8 which achieves the best calibration F1 (38.96)\" I cannot find any evidence for it. ",
+        "suggestions": "- Broaden evaluation across additional tasks and model families\n- Conduct in-depth analysis of why minimizing KL fails to improve model performance\n- Rename \"APE-Label-Tuned (oracle)\" to something accurate",
+        "llmDisclosure": "\nGPT-5.4 is used to polish the review comment based on the review draft.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-06T16:46:48.155Z",
+      "updatedAt": "2026-04-06T16:46:48.155Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 2,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The core hypothesis tested in this study is that, in the absence of labeled data for downstream tasks, label-free calibration of the hyperparameters of the Adaptive Parallel Encoding (APE) model (attention temperature T and scaling factor S) can be achieved by minimizing the Kullback-Leibler (KL) divergence between the next-token distributions of the sequential-teacher model and the APE model.\nTo verify this hypothesis, the authors adopted a strictly empirical research approach. They conducted extensive grid search experiments based on the Llama-3.1-8B-Instruct model on the 2WikiMultihopQA benchmark from LongBench, and performed an in-depth investigation into the stability of parameter selection and the validity of the proxy metric via Bootstrap resampling and correlation analysis.\nThe main findings of the study provide partial support for the hypothesis. On the positive side, the multi-token-based KL tuning method (F1=48.09) successfully outperformed the label-based tuning baseline (F1=46.23), which is highly prone to few-shot overfitting. This result demonstrates that the in-model distribution matching signal has stronger robustness in label-free scenarios. However, in terms of limitations, the data reveal only a weak and statistically non-significant positive correlation (ρ=0.295) between KL divergence and the actual downstream F1 performance, which means the proposed calibration method ultimately failed to outperform the empirical system default configuration (F1=48.99).",
+        "strengths": "Clear and well-motivated hypothesisThe paper accurately identifies a core challenge faced by Adaptive Parallel Encoding (APE) in real-world deployment: the lack of sufficient, high-quality labeled validation sets for the calibration of its hyperparameters (temperature T and scaling factor S). Its proposed label-free hypothesis — that the KL divergence between the output distributions of the sequential teacher model and the parallel encoding model can be leveraged as an internal proxy signal — boasts strong logical soundness and remarkable novelty.\n    Rigorous empirical analysis and novel insightRather than merely reporting final scores, this paper provides an in-depth dissection of the structural properties of the hyperparameter space. The authors systematically evaluate the stability of parameter selection using Bootstrap resampling, and quantitatively demonstrate the asymmetric sensitivity of KL divergence to temperature T and scaling factor S (the sensitivity of T is 2.6 times that of S). This detailed characterization of the model’s internal behavioral mechanism delivers highly valuable prior insights for subsequent research on APE optimization.\n    Informative failure analysis for negative results with exceptional academic integrityCommendably, the authors do not attempt to conceal the \"negative\" result that the proposed method fails to outperform the default heuristic configuration (F1=48.09 vs 48.99). Instead, they present the data in an objective and transparent manner, and explain the root cause of the underperformance by revealing only a weak and statistically non-significant correlation (ρ=0.295) between KL divergence and downstream F1 scores. Furthermore, the paper dissects the counterintuitive finding that the conventional label-based tuning (Oracle) method delivers even worse performance (F1=46.23), and astutely identifies that few-shot calibration sets are prone to inducing overfitting. This insight serves as a critical caveat for experimental design across the field.\n    ReproducibilityThe paper explicitly states that the relevant code has been fully open-sourced. Given that this work is an output generated by an automated research system, open-sourcing the code is critical for peer validation of the accuracy of its grid search results, Bootstrap sampling procedures, and proxy metric calculations, which fully aligns with the high standards for open science upheld by current top-tier conferences and journals.\n    Efficient communicationThe paper centers squarely on its core hypothesis and experimental validation, omitting unnecessary and redundant background exposition. The presentation of figures, tables and data directly underpins its core arguments, demonstrating excellent efficiency and rigor in academic communication.",
+        "weaknesses": "The most critical flaw of this work is that the computationally expensive KL divergence tuning (F1=48.09) ultimately fails to outperform the completely zero-cost default heuristic configuration of APE (F1=48.99). If the default parameters already represent a local or global optimal solution in most scenarios, the practical deployment value of the proposed calibration method will be severely diminished.\nActionable feedback: The authors must construct or identify specific distribution shift scenarios (e.g., extremely long text sequences, corpora from specific vertical domains) to demonstrate that the default configuration suffers from severe performance degradation in these settings, while the KL calibration method can dynamically adapt to and recover performance. This is essential to validate the indispensability of the proposed method.\nThe experiments transparently report only a weak and statistically non-significant correlation between KL divergence and downstream F1 scores (ρ=0.295, p=0.152), which to a certain extent fundamentally undermines the core premise of the study: that minimizing KL divergence is equivalent to optimizing downstream task performance.\nActionable feedback: Merely reporting the weak correlation is insufficient. The authors are advised to explore other potential internal proxy metrics (e.g., Jensen-Shannon divergence, predictive entropy distribution, or consistency metrics based on hidden states across model layers), or to provide a theoretical explanation for why distribution matching cannot be perfectly translated to factual accuracy (measured by F1) in QA-style generative tasks.",
+        "suggestions": "",
+        "llmDisclosure": "none",
+        "ethicsReproducibility": "none"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T13:28:25.935Z",
+      "updatedAt": "2026-03-28T13:28:25.935Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 4,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies whether APE hyperparameters can be calibrated without labeled validation data. The paper proposes a label-free method that selects the attention temperature and scaling factor by minimizing the KL divergence between the next-token distributions of a sequential teacher and the APE model.",
+        "strengths": "1. The multi-token KL averaging to break the single-token degeneracy is a simple, sensible fix grounded in the dynamics of autoregressive generation.\n\n2. The paper explicitly investigates the correlation between KL and downstream F1, which is important for understanding the limitations of the proxy objective.\n",
+        "weaknesses": "1. The core method conditions teacher and student KL on their own generated prefixes (on-policy for each), which may confound the signal with compounding exposure bias. A teacher-forced variant (both conditioned on teacher prefixes) or mixed variants are not evaluated. \n\n2. The approach is tied to a sequential teacher forward pass and thus inherits the compute overhead of full attention (albeit on a small calibration set); the real-world trade-offs versus label-based tuning are not thoroughly benchmarked at scale. \n\n3. The reported KL magnitudes are inconsistent across settings (e.g., Table 1 shows mean KL of 2.54 for multi-token while single-token KL is ≈0.065–0.088), suggesting either a normalization mismatch or a measurement bug that needs clarification.",
+        "suggestions": "",
+        "llmDisclosure": "LLM is only used for translation and writing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T22:07:39.810Z",
+      "updatedAt": "2026-03-31T22:07:39.810Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0111"
+}

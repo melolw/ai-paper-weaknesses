@@ -1,0 +1,63 @@
+1) Summary
+The paper proposes KL-Time Replay, a method for scheduling experience replay in continual learning for large language models (LLMs). Instead of relying on parameter-space metrics like accumulated update norms (as in the FOREVER baseline), the authors monitor function-space drift by computing the KL divergence between current and reference model predictions on fixed anchor sets. When cumulative drift exceeds thresholds calibrated to an Ebbinghaus-inspired spaced repetition schedule, replay is triggered. Experiments on a 5-task text classification benchmark using Qwen3-0.6B with LoRA demonstrate that KL-Time achieves performance comparable to FOREVER (Overall Performance 0.704 vs. 0.708). Analysis reveals that while KL drift and parameter norms are highly correlated within tasks (>0.97), they diverge at task boundaries, leading to substantively different scheduling decisions. An ablation study further suggests that using current-task anchors may be more efficient than the proposed past-task anchors.2) Strengths
+*   **Direct Behavioral Monitoring for Scheduling**
+    *   The shift from parameter-space to function-space metrics addresses a fundamental limitation in existing methods. As noted in Section 3.2, parameter updates can be noisy proxies for behavioral change; large updates may be irrelevant to past tasks, while small updates in sensitive directions cause forgetting.
+    *   The method provides a more principled signal for replay by directly measuring output drift (Equation 2), which aligns better with the definition of catastrophic forgetting as a behavioral phenomenon.
+    *   This approach bridges a gap in the literature, as previous function-space methods (e.g., FROMP, Anchored SFT mentioned in Section 2) focused on regularization rather than scheduling.
+*   **Rigorous and Fair Experimental Comparison**
+    *   The authors ensure a fair comparison with the strong baseline FOREVER by calibrating replay compute parity within ±10% (Section 4.1, Section 3.5). This prevents the result from being an artifact of simply performing more replay.
+    *   The evaluation protocol is robust, averaging results over 9 runs (3 seeds × 3 task orders) as detailed in Section 4.1, which mitigates variance due to random initialization or task ordering.
+    *   The inclusion of Backward Transfer (BWT) alongside Overall Performance (Table 1) provides a comprehensive view of forgetting mitigation, showing near-zero BWT for all replay methods.
+*   **Insightful Signal Analysis and Divergence Evidence**
+    *   The correlation analysis in Figure 2 and Section 4.3 provides valuable insight into the relationship between the proposed signal and the baseline. The finding that within-task correlation is high (>0.97) but full-trajectory correlation is moderate (0.46) is a strong analytical contribution.
+    *   The "Phase-0 Gate" analysis (Figure 3) quantitatively demonstrates that the signals are distinct, with a 14.24% trigger divergence. This proves that KL-Time is not merely a reparameterization of FOREVER but captures different dynamics, particularly at task boundaries.
+    *   This analysis validates the core hypothesis that function-space drift offers a unique perspective on model evolution that parameter norms miss.
+*   **Actionable Ablation on Anchor Selection**
+    *   The ablation study in Section 4.4 and Table 2 explores a critical hyperparameter: the source of the anchor set.
+    *   The finding that current-task anchors yield higher performance (OP 0.713) with fewer replay events (18.7 vs. 29.9) is a significant and practical contribution.
+    *   This result suggests that monitoring drift on the task currently being learned may be a more efficient signal for consolidation, offering a clear direction for future optimization.3) Weaknesses
+*   **Limited Evaluation Scope and Generalizability**
+    *   The evaluation is restricted to a single benchmark (Standard CL) with only 5 text classification tasks (Section 4.1). This limits the ability to assess generalizability to other domains (e.g., vision, code) or task types (e.g., generation, instruction tuning).
+    *   The task sequence is relatively short (5 tasks). Continual learning challenges often intensify with longer sequences; the method's stability over 10+ tasks is unverified.
+    *   No comparison is made against other recent LLM-specific continual learning methods beyond FOREVER and SuRe (mentioned in Related Work but not evaluated), leaving the relative standing of KL-Time unclear in the broader landscape.
+*   **Unquantified Computational Overhead of Drift Monitoring**
+    *   While compute parity for *replay* is maintained, the cost of *monitoring* the drift is not analyzed. Computing KL divergence on an anchor set of 256 examples (Section 3.3) requires forward passes at every training step (or frequent intervals).
+    *   In contrast, parameter update norms (FOREVER) are typically cheap to compute from optimizer states. The overhead of frequent inference on anchor sets could be prohibitive for larger models or longer training runs.
+    *   The manuscript does not report wall-clock time or FLOPs for the monitoring phase, making it difficult to assess the practical efficiency of the method.
+*   **Contradictory Findings Regarding Anchor Strategy**
+    *   The main method proposes using past-task anchors to monitor forgetting (Section 3.3), yet the ablation study (Table 2) shows that current-task anchors perform better and are more efficient.
+    *   This creates a conceptual tension: if current-task anchors are superior, the method is effectively monitoring "learning progress" on the new task rather than "forgetting" on old tasks, which contradicts the motivation in Section 3.2.
+    *   The paper does not reconcile this discrepancy or explain why the primary proposal relies on the less effective past-task strategy.
+*   **Heuristic Threshold Calibration**
+    *   The calibration of the "drift day" ($D_{day}$) using a fixed warm-up window of 24 steps (Section 3.5) appears arbitrary and lacks theoretical justification.
+    *   The sensitivity of the method to this warm-up window $S$ and the scaling factor $\rho$ is not explored. Small changes in $S$ could significantly alter the threshold scale, potentially destabilizing the schedule.
+    *   The Ebbinghaus schedule is applied directly to drift values without accounting for the non-linear nature of KL divergence accumulation, which may differ from the linear accumulation of parameter norms.
+*   **Internal Inconsistencies and Methodological Ambiguity**
+    *   There is a direct contradiction between the mathematical definition of the drift signal and its textual/visual description. Equation 2 defines $D_t$ as the instantaneous mean KL divergence at step $t$, whereas Section 3.5 and Figure 1 explicitly refer to "cumulative drift" and show a monotonically increasing accumulation curve. This ambiguity critically impacts reproducibility and the logical consistency of the threshold-based triggering mechanism.
+    *   The experimental setup description contains a labeling mismatch: Section 4.1 states results are averaged over "3 task orders," but the table in Figure 3 labels the runs as "Order 9," "Order 10," and "Order 11," suggesting a disconnect in the experimental reporting.
+    *   The Abstract contains a prominent disclaimer that the paper was generated by an automated research system, which, combined with future-dated references (e.g., Feng et al., 2026; Hazard et al., 2025), raises concerns regarding the verification of results and the reliability of the cited literature.4) Suggestions for Improvement
+*   **Expand Evaluation Scope**
+    *   Evaluate KL-Time on additional benchmarks, such as CLaMP or instruction-tuning datasets, to demonstrate robustness across different LLM tasks.
+    *   Test the method on longer task sequences (e.g., 10–20 tasks) to verify stability and prevent performance degradation over extended continual learning horizons.
+    *   Include comparisons with other recent replay scheduling or LLM-specific continual learning baselines to provide a more comprehensive performance context.
+*   **Analyze and Mitigate Monitoring Overhead**
+    *   Report the wall-clock time or computational cost of computing the KL drift per training step compared to the parameter norm baseline.
+    *   Investigate strategies to reduce monitoring frequency (e.g., computing drift every $N$ steps) or reduce anchor set size without sacrificing signal quality.
+    *   Discuss the trade-off between monitoring frequency and scheduling accuracy to provide practical guidelines for deployment.
+*   **Reconcile Anchor Strategy Findings**
+    *   Clarify the conceptual distinction between monitoring past-task forgetting and current-task learning progress. If current-task anchors are superior, consider adopting them as the primary method or providing a strong theoretical argument for why past-task anchors are preferred despite lower performance.
+    *   Analyze *why* current-task anchors are more efficient. Do they capture a more stable signal? Do they align better with the Ebbinghaus schedule?
+    *   Consider a hybrid approach that combines both anchor types if they capture complementary signals.
+*   **Refine Threshold Calibration and Sensitivity Analysis**
+    *   Provide a sensitivity analysis for the warm-up window $S$ and the scaling factor $\rho$. Show how performance varies with different values to demonstrate robustness.
+    *   Explore adaptive calibration methods that do not rely on a fixed warm-up window, such as normalizing drift by the initial rate of change.
+    *   Justify the choice of the Ebbinghaus schedule for KL divergence. Does the accumulation of KL drift follow a similar pattern to parameter norms, or does it require a different schedule shape?
+*   **Resolve Internal Inconsistencies and Clarify Methodology**
+    *   Clarify whether $D_t$ represents instantaneous or cumulative drift. If cumulative, update Equation 2 to reflect a summation over time steps; if instantaneous, revise Section 3.5 and Figure 1 to accurately describe the triggering logic and remove references to "accumulation."
+    *   Correct the task order labeling in Figure 3 to align with the "3 task orders" stated in Section 4.1, or update the text to accurately reflect the experimental runs presented.
+    *   Address the automated generation disclaimer by providing a rigorous verification of all experimental results, ensuring all references are correctly dated and verifiable, and explicitly discussing any limitations arising from the automated drafting process.5) Score
+- Overall (10): 5 — The novel function-space scheduling concept is undermined by critical internal contradictions (Equation 2 vs. Section 3.5), labeling mismatches (Figure 3), and the automated generation disclaimer.
+- Novelty (10): 6 — The shift to function-space drift is a valid incremental step, but the high within-task correlation (>0.97) aligns with established linearization theory in PEFT, limiting the theoretical novelty.
+- Technical Quality (10): 5 — The core methodology suffers from a fundamental ambiguity between instantaneous and cumulative drift definitions, and the ablation study contradicts the primary proposal without resolution.
+- Clarity (10): 6 — While generally well-structured, the manuscript contains significant inconsistencies between equations, text, and figures (e.g., Figure 1 legend vs. Equation 2), and mismatched experimental labels (Section 4.1 vs. Figure 3).
+- Confidence (5): 5 — The reviewer is highly confident in the assessment due to clear, verifiable inconsistencies within the manuscript text and figures.

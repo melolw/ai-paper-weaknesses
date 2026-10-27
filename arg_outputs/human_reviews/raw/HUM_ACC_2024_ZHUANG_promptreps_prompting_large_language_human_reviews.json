@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_ZHUANG_promptreps_prompting_large_language",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "PromptReps: Prompting Large Language Models to Generate Dense and Sparse Representations for Zero-Shot Document Retrieval",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "To my knowledge, this paper is the first to successfully demonstrate that current LLMs can be directly applied as text representation models for retrieval tasks. Specifically, the paper involves prompting LLMs to represent a given text using a single token, extracting hidden states and logits from the LLM to construct a hybrid representation that includes both dense text embeddings and sparse bag-of-words representations. The paper also explores variations of this core idea, such as generating multiple words and using multiple embeddings. Extensive experiments on BEIR demonstrate the effectiveness of PromptReps.",
+      "strengths": "(1) To my knowledge, this paper is the first to successfully demonstrate that current LLMs can be directly applied as text representation models for retrieval tasks, although previous works have explored LLMs as text encoders for sentence-level STS tasks.\n\n(2) The paper is clearly written and easy to follow.\n\n(3) Extensive experiments show that PromptReps can indeed serve as a high-performing, training-free text embedding method.\n\n(4) The authors also present interesting and insightful explorations of multi-token single-representation, multi-token multi-representation, and multi-word multi-representation approaches to representing text.",
+      "weaknesses": "My main concern is that PromptReps shares significant similarities with PromptEOL in terms of methodology. Both methods use a meaning-compression prompt to compress the entire information of a text into a single token.",
+      "questions": "None",
+      "rating": 3.5,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "4dfaec9878b93354b6b7cc30fcfcee7059a423abb5fee0acab035a1989520cbba3c976a9f5492905fd937b3c505389693c6fa2291c9d63fd19278dafca0630ae"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This paper proposes a new approach called PromptReps for unsupervised document retrieval with generated dense & sparse embeddings from LLMs. It shows using either dense representations only or sparse representations performs relatively poorly, but using the hybrid search by combining the two can achieve strong performance over previous fine-tuning based approaches. It also compares different prompts, LLMs and representation construction approaches for a comprehensive scope.",
+      "strengths": "1. The new approach is intuitive, simple, and straightforward. The performance on BeIR is strong.\n2. The discussion on different design choices (prompts, LLMs, representation construction) is comprehensive. \n3. The paper is easy to read.",
+      "weaknesses": "1. One important missing discussion is the reason why using dense-only or sparse-only performs poorly. And why hybrid retrieval can improve performance so much.\n2. Another important missing discussion is on the weak performance on MS MARCO/TREC DL. Why does this happen?\n3. The experiment in Table 1 is unfair for Unsup Contrastive training: they should be also equipped with +BM25.\n4. The 8B model + BM25 in Table 1 is more interesting to be included.\n5. The claim at lines 418-420 seems not correct. For example, Promptgator[1] in its zero-shot setting can also outperform BM25.\n6. The tunning on the fusion weight should be also carried out.\n7. Which ANN method is used?\n\n[1] Dai, Z., Zhao, V. Y., Ma, J., Luan, Y., Ni, J., Lu, J., ... & Chang, M. W. Promptagator: Few-shot Dense Retrieval From 8 Examples. In The Eleventh International Conference on Learning Representations.",
+      "questions": "1. Some words seem missing at lines 288-289.\n2. Should place Figure 2 in page 7.\n3. Should place Figure 2 in page 7 in Table 3.",
+      "rating": 3.5,
+      "confidence": 5,
+      "soundness": 3.5,
+      "raw_note_id": "faeeaefd36a8521671b103e1dde02e910a934728bd836f0acf018575be5f470b0f792bc9cd8b8d13b17a7a6e70cbe22c1373824d6767e294f881607c3930455a"
+    }
+  ]
+}

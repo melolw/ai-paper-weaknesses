@@ -1,0 +1,55 @@
+1) Summary
+The paper investigates the "repetition advantage" in long chain-of-thought (CoT) supervised fine-tuning (SFT), where training on repeated small datasets outperforms training on larger diverse datasets under a fixed compute budget. The authors propose a diagnostic framework decomposing accuracy into ParseRate and Acc|Parse, demonstrating that the repetition advantage is primarily a termination effect rather than improved reasoning. They introduce Termination-Aware SFT, which reweights loss on termination tokens, recovering a fraction of the advantage. Experiments on AIME and GPQA benchmarks using OLMo-3-7B support these claims, with mediation analysis showing parseability over-explains the accuracy gap.2) Strengths
+- **Novel Diagnostic Framework**
+  - Decomposes accuracy into ParseRate and Acc|Parse (Section 3.3, Eq. 1), isolating termination behavior from reasoning quality.
+  - Provides a clear mathematical relationship (Acc@n ≈ ParseRate × Acc|Parse) that simplifies complex model behavior into interpretable components.
+  - Enables direct comparison of training strategies by separating format compliance from actual reasoning capability.
+- **Rigorous Mediation Analysis**
+  - Computes mediation fractions showing parseability over-explains the gap (Section 3.4, Table 2, Figure 2).
+  - Demonstrates gap reversal on AIME benchmarks when conditioning on successful parsing, quantitatively proving the termination effect.
+  - Offers a formal statistical framework to attribute accuracy differences to specific failure modes rather than holistic performance.
+- **Targeted Intervention**
+  - Proposes Termination-Aware SFT with loss reweighting (Section 3.5, Eq. 2-3) that explicitly targets structure and EOS tokens.
+  - Validates component contributions through ablation studies (Table 3), showing synergistic benefits of combined token upweighting.
+  - Provides a computationally efficient alternative to multi-epoch training, improving accuracy without data repetition.
+- **Clear Experimental Design**
+  - Compares three conditions at a fixed update budget (Section 3.2, Figure 1), ensuring a fair, compute-controlled evaluation.
+  - Uses standardized benchmarks (AIME’24/25, GPQA) with consistent sampling parameters (Section 4.1) for reliable metric comparison.
+  - Maintains transparency by publicly releasing code and clearly defining all experimental variables.3) Weaknesses
+- **Limited Model and Dataset Scope**
+  - Restricted to a single base model (OLMo-3-7B) and one dataset (DOLCI-think) (Section 4.1), limiting generalizability.
+  - Lacks evaluation on diverse architectures (e.g., decoder-only vs. hybrid) to verify if the termination effect is model-agnostic.
+  - Does not test across different data distributions or domains, raising questions about robustness outside mathematics/science tasks.
+- **Partial Recovery of Advantage**
+  - TA-SFT recovers only 14% of the repetition advantage (Section 4.4), leaving the majority of the effect unexplained.
+  - The intervention improves ParseRate by just 5.6pp compared to a 40.6pp gap between conditions, indicating limited efficacy.
+  - Fails to address why extensive data repetition yields such strong termination learning beyond what explicit loss reweighting can capture.
+- **Benchmark-Dependent Effects**
+  - Mediation fractions vary significantly (e.g., GPQA 0.69 vs AIME >1.0) (Table 2, Section 4.3), but the paper lacks deep analysis.
+  - Does not investigate why task characteristics (e.g., multiple-choice vs. integer answers) influence termination behavior differently.
+  - Omits discussion on whether GPQA’s lower mediation fraction reflects genuine reasoning improvements or different failure modes.
+- **Lack of Qualitative Analysis**
+  - Relies solely on quantitative metrics without providing concrete output examples (Section 4).
+  - Missing case studies of truncated or malformed generations that would illustrate the diagnostic framework’s utility.
+  - Lacks visualizations of attention patterns or gradient flows to support claims about termination token learning.4) Suggestions for Improvement
+- **Expand Model and Dataset Evaluation**
+  - Test the diagnostic framework on additional base models (e.g., Llama, Qwen) to verify architectural robustness.
+  - Evaluate across diverse datasets and domains to confirm the termination effect is not dataset-specific.
+  - Include ablation on model sizes to assess how parameter count influences termination learning dynamics.
+- **Investigate Unexplained Mechanisms**
+  - Analyze gradient magnitudes or attention patterns during repetition training to identify why termination learning emerges so strongly.
+  - Explore alternative interventions (e.g., curriculum learning, decoding modifications) to recover more of the repetition advantage.
+  - Conduct sensitivity analysis on loss weighting schedules to optimize termination token emphasis.
+- **Analyze Benchmark Differences**
+  - Provide a detailed discussion on why GPQA shows different mediation patterns, possibly relating to answer format complexity.
+  - Investigate whether reasoning depth or problem structure correlates with termination failure rates across benchmarks.
+  - Include task-specific ablations to determine if termination interventions should be tailored to problem types.
+- **Add Qualitative Examples**
+  - Include case studies of model outputs under different conditions to concretely demonstrate termination failures.
+  - Provide examples of successful terminations under TA-SFT to illustrate the intervention’s practical impact.
+  - Visualize generation trajectories or token probability distributions to support quantitative findings.5) Score
+- Overall (10): 7 — The paper presents a compelling diagnostic framework and targeted intervention, though limited scope and partial recovery of the advantage warrant caution.
+- Novelty (10): 8 — The decomposition of accuracy into ParseRate and Acc|Parse offers a fresh perspective on the repetition advantage.
+- Technical Quality (10): 7 — Solid experimental design and mediation analysis, but restricted to a single model/dataset and lacks qualitative validation.
+- Clarity (10): 8 — Well-structured with clear definitions, figures, and tables supporting the narrative.
+- Confidence (5): 4 — High confidence in the review based on clear methodological descriptions and reproducible experimental setup.

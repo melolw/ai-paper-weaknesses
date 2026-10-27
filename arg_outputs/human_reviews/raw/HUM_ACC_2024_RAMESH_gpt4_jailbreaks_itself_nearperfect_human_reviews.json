@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_RAMESH_gpt4_jailbreaks_itself_nearperfect",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "GPT-4 Jailbreaks Itself with Near-Perfect Success Using Self-Explanation",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper introduces Iterative Refinement Induced Self-Jailbreak (IRIS), a self-jailbreaking method that enables a single language model to act as both the attacker and the target, iteratively refining adversarial prompts and enhancing outputs to achieve near-perfect jailbreak success rates on GPT-4 and GPT-4 Turbo. The experiments comprehensively test IRIS on various models and prompt categories, validating its effectiveness through ablation studies and human evaluation.",
+      "strengths": "1. This paper proposes a new self-jailbreaking method called IRIS, which enables a single language model to act as both the attacker and the target. The iterative refinement and self-explanation steps are distinctive compared to previous jailbreaking methods.\n2. IRIS achieves near-perfect jailbreak success rates (98% on GPT-4, 92% on GPT-4 Turbo) with significantly fewer queries (under 7 on average) compared to state-of-the-art methods like TAP and PAIR. The experiments comprehensively validate the effectiveness of IRIS.\n3. The paper is well-organized and clearly written. The figures, such as the diagram of the IRIS method in Figure 1, effectively illustrate the proposed approach. Notations and formulations are properly defined, enhancing the readability of the paper.",
+      "weaknesses": "1. While IRIS introduces a new self-jailbreaking method, the paper does not provide a clear justification for why and how the proposed modifications, such as the iterative refinement and self-explanation steps, effectively address the limitations of existing jailbreaking methods.\n2. The experiments in this paper only compare IRIS with TAP and PAIR. More recent and stronger baselines need to be added to reflect the comprehensiveness of the experiments. The authors should also provide a more detailed discussion about the intended incremental contributions of IRIS above and beyond existing research.",
+      "questions": "As mentioned in the Limitations section, the paper does not evaluate IRIS on open-source models, which may hinder its applicability.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "bad5f1c194656ff404afb2ccb4ad2e31cd1a4fc5b6cc74476b50eba03839bd7521fe6da39b3a513f575463641c9125963c912142691bd956ccb5feb5a26ac642"
+    }
+  ]
+}

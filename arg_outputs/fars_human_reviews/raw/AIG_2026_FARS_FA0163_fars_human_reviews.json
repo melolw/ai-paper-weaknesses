@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0163",
+    "title": "Execution-Signature Recycling: Deduplicating Unit-Test Failure Feedback for Test-Time Code Scaling",
+    "abstract": "Test-time scaling improves code generation by sampling multiple candidates and using execution feedback to guide selection or refinement. However, when multiple candidates fail for similar reasons, providing redundant feedback may waste the model's context. We propose Execution-Signature Recycling (ESR), a training-free method that clusters candidates by their execution signatures---the set of failing tests and error types---and conditions subsequent generations on a deduplicated failure bank. We evaluate ESR on HumanEval+ with Qwen2.5-Coder-7B-Instruct under a fixed 16-generation budget. While ESR achieves the highest mean Pass@1 (87.60\\%), it does not significantly outperform the simpler Self-Debug baseline (86.99\\%), with a 95\\% confidence interval of $[-0.81, 2.24]$ that includes zero. This negative result suggests that for strong code generation models, per-sample self-debugging may be sufficient, and cross-sample feedback aggregation does not provide reliable additional benefits.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper proposes Execution-Signature Recycling (ESR), a test-time scaling method for code generation. The idea is to look at failures across multiple sampled programs, cluster them by a shared execution signature (failing tests + error types), and feed a deduplicated “failure bank” into later generations. On HumanEval+, ESR gets the best mean Pass@1, but it does not significantly outperform the stronger Self-Debug baseline.",
+        "strengths": "1. The paper asks a good question. If many candidates fail in similar ways, it is natural to ask whether we can reuse that information across samples instead of debugging each one independently.\n2. The method is clean and easy to understand. The execution-signature formulation is simple, deterministic, and reproducible, which makes the paper easy to follow.\n3. I appreciate the honest reporting. The paper does not oversell a small gain and is clear that ESR does not significantly beat Self-Debug. ",
+        "weaknesses": "1. The benchmark is too narrow, so it is hard to know whether the conclusion is general or just specific to this benchmark. A broader evaluation would make the paper much stronger.\n2. The paper reports that for about 68% of tasks, all Round 1 candidates already pass the base tests, which means ESR often has no meaningful failure bank to build. That makes me wonder whether the negative result is partly a benchmark-selection issue. On harder tasks, especially more realistic SWE-style settings, there would likely be many more failures and much richer cross-sample information to recycle.\n3. The execution signature is fairly coarse. Using only failing test IDs and error types is neat, but probably too shallow. Different bugs can collapse into the same signature, and similar bugs can also end up separated. So the clustering may not really capture the underlying bug structure very well.\n4. Due to above limitations, the main conclusion may not generalize.",
+        "suggestions": "",
+        "llmDisclosure": "1. summary\n2. chatgpt\n3. None\n4. yes",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T15:07:55.857Z",
+      "updatedAt": "2026-03-31T15:07:55.857Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper investigates whether aggregating execution feedback across multiple sampled code candidates can improve test-time scaling. The authors propose Execution-Signature Recycling (ESR), a training-free method that clusters candidates based on execution signatures (failing tests and error types) and provides deduplicated feedback to guide subsequent generations. The hypothesis is that similar failure modes across candidates can be leveraged to reduce redundant exploration. The method is evaluated on HumanEval+ using a two-round generation process. The results show that ESR achieves the highest mean Pass@1 but does not significantly outperform a simpler Self-Debug baseline, leading to a negative result that cross-sample feedback aggregation does not provide reliable gains over per-sample debugging.",
+        "strengths": "1. Transparent reporting of negative results. The authors clearly state that ESR does not significantly outperform the baseline and provide supporting statistical evidence.\n2. Good presentation and conciseness. The paper is easy to follow, with clear figures and well-structured methodology.",
+        "weaknesses": "1. Limited novelty in both hypothesis and methodology. The core idea of aggregating execution feedback across candidates and deduplicating similar failures is a natural extension of existing approaches such as self-debugging, Reflexion, and experience recycling. The proposed clustering based on execution signatures is a straightforward instantiation rather than a fundamentally new conceptual or methodological contribution.\n2. The negative result is largely expected and provides limited new insight. Given prior work showing strong effectiveness of per-sample feedback and the relatively high performance of modern code LLMs, it is unsurprising that cross-sample aggregation yields marginal gains. The paper’s own analysis shows that only ~32% of tasks have non-empty failure banks (Table 2, page 4 ), meaning the proposed mechanism is inactive for the majority of cases. As a result, the outcome confirms an intuitive expectation rather than revealing new understanding of test-time scaling.\n3. Limited scope of validation. The experiments are restricted to a single model (Qwen2.5-Coder-7B) and a single benchmark (HumanEval+). It remains unclear whether the conclusion generalizes to weaker models, more challenging datasets, or settings with higher failure diversity.\n4. Weak intervention strength and missing ablations. The method relies on exact signature matching and a fixed clustering strategy, but does not explore alternative formulations (e.g., approximate clustering, semantic grouping, different feedback representations). This makes it difficult to determine whether the negative result is due to the hypothesis or the specific implementation.\n5. Low informational gain relative to effort. The paper evaluates an intuitive hypothesis using a straightforward implementation, and the observed outcome does not meaningfully change our understanding of feedback utilization in code generation. The contribution is therefore incremental.",
+        "suggestions": "The authors are encouraged to address the concerns in Weaknesses.",
+        "llmDisclosure": "Use LLM to draft the first version based on my evaluation.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-12T16:57:47.974Z",
+      "updatedAt": "2026-04-12T16:57:47.974Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0163"
+}

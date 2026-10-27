@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_WANG_openfactcheck_unified_framework_factuality",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "OpenFactCheck: A Unified Framework for Factuality Evaluation of LLMs",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "Proposed OpenFactCheck, a unified factuality evaluation framework for LLMs consisting of three modules: (i) CUSTCHECKER: allows users to easily customize an automatic fact-checker and verify the factual correctness of documents and claims, (ii) LLMEVAL, a unified evaluation framework that assesses LLM’s factuality ability from various perspectives, and (iii) CHECKEREVAL is an extensible solution for gauging the reliability of automatic fact-checkers verification results using human-annotated datasets.",
+      "strengths": "Since different papers use disparate evaluation benchmarks and measurements, this paper introduces a unified factuality evaluation framework for LLMs.",
+      "weaknesses": "1. The scientific novelty of this work is very limited. Some existing methods are combined without proposing any new solutions.\n2. The reproducibility is a concern: how was the response for GPT-4 and LLaMA-2 collected? What were the prompts, and decoding parameters?\n3. The evaluation is also not comprehensive. Since this work lacks scientific novelty, should at least contain extensive experiments to validate various components of the proposed method. However, the evaluation is only limited to GPT-4 and LLaMA-2. \n4. Moreover, the paper is quite difficult to follow. The presentation should be further improved with better coherence. At this moment, the proposed system seems quite complicated.",
+      "questions": "I believe this paper lacks scientific contribution and does not fit well with the research track. It may probably fit better if submitted to the System Demonstration track.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "60502cc3e376fd692aea241601fb9e1899e05e691833b5f6ee84a6214f0b0eb7d3854e1de815cd81a4664e331053becd82b499b9be787a5f0e8afc1c7a32ca8f"
+    }
+  ]
+}

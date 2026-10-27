@@ -1,1 +1,7 @@
+# macOS / Python junk
 .DS_Store
+__pycache__/
+*.pyc
+
+# DeepReviewer PDF renderings of final_report.md (~12 MB each, not used)
+arg_outputs/deepreviewer/raw/*/final_report.pdf

@@ -1,0 +1,65 @@
+# Global Summary
+
+This paper addresses the vulnerability of LLM-based judges evaluating web agent trajectories to manipulation via unfaithful chain-of-thought (CoT) reasoning. The authors propose "view-disagreement escalation," a training-free framework that compares judgments from two counterfactual input views (one with CoT, one without). When these views disagree, the system escalates to a strict evidence-anchored evaluation. On the AgentRewardBench dataset, the method achieves a 63% relative reduction in attack sensitivity ($\Delta$-FPR: 4.31% vs 11.71% for the baseline) while maintaining competitive F1 (72.13% vs 72.93%) and achieving the highest recall (77.63%). The authors validate their mechanistic hypothesis by showing a 2.15$\times$ enrichment in disagreement rates under attack. A noted limitation is the increased inference cost (2.1$\times$ calls per trajectory).
+
+# Abstract
+
+- The paper introduces view-disagreement escalation to mitigate CoT manipulation in LLM judges.
+- The framework compares judgments from a CoT-inclusive view and a CoT-agnostic view.
+- Disagreement triggers escalation to strict evidence-anchored evaluation.
+- Key quantitative results on AgentRewardBench:
+  - 63% relative reduction in attack sensitivity ($\Delta$-FPR: 4.31% vs 11.71%).
+  - F1 score: 72.13% (compared to 72.93% for the baseline).
+  - Recall: 77.63% (best among methods).
+  - 2.15$\times$ disagreement enrichment under attack conditions.
+
+# Introduction
+
+- LLM judges are used for scalable evaluation of web agent trajectories but are vulnerable to CoT manipulation, which can inflate false positive rates by up to 90% (Khalifa et al., 2026).
+- Existing mitigations face a trade-off: removing CoT eliminates vulnerability but loses context; always-on strict evaluation is costly and reduces recall.
+- The proposed method exploits the asymmetry where CoT manipulation affects CoT-dependent judgments (View1) but leaves CoT-agnostic judgments (View2) stable.
+- Contributions include a mechanistically-motivated framework, empirical validation of the disagreement signal (2.15$\times$ enrichment), and demonstration of robust performance (63% reduction in attack sensitivity).
+
+# Method
+
+- **Problem Setup:** A trajectory $\tau$ consists of a goal $g$, actions $\{a_1, \dots, a_T\}$, observations, and optionally a CoT trace $c$. The task is to predict success or failure.
+- **Counterfactual Input Views:**
+  - View1 (with CoT): Includes the reasoning trace; susceptible to manipulation.
+  - View2 (without CoT): Includes only observable evidence; agnostic to CoT manipulation.
+- **Disagreement Detection and Escalation:**
+  - Stage 1: Dual-View Judging using a base prompt $P_{\text{base}}$ with deterministic decoding (temperature=0).
+  - Stage 2: Selective Escalation. If predictions $y_1$ and $y_2$ agree, output $y_1$. If they disagree ($y_1 \neq y_2$), escalate to a strict evidence-anchored rubric prompt $P_{\text{strict}}$ that excludes CoT and requires explicit evidence citation.
+  - Final prediction formula: $\hat{y} = y_1$ if $y_1 = y_2$, else $y_{\text{strict}}$.
+
+# Experiments
+
+- **Dataset:** AgentRewardBench (1,106 expert-annotated trajectories: 295 successes, 811 failures).
+- **Attack Setting:** Progress Fabrication attack applied to all 811 failure trajectories, rewriting CoT to fabricate progress while keeping actions fixed.
+- **Judge Model:** Llama-3.3-70B-Instruct with deterministic decoding.
+- **Baselines:** View1-only, View2-only, Strict-always, Random Escalation.
+- **Main Results (Table 1):**
+  - **Attack Robustness:** The proposed method achieves $\Delta$-FPR of 4.31%, compared to 11.71% for View1-only. View2-only and Strict-always achieve 0.00 $\Delta$-FPR but have lower accuracy.
+  - **Recall:** The proposed method achieves 77.63%, the highest among all methods (vs 76.27% for View1-only and 70.51% for View2-only).
+  - **F1 Score:** 72.13%, within 0.8 percentage points of View1-only (72.93%).
+- **Mechanistic Validation (Figure 2):**
+  - Disagreement rates: Unmodified Successes (18.0%), Unmodified Failures (7.6%), Attacked Failures (16.4%).
+  - Attacked failures show 2.15$\times$ higher disagreement than unmodified failures.
+- **Ablation Study (Table 2):**
+  - Random Escalation (10% rate): Fails to reduce attack sensitivity ($\Delta$-FPR 11.34%).
+  - Matched-Cost Control (two View2 calls): Achieves low $\Delta$-FPR (0.12%) but degrades F1 to 68.97%.
+
+# References
+
+- Zheng et al. (2023): Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.
+- Khalifa et al. (2026): Gaming the judge: Unfaithful chain-of-thought can undermine agent evaluation.
+- Lü et al. (2025): AgentRewardBench: Evaluating automatic evaluations of web agent trajectories.
+- Zhou et al. (2023): WebArena: A realistic web environment for building autonomous agents.
+- Koh et al. (2024): VisualWebArena: Evaluating multimodal agents on realistic visual web tasks.
+- Yoran et al. (2024): AssistantBench: Can web agents solve realistic and time-consuming tasks?
+- Drouin et al. (2024): Workarena: How capable are web agents at solving common knowledge work tasks?
+- Deng et al. (2023): Mind2web: Towards a generalist agent for the web.
+- Chiang et al. (2024): Chatbot arena: An open platform for evaluating llms by human preference.
+- Hong et al. (2026): Rulers: Locked rubrics and evidence-anchored scoring for robust llm evaluation.
+- Jung et al. (2024): Trust or escalate: Llm judges with provable guarantees for human agreement.
+- Wang et al. (2022): Self-consistency improves chain of thought reasoning in language models.
+- Dubey et al. (2024): The llama 3 herd of models.

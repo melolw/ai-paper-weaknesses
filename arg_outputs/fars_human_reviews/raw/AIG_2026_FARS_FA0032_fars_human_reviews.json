@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0032",
+    "title": "RC-MemStop: Risk-Controlled Early Stopping for Long-Context Memory Agents",
+    "abstract": "Memory agents process long documents by scanning chunks sequentially, enabling inference on extremely long contexts but incurring high computational cost. Early stopping can reduce this cost, but risks degrading performance on queries that would have succeeded with full processing. We propose RC-MemStop, which applies conformal risk control to calibrate early stopping thresholds for memory agents. Using an answer-stability stopping rule (terminate when $k$ consecutive draft answers match) and the Waudby-Smith-Ramdas betting bound, we select the least conservative $k$ that satisfies a user-specified broken-success risk budget $\\varepsilon$. Experiments on MemAgent with 448K--896K token contexts reveal that \\textbf{risk control is achieved} (zero violations across all configurations), but \\textbf{speedup is negligible} (1.02$\\times$--1.14$\\times$). The root cause: draft answers do not stabilize until processing is nearly complete, requiring $k=60$--120 consecutive matches to control risk. This finding suggests that calibration-only early stopping is insufficient for memory agents; training-based stopping policies are necessary for meaningful compute reduction.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "Memory-based QA methods process extremely long contexts in a chunk-by-chunk manner. While effective, this approach is time-consuming. This paper proposes an early-exiting strategy to reduce computational cost. Specifically, it introduces an answer-stability stopping rule—terminating when k consecutive draft answers are consistent—and leverages the Waudby-Smith–Ramdas betting bound to select the least conservative k under a user-specified failure risk budget. Experimental results show that the method preserves performance; however, it does not significantly reduce inference time, as the number of skipped chunks remains limited.",
+        "strengths": "The hypothesis is clear, and early stopping in memory-based methods can be effective in certain scenarios.\n\nThe use of the Waudby-Smith–Ramdas bound is well-motivated and convincing.\n\nThe discussion of informative failure is comprehensive and insightful.",
+        "weaknesses": "The lack of global information makes early stopping challenging. The results indicate that maintaining comparable performance still requires processing most of the chunks, suggesting that the hypothesis may have limited practical impact.\n\nThe experimental evaluation is not sufficiently comprehensive, as it lacks a diverse set of baselines, methods, and datasets.",
+        "suggestions": "Consider the query and global information to early stop.",
+        "llmDisclosure": "polish",
+        "ethicsReproducibility": "NA"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-03T06:53:39.016Z",
+      "updatedAt": "2026-04-03T06:53:39.016Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 0,
+        "confidence": 5,
+        "soundness": 2,
+        "presentation": 1,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper focuses on early stopping for long document understanding, which can reduce computational cost. The author proposes RC-MemStop, which applies conformal risk control to calibrate early stopping thresholds for memory agents. However, the experiments show that the speedup of the proposed method is negligible and similar to a naive baseline.",
+        "strengths": "1. This paper studies a practical problem for LLM-based long document understanding.",
+        "weaknesses": "1. The proposed method is problematic. The answer can also be stable when the useful chunks haven't been read. In this case, the proposed early stop can happen, which is too early.\n2. The experiments are merely conducted on a very small subset of HotpotQA. More data should be utilized in experimental evaluation.\n3. The acc-speedup trade-off of the proposed method is bad. As shown in Table 1, the proposed method is either inaccurate or inefficient. The proposed method also cannot outperform the naive baseline.\n4. The learned stopping method (i.e., InfMem) is not compared with the same experimental setting.\n5. Only MemAgent is adopted in experiments. More agents or LLMs should be adopted to verify the generalibility of the proposed method.",
+        "suggestions": "1. The logic of presentation should be improved.\n2. Failed idea without special contributions shouldn't be submitted to a top venue.",
+        "llmDisclosure": "None",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-28T06:42:05.800Z",
+      "updatedAt": "2026-03-28T06:48:19.182Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0032"
+}

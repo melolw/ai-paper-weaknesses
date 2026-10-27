@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_REJ_2024_MUSACCHIO_adaptation_large_visionlanguage_models",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Adaptation of Large Vision-Language Models for non-English Languages",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The authors present their approach of adapting LVLM for non-English languages, including data translation, instruction formatting, language adaptation and multimodal adaptation, and show experiment results against multiple multilingual VL task datasets.",
+      "strengths": "New approach of adapting LVLM for non-English languages",
+      "weaknesses": "- Methodology is too abstract\n- The requirements for adapting the proposed method to a new language are not specified. Here are the resources mentioned in the paper, which might all be required for the adaptation. Too many requirements.\n  - Data translation: human translator, machine translation system, manual selection of text data for machine translation \n  - Instruction formatting: manual writing of instruction format pairs, instruction tuning data (English, non-English language)\n  - Language adaptation: baseline LLM (English, non-English language), target language corpus\n  - Multimodal adaptation: baseline LVLM (English, non-English language), multimodal data\n- No comparison with baselines. No ablation study.",
+      "questions": "- Line 113: vision-language train from scratch -> vision-language training from scratch\n- Line 216: Therefore, It is -> Therefore, it is",
+      "rating": 1.5,
+      "confidence": 4,
+      "soundness": 2,
+      "raw_note_id": "219fda0ff37f1c3998bf109a170ba2bd4cab54d3d937c3a47db6e6fdddb26472a29066281b88934095aae950acbe86feef2b1d686f360f1766a054d14f3642a4"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "Brief Summary: The paper highlights that Large Vision Language Models have been primarily trained on english data and thus not directly usable for other languages. To address this issue the authors propose a pipeline consisting of first data translation, then instruction formatting, followed by language adaptation and multimodal adaptation. \n\nExperiments are conducted to see if the models can answer in their main language as well is in their adapted language. To this end, a number of VQA-like datasets are used for evaluation.",
+      "strengths": "Pros:\n\n1. The paper is well motivated given that multimodal data encompasses multiple languages. \n\n2. The authors provide results on a number of datasets and models in Table 1 and further experiments for closed and open ended tasks. \n\n3. The authors provide the hyper-parameters to reproduce their results in appendix.",
+      "weaknesses": "Cons:\n\n1. I am still unclear about the main takeaway of the paper. It seems to suggest that the proposed pipeline works for using Vision-Language model in another language works?\n\n2. The authors should compare alternative pipelines such as just translating the entire dataset to another language, and not making any other changes. \n\n3. The paper is more of an experimental paper with not much novelty. But I am not sure if the takeaways are interesting enough.",
+      "questions": "The tables are very hard to decipher. For instance, in table 2,3 instead of writing LLAMA in each row, having a column of the type of model in LLAMA, CLIP, DS would be much more readable.",
+      "rating": 2,
+      "confidence": 3,
+      "soundness": 2,
+      "raw_note_id": "db09af78c2dda68fd41780fde1f954793ccd84a5c02cf6622f6844c0ddbbbd2720766c946e627ea37eecfa20c15113d529bd7818eda041aa2169b1c9a9feb362"
+    }
+  ]
+}

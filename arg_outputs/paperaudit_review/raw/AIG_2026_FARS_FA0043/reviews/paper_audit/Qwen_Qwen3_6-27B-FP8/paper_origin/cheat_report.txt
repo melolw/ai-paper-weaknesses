@@ -1,0 +1,9 @@
+# Integrity & Consistency Risk Report
+
+Based on a critical review of the manuscript, two substantive numerical/methodological inconsistencies were identified that affect the precision and reproducibility of the reported results. No evidence of fabricated data or malicious intent was found, but the following discrepancies require clarification or correction.
+
+### 1. Numerical Mismatch in Failure Analysis Count vs. Reported Metric
+**Location:** Section 4.6 (Failure Analysis) vs. Table 1 & Section 4.1
+**Issue:** The manuscript states: *"Analysis of 238 attack successes against Condition B reveals several patterns."* However, this count is inconsistent with the reported `ASR_cond` metric and dataset size.
+- **Evidence:** Table 1 reports `ASR_cond` for Condition B as **29.33%**. Section 4.1 defines `ASR_cond` as the attack success rate *conditioned on the model originally selecting the correct response*. Table 1 shows the baseline `CleanAcc` (Condition A) is **78.35%**.
+- **Calculation:** With N=1,247 samples, the number of correct baseline

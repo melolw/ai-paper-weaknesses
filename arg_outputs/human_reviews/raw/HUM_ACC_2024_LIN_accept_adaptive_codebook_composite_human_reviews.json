@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_LIN_accept_adaptive_codebook_composite",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "ACCEPT: Adaptive Codebook for Composite and Efficient Prompt Tuning",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper proposes a new prompt tuning method, Adaptive Codebook for Composite and Efficient Prompt Tuning (ACCEPT). ACCEPT follows the idea of product quantization and divides the original word embedding space, R^d (e.g., 1024) into K parts, with each having a lower-dimensional space of R^t, where t=d/K. Then, authors derive K codebooks. Every codebook has a fixed set of r codewords and each of them is associated with a vector \\in R^t. A single prompt embedding, p \\in R^d, is then created by concatenating K vectors, each of which (i.e., p_k \\in R^t) is obtained by a weighted combination of the r codewords from the k-th codebook: p_k = \\sum_i^r w_i * c_i. Both the r*K weights for all codewords and the codewords vectors are trained together on a downstream dataset. \n\nCompared with the vanilla prompt tuning method that treats each of the prompt embeddings independently, ACCEPT allows information sharing among the prompt tokens and meanwhile reduces the number of trainable parameters for prompt tuning. \n\nExtensive experiments on 13 datasets from GLUE and SuperGLUE, and 4 QA datasets demonstrated that ACCEPT can achieve superior performance with much fewer trainable parameters compared to a range of parameter-efficient learning baselines.",
+      "strengths": "The paper is well written and the proposed idea is interesting.\n\nExperiments are extensive and solid.",
+      "weaknesses": "What is the significance of doing parameter composition for prompt tuning? PT only trains about  0.1% of the parameters of the T5 model,  which is already quite a few compared to LoRA, Adapter Tuning, etc. \n\nThe method is somewhat complicated. Why not use one codebook to cover all the distinct codewords?",
+      "questions": "line 175 - line 177: e_j refers to a sequence of word embeddings?\n\nAre the weights trained to combine these codeword vectors learned together with these codeword vectors?",
+      "rating": 4,
+      "confidence": 3,
+      "soundness": 4,
+      "raw_note_id": "a6b17fd38904b5c0a33800f25b7b3e33455d105fbc6c6582a0b77cc0ea731a3c118839df758ccde0ac0204d58a15cc737543436b010ace418b425c1c5f27f18b"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper proposes ACCEPT that decomposes prompt embeddings using codebooks in different embedding subspaces. In doing this, a primary advantage is to alleviate the linear dependency between the number of trainable parameters and the number of prompts tokens. Experiments also show that the proposed decomposition outperforms baseline prompt tuning.",
+      "strengths": "The paper is well written and easy to follow.\n\nExperiments show that the propose ACCEPT yields decent performance compared with baseline prompt tuning approaches.",
+      "weaknesses": "The proposed approach combines PQ and prompt tuning in a straightforward way.\n\nThe paper motivates by describing \" linear crease in parameters as prompt length grows\"  as a deficiency of previous \"indivisible\nword embedding\" approaches. However, the propose ACCEPT is also linear with the prompt length (eq 7). \n\nI appreciate the technique motivation of the proposed divisible embeddings, i.e., the prompt embeddings may exhibit different alignments in different subspaces (line 62-65 ). But it is kind of disappointing that the paper does not present any empirical evidence to ground this hypothesis. For improvement, it would be interesting if the author could actively identify low-rank embedding subspaces (probably based on the pretrained embeddings) instead of naively segmenting the subspaces with equally dimensions.\n\nThe paper lacks of explanation on why the proposed ACCEPT achieves higher accuracy than \"treating the embedding as a whole\". It seems ACCEPT is primarily motivated by parameter efficiency instead of performance gain. \n\nThough prompt tuning is parameter efficient, it is difficult to train and sensitive to initialization. By decomposing the already small-size prompt parameters into subspace codebooks, I believe it could easily degrade the convergence during training. I would be glad to see a revised version that shows the training curves or explore with more insights on the codebook initialization.",
+      "questions": "See above.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3,
+      "raw_note_id": "f3b7f2036c4f62f77bd6e5c3a59f93ef6801e560cbc4c53bf2356f978a8b25febd8fbb317f9e9fda52b6d00cc66a2ccc486eefe7c18a97b3e14f7f473b138187"
+    }
+  ]
+}

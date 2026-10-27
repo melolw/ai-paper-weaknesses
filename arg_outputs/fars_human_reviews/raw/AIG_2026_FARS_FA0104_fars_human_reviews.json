@@ -1,0 +1,78 @@
+{
+  "paper": {
+    "code": "FA0104",
+    "title": "Search-Anchored Hybrid Rollouts for Text-Based World Models",
+    "abstract": "LLM-based world models enable scalable training and evaluation of web agents through simulated trajectories, but suffer from rollout drift where simulated behavior diverges from real environments. We investigate the root cause of this drift in text-based world models and discover that 100\\% of first divergences occur at search-result observations, with search results exhibiting a 99.8\\% per-step divergence rate. Based on this finding, we propose search-anchored hybrid rollouts, a minimal intervention that grounds search observations with real data while keeping other observations simulated. On WebShop, our method improves Consistency Ratio from 0.594 to 0.824, a +38.7\\% relative improvement. Notably, anchoring only the first search provides negligible benefit, while anchoring all searches yields substantial gains, confirming that compounding search errors drive rollout drift. Our approach outperforms agent-side baselines and demonstrates that targeted observation grounding can effectively address world model limitations without requiring model improvements.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 3,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 2,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 1
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper uses RAG to boosts the text-based world model. Specifically, the text-based world models can produce action that can be grounded through searching in the database.",
+        "strengths": "* This paper is somewhat easy to read. And the trivial design makes reader easy to re-implement. ",
+        "weaknesses": "* It is better to add an illustrated figure to describe the task vividly, especifically to demonstrate to non-expert readers in this field. I feel somewhat confused about the task setting.\n* From Figure 1, I can tell that the architecture seems more that RAG. RAG is commonly used in no matter academic or industry, and it is also commonsence that RAG can boost the performance across variety of tasks. Therefore, I cannot find additionly novelty beyond this design in this paper. \n* In Figure 1, there are both yes and no on the right side of search[query], which makes me confused. ",
+        "suggestions": "",
+        "llmDisclosure": "No LLMs are used for my review. ",
+        "ethicsReproducibility": "None "
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T03:55:30.493Z",
+      "updatedAt": "2026-03-31T03:55:30.493Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 2,
+        "confidence": 4,
+        "soundness": 3,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper studies rollout drift in text-based world models for web agents. The main finding is that search-result observations are the main source of divergence in WebShop. Based on this, the authors propose a simple hybrid rollout method: use real search results for search actions, while keeping the rest of the rollout simulated. The method improves Consistency Ratio from 0.594 to 0.824 on WebShop.",
+        "strengths": "1. The paper identifies a clear and interesting failure mode: search results seem to be the main reason why rollouts drift in this setting.\n2. The method is simple, easy to understand, and gives a clear performance gain on WebShop.\n3. The ablation between first-search anchoring and all-search anchoring is useful and helps support the main claim.",
+        "weaknesses": "1. The method is too simple, which limits the academic contribution. At a high level, the idea is just: when search is hard, call the real search engine instead of the world model. This is a useful engineering fix, but it does not feel like a substantial advance in world modeling.\n2. The experiments are only on WebShop. It is not clear whether the same conclusion would hold in other environments.\n3. The method does not really improve the world model itself. It mainly avoids the hardest part by replacing model predictions with real environment outputs.\n4. The paper lacks stronger text world model baselines. The current comparisons are mostly against agent-side methods like ReAct or Best-of-N. Those are reasonable, but they are not the most relevant baselines for the paper’s core claim.",
+        "suggestions": "",
+        "llmDisclosure": "1. summary\n2. gpt 5.4\n3. none\n4. yes",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-31T14:45:03.403Z",
+      "updatedAt": "2026-03-31T14:45:03.403Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 3",
+      "scores": {
+        "rating": 6,
+        "confidence": 3,
+        "soundness": 3,
+        "presentation": 3,
+        "contribution": 3
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "The paper investigates the hypothesis that rollout drift in LLM-based text world models for web agents is primarily caused by inaccurate simulation of search-result observations, rather than general state transition errors. To validate this, the authors conduct an empirical analysis on the WebShop benchmark, identifying that 100% of first divergences and 99.8% of per-step divergences occur at search-result steps . Based on this finding, they propose search-anchored hybrid rollouts, a method that replaces simulated search outputs with real search results while keeping other transitions simulated. Experiments show that this targeted intervention significantly improves Consistency Ratio (CR) from 0.594 to 0.824 (+38.7%), with further analysis demonstrating that anchoring all search steps (not just the first) is necessary to prevent compounding errors. The results provide strong empirical support for the hypothesis that search-result simulation is the dominant source of rollout drift. ",
+        "strengths": "Clear hypothesis \nThe paper precisely identifies a concrete failure mode (search-result simulation) and tests it directly via divergence analysis. \n\nStrong empirical diagnosis of the problem \nThe finding that 100% of first divergences occur at search steps is striking, clean, and highly informative. \n\nMinimal and elegant solution \nThe proposed method is simple, targeted, and does not require retraining or modifying the world model. \n\nConvincing experimental validation \n\nLarge improvement in CR (+38.7%) \n\nClear ablations (first-search vs. all-search anchoring) \n\nStratified analysis by number of searches \nThese collectively support the causal claim about compounding errors. \n\nInsightful decomposition of environment dynamics \nThe distinction between structured transitions vs. high-entropy retrieval channels is conceptually valuable and likely generalizable. \n\nGood comparison against agent-side baselines \nDemonstrates that observation grounding addresses a different axis than action optimization. ",
+        "weaknesses": "Limited scope of evaluation (single benchmark) \nAll experiments are conducted on WebShop. It is unclear whether the identified failure mode generalizes to: Other web environments (e.g., WebArena, Mind2Web), Non-web domains with retrieval-like components \n\n \n\nReliance on oracle-like grounding \nThe method assumes access to Real search engine results or a cache. This may not be realistic in many deployment or training scenarios. \n\n \n\nNo cost or latency analysis \nFetching real search results (even with caching) introduces: Additional system complexity, Potential runtime overhead. These trade-offs are not quantified. \n\n \n\nLimited analysis of downstream impact \nWhile CR improves, it is less clear: How much this translates to actual task success improvements in real environments. Whether agents trained with hybrid rollouts generalize better ",
+        "suggestions": "Evaluate on additional environments (e.g., WebArena, Mind2Web) to test generality. \n\nAnalyze scenarios where real search grounding is unavailable; consider learned approximations. \n\nInclude latency / compute overhead measurements for hybrid rollouts. \n\nInvestigate whether hybrid rollouts improve downstream policy learning (not just evaluation fidelity). \n\nExplore extending the framework to other high-entropy actions (e.g., API calls, tool use). \n\nClarify the boundary between “environment dynamics” and “external retrieval” more formally. ",
+        "llmDisclosure": "LLM usage: Yes \n\nUsed for: Drafting and structuring the summary, strengths, weaknesses, and suggestions, also used for Language polishing and clarity improvements \n\nTool/model: ChatGPT (GPT-5.3) \n\nData sharing: Only user-provided manuscript content was used; no confidential or external data was shared \n\nFinal judgment: All evaluations were independently verified and determined by the reviewer ",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-29T06:28:20.593Z",
+      "updatedAt": "2026-03-29T06:28:20.593Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0104"
+}

@@ -1,0 +1,56 @@
+{
+  "paper": {
+    "code": "FA0150",
+    "title": "ShallowPPL: Investigating Early-Exit Logit Lens for Code Context Compression",
+    "abstract": "Long code contexts in repository-level tasks require compression to fit within language model limits. LongCodeZip achieves state-of-the-art compression quality using perplexity-based Approximated Mutual Information (AMI) scoring, but requires computationally expensive full forward passes for each candidate code chunk. We investigate whether the logit lens technique can approximate full-depth scoring at intermediate transformer layers, enabling significant speedup. We propose ShallowPPL, which truncates forward passes at layer $L$ and projects intermediate representations to vocabulary space for perplexity computation. Our rigorous evaluation with pre-registered success criteria ($\\geq$1.5$\\times$ speedup, $\\leq$1.0 point quality drop) demonstrates that this hypothesis does not hold: ShallowPPL achieves only 1.05$\\times$ speedup while exceeding quality thresholds on both Long Code Completion and RepoQA benchmarks. Ablation studies reveal that coarse function ranking is the primary bottleneck (hybrid configuration recovers 81\\% of quality gap) and quality scales nonlinearly with depth (last 2 layers contribute 3.83 percentage points). These findings indicate that final transformer layers encode critical information for code relevance scoring that cannot be approximated by intermediate representations.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 2,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 3,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "\"This paper explores Early-Exit Logit Lens to accelerate LongCodeZip, using intermediate-layer logits with a coarse-to-fine shallow strategy. However, results show that early exiting harms performance, revealing a key trade-off between speed and accuracy in long-context processing.\"\n\n",
+        "strengths": "1. The motivation is clear, which combine logits len to accelerate the code compression.\n\n2. The ablation study show that why the proposed method and strategy doesn't work.",
+        "weaknesses": "1. Limited Contribution and Lack of Deeper Analysis\n\nThe current contribution is relatively weak, primarily due to a lack of in-depth investigation into why certain components—such as ShallowPPL—fail to perform as expected. To strengthen the paper, the authors should conduct a more thorough analysis, for example:\nApplying attention signal analysis to examine whether early layers capture meaningful contextual dependencies.\nPerforming layer-wise ablation studies to identify critical layers and understand the failure modes of shallow inference.\nSuch analyses would not only clarify the limitations of the current method but also provide actionable insights for future improvements, transforming the work from a simple proposal into a more insightful contribution.\n\n2. Limited Scope of Baselines, Models, and Benchmarks\nThe evaluation is constrained by a narrow selection of:\nBaselines: Only a few existing methods are compared, omitting recent or more competitive approaches in the same domain.\nLanguage Models: The study relies on a limited set of LLMs, making it difficult to assess the generalizability of the findings.\nBenchmarks: The use of only a few datasets or tasks restricts the ability to draw broad conclusions about the method’s effectiveness.\nExpanding the evaluation to include a diverse set of models (e.g., different sizes, architectures), stronger baselines, and multiple benchmarks would significantly enhance the credibility and impact of the work.\n",
+        "suggestions": "This study appears to be a straightforward trial of combining A+B, yet not only successful results hold value. However, the current exploration remains too limited—the failures yield few meaningful insights, diminishing the paper's contribution.",
+        "llmDisclosure": "polish",
+        "ethicsReproducibility": "NA"
+      },
+      "audit": {},
+      "submittedAt": "2026-04-01T08:49:05.254Z",
+      "updatedAt": "2026-04-01T08:49:05.254Z"
+    },
+    {
+      "reviewerLabel": "Reviewer 2",
+      "scores": {
+        "rating": 4,
+        "confidence": 4,
+        "soundness": 2,
+        "presentation": 2,
+        "contribution": 2
+      },
+      "integrityIssuesFound": false,
+      "content": {
+        "summary": "This paper tests the hypothesis that whether intermediate-layer representations (via logit lens) can approximate full-depth perplexity-based AMI scoring for code context compression. The proposed method, ShallowPPL, replaces full forward passes with truncated inference at layer L, projecting intermediate states to compute perplexity. The hypothesis is that this yields significant speedup with minimal quality loss. Through controlled experiments on Long Code Completion and RepoQA, the paper falsifies this hypothesis: ShallowPPL achieves only ~1.05× speedup while incurring >1 point quality degradation. Ablations reveal that (1) coarse function ranking is the main bottleneck and (2) final transformer layers contribute disproportionately to scoring quality.",
+        "strengths": "1. The work shows that logit-lens-based early exit fails for this task, which is useful for the community.\n2. Sound experimental design including pre-registered criteria and multiple configurations (original / hybrid / layer sweep).",
+        "weaknesses": "1. The core hypothesis is somewhat weakly motivated, as prior work on transformer representations suggests that task-relevant signals tend to concentrate in later layers. Given this, the assumption that intermediate layers can approximate full-depth perplexity-based scoring may not be well-justified.\n2. Missing stronger baselines such as partial forward reuse methods, learned approximators for AMI, attention-based proxies (e.g., ILRe-style methods)",
+        "suggestions": "",
+        "llmDisclosure": "Claude for summary and phrasing.",
+        "ethicsReproducibility": "None"
+      },
+      "audit": {},
+      "submittedAt": "2026-03-26T20:11:45.829Z",
+      "updatedAt": "2026-03-26T20:11:45.829Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0150"
+}

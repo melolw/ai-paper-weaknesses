@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_REJ_2024_LIU_raemollm_retrieval_augmented_llms",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "RAEmoLLM: Retrieval Augmented LLMs for Cross-Domain Misinformation Detection Using In-Context Learning based on Emotional Information",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The authors present RAEmoLLM, a novel framework for cross-domain misinformation detection that utilizes in-context learning (ICL) based on emotional information without requiring fine-tuning. The authors highlight the importance of affective analysis in identifying misinformation and construct a retrieval database that incorporates implicit emotional cues from various misinformation datasets. RAEmoLLM employs a prompt template to guide large language models (LLMs) in verifying content for misinformation, demonstrating significant performance improvements over zero-shot and few-shot methods. Experimental results indicate that RAEmoLLM achieves notable accuracy gains across multiple misinformation benchmarks, including fake news, rumors, and conspiracy theories, showcasing its effectiveness in enhancing misinformation detection through emotional insights.",
+      "strengths": "1. **Novel Methodology**: RAEmoLLM introduces an innovative framework that integrates emotional information into retrieval-augmented learning, addressing the limitations of existing misinformation detection methods without requiring complex fine-tuning.\n\n2. **Empirical Results**: The framework demonstrates substantial performance improvements, with accuracy gains over traditional zero-shot and few-shot methods across multiple misinformation benchmarks, highlighting its practical applicability.\n\n3. **Comprehensive Affective Analysis**: The paper includes a thorough analysis of affective information across various datasets, enhancing the understanding of emotions in misinformation propagation and supporting the framework's design.\n\n4. **Clear Organization and Literature Review**: The well-structured paper effectively guides readers through its methodology and findings, with a thoughtful review of related literature that situates RAEmoLLM within the current research landscape.",
+      "weaknesses": "1. **Clarity of Methodology:** Certain methodological details, particularly regarding the retrieval process and integration of emotional embeddings, could be more clearly articulated.\n\n2. **Narrow Focus on Affective Information:** The emphasis on emotional information may overlook other important factors influencing misinformation, such as context, stance, and topic. These factors are not sufficiently addressed.",
+      "questions": "None",
+      "rating": 4.5,
+      "confidence": 3,
+      "soundness": 4.5,
+      "raw_note_id": "7ec50f53066056ee1317088f3167a15572ca00fa4bbcc1e8f5d17ea1efe678a6a9de54d4209dc765def579aa5275de7ad2cda066aadb8ad31d7bf96327d43194"
+    }
+  ]
+}

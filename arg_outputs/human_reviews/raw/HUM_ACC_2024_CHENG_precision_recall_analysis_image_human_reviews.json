@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_ACC_2024_CHENG_precision_recall_analysis_image",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Precision or Recall? An Analysis of Image Captions for Training Text-to-Image Generation Model",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper introduces a study on the impact of caption precision and recall when training T2I and how it affects the T2I model to generate images that better align with the given text prompt. They demonstrate that precision has a more significant influence on the model’s performance.",
+      "strengths": "The primary advantages of the paper are as follows:\n- One issue of image generation models is generating images that accurately align with the given text input. In this paper, the authors evaluate image captions based on precision and recall metrics and analyze their impact on the text alignment of T2I models. This direction is interesting and should be explored further.\n- The authors conducted an ablation study, demonstrating that utilizing LVLMs for caption generation can yield comparable results to captions written by human evaluators.",
+      "weaknesses": "The primary weakness of the paper are listed below:\n- The analysis demonstrates that the precision of the caption is more critical than the recall when training T2I. One of its primary use cases is to establish a methodology for enhancing the text-image alignment of T2I based on these findings. It would be beneficial to present some experiments in this direction.\n- The measurement of text alignment for ‘Attribute binding’ and ‘Object relationship’ was conducted using various methods. It would be good to demonstrate that it aligns with human evaluation, even on a small portion of the samples.",
+      "questions": "- Please use bold font to emphasize the best results for each precision level in Table 2.\n- Please use bold font to emphasize the best results for SD2.1 and SDXL in Table 3.",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 2.5,
+      "raw_note_id": "ed98a6ad553db5e31a3e06c176c0427796a5cab7d4e174b51eacf8346828031957821d6a15edfb3536bebf0ac30aca18d041a79e8f3717d9bb800722ed7c6543"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "This work investigates the effect of image caption quality on training text-to-image models.  It finds that precision of image caption, i.e. how factual each sentence/part of the caption is, is more important than recall, i.e. how much of the image content is described, though both high precision and high recall are essential for the best model.",
+      "strengths": "- 2 diverse experiments both showing evidence to confirm the hypothesis, with the 2nd experiment showing high practical value since synthetically generated training data is an attractively cheap option for training large models.\n- well written, focused writing with good motivation.",
+      "weaknesses": "- Only diffusion models were tested in the experiments, so the conclusions might not apply to auto-regressive image-to-text models.  Still, diffusion models are highly popular, so the scope of impact is still wide.",
+      "questions": "- Presumably, Figure 1 is a graphical representation of the average result column of Table 2.  If so, it would be good to make this explicit in the Table 2 caption or associated body text.\n- It would be nice to discuss any related work on training data quality for the text-to-image task",
+      "rating": 4.5,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "29a3f304d9c56c2acd4c1741635000d9ea3e0d0d7b7d4c7e50b7bd9b163ad41c63cb73943226c9de09ed63e88a5eaeeee42784db187513f6bb8708f77e6bfae3"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+# Innovation & Motivation Report
+
+## 1. The Authors' Claimed Contribution
+- **Core Problem**: Error propagation in LLM-as-a-Judge systems that utilize self-reference (providing the judge's own generated answer as context).
+- **Claimed Gap**: "While self-reference improves accuracy when the judge's answer is correct, it degrades performance when the self-answer is incorrect." The authors argue that prior approaches either apply self-reference unconditionally or discard it entirely, failing to adapt to instance-level uncertainty.
+- **Proposed Solution**: SSR-Judge (Selective Self-Reference), a conditional routing mechanism that uses self-consistency (agreement across $k$ temperature-sampled answers) as a confidence gate. High agreement triggers the self-reference path; low agreement falls back to a no-reference path. The method also incorporates response-order swapping to mitigate position bias.
+
+## 2. Comparative Scrutiny (The "Trial")
+
+### vs. Do Before You Judge: Self-Reference as a Pathway to Better LLM Evaluation (Lin et al.)
+- **Identified Overlap**: Lin et al. establish self-reference as a foundational strategy to align generation and judgment capabilities. The manuscript directly adopts this paradigm as its primary judging pathway.
+- **Manuscript's Defense**: The authors explicitly cite Lin et al. (2025) and frame their work as addressing its primary failure mode. They differentiate by introducing a dynamic "Agreement Gate" rather than applying self-reference uniformly, stating that rigid self-reference causes "error propagation" when the self-answer is incorrect.
+- **Reviewer's Assessment**: This is a valid and necessary extension. Lin et al. demonstrate average-case benefits but do not address instance-level variance. The manuscript successfully pivots from a static strategy to a conditional one. However, the core insight (self-reference is a double-edged sword) is a direct logical consequence of Lin's work, making the motivation incremental but the engineering contribution clear.
+
+### vs. Improving LLM-as-a-Judge Inference with the Judgment Distribution (Wang et al.)
+- **Identified Overlap**: Both papers leverage model uncertainty/distribution to modulate judging behavior. Wang et al. use token-level probability distributions (mean vs. mode, risk aversion) to improve judgments. The manuscript uses Monte Carlo sampling agreement as a proxy for this distributional signal to gate self-reference.
+- **Manuscript's Defense**: The manuscript does not cite Wang et al. in its reference list. Conceptually, it differentiates by focusing on *answer-level* self-consistency (citing Wang et al. 2022) rather than *token-level* judgment distributions. It frames its gate as a binary routing mechanism for prompt structure, not a continuous scoring adjustment.
+- **Reviewer's Assessment**: The distinction is methodological but not fundamental. Using self-consistency sampling to approximate distributional uncertainty is a well-established proxy (e.g., SelfCheckGPT, Kadavath et al.). The manuscript's "Agreement Gate" is functionally equivalent to Wang's risk-aversion/distribution-aware inference, just applied to a different prompt architecture. This weakens the claim of methodological novelty, positioning it as an application of established uncertainty estimation to a specific judging pipeline.
+
+### vs. Can LLM be a Personalized Judge? (Dong et al.)
+- **Identified Overlap**: Dong et al. introduce "verbal uncertainty estimation" to gate LLM judgments, filtering for high-certainty samples to improve reliability. The manuscript's "Agreement Gate" performs an identical function: using a confidence metric to conditionally manage the judging workflow.
+- **Manuscript's Defense**: The authors cite general uncertainty estimation works (Kadavath et al., Manakul et al.) but do not directly address Dong et al.'s specific gating pipeline. They differentiate by applying the gate to *reference usage* (self vs. no-reference) rather than *sample selection* or *task-specific personalization*.
+- **Reviewer's Assessment**: The conceptual overlap is strong. Both papers operate on the premise that LLM judging reliability is heterogeneous and must be gated by confidence. The manuscript's contribution is primarily architectural: repurposing a known uncertainty-gating paradigm for the self-reference context. This is a solid engineering contribution but lacks theoretical novelty. The failure to explicitly contrast with Dong et al. leaves a gap in the related work discussion.
+
+## 3. Novelty Verdict
+- **Innovation Type**: Incremental / Application-Oriented
+- **Assessment**: 
+  The manuscript successfully defends its motivation by identifying a concrete, empirically validated failure mode (error propagation) in the self-reference paradigm. However, its methodological solution (self-consistency gating) is a direct application of well-established uncertainty estimation techniques to a new context. It does not introduce new mathematical frameworks, calibration guarantees, or theoretical bounds. The existence of similar works (particularly on distributional inference and uncertainty gating) significantly contextualizes the contribution as a practical, task-specific instantiation rather than a foundational breakthrough. The paper survives the comparison on empirical grounds but falls short on methodological originality.
+  - **Strength**: Clear, well-motivated problem statement; rigorous empirical validation on MMLU-Pro with detailed slice analysis; practical, low-complexity routing mechanism that yields measurable gains over strong baselines; explicit mitigation of position bias.
+  - **Weakness**: Methodological novelty is limited; relies on standard self-consistency sampling as a confidence proxy without novel calibration or theoretical guarantees; does not sufficiently differentiate from existing uncertainty-gating and distribution-aware judging literature; computational overhead from sampling is acknowledged but not optimized.
+
+## 4. Key Evidence Anchors
+- **Abstract/Intro**: "While self-reference improves accuracy when the judge's answer is correct, it degrades performance when the self-answer is incorrect." (Core motivation)
+- **Method Section**: "Agreement Gate: A binary gate function determines whether to use self-reference based on a threshold $\tau$." (Core mechanism)
+- **Calibration Analysis**: "5/5 (unanimous) agreement corresponds to 78.7% majority correctness." (Empirical justification for gating threshold)
+- **Experiments**: "SSR-Judge achieves 58.93% PreferenceAcc... outperforming both No-Reference (52.07%) and Always Self-Reference (58.21%)." (Performance validation)
+- **References**: Cites Wang et al. (2022) on self-consistency and Lin et al. (2025) on self-reference, acknowledging foundational components but omitting direct engagement with distributional inference (Wang et al.) or uncertainty gating (Dong et al.) literature.

@@ -1,0 +1,46 @@
+# Integrity & Consistency Risk Report
+
+## Executive Summary
+The manuscript presents a well-structured negative result study on automated import fixing for coding agents. However, several **clear internal inconsistencies and missing methodological details** undermine the reproducibility and transparency of the experimental claims. The most critical issue is a direct logical contradiction between the stated decoding configuration and the explanation of result variance. Additionally, undefined experimental variants and unaccounted data points in the results tables require clarification to ensure scientific validity.
+
+---
+
+## 1. Critical Logical Contradictions
+
+### 🔴 Temperature 0 Setup vs. Claimed Nondeterministic Variation
+- **Claim:** Section 4.1 states the agent is `configured with temperature 0 for reproducibility.`
+- **Contradiction:** Section 5 (Limitations) attributes performance differences to `LLM nondeterministic variation`, stating `The 1–2 task differences between conditions are within the range of LLM nondeterministic variation...`
+- **Impact:** Temperature 0 typically enforces greedy decoding, which is deterministic. Claiming reproducibility via temperature 0 while simultaneously attributing variance to nondeterminism is a direct logical contradiction. If other sampling parameters (e.g., `top_p`, `top_k`) were used, they must be explicitly reported. Otherwise, the reproducibility claim is invalid.
+
+---
+
+## 2. Internal Inconsistencies & Missing Details
+
+### 🟡 Undefined "v2" Variants and Missing Metrics
+- **Issue:** Table 1 and Section 4.2 reference `B v2 (Diagnose-Only)`, `C v2 (Optimized)`, and `C v3 (Aligned)`. However, Section 3.4 only defines `Condition B` and `Condition C`. The manuscript never explains what `v2` or `v3` modifications entail beyond brief descriptions in Section 4.2, nor does it define a baseline `v1`.
+- **Missing Data:** Table 1 shows `–` for `Avg Steps`, `Input (M)`, and `Output (M)` for `C v2` and `C v3`. The text does not explain whether these runs were truncated, failed to log metrics, or were excluded from resource analysis. This omission prevents a complete evaluation of the optimization attempts.
+
+### 🟡 Unaccounted Diagnostic Events in Table 3
+- **Issue:** Table 3 reports `11` total diagnostic events for Condition C. The breakdown lists `7` skipped (test), `1` skipped (unsafe), and `1` applied. This sums to `9` events.
+- **Missing Detail:** Two diagnostic events are unaccounted for in both the table and the accompanying text (`Section 4.4`). The text states `8 were skipped by safety guards... Only 1 fix was applied`, but does not explain the status of the remaining 2 events (e.g., failed application, timeout, or other guard conditions). This gap affects the transparency of the autofix mechanism's failure modes.
+
+### 🟡 Figure/Text Label Mismatch
+- **Issue:** Figure 1 and its caption label the experimental branches as `Condition B` and `Condition C`. However, the results section consistently uses `B v2`, `C v2`, and `C v3`. This labeling inconsistency creates confusion about whether the figure depicts the final evaluated configurations or an earlier prototype.
+
+---
+
+## 3. Numerical & Factual Verification
+- **Relative Improvement Calculation:** Abstract claims a `66.7% relative improvement` for diagnose-only over baseline. Calculation: `(16.67 - 10.0) / 10.0 = 0.667`. ✅ **Consistent.**
+- **Crash Distribution Math:** Section 4.3 states target errors account for `143 out of 171 crashes (84%)` in Condition C. Table 2 shows `43 + 42 + 57 + 1 = 143`. `143 / 171 ≈ 83.6%`. ✅ **Consistent.**
+- **Workflow Overhead:** Abstract/Intro claims target errors account for `4–5% of agent workflow`. Table 2 shows `3.99%` (Baseline) and `4.76%` (Autofix) for steps. ✅ **Consistent.**
+
+---
+
+## 4. Recommendations for Revision
+1. **Resolve the Temperature Contradiction:** Either remove the claim of nondeterministic variation if temperature 0 was strictly used, or explicitly report all sampling parameters and acknowledge that temperature 0 alone does not guarantee determinism in the chosen framework.
+2. **Define All Variants:** Clearly define `B v2`, `C v2`, and `C v3` in Section 3.4 or a dedicated experimental configuration subsection. Explain why resource metrics are missing for `C v2` and `C v3`.
+3. **Account for All Diagnostics:** Update Table 3 and Section 4.4 to explain the 2 unaccounted diagnostic events (e.g., add a "Failed/Other" column or clarify in text).
+4. **Align Figure Labels:** Update Figure 1 or its caption to match the final evaluated conditions (`B v2`, `C v2/v3`) to avoid confusion.
+
+---
+**Conclusion:** No evidence of deliberate misconduct is present. The identified issues are characteristic of automated or rushed manuscript generation, resulting in logical contradictions and incomplete methodological reporting. Addressing these points will significantly improve the paper's scientific rigor and reproducibility.

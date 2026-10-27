@@ -1,0 +1,36 @@
+{
+  "paper": {
+    "code": "FA0168",
+    "title": "Token-Balanced Continual Pretraining Eliminates Brain Rot Degradation",
+    "abstract": "Continual pretraining (CPT) on low-quality, short-sequence data such as social media posts has been shown to cause ``Brain Rot''---severe degradation in reasoning and long-context capabilities. The prevailing explanation attributes this to the semantic quality of the data itself. We challenge this assumption and demonstrate that Brain Rot is a \\emph{training artifact} arising from per-token weight disparity: when short sequences are processed without packing, they receive 8.17$\\times$ higher per-token gradient updates than longer sequences, causing the model to overfit to their statistical patterns. We propose token-balanced packing, which concatenates sequences to uniform length, eliminating this disparity. Through controlled experiments on Llama-3-8B-Instruct, we show that packing achieves 119.7\\% ARC reasoning recovery and 95.2\\% RULER long-context recovery relative to the no-CPT baseline, while providing a 67$\\times$ training speedup. Our findings demonstrate that CPT on short-sequence data is safe when proper packing is employed.",
+    "status": "UNDER_REVIEW"
+  },
+  "reviewCount": 1,
+  "reviews": [
+    {
+      "reviewerLabel": "Reviewer 1",
+      "scores": {
+        "rating": 0,
+        "confidence": 4,
+        "soundness": 1,
+        "presentation": 1,
+        "contribution": 1
+      },
+      "integrityIssuesFound": true,
+      "content": {
+        "summary": "This paper hypothesizes that the degradation phenomenon called “Brain Rot” is caused primarily by a training artifact from continual pretraining on short sequences without packing, rather than by the semantic quality of the social-media data itself. To test this, the paper uses an empirical comparison among three conditions on Llama-3-8B-Instruct: packed control data, packed junk data, and unpacked junk data, followed by instruction tuning and evaluation on ARC-Challenge CoT and RULER. The paper reports that packed junk data performs much better than unpacked junk data and approaches the performance of packed control data, and it interprets this result as evidence that sequence packing largely removes the degradation.",
+        "strengths": "- The paper poses a clear and important hypothesis. Instead of accepting the common interpretation that low-quality social-media text is inherently harmful during continual pretraining, it asks whether the observed degradation is actually caused by the optimization setup. That is a strong research question because it turns a broad claim about “bad data” into a mechanistic claim that can be tested directly.\n- The paper does not rely only on one aggregate score. The local materials include subtask-level RULER analysis and additional bucket analysis, which makes the work more informative than a single benchmark table. This is useful because it helps show where the packed-vs-unpacked effect is broad and where it is not.\n- The paper uses a simple and meaningful intervention. Sequence packing is not an obscure modification invented only for this paper; it is a standard training choice with clear practical relevance. Because the intervention is simple, the paper’s conclusions, if valid, would immediately matter for real continual-pretraining pipelines.",
+        "weaknesses": "- The paper’s explanation of the causal language modeling loss is incomplete, and this is a central technical weakness. In the local environment, LlamaForCausalLM computes loss by flattening all shifted tokens in the local batch and applying CrossEntropyLoss() once. This means the paper’s argument about “each sample contributes equally, so each token in a short sample gets larger weight” is not a generally correct description of causal LM training under arbitrary batch sizes.\n- Packing changes several things at once, so the paper’s mechanistic attribution is stronger than the evidence fully justifies. Packing does not only alter effective weighting; it also changes the number of optimizer steps, the learning-rate schedule measured in steps, the composition of each forward pass, and the gradient noise structure. Therefore the results strongly support the claim that packing helps, but they do not isolate per-token weight disparity as the only possible causal channel.\n- The “controlled comparison” framing is weakened by the local training configs. Condition B and Condition C do not hold all post-CPT settings fixed: the packed junk pipeline uses different instruction-tuning hyperparameters from the unpacked junk pipeline, including lower learning rate, fewer epochs, different eval cadence, and different validation fraction. That makes it harder to interpret the packed-vs-unpacked comparison as a pure test of packing alone. Reference: cond_b_junk_packed_it_seed42.yaml, cond_c_junk_unpacked_it_seed42.yaml.\n- The scope of the evidence is narrower than the scope of the conclusion. The experiments are centered on one main model family, one social-media continual-pretraining setup, and two main evaluation suites. That is enough for an interesting mechanism paper, but not enough for a very broad claim that short-sequence junk CPT is generally harmless when packed.",
+        "suggestions": "",
+        "llmDisclosure": "I am using codex (gpt-5.4, extreme high) to help me locate the code and log while reading the paper.",
+        "ethicsReproducibility": "- Reproducibility is mixed in an interesting way. The local artifacts are actually quite good: configs, scripts, logs, and result files are present. But the paper write-up itself underspecifies some of the details that are necessary to understand the main claim, especially the batch-size dependence of the loss argument and the distinction between reproduced, cited, and optimized numbers. So the implementation artifacts are reproducible, but the paper presentation still leaves signficant gaps."
+      },
+      "audit": {
+        "findings": "Please see the weaknesses."
+      },
+      "submittedAt": "2026-04-11T20:06:28.097Z",
+      "updatedAt": "2026-04-11T20:06:28.097Z"
+    }
+  ],
+  "paper_id": "AIG_2026_FARS_FA0168"
+}

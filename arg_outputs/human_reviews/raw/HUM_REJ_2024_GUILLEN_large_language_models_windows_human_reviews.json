@@ -1,0 +1,33 @@
+{
+  "paper_id": "HUM_REJ_2024_GUILLEN_large_language_models_windows",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Large language models as windows on the mental structure of psychopathology",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "The paper explores the potential of Large Language Models (LLMs) to serve as a tool for understanding the mental structures associated with various psychopathologies. The authors demonstrate that LLMs can mimic responses consistent with intended psychopathologies, capture correlations between diagnostic questionnaire scores, and generate semantic structures that are qualitatively similar to those observed in schizophrenic patients. This work suggests that LLMs could contribute to research hypotheses, diagnostic tool development, and the expansion of knowledge about psychopathologies.",
+      "strengths": "1. The paper presents a creative use of LLMs to simulate mental states associated with psychopathologies, which could be a significant advancement in the field of cognitive science and mental health research, which is valuable for mental health-related research.\n2. The authors provide empirical evidence that LLMs can replicate behavioral patterns observed in psychopathologies, such as schizophrenia, which supports the idea that LLMs can be used as a diagnostic tool or for hypothesis testing.\n3. The work offers theoretical insights into the structure of mental processes in psychopathology, which could lead to new understandings of mental health conditions and inform treatment strategies.",
+      "weaknesses": "1. The paper focuses on schizophrenia as a case study, but it is unclear how well the method would generalize to other psychopathologies. Further experiments are needed to confirm the applicability of this approach across a broader spectrum of mental health conditions.\n2. Although the paper demonstrates qualitative similarities between LLM-generated responses and those of schizophrenic patients, it lacks a quantitative comparison with clinical data. A more rigorous validation with larger, diverse clinical datasets could strengthen the claims.\n3.  The paper does not address potential ethical implications of using LLMs to simulate psychopathologies. Issues around the representation of mental health conditions and the use of such simulations in clinical settings should be considered.\n4. The analysis of the semantic structures induced in LLMs with distinct psychopathologies is detailed, but it is not clear how easily these structures can be interpreted by clinical psychologists or translated into practical applications.\n5. Some new mental-realted LLMs should be introduced and used for comparison.",
+      "questions": "None",
+      "rating": 2.5,
+      "confidence": 4,
+      "soundness": 3,
+      "raw_note_id": "10b090e481a889cb13d1c72e1e2c2e2dafa32e7b865059644d37082edb24295f69470441808d758e89defa9bb1f9dcfdb350f534f807f0e620a61f09d0f06b48"
+    },
+    {
+      "reviewer_id": "Reviewer_2",
+      "review_type": "human",
+      "summary": "The paper shows how LLMs can effectively show a human-like behavior by generating lexical production in a psychopathological perspective. This makes these models suitable to support the research in the specific field on neuropathology, as well as showing the ability to simulate lexical usage biased by specific mental structure, as demonstrated in the proposed case study of schizofrenia.",
+      "strengths": "The point of strengths are not limited in the specific domain of neuropathology, by giving a contribution to the advancement of our comprehension of what these models can do with reference to \"capturing\" specific structures in semantic representations.",
+      "weaknesses": "The only weak aspect may be represented by the moral and ethic considerations on the potential impact of such methods.",
+      "questions": "There is a word missing at line 580: ... regarding the link mental structure and psychopathology .... I suppose there should be a \"between\"",
+      "rating": 4,
+      "confidence": 4,
+      "soundness": 4,
+      "raw_note_id": "98be94bab227749c3e5a7a416e641fc31fb4b38d303d1e7af8e20d046d437fc92563facbd4d3372a94945978970c75bc996995a1f02968c283796f63e3dc4c06"
+    }
+  ]
+}

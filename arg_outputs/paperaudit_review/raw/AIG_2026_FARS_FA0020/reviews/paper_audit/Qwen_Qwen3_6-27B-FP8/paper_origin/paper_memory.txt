@@ -1,0 +1,63 @@
+# Global Summary
+
+The paper addresses the high computational cost of training DefensiveTokens (DT) for prompt injection defense, which requires approximately 16 GPU-hours per model. The authors propose AlignDefTok, a training-free method to transfer DT between related models using Orthogonal Procrustes alignment on vocabulary embeddings. The approach preserves the critical high-norm property of DT. Evaluated on Llama-3 and Llama-3.1 models using the AlpacaFarm benchmark, the method achieves 0% Attack Success Rate (ASR) for the Llama-3.1→Llama-3 transfer direction with a 285× speedup. For the harder Llama-3→Llama-3.1 direction, a lightweight "tiny-adapt" stage achieves 1.9% ASR with a 133× speedup. The method is limited to models sharing the same tokenizer and embedding dimension.
+
+# Abstract
+
+- **Problem:** Prompt injection attacks threaten LLM applications. DefensiveTokens provide effective defense but require expensive per-model training (~16 GPU-hours).
+- **Method:** AlignDefTok transfers DefensiveTokens between related models via Orthogonal Procrustes alignment of vocabulary embeddings.
+- **Key Results:**
+    - Llama-3.1→Llama-3 transfer: 0% ASR with 285× speedup.
+    - Llama-3→Llama-3.1 transfer (harder direction): 1.9% ASR using a "tiny-adapt" stage with 133× speedup.
+- **Claim:** Enables rapid deployment of defenses across model families without per-model retraining.
+
+# Introduction
+
+- **Context:** Prompt injection is ranked as the top risk for LLM applications by OWASP. DefensiveTokens prepend learned soft tokens to inputs to steer models away from injected instructions.
+- **Observation:** DefensiveTokens exhibit unusually high $\ell_2$ norms (120–144× the vocabulary average). Closely related models often have embedding spaces differing primarily by a linear transformation.
+- **Contributions:**
+    - First method for transferring DefensiveTokens between models.
+    - Orthogonal Procrustes alignment provides training-free, norm-preserving transfer (0% ASR for favorable directions).
+    - "Tiny-adapt" stage uses transferred tokens as initialization, achieving 4× faster convergence for harder directions.
+    - Achieves 133–285× compute savings compared to full training while matching native defense performance (0–1.9% ASR).
+
+# Method
+
+- **Problem Formulation:** Given source model $M_s$ and target model $M_t$ with shared vocabulary $V$ and embedding dimension $d$, the goal is to transfer DefensiveTokens $T_s \in \mathbb{R}^{k \times d}$ (typically $k=5$) to $T_t$ without optimization.
+- **Orthogonal Procrustes Alignment:**
+    - Computes optimal rotation matrix $W^*$ aligning vocabulary embeddings $X$ (source) and $Y$ (target).
+    - Solves $W^* = \arg \min_{W^\top W=I} \|XW - Y\|_F$ via Singular Value Decomposition (SVD): $W^* = UV^\top$.
+    - Orthogonality constraint preserves vector norms and angles, critical for maintaining the high-norm property of DefensiveTokens.
+- **Transfer Process:**
+    - Applied via matrix multiplication: $T_t = T_s W^*$.
+    - Requires only CPU computation (~5 minutes).
+    - Exact norm preservation confirmed (maximum difference < $10^{-5}$).
+- **Tiny-Adapt:**
+    - Lightweight fine-tuning for harder transfer directions.
+    - Updates only $k \times d$ parameters (~20K parameters for $k=5, d=4096$).
+    - Procrustes initialization reaches <5% ASR in 25 steps, compared to 100 steps for random initialization (4× speedup).
+    - Total tiny-adapt process takes ~55 minutes.
+
+# Experiments
+
+- **Setup:**
+    - **Models:** Llama-3-8B-Instruct and Llama-3.1-8B-Instruct.
+    - **Shared Properties:** Same tokenizer (128,256 vocabulary tokens) and embedding dimension ($d=4096$).
+    - **Dataset:** AlpacaFarm benchmark (208 instruction-data pairs, 3 attack variants).
+    - **Metrics:** Attack Success Rate (ASR), Gap-Closed ratio, Compute time.
+    - **Baselines:** No Defense, Reminder, Sandwich, Full DefensiveTokens, Direct Copy.
+- **Main Results (Table 1):**
+    - **Llama-3.1→Llama-3:** Procrustes transfer achieves 0.0% ASR (Gap-Closed 1.08), outperforming Full DT (3.8% ASR). Compute: ~5 minutes (285× speedup).
+    - **Llama-3→Llama-3.1:** Procrustes alone achieves 33.7% ASR. Procrustes+Tiny-Adapt achieves 1.9% ASR (Gap-Closed 1.00), matching Full DT. Compute: ~55 minutes (133× speedup).
+- **Ablation Studies (Table 2):**
+    - **Direct Copy vs. Procrustes:** Marginal improvement for Procrustes (0.9% ASR reduction in hard direction), suggesting embedding spaces are nearly aligned.
+    - **Tiny-Adapt Initialization:** Procrustes initialization reaches <5% ASR in 25 steps (4× faster than random). Best Procrustes checkpoint (1.9% ASR) outperforms best random checkpoint (2.9% ASR).
+- **Analysis:**
+    - **Asymmetry:** Llama-3.1→Llama-3 allows perfect transfer; Llama-3→Llama-3.1 requires refinement.
+    - **Norm Preservation:** Confirmed with numerical precision.
+    - **Geometry:** Transferred tokens have low cosine similarity (~0.097) with native DT but remain effective, suggesting defense relies on high-norm property and general direction rather than exact alignment.
+
+# References
+
+- Cites key works on prompt injection defenses (Chen et al., 2025b; Greshake et al., 2023), soft prompt transfer (Lester et al., 2021; Wu et al., 2023), and embedding alignment (Schuster et al., 2019).
+- References the AlpacaFarm benchmark (Dubois et al., 2023) and Llama model documentation (Dubey et al., 2024).

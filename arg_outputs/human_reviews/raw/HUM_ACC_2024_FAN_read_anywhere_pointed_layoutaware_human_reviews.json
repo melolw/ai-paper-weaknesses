@@ -1,0 +1,21 @@
+{
+  "paper_id": "HUM_ACC_2024_FAN_read_anywhere_pointed_layoutaware",
+  "source": "nlpeer",
+  "review_url": null,
+  "venue": "emnlp24",
+  "title": "Read Anywhere Pointed: Layout-aware GUI Screen Reading with Tree-of-Lens Grounding",
+  "reviews": [
+    {
+      "reviewer_id": "Reviewer_1",
+      "review_type": "human",
+      "summary": "This paper defines the Screen Point-and-Read (SPR) task as a task that, given a GUI screenshot and the coordinates of a point, outputs a description and layout information of the area around the coordinates, and emphasizes the importance of this task.\nIt then proposes a method for creating image input suitable for the SPR task from GUI screenshots (Multi-lens Prompting), and a method for having GPT-4o output description and layout information using that prompting (Tree-of-lens Agent). \nMulti-lens Prompting consists of detecting regions from GUI screenshots using a deep learning model, creating a hierarchical tree of global/local regions based on the inclusion of detected regions, and creating fine-grained and coarse-grained images of screenshot region related to the input point.\nEvaluation using GUI screenshots collected from existing resources shows that the proposed method is superior in human preference and automatic metrics compared to simply entering screenshots, point coordinates (as text), and a prompt to GPT-4o (and other MLLMs).",
+      "strengths": "- S1. This work addresses an interesting task setting called SPR.\n- S2. This work demonstrates that the output of MLLM can be improved by the proposed method that draws the input points in the image and inputs fine- and coarse-grained images of the region containing the points.",
+      "weaknesses": "- W1. I am concerned that the contribution to the community by the proposed dataset is limited. The dataset for the SPR task only gives random points with non-overlapping regions for existing GUI screenshots and does not provide gold descriptions. In my opinion, the most important information for the task is missing.\n\n- W2. I am concerned that some points of the human evaluation in main results are unclear.\n  - W2-1. How many people evaluate one output in human evaluation in $4.3? What is the agreement rate?\n  - W2-2. Table 2 shows that even ToL Agents have an overall Human evaluation score of 41.63. Is this still not as good as a human evaluation, or is the task itself so difficult that even a human cannot obtain a very good score?\n\nMy concerns were addressed in the author response and I updated Soundness and Overall Assessment.",
+      "questions": "- What are the scores when the MLLM of the ToL agent is other than GPT-4o? If the performance consistently improves, it will provide evidence that the proposed method is effective for a variety of models.\n- Verification of Mobile Navigation Agent Actions: It is difficult to determine whether the proposed method is superior or not from the information presented. It would be helpful if a comparison with the baseline in this task is included.",
+      "rating": 3,
+      "confidence": 3,
+      "soundness": 3.5,
+      "raw_note_id": "ce9562db9a8f01ed4b97a75be13a613e530bbc2fabbafda5e292744bff92e0c18b868c62bf336ed6f6ac8f8dd28529f786008fc73cb0705bd0de9efa6fa44f7c"
+    }
+  ]
+}
