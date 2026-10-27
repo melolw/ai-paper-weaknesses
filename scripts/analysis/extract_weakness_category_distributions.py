@@ -5,7 +5,7 @@ Builds a per-review table of category proportions using Lu et al.'s (2025) 16
 COARSE aspect categories, for the four paper origins (AIG, HA_COL, HUM_ACC,
 HUM_REJ). Unit of analysis is the individual review, not the paper -- this
 matches the descriptive distribution shown in the "Distribution by origin"
-figure (generate_chart.py's chart_4 / print_distributions.py's CHART 4).
+figure (generate_chart.py's chart_4).
 
 Data source: human reviews only.
   fars_human_reviews -> AIG
@@ -16,7 +16,7 @@ For each review, computes: (# critique points touching category X) / (total
 critique points in that review), for each of the 16 categories. A critique
 point counts toward a category only once even if the classifier tagged it
 with that category more than once (same "seen" dedup logic already used in
-generate_chart.py / print_distributions.py).
+generate_chart.py).
 
 Output: results/tables/weakness_category_distributions_per_review.csv
   columns: paper_id, reviewer_id, origin, n_points, <16 category columns>

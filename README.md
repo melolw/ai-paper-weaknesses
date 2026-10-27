@@ -1,120 +1,112 @@
-# Thesis Pipeline: Evaluating Automatic Reviewers on AI-Generated Manuscripts
+# Weaknesses in AI-generated and Human Papers
 
-**Author:** Mélissa Loew — TU Darmstadt, UKP Lab  
-**Supervisor:** Prof. Dr. Iryna Gurevych  
-**Thesis:** *Evaluating Automatic Reviewers on Diverse AI-Generated Manuscripts*
+Code and data for the Bachelor's thesis *Weaknesses in AI-generated and Human Papers: A Comparative Analysis of Weaknesses Across Authorship Types*
+(Mélissa Loew, Ubiquitous Knowledge Processing Lab, TU Darmstadt, 2026; reviewers: Prof. Dr. Iryna Gurevych, Serwar Basch).
 
----
+The thesis compares the weaknesses that reviewers raise in four groups of papers and asks three research questions:
 
-## Overview
+1. **RQ1** – How are weaknesses in AI-generated papers distributed across established weakness categories?
+2. **RQ2** – How do these weaknesses differ from those in human-AI collaborative, accepted human, and rejected human papers?
+3. **RQ3** – To what extent do automatic review generators (ARGs) find the weaknesses that human reviewers find in AI-generated papers?
 
-This repository supports the full evaluation pipeline for the thesis. It contains:
-- A multi-category corpus of research papers (AI-generated, human-AI hybrid, human-authored)
-- Manual annotation infrastructure for ground-truth error labeling
-- Scripts for automated pre-checks and ARG deployment
-- Evaluation scripts for computing Recall and Precision per ARG
+Every critique point in a review is classified into the 16 coarse aspect categories of
+[Lu et al. (2025)](https://github.com/UKPLab/emnlp2025-aspects-in-reviews).
 
----
+## Corpus
 
-## Repository Structure
+| Origin (thesis) | File prefix | n | Source | Folder |
+|---|---|---|---|---|
+| `AIG` – AI-generated | `AIG_2026_FARS_` | 50 | FARS (Analemma) | `corpus/ai/` |
+| `HA_COL` – human-AI collaborative | `HAH_2025_` | 48 | Agents4Science (accepted) | `corpus/human_ai_hybrid/` |
+| `HUM_ACC` – human, accepted | `HUM_ACC_2024_` | 50 | NLPeerv2, ARR 2024 | `corpus/human/accepted/` |
+| `HUM_REJ` – human, rejected | `HUM_REJ_2024_` | 50 | NLPeerv2, ARR 2024 | `corpus/human/rejected/` |
 
-```
-thesis-pipeline/
-│
-├── corpus/                         # All collected research papers (PDFs)
-│   ├── ai_generated/
-│   │   ├── curated/                # FARS dataset papers (human-approved before release)
-│   │   └── uncurated/              # Raw AI-Researcher outputs (locally generated)
-│   ├── human_ai_hybrid/            # Agents for Science conference papers
-│   └── human/
-│       ├── accepted/               # Accepted human-authored papers
-│       └── rejected/               # Rejected human-authored papers
-│
-├── annotations/                    # Ground truth and rubric
-│   ├── ground_truth/               # Per-paper annotation CSVs
-│   └── rubric/                     # Error taxonomy and severity scale definitions
-│
-├── arg_outputs/                    # ARG-generated reviews
-│   ├── deepreviewer/
-│   │   ├── raw/                    # Raw text output from DeepReviewer
-│   │   └── parsed/                 # Standardized JSON for evaluation
-│   ├── reviewagents/
-│   │   ├── raw/
-│   │   └── parsed/
-│   └── paperaudit_review/
-│       ├── raw/
-│       └── parsed/
-│
-├── scripts/
-│   ├── preprocessing/              # LanguageTool, TextStat, SciCoQa runners
-│   ├── arg_runners/                # Scripts to feed papers into each ARG
-│   └── evaluation/                 # Recall, Precision, and analysis scripts
-│
-├── results/
-│   ├── tables/                     # CSV/Excel result tables
-│   └── plots/                      # Generated figures
-│
-└── docs/                           # Additional documentation and notes
-```
+`corpus/corpus_metadata.json` lists every paper with its metadata.
 
----
-
-## Paper Naming Convention
-
-All PDFs should follow this naming scheme to ensure consistent cross-referencing:
+## Repository structure
 
 ```
-{AUTHORSHIP_CODE}_{SOURCE_CODE}_{YEAR}_{FIRST_AUTHOR_LASTNAME}_{SHORT_TITLE}.pdf
+corpus/                   papers (PDF), see table above
+arg_outputs/              reviews, one folder per review source
+  fars_human_reviews/       human reviews of AIG papers (FARS release)
+  openreview/               human reviews of HA_COL papers (Agents4Science, OpenReview)
+  human_reviews/            human reviews of HUM_ACC / HUM_REJ papers (NLPeerv2)
+  cspaper/                  CSPaper reviews of all four origins
+  paperreview_ai/           paperreview.ai reviews of AIG papers
+  deepreviewer/             DeepReviewer-v2 reviews of AIG papers
+  paperaudit_review/        PaperAudit Review reviews of AIG papers
+    raw/                      reviews as collected
+    parsed/preprocessed.json  critique points extracted per paper and reviewer
+    parsed/classified.json    critique points with their aspect categories
+data/                     manual annotation and paper selection
+  manual_review_log.csv     manual weakness annotation (Section 3.3.1)
+  aspect_comparison.csv     manual vs. automatic categories
+  fars_selected_45.json     selected FARS papers
+scripts/
+  data_collection/        selecting papers and collecting reviews
+  preprocessing/          extracting critique points from each review format
+  classification/         aspect classification and its validation
+  analysis/               statistics for RQ1-RQ3 and the linguistic markers
+  figures/                thesis figures
+results/
+  tables/                 all result tables (CSV)
+  figures/                all figures (PDF and PNG)
 ```
 
-| Authorship Code | Meaning                          |
-|-----------------|----------------------------------|
-| `AIG_CUR`       | AI-generated, curated (FARS)     |
-| `AIG_UNC`       | AI-generated, uncurated (local)  |
-| `HAH`           | Human-AI hybrid (Agents4Science) |
-| `HUM_ACC`       | Human-authored, accepted         |
-| `HUM_REJ`       | Human-authored, rejected         |
+## Pipeline
 
-**Example:** `AIG_CUR_2025_yamada.pdf`
+Run all scripts from the repository root.
 
----
+**1. Data collection** (`scripts/data_collection/`) – only needed to rebuild the corpus from the original datasets.
 
-## Quickstart
+| Script | Purpose |
+|---|---|
+| `select_fars_papers.py`, `extract_fars_and_rename.py` | select FARS papers, extract PDFs and their human and paperreview.ai reviews |
+| `scan_nlpeer_with_reviews.py`, `extract_and_convert_nlpeer.py`, `extract_and_convert_nlpeer_accepted.py` | find NLPeerv2 papers with reviews, extract rejected / accepted papers and reviews |
+| `download_openreview_hah.py` | download Agents4Science reviews from OpenReview |
+
+The CSPaper, DeepReviewer-v2 and PaperAudit reviews were produced with the respective tools (Section 3.2.2 of the thesis) and are stored in `arg_outputs/*/raw/`.
+
+**2. Preprocessing** (`scripts/preprocessing/process_*.py`) – one parser per review source; writes `arg_outputs/<source>/parsed/preprocessed.json`.
+
+**3. Classification** (`scripts/classification/`)
+
+| Script | Purpose | Thesis |
+|---|---|---|
+| `run_rap.py` | classify critique points with GPT-4o (adapted few-shot prompt of Lu et al.); writes `classified.json` | 3.3.2, App. A.2 |
+| `boot_match.py` | agreement between manual and automatic categorization (boot-match) | 3.3.3 |
+| `compare_aspects.py` | per-review comparison of manual and automatic categories | 3.3.3 |
+
+`run_rap.py` needs an OpenAI API key (`OPENAI_API_KEY`) and a local clone of the Lu et al. repository (`LU_ET_AL_REPO`).
+
+**4. Analysis** (`scripts/analysis/`) – writes to `results/tables/`.
+
+| Script | Output | Thesis |
+|---|---|---|
+| `extract_weakness_category_distributions.py` (`_cspaper`) | `weakness_category_distributions_per_review*.csv` | 4.1, 5.1 |
+| `test_weakness_category_differences.py` (`_cspaper`) | `weakness_category_significance_tests*.csv` (omnibus tests) | 5.2, 5.3, App. C.1 |
+| `pairwise_weakness_category_tests.py` (`_cspaper`) | `weakness_category_pairwise_tests*.csv` | 5.2, 5.3, App. C.2–C.3 |
+| `compare_variability_human_vs_cspaper.py` | `variability_human_vs_cspaper.csv` | 3.2.3 |
+| `run_linguistic_markers.py` (uses `linguistic_markers.py`) | `linguistic_markers_summary.csv` | 3.5 |
+| `correlate_aig_ratings.py` | `aig_rating_correlations.csv` | 4.2, App. B.1 |
+| `presentation_weakness_analysis.py` | `presentation_weakness_*.csv`, `presentation_ratio_correlations.csv` | 4.2 |
+| `test_category_differences.py`, `pairwise_category_tests.py` | `category_significance_tests.csv`, `pairwise_category_tests.csv` (linguistic markers) | 5.4, App. C.4 |
+| `arg_human_category_overlap.py` | `arg_human_category_overlap_*.csv` | 6.1–6.3 |
+| `arg_overlap_baselines.py` | `arg_human_overlap_baselines.csv`, `arg_human_overlap_vs_chance.csv` | 6.1, App. D.1 |
+
+**5. Figures** (`scripts/figures/`) – writes to `results/figures/`.
+
+| Script | Figures |
+|---|---|
+| `generate_rq1_chart.py` | `rq1_profile`, `rq1_cooccurrence` (Figures 4.1, 4.2) and further RQ1 figures |
+| `generate_chart.py` | `chart_4_human_reviews` (Figure 5.1) and additional distribution charts |
+
+## Installation
 
 ```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Run automated pre-checks on all papers
-python scripts/preprocessing/run_all_checks.py --corpus_dir corpus/
-
-# Run a specific ARG on a paper category
-python scripts/arg_runners/run_deepreviewer.py --input_dir corpus/ai_generated/uncurated/
-
-# Evaluate ARG outputs against ground truth
-python scripts/evaluation/compute_recall_precision.py \
-    --ground_truth annotations/ground_truth/ \
-    --arg_outputs arg_outputs/deepreviewer/parsed/ \
-    --arg_name deepreviewer
 ```
 
----
+## License
 
-## Annotation Workflow
-
-1. Run automated pre-checks (`scripts/preprocessing/`) — outputs flag candidates
-2. Open the relevant paper's annotation CSV in `annotations/ground_truth/`
-3. Validate flagged errors and add manually identified ones using the rubric in `annotations/rubric/`
-4. Confirm severity score for each logged error
-
-See [`annotations/rubric/README.md`](annotations/rubric/README.md) for the full taxonomy.
-
----
-
-## Dependencies
-
-See `requirements.txt`. Key packages:
-- `language-tool-python` — syntactic error detection
-- `textstat` — readability and word-length metrics
-- `pandas`, `scikit-learn` — data handling and evaluation metrics
-- `PyMuPDF` (`fitz`) — PDF text extraction
+Code: MIT (see `LICENSE`). The papers and reviews in `corpus/` and `arg_outputs/` come from FARS, Agents4Science/OpenReview and NLPeerv2 and remain under the licenses of their original sources.

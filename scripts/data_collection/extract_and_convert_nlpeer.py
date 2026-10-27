@@ -79,7 +79,7 @@ SELECTED = [
 ]
 
 # ---------------------------------------------------------------------------
-# Review converter (mirrors convert_nlpeer_reviews.py logic)
+# Review converter
 # ---------------------------------------------------------------------------
 
 def convert_review(raw: dict, index: int) -> dict:

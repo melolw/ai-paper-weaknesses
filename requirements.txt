@@ -1,15 +1,14 @@
-# PDF extraction
-PyMuPDF>=1.24.0
-
-# Linguistic checks
-language-tool-python>=2.8.0
-textstat>=0.7.3
-
-# Data handling & evaluation
+# Analysis and figures
 pandas>=2.2.0
-scikit-learn>=1.4.0
 numpy>=1.26.0
 scipy>=1.12.0
-
-# Utilities
+matplotlib>=3.8.0
+textstat>=0.7.3
+PyMuPDF>=1.24.0     # PDF text extraction (import fitz)
 tqdm>=4.66.0
+
+# Classification (scripts/classification/run_rap.py)
+openai>=1.30.0
+
+# Data collection (scripts/data_collection/download_openreview_hah.py)
+openreview-py>=1.40.0
