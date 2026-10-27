@@ -41,7 +41,6 @@ arg_outputs/              reviews, one folder per review source
 data/                     manual annotation and paper selection
   manual_review_log.csv     manual weakness annotation (Section 3.3.1)
   aspect_comparison.csv     manual vs. automatic categories
-  fars_selected_45.json     selected FARS papers
 scripts/
   preprocessing/          extracting critique points from each review format
   classification/         aspect classification and its validation
